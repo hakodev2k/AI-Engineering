@@ -13,7 +13,7 @@ export class StripeClient {
     });
   }
 
-  accountGet() { return this.sdk.accounts.retrieve(); }
+  accountGet(id: string) { return this.sdk.accounts.retrieve(id); }
   customerList(limit = 20, startingAfter?: string) { return this.sdk.customers.list({ limit, starting_after: startingAfter }); }
   customerGet(id: string) { return this.sdk.customers.retrieve(id); }
   customerCreate(input: { email?: string; name?: string; description?: string }) { return this.sdk.customers.create(input); }
