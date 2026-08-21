@@ -9,17 +9,17 @@ const cfg = loadConfig();
 const upstream = new NotionUpstream(cfg);
 const server = new McpServer({ name: 'notion-mcp-connector', version: '1.0.0' });
 
-function register(name: string, description: string, schema: Record<string, z.ZodTypeAny>, upstreamName: string, risk: 'READ'|'WRITE'|'HIGH_RISK') {
+function register(name: string, description: string, schema: Record<string, z.ZodTypeAny>, upstreamName: string, risk: 'READ'|'WRITE'|'HIGH_RISK', transform?: (args: any) => Record<string, unknown>) {
   server.tool(name, description, schema, async (args: any) => {
     if (risk !== 'READ') assertApproval(name, args.approvalId, cfg.approvalSecret);
-    const clean = { ...args }; delete clean.approvalId;
+    const clean = transform ? transform(args) : { ...args };
+    delete (clean as any).approvalId;
     const result = await upstream.call(upstreamName, clean);
     return { content: [{ type: 'text' as const, text: JSON.stringify(result) }] };
   });
 }
 
-register('notion.workspace.get','Get connected workspace/user identity.',{},'notion-fetch','READ');
-server.tool('notion.workspace.get','Get connected workspace/user identity.',{},async()=>({content:[{type:'text' as const,text:JSON.stringify(await upstream.call('notion-fetch',{id:'self'}))}]}));
+register('notion.workspace.get','Get connected workspace/user identity.',{},'notion-fetch','READ',()=>({id:'self'}));
 register('notion.search','Search accessible Notion content.',{query:z.string().min(1).max(500)},'notion-search','READ');
 register('notion.content.fetch','Fetch a page, database, data source, or subtree.',{id:z.string().min(1).max(500)},'notion-fetch','READ');
 register('notion.comments.get','Get comments/discussions for a page.',{page_id:z.string().min(1)},'notion-get-comments','READ');
