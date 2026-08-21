@@ -1,0 +1,7 @@
+{
+  "allowed_causes": ["user_cancelled", "permission_rejected", "watchdog_timeout", "quota_exhausted", "api_failure", "process_killed", "parent_shutdown", "unknown"],
+  "required_fields": ["child_id", "cause", "started_at", "ended_at", "tool_call_count", "last_action", "known_side_effects", "incomplete_step", "evidence_pointer"],
+  "require_human_initiated_for_user_cancelled": true,
+  "require_verify_first_when_side_effects_exist": true,
+  "max_recovery_retries": 2
+}
