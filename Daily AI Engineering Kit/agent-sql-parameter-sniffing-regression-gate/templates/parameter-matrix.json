@@ -1,0 +1,8 @@
+{
+  "query_id": "replace-with-query-id",
+  "cases": [
+    {"name": "low-selectivity", "params": {"value": "replace-low"}, "expected_rows": 0},
+    {"name": "typical-selectivity", "params": {"value": "replace-typical"}, "expected_rows": 0},
+    {"name": "high-selectivity", "params": {"value": "replace-high"}, "expected_rows": 0}
+  ]
+}
