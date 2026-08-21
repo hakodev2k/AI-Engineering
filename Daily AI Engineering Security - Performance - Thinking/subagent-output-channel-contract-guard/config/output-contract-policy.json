@@ -1,0 +1,9 @@
+{
+  "require_contract_id": true,
+  "require_tool_attestation": true,
+  "allowed_channels": ["final_text", "structured_tool", "artifact"],
+  "require_explicit_empty_status": true,
+  "max_contract_retries": 1,
+  "require_fallback_channel": true,
+  "require_independent_verification_for_high_impact_review": true
+}
