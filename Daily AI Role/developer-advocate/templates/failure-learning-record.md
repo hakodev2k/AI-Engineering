@@ -1,0 +1,11 @@
+# Failure Learning Record
+- Failure:
+- Impact:
+- Detection:
+- Root cause:
+- Contributing conditions:
+- Lesson:
+- Process improvement:
+- Future prevention control:
+- Owner:
+- Verification date/result:

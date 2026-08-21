@@ -1,0 +1,9 @@
+{
+  "id": "incident-summary-v3",
+  "objective": "Summarize an incident for engineering leadership without inventing facts.",
+  "inputs": ["timeline", "impact", "confirmed_root_cause", "open_questions"],
+  "required_output": ["summary", "impact", "confirmed_facts", "unknowns", "actions"],
+  "constraints": ["Do not infer root cause when unconfirmed", "Preserve timestamps"],
+  "critical_cases": ["missing root cause", "conflicting timestamps"],
+  "acceptance": {"overall_pass_rate": 0.95, "critical_pass_rate": 1.0}
+}

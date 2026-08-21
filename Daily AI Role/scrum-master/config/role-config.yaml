@@ -1,0 +1,17 @@
+role: scrum-master
+max_local_retries: 2
+aging_work_days_warning: 2
+blocked_work_hours_warning: 8
+review_queue_hours_warning: 12
+retro_action_default_review_days: 7
+facilitation_timebox_overrun_percent: 15
+human_approval_required_for:
+  - staffing_decisions
+  - budget_or_vendor_commitments
+  - public_customer_commitments
+  - legal_or_compliance_interpretation
+  - destructive_production_actions
+  - performance_or_disciplinary_actions
+metric_policy:
+  forbid_individual_velocity_scoring: true
+  prefer_trends_over_single_points: true

@@ -1,0 +1,2 @@
+# Artifact provenance and promotion
+A release should promote the same immutable artifact across environments instead of rebuilding source per environment. Record source ref, build identity, artifact URI, digest, SBOM/attestation references when available, and environment-specific configuration separately. Rebuilding during promotion weakens traceability and makes test evidence less trustworthy. Promotion decisions should prove that the production candidate is the same tested artifact, with controlled configuration changes only.

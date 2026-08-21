@@ -1,0 +1,10 @@
+{
+  "request_id": "EA-20260817-001",
+  "decision": "Choose the target customer identity platform pattern for three product lines",
+  "decision_owner": "CTO",
+  "business_outcome": "Reduce duplicated identity capabilities while preserving regulatory boundaries",
+  "scope": ["customer-identity", "product-a", "product-b", "product-c"],
+  "constraints": ["EU data residency", "migration without prolonged dual-write"],
+  "due_at": "2026-09-15",
+  "source_refs": ["capability-map-v4", "app-inventory-2026q3", "security-standard-iam"]
+}

@@ -1,0 +1,2 @@
+# Skill: Release risk assessment
+Assess blast radius, customer criticality, data mutation, reversibility, dependency count, novelty, observability, timing, staffing, and evidence confidence. Classify low/medium/high/critical. For high or critical releases require explicit rollback plan, owner availability, enhanced monitoring, staged deployment where feasible, and human approval. Do not lower risk merely because a deadline is close. Output includes risk factors, mitigations, residual risk, approver, and stop conditions.

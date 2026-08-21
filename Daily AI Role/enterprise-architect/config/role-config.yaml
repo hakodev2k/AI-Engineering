@@ -1,0 +1,16 @@
+role: enterprise-architect
+final_owner: enterprise-architect
+retry_limit: 2
+priorities:
+  - enterprise-risk
+  - irreversible-decision
+  - cross-program-blocker
+  - strategic-value
+  - planned-governance
+human_approval:
+  - material-investment
+  - enterprise-standard-exception
+  - vendor-or-platform-lock-in
+  - regulated-data-boundary-change
+  - material-security-tradeoff
+  - broad-decommissioning

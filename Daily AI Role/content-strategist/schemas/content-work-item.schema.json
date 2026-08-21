@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "content-work-item.schema.json",
+  "title": "Content Strategist Work Item",
+  "type": "object",
+  "required": ["id", "title", "status", "owner", "objective", "audience", "desiredAction", "priority", "deadline", "outputs", "verification"],
+  "properties": {
+    "id": {"type": "string", "minLength": 1},
+    "title": {"type": "string", "minLength": 1},
+    "status": {"enum": ["intake", "research", "briefed", "drafting", "review", "approved", "scheduled", "published", "measuring", "refresh", "retired", "blocked", "escalated"]},
+    "owner": {"type": "string", "minLength": 1},
+    "objective": {"type": "string", "minLength": 1},
+    "audience": {"type": "string", "minLength": 1},
+    "problem": {"type": "string"},
+    "desiredAction": {"type": "string", "minLength": 1},
+    "priority": {"enum": ["critical", "high", "medium", "low"]},
+    "deadline": {"type": "string", "format": "date-time"},
+    "canonical": {"type": "boolean", "default": false},
+    "sourceOfTruth": {"type": "array", "items": {"type": "string"}},
+    "claims": {"type": "array", "items": {"type": "object", "required": ["text", "status"], "properties": {"text": {"type": "string"}, "status": {"enum": ["verified", "unverified", "conflicted", "stale"]}, "source": {"type": "string"}, "approver": {"type": "string"}}}},
+    "dependencies": {"type": "array", "items": {"type": "string"}},
+    "risks": {"type": "array", "items": {"type": "string"}},
+    "approvals": {"type": "array", "items": {"type": "string"}},
+    "outputs": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+    "verification": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+    "metrics": {"type": "object", "properties": {"primary": {"type": "string"}, "guardrails": {"type": "array", "items": {"type": "string"}}, "baseline": {"type": "string"}, "checkpoint": {"type": "string", "format": "date-time"}}},
+    "assumptions": {"type": "array", "items": {"type": "string"}},
+    "openQuestions": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": false
+}

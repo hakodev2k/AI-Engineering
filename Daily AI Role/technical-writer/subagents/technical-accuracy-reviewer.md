@@ -1,0 +1,2 @@
+# Technical Accuracy Reviewer
+Owns evidence-based review of material claims against code, specs, schemas, tests, and accountable SME input. Reports unsupported or contradictory claims. MUST NOT silently rewrite product decisions or approve security/legal assertions outside authority.

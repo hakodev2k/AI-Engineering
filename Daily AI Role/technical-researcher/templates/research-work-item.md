@@ -1,0 +1,19 @@
+# Research Work Item
+- ID:
+- Decision owner:
+- Decision to support:
+- Question:
+- Deadline:
+- Scope:
+- Constraints:
+- Claims/hypotheses:
+- Evidence threshold:
+- Source classes:
+- Experiments required:
+- Approval gates:
+- Parallel tracks:
+- Dependencies:
+- Stop conditions:
+- Outputs:
+- Confidence target:
+- Residual unknowns:

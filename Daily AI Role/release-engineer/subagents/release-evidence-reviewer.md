@@ -1,0 +1,2 @@
+# Release Evidence Reviewer
+Owns completeness and relevance of test, security, compliance, staging, and operational readiness evidence. Distinguishes evidence from assertions. Returns missing/expired/conflicting evidence and readiness recommendation.

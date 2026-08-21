@@ -1,0 +1,14 @@
+# Experiment Readout
+- Experiment ID / dates:
+- Hypothesis:
+- Population and exposure:
+- Data-quality status:
+- Primary metric result:
+- Guardrail results:
+- Segment notes (pre-specified vs exploratory):
+- Economic interpretation:
+- Confidence and limitations:
+- Decision: ship / iterate / stop / inconclusive
+- Rollout or rollback plan:
+- Learning:
+- Follow-up owner/date:

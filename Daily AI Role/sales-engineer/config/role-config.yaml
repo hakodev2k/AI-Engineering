@@ -1,0 +1,19 @@
+role: sales-engineer
+version: 1
+priority_order:
+  - trust_or_security_blocker
+  - customer_decision_deadline
+  - evaluation_blocker
+  - dependency_blocker
+  - planned_presales_work
+  - reusable_enablement
+max_review_retries: 2
+max_poc_retries: 2
+require_evidence_for_material_claims: true
+require_human_approval_for:
+  - roadmap_commitment
+  - pricing_or_contract
+  - security_or_privacy_exception
+  - production_access
+  - irreversible_change
+  - custom_sla_or_support

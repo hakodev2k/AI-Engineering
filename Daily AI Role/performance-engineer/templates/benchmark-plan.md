@@ -1,0 +1,23 @@
+# Benchmark Plan
+
+- Objective:
+- Owner:
+- Target metrics:
+- Guardrail metrics:
+- Baseline/reference:
+- Candidate:
+- Workload scenarios:
+- Dataset:
+- Environment:
+- Software/runtime versions:
+- Warmup:
+- Duration:
+- Concurrency / arrival rate:
+- Request mix / payload distribution:
+- Repetitions:
+- Stop thresholds:
+- Known confounders:
+- Raw evidence location:
+- Pass/fail criteria:
+- Human approvals required:
+- Verification owner:

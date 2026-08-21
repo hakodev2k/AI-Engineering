@@ -1,0 +1,11 @@
+# Product Handoff
+- Objective and user outcome:
+- Current scope / non-goals:
+- Decisions and rationale:
+- Acceptance status and evidence:
+- Dependencies / blockers:
+- Open risks / assumptions:
+- Release/rollback plan:
+- Metrics / review date:
+- Owners / next actions:
+- Escalations or human approvals still required:

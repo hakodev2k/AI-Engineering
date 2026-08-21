@@ -1,0 +1,13 @@
+role: prompt-engineer
+retry_limits:
+  prompt_revision_cycles: 2
+  evaluation_reruns: 2
+thresholds:
+  required_eval_pass_rate: 0.95
+  critical_case_pass_rate: 1.0
+principles:
+  - contract_before_wording
+  - evidence_before_release
+  - least_context_needed
+  - deterministic_validation_when_possible
+  - no_unbounded_loops

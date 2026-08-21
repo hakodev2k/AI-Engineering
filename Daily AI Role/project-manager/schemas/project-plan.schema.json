@@ -1,0 +1,19 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "type":"object",
+  "required":["project_id","objective","sponsor","project_manager","status","scope","milestones","dependencies","risks","open_decisions"],
+  "properties":{
+    "project_id":{"type":"string","minLength":1},
+    "objective":{"type":"string","minLength":1},
+    "sponsor":{"type":"string","minLength":1},
+    "project_manager":{"type":"string","minLength":1},
+    "status":{"enum":["not-started","on-track","at-risk","off-track","blocked","complete"]},
+    "target_date":{"type":["string","null"]},
+    "scope":{"type":"array","items":{"type":"string"}},
+    "out_of_scope":{"type":"array","items":{"type":"string"}},
+    "milestones":{"type":"array","items":{"type":"object","required":["id","name","owner"],"properties":{"id":{"type":"string"},"name":{"type":"string"},"date":{"type":["string","null"]},"owner":{"type":"string"},"status":{"type":"string"}}}},
+    "dependencies":{"type":"array","items":{"type":"object","required":["id","owner","status"],"properties":{"id":{"type":"string"},"owner":{"type":"string"},"need_by":{"type":["string","null"]},"status":{"type":"string"}}}},
+    "risks":{"type":"array","items":{"type":"object","required":["id","impact","owner"],"properties":{"id":{"type":"string"},"probability":{"type":"string"},"impact":{"type":"string"},"response":{"type":"string"},"owner":{"type":"string"}}}},
+    "open_decisions":{"type":"array","items":{"type":"object","required":["id","owner"],"properties":{"id":{"type":"string"},"owner":{"type":"string"},"needed_by":{"type":["string","null"]}}}}
+  }
+}

@@ -1,0 +1,18 @@
+role: technical-writer
+risk:
+  retries_per_validation_stage: 2
+  require_human_approval_for:
+    - security_sensitive_instructions
+    - destructive_operations
+    - legal_or_compliance_language
+    - breaking_change_guidance
+    - public_product_promises
+quality:
+  require_source_map: true
+  require_example_verification: true
+  require_version_scope: true
+publication:
+  default_status: draft
+  secrets_allowed: false
+metrics:
+  prefer_task_success_over_page_views: true

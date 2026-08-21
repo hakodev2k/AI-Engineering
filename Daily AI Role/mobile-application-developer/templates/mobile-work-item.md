@@ -1,0 +1,28 @@
+# Mobile Work Item
+
+- ID:
+- User outcome:
+- Business/customer impact:
+- Deadline / dependency:
+- Platforms / OS / device scope:
+- Current behavior:
+- Expected behavior:
+- Non-goals:
+- Inputs / API contracts:
+- Data ownership / persistence / sync:
+- Permissions / privacy / security:
+- Foreground/background/lifecycle states:
+- Offline/network behavior:
+- Deep link / push entry behavior:
+- Accessibility / localization considerations:
+- Performance/reliability budget:
+- Telemetry / success signals:
+- Dependencies and owners:
+- Risks / reversibility:
+- Human approval gates:
+- Test plan:
+- Rollout / recovery:
+- Status: intake|planned|implementing|reviewing|verifying|ready|released|blocked|failed|cancelled
+- Evidence links/identifiers:
+- Next action / owner:
+- Definition of Done result:

@@ -1,0 +1,12 @@
+# Handoff
+- Prompt/workflow and version:
+- Objective:
+- Usage trigger:
+- Required inputs/context:
+- Output contract:
+- Known limitations:
+- Critical risks:
+- Evaluation evidence:
+- Monitoring signals:
+- Rollback:
+- Open decisions / accountable owner:

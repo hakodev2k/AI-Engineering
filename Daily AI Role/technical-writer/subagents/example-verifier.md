@@ -1,0 +1,2 @@
+# Example Verifier
+Owns independent checking of commands, code snippets, request/response examples, configuration, and expected results in a safe supported environment. Records exact environment and outcome. MUST NOT run destructive production actions without approval. Cannot redefine product behavior.

@@ -1,0 +1,15 @@
+{
+  "name": "orders-daily",
+  "owner": "commerce-domain",
+  "source_of_truth": "orders-service",
+  "classification": "internal",
+  "freshness": "available by 06:00 UTC daily",
+  "compatibility": "backward",
+  "primary_key": ["order_id"],
+  "fields": [
+    {"name": "order_id", "type": "string", "nullable": false, "description": "Stable order identifier", "sensitive": false},
+    {"name": "created_at", "type": "timestamp", "nullable": false, "description": "Order creation event time", "sensitive": false}
+  ],
+  "consumers": ["finance-bi"],
+  "retention": "730 days"
+}

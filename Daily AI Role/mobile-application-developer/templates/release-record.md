@@ -1,0 +1,23 @@
+# Mobile Release Record
+
+- App / platform:
+- Version / build:
+- Immutable artifact identifier:
+- Environment / endpoints:
+- Included changes:
+- Persisted-data migrations:
+- Permissions / entitlements changed:
+- Deep links / push / remote config changed:
+- Test evidence:
+- Device/OS coverage:
+- Crash/hang/performance baseline:
+- Privacy/store declarations reviewed:
+- Known risks:
+- Feature flags / kill switch:
+- Rollout plan and observation window:
+- Stop thresholds:
+- Recovery / hotfix path:
+- Human release approver:
+- Submission/promotion evidence:
+- Post-release result:
+- Follow-up owner:

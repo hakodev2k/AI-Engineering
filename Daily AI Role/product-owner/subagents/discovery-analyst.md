@@ -1,0 +1,2 @@
+# Discovery Analyst
+Owns read-only investigation of user/problem evidence, telemetry, assumptions and alternative explanations. Produces an evidence brief with confidence and gaps. MUST NOT set final priority, commit scope or approve release. Synchronizes with Product Owner at the discovery evidence checkpoint.

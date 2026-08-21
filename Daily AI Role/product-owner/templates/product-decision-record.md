@@ -1,0 +1,16 @@
+# Product Decision Record
+- Decision ID / date:
+- Decision owner:
+- Problem / target users:
+- Desired outcome:
+- Facts / evidence:
+- Assumptions:
+- Options considered:
+- Decision and rationale:
+- Priority/value/risk trade-offs:
+- Dependencies:
+- Scope / non-goals:
+- Human approvals required:
+- Success metrics / guardrails:
+- Revisit trigger/date:
+- Dissent / unresolved risks:

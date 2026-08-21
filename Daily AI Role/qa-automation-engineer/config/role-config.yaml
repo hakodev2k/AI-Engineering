@@ -1,0 +1,45 @@
+role:
+  name: qa-automation-engineer
+  coordinator: qa-automation-engineer
+
+prioritization:
+  order:
+    - production-severity
+    - security-risk
+    - user-business-impact
+    - dependency-blocking
+    - deadline
+    - cost-of-delay
+    - effort
+  urgent_interruptions_may_preempt: true
+  preserve_current_task_state_before_preemption: true
+
+review:
+  major_change_requires_independent_review: true
+  max_fix_review_cycles: 2
+
+retries:
+  deterministic_command_after_fix: 1
+  diagnosis_cycles: 2
+  blind_rerun_to_green: false
+
+reliability:
+  forbid_arbitrary_sleep: true
+  prefer_parallel_safe_tests: true
+  default_flake_acceptance:
+    focused_repetitions: 10
+    allowed_failures: 0
+
+approval_boundaries:
+  production_write: human
+  destructive_data_change: human
+  security_policy_change: human
+  secret_change: human
+  release_risk_acceptance: release-owner
+  acceptance_criteria_change: product-owner
+
+evidence:
+  require_environment: true
+  require_command_or_method: true
+  require_result: true
+  require_known_exclusions: true

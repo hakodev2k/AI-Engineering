@@ -1,0 +1,20 @@
+{
+  "id": "FINOPS-20260817-001",
+  "title": "Reduce idle non-production compute spend",
+  "status": "analyzing",
+  "priority": "high",
+  "owner": "cloud-platform",
+  "time_window": "2026-07-01/2026-07-31",
+  "baseline_cost": 18420.50,
+  "currency": "USD",
+  "evidence": [
+    {"type": "billing-export", "source": "monthly-cloud-cost-export", "statement": "Non-production compute represented 21% of July compute spend."},
+    {"type": "utilization", "source": "metrics-warehouse", "statement": "38 instances had median CPU below 5% and no weekend traffic."}
+  ],
+  "recommendation": "Pilot scheduled shutdown for tagged development instances outside working hours.",
+  "estimated_monthly_savings": 3260.00,
+  "confidence": "medium",
+  "risks": [{"severity": "medium", "description": "After-hours integration tests may fail.", "mitigation": "Exclude CI runners and provide opt-out tag with expiry."}],
+  "requires_human_approval": true,
+  "verification": "Compare normalized compute cost for four weeks after rollout against baseline and usage-adjusted forecast."
+}

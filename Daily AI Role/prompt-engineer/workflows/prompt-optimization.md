@@ -1,0 +1,2 @@
+# Workflow: Quality/Cost/Latency Optimization
+**Trigger:** acceptable behavior but material inefficiency or recurring correction. Establish baseline first. Generate independent optimization hypotheses for wording, context, examples, schema, and tool split; do not combine until attributable. Evaluate each against quality and critical cases. Consolidate best safe change, review cost/latency and domain impact, then version and rollout. Reject savings that degrade critical quality or safety. DoD: measured improvement with no threshold violation.

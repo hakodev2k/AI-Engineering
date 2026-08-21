@@ -1,0 +1,15 @@
+# Product Item
+- ID / title:
+- Target users:
+- Problem:
+- Outcome:
+- Evidence and confidence:
+- Acceptance criteria:
+- Non-goals:
+- Dependencies:
+- Risks / reversibility:
+- Priority and rationale:
+- Success metrics:
+- Release strategy:
+- Decision owner:
+- Ready status:

@@ -1,0 +1,2 @@
+# Source Quality
+Evaluate provenance, primary/secondary status, authority, independence, incentives, method transparency, sample/context fit, recency, reproducibility, and agreement with independent evidence. A source can be authoritative yet inapplicable. Vendor documentation is often authoritative for product behavior but not neutral for comparative claims. Community reports can reveal real failure modes but require corroboration for prevalence claims.

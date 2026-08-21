@@ -1,0 +1,14 @@
+role: cloud-finops-engineer
+version: 1
+currency: organization-default
+confidence_levels: [high, medium, low]
+severity_levels: [critical, high, medium, low]
+default_review_retry_limit: 2
+realized_savings_requires_observation: true
+provider_neutral: true
+approval_gates:
+  commitment_purchase: human
+  destructive_cleanup: human
+  production_capacity_reduction: human
+  chargeback_policy_change: human
+  control_exception: human

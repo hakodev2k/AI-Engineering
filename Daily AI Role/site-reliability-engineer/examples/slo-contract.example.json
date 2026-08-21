@@ -1,0 +1,16 @@
+{
+  "service": "checkout-api",
+  "owner": "commerce-platform",
+  "sli": {
+    "name": "successful_checkout_requests",
+    "good_event": "eligible requests returning expected success response within 1500ms",
+    "valid_event": "all eligible checkout attempts reaching the service edge",
+    "exclusions": ["synthetic traffic explicitly tagged as test"]
+  },
+  "objective": 0.999,
+  "window": "rolling-30d",
+  "measurement_source": "edge request telemetry cross-checked with application metrics",
+  "error_budget_policy": "tighten rollout when budget is critical; pause discretionary high-risk releases when exhausted",
+  "alert_policy": "multi-window burn-rate paging for fast and sustained burn",
+  "status": "provisional"
+}

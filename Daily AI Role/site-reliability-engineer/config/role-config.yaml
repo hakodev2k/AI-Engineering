@@ -1,0 +1,27 @@
+role: site-reliability-engineer
+timezone: Asia/Bangkok
+priority_order:
+  - active_security_or_data_loss
+  - active_user_impact
+  - imminent_reliability_risk
+  - dependency_blocker
+  - error_budget_burn
+  - deadline_and_cost_of_delay
+  - toil_reduction
+incident:
+  max_material_mitigation_attempts_before_escalation: 3
+  blind_retry_allowed: false
+review:
+  max_review_fix_cycles: 2
+verification:
+  require_independent_evidence: true
+approval:
+  required_for:
+    - irreversible_production_change
+    - destructive_data_action
+    - high_blast_radius_failover
+    - accepted_critical_reliability_risk
+    - production_security_control_bypass
+slo:
+  provisional_when_measurement_unverified: true
+  prefer_burn_rate_alerting: true

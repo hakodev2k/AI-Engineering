@@ -1,0 +1,2 @@
+# Release quality metrics
+Track: change failure rate, rollback rate, failed-release recovery time, release lead time, percentage of releases with complete provenance, approval-gate violations, evidence completeness, post-release defect rate, emergency release frequency, release-induced incident count, rollback success rate, and manual intervention rate. Metrics should drive process improvement, not incentives to hide failed releases.

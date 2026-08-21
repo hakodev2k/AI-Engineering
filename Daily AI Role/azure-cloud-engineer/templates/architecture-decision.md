@@ -1,0 +1,15 @@
+# Azure Architecture Decision
+- Decision ID:
+- Workload / owner:
+- Context and constraints:
+- Verified facts:
+- Assumptions:
+- Options considered:
+- Decision and rationale:
+- Security/network implications:
+- Reliability implications:
+- Cost/capacity implications:
+- Migration/change impact:
+- Approval required:
+- Validation evidence:
+- Revisit trigger:
