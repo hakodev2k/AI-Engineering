@@ -19,4 +19,6 @@ class GuardTests(unittest.TestCase):
   d=self.base();d['access_token']='secret-value';cp,r=self.run_case(d);self.assertEqual(cp.returncode,5);self.assertNotIn('secret-value',json.dumps(r))
  def test_missing_scope_denies(self):
   d=self.base();d['operation']='write';cp,_=self.run_case(d);self.assertEqual(cp.returncode,5)
+ def test_unknown_operation_denies(self):
+  d=self.base();d['operation']='admin';d['scopes']=['mcp.read','mcp.write'];cp,_=self.run_case(d);self.assertEqual(cp.returncode,5)
 if __name__=='__main__':unittest.main()
