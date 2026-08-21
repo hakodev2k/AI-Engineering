@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ToolCallIntegrityEnvelope",
+  "type": "object",
+  "required": ["call_id", "tool_name", "arguments", "stream_state", "terminal_event_seen", "risk_class"],
+  "properties": {
+    "call_id": {"type": "string"},
+    "tool_name": {"type": "string"},
+    "arguments": {"type": "object"},
+    "stream_state": {"type": "string", "enum": ["partial", "complete", "interrupted", "executing", "committed", "unknown"]},
+    "terminal_event_seen": {"type": "boolean"},
+    "finish_reason": {"type": ["string", "null"]},
+    "schema_valid": {"type": "boolean"},
+    "authorized": {"type": "boolean"},
+    "risk_class": {"type": "string", "enum": ["read_only", "side_effect"]},
+    "idempotency_key": {"type": ["string", "null"]},
+    "postcondition_verified": {"type": "boolean"},
+    "execution_outcome": {"type": ["string", "null"], "enum": [null, "not_started", "success", "failed", "unknown"]}
+  },
+  "additionalProperties": false
+}
