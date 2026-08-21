@@ -1,0 +1,6 @@
+{
+  "allowed_roots": ["./safe-upload"],
+  "reject_symlinks": true,
+  "max_file_bytes": 10485760,
+  "require_approval_for_outside_root": false
+}
