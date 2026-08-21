@@ -1,0 +1,63 @@
+id: jira
+name: Jira
+version: 1.0.0
+
+upstream:
+  - mcp
+  - rest
+
+mcp:
+  provider: Atlassian Rovo MCP Server
+  endpoint: https://mcp.atlassian.com/v1/mcp/authv2
+  transport: streamable-http
+  official: true
+
+rest:
+  provider: Jira Cloud REST API v3
+  base_url: https://api.atlassian.com/ex/jira/{cloudId}/rest/api/3
+  usage:
+    - jira.issue.create
+
+auth:
+  type: oauth2.1-bearer
+  credential_env: ATLASSIAN_ACCESS_TOKEN
+  credentials_exposed_to_agent: false
+  recommended_scopes:
+    - read:jira-work
+    - search:jira-work
+    - write:jira-work
+    - read:account
+    - read:me
+
+capabilities:
+  - resource.list
+  - project.list
+  - issue.search
+  - issue.read
+  - issue.transitions.list
+  - comment.create
+  - issue.create
+  - issue.update
+  - issue.transition
+
+risk:
+  default: read
+  write_requires_approval: true
+  high_risk_requires_approval: true
+  destructive_tools_enabled: false
+
+environment:
+  required:
+    - ATLASSIAN_ACCESS_TOKEN
+  optional:
+    - ATLASSIAN_MCP_URL
+    - JIRA_ALLOWED_CLOUD_IDS
+    - JIRA_ALLOWED_PROJECT_KEYS
+    - JIRA_APPROVAL_SECRET
+
+security:
+  official_mcp_host_only: true
+  fixed_upstream_tool_allowlist: true
+  provider_content_untrusted: true
+  project_allowlist_supported: true
+  cloud_allowlist_supported: true
