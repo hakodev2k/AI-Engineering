@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/agent-generated-code-provenance-gate/provenance-record.schema.json",
+  "type": "object",
+  "required": ["version", "task", "baseline_ref", "allowed_scope", "requirements", "evidence", "changes", "review"],
+  "properties": {
+    "version": {"type": "integer", "minimum": 1},
+    "task": {
+      "type": "object",
+      "required": ["id", "title", "implementation_owner"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "title": {"type": "string", "minLength": 1},
+        "implementation_owner": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": true
+    },
+    "baseline_ref": {"type": "string", "minLength": 1},
+    "diff_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "allowed_scope": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+    "requirements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "text"],
+        "properties": {"id": {"type": "string"}, "text": {"type": "string"}},
+        "additionalProperties": true
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "source", "summary"],
+        "properties": {"id": {"type": "string"}, "source": {"type": "string"}, "summary": {"type": "string"}},
+        "additionalProperties": true
+      }
+    },
+    "changes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["path", "classification", "rationale", "requirement_ids", "evidence_ids", "verification_checks", "risk_tags"],
+        "properties": {
+          "path": {"type": "string", "minLength": 1},
+          "classification": {"type": "string", "enum": ["requirement", "bug-fix-evidence", "test-support", "refactor-required", "generated", "incidental"]},
+          "rationale": {"type": "string", "minLength": 1},
+          "requirement_ids": {"type": "array", "items": {"type": "string"}},
+          "evidence_ids": {"type": "array", "items": {"type": "string"}},
+          "verification_checks": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["id", "status", "owner"],
+              "properties": {
+                "id": {"type": "string"},
+                "status": {"type": "string", "enum": ["pending", "passed", "failed", "skipped", "unavailable"]},
+                "owner": {"type": "string"}
+              },
+              "additionalProperties": true
+            }
+          },
+          "risk_tags": {"type": "array", "items": {"type": "string"}}
+        },
+        "additionalProperties": true
+      }
+    },
+    "human_approval": {
+      "type": ["object", "null"],
+      "properties": {
+        "approved": {"type": "boolean"},
+        "approver": {"type": "string"},
+        "reason": {"type": "string"}
+      },
+      "additionalProperties": true
+    },
+    "review": {
+      "type": "object",
+      "required": ["reviewer", "decision", "findings"],
+      "properties": {
+        "reviewer": {"type": "string"},
+        "decision": {"type": "string", "enum": ["pending", "pass", "needs-revision", "human-approval-required", "block"]},
+        "findings": {"type": "array", "items": {"type": "string"}}
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

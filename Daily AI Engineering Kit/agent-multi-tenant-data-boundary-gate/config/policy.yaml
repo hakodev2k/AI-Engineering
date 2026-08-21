@@ -1,0 +1,22 @@
+version: 1
+tenant_context:
+  required: true
+  accepted_sources: [claim, route, header, service-context]
+  trusted_sources: [claim, route, service-context]
+  header_requires_gateway_attestation: true
+persistence:
+  tenant_key_names: [tenant_id, tenantId, TenantId]
+  require_tenant_filter_for_reads: true
+  require_tenant_match_for_writes: true
+  allow_cross_tenant_queries: false
+  allow_global_scope_bypass: false
+exceptions:
+  require_human_approval: true
+  require_reason: true
+  require_expiry: true
+  require_ticket_reference: true
+logging:
+  redact_payload_fields: [password, secret, token, access_token, refresh_token]
+  record_tenant_id: true
+  record_actor: true
+  record_operation: true

@@ -1,0 +1,10 @@
+{
+  "sources": {
+    "service:payments-api:production": {
+      "revision": "deploy-2026-08-17-0042"
+    }
+  },
+  "expected_query_fingerprints": {
+    "deploy-status-001": "9dca40ea00b9c42e0464a8e2d889f30c20cc8f2730e2c8d4fd0bbde41c760ea1"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "OrderCreatedV1",
+  "type": "object",
+  "required": ["orderId", "status"],
+  "properties": {
+    "orderId": {"type": "string"},
+    "status": {"type": "string", "enum": ["created", "confirmed"]}
+  },
+  "additionalProperties": true
+}

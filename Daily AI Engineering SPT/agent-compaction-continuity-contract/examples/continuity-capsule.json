@@ -1,0 +1,61 @@
+{
+  "task_id": "checkout-regression-42",
+  "generation": 3,
+  "active_turn": {
+    "id": "user-turn-18"
+  },
+  "active_goal": "Fix checkout regression without changing the public API and verify the regression suite.",
+  "constraints": [
+    "Do not change the public API",
+    "Do not disable failing tests"
+  ],
+  "decisions": [
+    {
+      "id": "decision-1",
+      "decision": "Keep the public contract unchanged and fix normalization internally.",
+      "evidence_refs": [
+        "evidence-api-contract"
+      ]
+    }
+  ],
+  "completed": [
+    {
+      "id": "completed-1",
+      "summary": "Regression reproduced with fixture checkout-17.",
+      "evidence_refs": [
+        "evidence-repro-log"
+      ]
+    }
+  ],
+  "failed_approaches": [
+    {
+      "id": "failed-1",
+      "approach": "Reuse the legacy normalization path.",
+      "reason": "It still fails checkout-17 and changes encoded query semantics.",
+      "evidence_refs": [
+        "evidence-legacy-failure"
+      ]
+    }
+  ],
+  "open_items": [
+    {
+      "id": "open-1",
+      "summary": "Implement the minimal internal normalization fix and rerun regression tests."
+    }
+  ],
+  "blockers": [],
+  "evidence_refs": [
+    {
+      "id": "evidence-api-contract",
+      "ref": "tests/api-contract"
+    },
+    {
+      "id": "evidence-repro-log",
+      "ref": "artifacts/checkout-17-repro.log"
+    },
+    {
+      "id": "evidence-legacy-failure",
+      "ref": "artifacts/legacy-normalization-failure.log"
+    }
+  ]
+}

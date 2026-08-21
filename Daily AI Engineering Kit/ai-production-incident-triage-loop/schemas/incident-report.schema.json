@@ -1,0 +1,1 @@
+{"required":["finding","evidence","confidence","risk","verificationStatus"],"properties":{"finding":{"type":"string"},"evidence":{"type":"array"},"confidence":{"type":"number"},"risk":{"type":"string"},"verificationStatus":{"type":"string"}}}

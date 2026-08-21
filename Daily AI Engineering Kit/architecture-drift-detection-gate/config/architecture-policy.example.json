@@ -1,0 +1,110 @@
+{
+  "version": 1,
+  "modules": [
+    {
+      "name": "domain",
+      "paths": [
+        "src/Domain/",
+        "src/domain/"
+      ],
+      "dependency_markers": [
+        "\\bCompany\\.Domain\\b",
+        "\\bfrom\\s+domain\\b",
+        "\\bimport\\s+domain\\b"
+      ]
+    },
+    {
+      "name": "application",
+      "paths": [
+        "src/Application/",
+        "src/application/"
+      ],
+      "dependency_markers": [
+        "\\bCompany\\.Application\\b",
+        "\\bfrom\\s+application\\b",
+        "\\bimport\\s+application\\b"
+      ]
+    },
+    {
+      "name": "infrastructure",
+      "paths": [
+        "src/Infrastructure/",
+        "src/infrastructure/"
+      ],
+      "dependency_markers": [
+        "\\bCompany\\.Infrastructure\\b",
+        "\\bfrom\\s+infrastructure\\b",
+        "\\bimport\\s+infrastructure\\b"
+      ]
+    },
+    {
+      "name": "api",
+      "paths": [
+        "src/Api/",
+        "src/api/"
+      ],
+      "dependency_markers": [
+        "\\bCompany\\.Api\\b",
+        "\\bfrom\\s+api\\b",
+        "\\bimport\\s+api\\b"
+      ]
+    }
+  ],
+  "allowed_dependencies": {
+    "domain": [],
+    "application": [
+      "domain"
+    ],
+    "infrastructure": [
+      "domain",
+      "application"
+    ],
+    "api": [
+      "domain",
+      "application",
+      "infrastructure"
+    ]
+  },
+  "forbidden_patterns": [
+    {
+      "id": "domain-no-sql-client",
+      "modules": [
+        "domain"
+      ],
+      "pattern": "\\b(SqlConnection|DbContext|NpgsqlConnection)\\b",
+      "description": "Domain code must not depend directly on persistence client types. Adapt this rule to your stack."
+    },
+    {
+      "id": "domain-no-http-framework",
+      "modules": [
+        "domain"
+      ],
+      "pattern": "\\b(HttpContext|ControllerBase|IActionResult)\\b",
+      "description": "Domain code must not depend directly on HTTP framework types."
+    }
+  ],
+  "ignored_paths": [
+    "**/bin/**",
+    "**/obj/**",
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/build/**",
+    "**/generated/**",
+    "**/*.generated.*"
+  ],
+  "exceptions": [
+    {
+      "id": "legacy-domain-storage-bridge",
+      "rule_id": "domain-no-sql-client",
+      "paths": [
+        "src/Domain/Legacy/**"
+      ],
+      "owner": "architecture-team",
+      "reason": "Temporary legacy bridge while persistence concerns are moved behind an interface.",
+      "expires_on": "2026-12-31"
+    }
+  ],
+  "decision_records": [
+    "docs/adr/0001-layered-dependency-direction.md"
+  ]
+}

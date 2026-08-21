@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "task": {"id": "TASK-EXAMPLE", "title": "Return 404 for missing widget", "implementation_owner": "implementation-agent"},
+  "baseline_ref": "origin/main",
+  "diff_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+  "allowed_scope": ["src/widgets/**", "tests/widgets/**"],
+  "requirements": [{"id": "REQ-001", "text": "Missing widgets return HTTP 404."}],
+  "evidence": [{"id": "EVID-001", "source": "tests/widgets/get-widget.spec", "summary": "Existing failing test expects 404 instead of 500."}],
+  "changes": [
+    {
+      "path": "src/widgets/get-widget.cs",
+      "classification": "bug-fix-evidence",
+      "rationale": "Handle missing repository result explicitly so the endpoint returns 404.",
+      "requirement_ids": ["REQ-001"],
+      "evidence_ids": ["EVID-001"],
+      "verification_checks": [{"id": "widget-tests", "status": "passed", "owner": "test-agent"}],
+      "risk_tags": []
+    },
+    {
+      "path": "tests/widgets/get-widget.spec",
+      "classification": "test-support",
+      "rationale": "Locks the expected 404 behavior as regression coverage.",
+      "requirement_ids": ["REQ-001"],
+      "evidence_ids": ["EVID-001"],
+      "verification_checks": [{"id": "widget-tests", "status": "passed", "owner": "test-agent"}],
+      "risk_tags": []
+    }
+  ],
+  "human_approval": null,
+  "review": {"reviewer": "review-agent", "decision": "pass", "findings": []}
+}

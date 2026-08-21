@@ -1,0 +1,16 @@
+[
+  {
+    "id": "order-total-nonnegative",
+    "behavior": "Order total must never be negative after discounts.",
+    "expected": ">= 0",
+    "risk": "high",
+    "source": "requirements/checkout.md#discount-rules",
+    "source_type": "domain-rule",
+    "independent": true,
+    "evidence": [
+      "Discounts may reduce the payable amount to zero but never below zero."
+    ],
+    "implementation_symbols": ["CalculateTotal", "ApplyDiscount"],
+    "tags": ["money", "checkout"]
+  }
+]

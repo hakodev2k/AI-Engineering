@@ -1,0 +1,46 @@
+{
+  "requests": [
+    {
+      "id": "r1",
+      "class": "code-review",
+      "provider": "openai",
+      "model": "gpt-5.6",
+      "input_tokens": 12000,
+      "cached_tokens": 0,
+      "blocks": [
+        {"name": "system", "label": "static-required", "content": "Review code safely and cite evidence."},
+        {"name": "tools", "label": "static-required", "content": {"tools": ["repo_search", "test"]}},
+        {"name": "repository-guidance", "label": "static-required", "content": "Repository conventions v4"},
+        {"name": "task", "label": "dynamic-required", "content": "Review PR 101"}
+      ]
+    },
+    {
+      "id": "r2",
+      "class": "code-review",
+      "provider": "openai",
+      "model": "gpt-5.6",
+      "input_tokens": 12100,
+      "cached_tokens": 8800,
+      "blocks": [
+        {"name": "system", "label": "static-required", "content": "Review code safely and cite evidence."},
+        {"name": "tools", "label": "static-required", "content": {"tools": ["repo_search", "test"]}},
+        {"name": "repository-guidance", "label": "static-required", "content": "Repository conventions v4"},
+        {"name": "task", "label": "dynamic-required", "content": "Review PR 102"}
+      ]
+    },
+    {
+      "id": "r3",
+      "class": "code-review",
+      "provider": "openai",
+      "model": "gpt-5.6",
+      "input_tokens": 11950,
+      "cached_tokens": 8750,
+      "blocks": [
+        {"name": "system", "label": "static-required", "content": "Review code safely and cite evidence."},
+        {"name": "tools", "label": "static-required", "content": {"tools": ["repo_search", "test"]}},
+        {"name": "repository-guidance", "label": "static-required", "content": "Repository conventions v4"},
+        {"name": "task", "label": "dynamic-required", "content": "Review PR 103"}
+      ]
+    }
+  ]
+}

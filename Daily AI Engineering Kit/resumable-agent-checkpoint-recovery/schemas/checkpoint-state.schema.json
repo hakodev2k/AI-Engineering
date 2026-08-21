@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Resumable Agent Checkpoint State",
+  "type": "object",
+  "required": ["version", "task_id", "objective", "status", "baseline", "stages", "current_stage", "events", "failures", "approvals", "changed_resources", "next_action", "verification"],
+  "properties": {
+    "version": {"type": "string"},
+    "task_id": {"type": "string", "minLength": 1},
+    "objective": {"type": "string", "minLength": 1},
+    "status": {"enum": ["planned", "running", "blocked", "completed", "verified", "abandoned"]},
+    "baseline": {
+      "type": "object",
+      "properties": {
+        "repository": {"type": "string"},
+        "branch": {"type": "string"},
+        "git_commit": {"type": "string"},
+        "environment": {"type": "string"}
+      },
+      "additionalProperties": true
+    },
+    "stages": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "status", "completion_evidence"],
+        "properties": {
+          "id": {"type": "string"},
+          "name": {"type": "string"},
+          "status": {"enum": ["pending", "running", "completed", "blocked", "failed"]},
+          "completion_evidence": {"type": "array", "items": {"type": "string"}}
+        },
+        "additionalProperties": true
+      }
+    },
+    "current_stage": {"type": "string"},
+    "events": {"type": "array", "items": {"type": "object"}},
+    "failures": {"type": "array", "items": {"type": "object"}},
+    "approvals": {"type": "array", "items": {"type": "object"}},
+    "changed_resources": {"type": "array", "items": {"type": "string"}},
+    "next_action": {"type": "string"},
+    "verification": {
+      "type": "object",
+      "required": ["result", "evidence"],
+      "properties": {
+        "result": {"enum": ["not-started", "in-progress", "verified", "failed", "blocked"]},
+        "evidence": {"type": "array", "items": {"type": "string"}}
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

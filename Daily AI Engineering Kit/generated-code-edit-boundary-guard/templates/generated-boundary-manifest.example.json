@@ -1,0 +1,20 @@
+{
+  "task_id": "task-123",
+  "head": "HEAD",
+  "implementation_owner": "implementation-agent",
+  "items": [
+    {
+      "path": "schemas/service.openapi.json",
+      "classification": "source",
+      "evidence": ["authoritative OpenAPI schema"]
+    },
+    {
+      "path": "src/generated/service-client.g.cs",
+      "classification": "generated",
+      "evidence": ["file header contains auto-generated", "project generation target"],
+      "source_path": "schemas/service.openapi.json",
+      "generator_command": "dotnet tool run api-client-gen",
+      "generator_version": "pinned-by-repository"
+    }
+  ]
+}

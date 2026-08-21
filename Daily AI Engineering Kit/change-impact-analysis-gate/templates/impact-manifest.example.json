@@ -1,0 +1,73 @@
+{
+  "request": "Queue refunds instead of processing them synchronously during order cancellation.",
+  "risk_level": "high",
+  "entry_points": [
+    {
+      "path": "src/Orders/CancelOrderHandler.cs",
+      "symbol": "CancelOrderHandler.Handle",
+      "evidence": "Current cancellation flow invokes the refund service directly from this handler."
+    }
+  ],
+  "affected_components": [
+    {
+      "name": "Order cancellation handler",
+      "impact": "direct",
+      "evidence": ["src/Orders/CancelOrderHandler.cs"]
+    },
+    {
+      "name": "Refund processing",
+      "impact": "direct",
+      "evidence": ["src/Payments/RefundService.cs"]
+    },
+    {
+      "name": "Cancellation integration tests",
+      "impact": "indirect",
+      "evidence": ["tests/Orders/CancelOrderTests.cs"]
+    }
+  ],
+  "contracts": [
+    {
+      "name": "RefundRequested message",
+      "type": "event",
+      "compatibility": "additive",
+      "evidence": ["New internal durable message; no existing message is modified."],
+      "verification": "Serialize and consume the message in an integration test using the repository's queue test infrastructure."
+    }
+  ],
+  "expected_files": [
+    {
+      "path": "src/Orders/CancelOrderHandler.cs",
+      "reason": "Replace direct refund invocation with message publication."
+    },
+    {
+      "path": "src/Payments/RefundRequestedHandler.cs",
+      "reason": "Handle queued refund request."
+    },
+    {
+      "path": "tests/Orders/CancelOrderTests.cs",
+      "reason": "Verify cancellation queues refund instead of performing it synchronously."
+    }
+  ],
+  "verification": [
+    {
+      "check": "Focused cancellation tests pass",
+      "required": true,
+      "command": "dotnet test tests/Orders.Tests"
+    },
+    {
+      "check": "Solution builds",
+      "required": true,
+      "command": "dotnet build"
+    }
+  ],
+  "approvals": [
+    {
+      "action": "Introduce durable RefundRequested message",
+      "required": true,
+      "status": "pending"
+    }
+  ],
+  "unresolved_questions": [
+    "Which retry/dead-letter policy should the refund consumer use in this repository?"
+  ]
+}

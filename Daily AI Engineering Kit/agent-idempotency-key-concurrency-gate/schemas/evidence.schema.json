@@ -1,0 +1,10 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "type":"object",
+  "required":["status","findings","verification"],
+  "properties":{
+    "status":{"enum":["pass","fail","blocked"]},
+    "findings":{"type":"array","items":{"type":"object","required":["finding","evidence","risk"],"properties":{"finding":{"type":"string"},"evidence":{"type":"array","items":{"type":"string"}},"risk":{"enum":["low","medium","high","critical"]},"recommendedAction":{"type":"string"}}}},
+    "verification":{"type":"object","required":["duplicateReplay","concurrentSameKey","fingerprintMismatch"],"properties":{"duplicateReplay":{"type":"boolean"},"concurrentSameKey":{"type":"boolean"},"fingerprintMismatch":{"type":"boolean"}}}
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "reviewer": "database-reviewer",
+  "comparison_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "status": "approved",
+  "findings": [
+    "Baseline and candidate use the same query identity, engine, and dataset profile.",
+    "Original plans were inspected and the normalized operator delta is accurate."
+  ]
+}

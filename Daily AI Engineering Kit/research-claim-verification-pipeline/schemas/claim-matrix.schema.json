@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Research Claim Matrix",
+  "type": "object",
+  "required": ["question", "claims", "reviewer"],
+  "properties": {
+    "question": {"type": "string", "minLength": 1},
+    "claims": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "claim", "impact", "status", "confidence", "scope", "evidence"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "claim": {"type": "string", "minLength": 1},
+          "impact": {"enum": ["low", "medium", "high"]},
+          "status": {"enum": ["unresolved", "provisional", "verified", "blocked"]},
+          "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+          "scope": {"type": "string"},
+          "evidence": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["source", "source_type", "relationship", "strength", "summary"],
+              "properties": {
+                "source": {"type": "string", "minLength": 1},
+                "source_type": {"enum": ["primary", "secondary", "anecdotal", "generated", "unknown"]},
+                "relationship": {"enum": ["supports", "contradicts", "context"]},
+                "strength": {"enum": ["weak", "moderate", "strong"]},
+                "summary": {"type": "string"},
+                "published": {"type": ["string", "null"]},
+                "blocking": {"type": "boolean"}
+              },
+              "additionalProperties": true
+            }
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "reviewer": {
+      "type": "object",
+      "required": ["status", "findings"],
+      "properties": {
+        "status": {"enum": ["pending", "pass", "revise", "blocked"]},
+        "findings": {"type": "array"}
+      }
+    }
+  },
+  "additionalProperties": true
+}

@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "WorkspaceReview",
+  "type": "object",
+  "required": ["version", "task_id", "reviewer", "implementation_owner", "baseline_fingerprint", "current_fingerprint", "owned_diff_fingerprint", "status", "approved_exceptions", "findings"],
+  "properties": {
+    "version": {"const": "1.0.0"},
+    "task_id": {"type": "string"},
+    "reviewer": {"type": "string", "minLength": 1},
+    "implementation_owner": {"type": "string", "minLength": 1},
+    "baseline_fingerprint": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "current_fingerprint": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "owned_diff_fingerprint": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "status": {"enum": ["approved", "blocked"]},
+    "approved_exceptions": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "findings": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": false
+}

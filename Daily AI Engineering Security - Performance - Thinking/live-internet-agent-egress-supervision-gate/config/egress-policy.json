@@ -1,0 +1,17 @@
+{
+  "policy_version": "2026-08-20",
+  "default_action": "deny",
+  "approval_ttl_minutes": 30,
+  "freeze_after_denials": 3,
+  "allowed": [
+    {
+      "host": "example.internal",
+      "protocols": ["https"],
+      "actions": ["read"],
+      "expires_at": null
+    }
+  ],
+  "high_impact_actions": ["write", "publish", "account_create", "message_send", "credential_submit", "tunnel_create", "delete"],
+  "blocked_private_networks": true,
+  "redact_query_keys": ["token", "key", "secret", "password", "sig"]
+}

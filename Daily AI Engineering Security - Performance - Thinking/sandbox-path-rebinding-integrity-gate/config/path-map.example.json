@@ -1,0 +1,14 @@
+{
+  "source_environment": "wsl",
+  "destination_environment": "windows",
+  "mappings": {
+    "/mnt/d/Programming/InvestPlanner": "D:\\Programming\\InvestPlanner"
+  },
+  "approved_destination_roots": [
+    "D:\\Programming\\InvestPlanner"
+  ],
+  "protected_destination_roots": [
+    "C:\\Windows",
+    "C:\\Users\\example\\.ssh"
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "version": "1.0",
+  "intent_id": "deploy-api-staging-20260817",
+  "actor_id": "agent-implementation-01",
+  "created_at_utc": "2026-08-17T14:30:00Z",
+  "executable": "dotnet",
+  "arguments": ["publish", "src/Api/Api.csproj", "--configuration", "Release"],
+  "target": "src/Api/Api.csproj",
+  "environment": "staging",
+  "side_effect": "local-write",
+  "risk": "medium",
+  "approval_action": null,
+  "constraints": [
+    "Do not deploy to production",
+    "Do not change secrets",
+    "Do not modify database schema"
+  ]
+}

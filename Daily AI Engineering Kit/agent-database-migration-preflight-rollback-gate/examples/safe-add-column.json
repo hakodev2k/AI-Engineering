@@ -1,0 +1,31 @@
+{
+  "environment": "staging",
+  "change_id": "orders-add-external-reference",
+  "breaking_change": false,
+  "expand_contract": false,
+  "backup_reference": null,
+  "approval_reference": null,
+  "lock_timeout_seconds": 5,
+  "statement_timeout_seconds": 60,
+  "operations": [
+    {
+      "type": "add_column",
+      "description": "Add nullable external_reference to orders",
+      "estimated_rows": 0,
+      "batched": false,
+      "online": true
+    }
+  ],
+  "rollback": {
+    "strategy": "Stop application reads/writes of external_reference before removing it in a later approved cleanup.",
+    "tested": true,
+    "data_loss_possible": false
+  },
+  "verification": {
+    "checks": [
+      "Column external_reference exists and is nullable",
+      "Existing order reads still succeed",
+      "Application smoke test passes"
+    ]
+  }
+}

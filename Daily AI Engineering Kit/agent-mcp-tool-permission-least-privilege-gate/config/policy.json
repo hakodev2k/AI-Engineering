@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "max_retries": 2,
+  "default_effect": "deny",
+  "approval_required_risk": ["write", "destructive", "production", "secret", "permission-change", "external-publish"],
+  "allowed_read_scopes": ["repository.read", "logs.read", "docs.read", "issues.read"],
+  "forbidden_without_approval": ["repository.write", "filesystem.delete", "database.write", "database.ddl", "secrets.read", "secrets.write", "deployment.execute", "git.force-push", "permission.grant"],
+  "require_tool_argument_validation": true,
+  "require_audit_evidence": true,
+  "deny_unknown_tools": true
+}

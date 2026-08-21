@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "writable_roots": ["."],
+  "allow_symlink_leaf_write": false,
+  "allow_outside_root": false,
+  "require_existing_parent": true,
+  "fail_closed_on_resolution_error": true,
+  "high_risk_shell_patterns": [
+    "(^|[;&|])\\s*(cp|mv|install|tee)\\b",
+    "(^|[^<])>{1,2}[^>]",
+    "\\b(cat|printf|echo)\\b.*>{1,2}",
+    "\\bln\\s+-s\\b"
+  ],
+  "protected_path_fragments": [
+    ".git",
+    ".ssh",
+    ".gnupg",
+    ".aws",
+    ".azure",
+    ".config"
+  ],
+  "max_preflight_ms_p95": 25,
+  "human_approval_required_for": [
+    "outside_root_write",
+    "symlink_leaf_write",
+    "protected_path_write",
+    "resolution_failure_override"
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Flake Gate Result",
+  "type": "object",
+  "required": ["test_id", "status", "runs", "passes", "failures", "evidence", "recommended_action"],
+  "properties": {
+    "test_id": {"type": "string", "minLength": 1},
+    "status": {"enum": ["passed", "consistent-failure", "flaky", "inconclusive", "tool-failure"]},
+    "runs": {"type": "integer", "minimum": 0},
+    "passes": {"type": "integer", "minimum": 0},
+    "failures": {"type": "integer", "minimum": 0},
+    "evidence": {"type": "array", "items": {"type": "string"}},
+    "recommended_action": {"type": "string"},
+    "approval_required": {"type": "boolean"}
+  },
+  "additionalProperties": false
+}

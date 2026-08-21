@@ -1,0 +1,9 @@
+{
+  "max_estimated_tokens": 32000,
+  "reserved_output_tokens": 4000,
+  "preserve_system_messages": true,
+  "preserve_latest_user_message": true,
+  "min_recent_units": 4,
+  "chars_per_token_estimate": 4.0,
+  "fail_on_invalid_input_history": true
+}

@@ -1,0 +1,11 @@
+{
+  "version": "1.0",
+  "status": "approved",
+  "reviewer_id": "independent-verifier-02",
+  "reviewed_at_utc": "2026-08-17T15:30:00Z",
+  "report_fingerprint": "0000000000000000000000000000000000000000000000000000000000000000",
+  "findings": [
+    "Example only: replace report_fingerprint with the exact current resolution report fingerprint.",
+    "Reviewed both branch intents and targeted verification evidence independently."
+  ]
+}

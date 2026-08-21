@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "similarity_threshold": 0.93,
+  "max_entry_age_seconds": 3600,
+  "max_prompt_chars": 12000,
+  "require_exact_model": true,
+  "require_exact_system_prompt_hash": true,
+  "require_exact_toolset_hash": true,
+  "require_exact_tenant": true,
+  "require_exact_auth_scope": true,
+  "require_exact_locale": true,
+  "require_exact_schema_version": true,
+  "deny_if_tool_calls_expected": true,
+  "deny_if_personal_data_detected": true,
+  "deny_if_secret_like_data_detected": true,
+  "deny_if_mutation_intent_detected": true,
+  "allowed_purposes": ["faq", "documentation", "public-knowledge", "read-only-support"],
+  "sensitive_key_patterns": ["authorization", "cookie", "api[_-]?key", "token", "password", "secret", "ssn", "credit[_-]?card"],
+  "mutation_terms": ["delete", "create", "update", "send", "deploy", "purchase", "refund", "transfer", "approve", "revoke"]
+}

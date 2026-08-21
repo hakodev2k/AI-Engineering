@@ -1,0 +1,18 @@
+{
+  "default_scope": "private",
+  "allow_shared_cache": false,
+  "share_trusted_servers": [],
+  "max_ttl_ms_private": 300000,
+  "max_ttl_ms_shared": 60000,
+  "required_key_fields": [
+    "server_origin",
+    "protocol_version",
+    "method",
+    "canonical_request",
+    "resource_identity"
+  ],
+  "require_authorization_fingerprint_for_private": true,
+  "require_payload_sha256": true,
+  "reject_unknown_scope": true,
+  "downgrade_untrusted_public_to_private": true
+}

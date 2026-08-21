@@ -1,0 +1,8 @@
+[
+  {
+    "path": "tests/fixtures/example.txt",
+    "pattern_id": "high-entropy-token",
+    "value_hash": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+    "reason": "Documented synthetic fixture; independent verification required before use."
+  }
+]

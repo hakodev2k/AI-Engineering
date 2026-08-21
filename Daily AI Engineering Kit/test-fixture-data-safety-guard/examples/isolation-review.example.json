@@ -1,0 +1,20 @@
+{
+  "run_id": "test-run-20260817-001",
+  "reviewer_role": "isolation-reviewer",
+  "cleanup_verified": true,
+  "cross_boundary_changes": [],
+  "unexpected_external_side_effects": [],
+  "created_resources_accounted_for": true,
+  "evidence_complete": true,
+  "decision": "verified",
+  "approval": {
+    "approved": false,
+    "evidence": []
+  },
+  "evidence": [
+    "pre-run boundary snapshot captured",
+    "all created resource IDs recorded",
+    "post-cleanup snapshot matches expected empty boundary",
+    "adjacent non-test resource counts unchanged"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Query Plan Review",
+  "type": "object",
+  "required": ["reviewer","comparison_fingerprint","status","findings"],
+  "properties": {
+    "reviewer":{"type":"string","minLength":1},
+    "comparison_fingerprint":{"type":"string","pattern":"^[a-f0-9]{64}$"},
+    "status":{"enum":["approved","changes-required","blocked"]},
+    "findings":{"type":"array","items":{"type":"string"}}
+  },
+  "additionalProperties": false
+}

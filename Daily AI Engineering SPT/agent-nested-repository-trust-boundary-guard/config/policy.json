@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "protected_metadata_names": [".git", ".claude", ".codex", ".agents"],
+  "sensitive_git_paths": ["hooks", "config", "info", "objects", "refs"],
+  "nested_root_allowlist": [],
+  "approved_metadata_write_paths": [],
+  "max_scan_depth": 12,
+  "skip_directories": ["node_modules", "bin", "obj", ".venv", "dist", "build"],
+  "fail_on_unknown_nested_root": true,
+  "fail_on_nested_git_hooks": true,
+  "fail_on_child_agent_settings": true,
+  "require_parent_policy_attestation": true
+}

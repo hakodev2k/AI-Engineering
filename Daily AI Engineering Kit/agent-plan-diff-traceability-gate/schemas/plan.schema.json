@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "plan.schema.json",
+  "type": "object",
+  "required": ["version", "task_id", "actor", "plan_items"],
+  "properties": {
+    "version": {"const": "1.0"},
+    "task_id": {"type": "string", "minLength": 1},
+    "actor": {"type": "string", "minLength": 1},
+    "repository_revision": {"type": "string"},
+    "plan_items": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "intent", "acceptance_criteria", "allowed_paths", "risk"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^[a-zA-Z0-9._-]+$"},
+          "intent": {"type": "string", "minLength": 1},
+          "acceptance_criteria": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+          "allowed_paths": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+          "risk": {"type": "string", "enum": ["low", "medium", "high", "critical"]},
+          "risk_categories": {"type": "array", "items": {"type": "string"}},
+          "requires_approval": {"type": "boolean", "default": false}
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

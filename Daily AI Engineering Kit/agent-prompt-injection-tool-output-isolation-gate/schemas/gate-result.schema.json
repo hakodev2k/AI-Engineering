@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PromptInjectionGateResult",
+  "type": "object",
+  "required": ["status", "source", "findings", "sanitized_text", "requires_approval"],
+  "properties": {
+    "status": {"enum": ["pass", "review", "block"]},
+    "source": {"type": "string", "minLength": 1},
+    "findings": {"type": "array", "items": {"type": "object", "required": ["pattern", "severity", "evidence"], "properties": {"pattern": {"type": "string"}, "severity": {"enum": ["low", "medium", "high", "critical"]}, "evidence": {"type": "string"}}}},
+    "sanitized_text": {"type": "string"},
+    "requires_approval": {"type": "boolean"},
+    "errors": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": false
+}

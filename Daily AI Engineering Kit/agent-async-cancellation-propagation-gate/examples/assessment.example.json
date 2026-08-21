@@ -1,0 +1,24 @@
+{
+  "status": "pass",
+  "scope": ["src/Orders/OrderHandler.cs", "tests/Orders/OrderHandlerTests.cs"],
+  "findings": [
+    {
+      "file": "src/Orders/OrderHandler.cs",
+      "line": 42,
+      "kind": "token-not-forwarded",
+      "evidence": "await repository.SaveAsync(order);",
+      "risk": "high",
+      "recommended_action": "Forward the handler cancellation token to SaveAsync."
+    }
+  ],
+  "tests": [
+    "Cancel_during_save_stops_handler_and_observes_token"
+  ],
+  "verification": {
+    "static_scan": true,
+    "targeted_tests": true,
+    "diff_review": true,
+    "independent_review": true
+  },
+  "remaining_risks": []
+}

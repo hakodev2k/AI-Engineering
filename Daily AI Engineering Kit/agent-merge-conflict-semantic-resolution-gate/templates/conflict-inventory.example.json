@@ -1,0 +1,20 @@
+{
+  "version": "1.0",
+  "repository_revision": "0123456789abcdef",
+  "conflicts": [
+    {
+      "id": "src/service.py#1",
+      "file": "src/service.py",
+      "start_line": 20,
+      "end_line": 30,
+      "ours": "return cached_value",
+      "theirs": "return await load_value()",
+      "base": "return value",
+      "risk": "medium",
+      "side_signatures": {
+        "ours": ["aaaaaaaaaaaaaaaa"],
+        "theirs": ["bbbbbbbbbbbbbbbb"]
+      }
+    }
+  ]
+}

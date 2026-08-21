@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "max_retries": 2,
+  "default_max_parallelism": 8,
+  "retryable_statuses": [429, 502, 503, 504],
+  "honor_retry_after": true,
+  "require_jitter": true,
+  "require_bounded_queue": true,
+  "approval_required_for": ["production-config-change", "infrastructure-change", "large-dependency-upgrade", "breaking-contract", "production-deployment"],
+  "risk_patterns": ["unbounded_parallelism", "fixed_delay_retry", "retry_all_errors", "ignore_retry_after", "recursive_retry", "unbounded_queue"]
+}

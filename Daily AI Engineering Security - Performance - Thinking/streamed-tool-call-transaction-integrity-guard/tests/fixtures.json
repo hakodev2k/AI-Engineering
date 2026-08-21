@@ -1,0 +1,24 @@
+{
+  "cases": [
+    {
+      "name": "complete valid write",
+      "input": {"call_id":"c1","tool":"write_file","raw_arguments":"{\"path\":\"a.txt\",\"content\":\"x\"}","terminal_event":true,"schema_allows_empty_object":false,"execution_state":"not-started","retry_count":0,"required_fields":["path","content"]},
+      "expected_decision":"ready"
+    },
+    {
+      "name": "stream drop during arguments",
+      "input": {"call_id":"c2","tool":"write_file","raw_arguments":"{\"path\":\"a.txt\",\"content\":\"x","terminal_event":false,"schema_allows_empty_object":false,"execution_state":"not-started","retry_count":0,"required_fields":["path","content"]},
+      "expected_decision":"retry"
+    },
+    {
+      "name": "unknown side effect state",
+      "input": {"call_id":"c3","tool":"charge","raw_arguments":"{\"amount\":5}","terminal_event":true,"schema_allows_empty_object":false,"execution_state":"unknown","retry_count":0,"required_fields":["amount"]},
+      "expected_decision":"reconcile"
+    },
+    {
+      "name": "empty args only allowed for declared empty schema",
+      "input": {"call_id":"c4","tool":"ping","raw_arguments":"","terminal_event":true,"schema_allows_empty_object":true,"execution_state":"not-started","retry_count":0,"required_fields":[]},
+      "expected_decision":"ready"
+    }
+  ]
+}

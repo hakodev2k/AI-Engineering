@@ -1,0 +1,25 @@
+version: 1
+key_fields:
+  - model
+  - system_prompt_hash
+  - user_prompt_hash
+  - tool_schema_hash
+  - temperature
+  - response_format
+  - tenant_id
+  - data_scope
+namespace_required: true
+max_ttl_seconds: 3600
+allow_cross_tenant_reuse: false
+allow_cross_user_reuse: false
+require_prompt_hashing: true
+require_tool_schema_hashing: true
+require_response_format_hashing: true
+reject_missing_context_fields: true
+sensitive_data_patterns:
+  - api_key
+  - authorization
+  - access_token
+  - refresh_token
+  - password
+  - secret

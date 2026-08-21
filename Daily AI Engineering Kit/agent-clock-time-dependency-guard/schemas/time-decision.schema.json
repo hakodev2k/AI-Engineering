@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TimeDecision",
+  "type": "object",
+  "required": ["decision_id","decision_type","risk","timezone","condition","time_observation","executor_id","status"],
+  "properties": {
+    "decision_id": {"type":"string","minLength":1},
+    "decision_type": {"type":"string","minLength":1},
+    "risk": {"enum":["low","medium","high","critical"]},
+    "timezone": {"type":"string","minLength":1},
+    "condition": {
+      "type":"object",
+      "required":["kind"],
+      "properties": {
+        "kind":{"enum":["before","after","between","ttl-valid","ttl-expired"]},
+        "at":{"type":["string","null"],"format":"date-time"},
+        "start":{"type":["string","null"],"format":"date-time"},
+        "end":{"type":["string","null"],"format":"date-time"},
+        "issued_at":{"type":["string","null"],"format":"date-time"},
+        "ttl_seconds":{"type":["integer","null"],"minimum":0}
+      },
+      "additionalProperties":false
+    },
+    "time_observation":{"type":"object"},
+    "executor_id":{"type":"string","minLength":1},
+    "status":{"enum":["pending","evaluated","verified","revalidation-required","review-required","blocked"]},
+    "evaluation":{"type":["object","null"]},
+    "approval_required":{"type":"boolean"}
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,48 @@
+{
+  "bundle_id": "feature-142-verification-evidence",
+  "task_id": "feature-142",
+  "created_at": "2026-08-17T12:00:00Z",
+  "repository_revision": "0123456789abcdef0123456789abcdef01234567",
+  "claims": [
+    {
+      "id": "claim:unit-tests-pass",
+      "status": "verified",
+      "required_evidence_ids": ["ev:test-output"]
+    },
+    {
+      "id": "claim:security-review",
+      "status": "fact",
+      "required_evidence_ids": ["ev:security-review"]
+    }
+  ],
+  "evidence": [
+    {
+      "id": "ev:test-output",
+      "type": "verification",
+      "source": "ci/run/123/test-output",
+      "observed_at": "2026-08-17T11:50:00Z",
+      "content_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "storage_ref": "artifact://ci/run/123/test-output.txt",
+      "context_cost_bytes": 9000,
+      "importance": "high",
+      "sensitivity": "internal",
+      "required_for": ["claim:unit-tests-pass"],
+      "summary": "Required unit test suite completed successfully; authoritative output remains at storage_ref.",
+      "facts": ["test process exited successfully"]
+    },
+    {
+      "id": "ev:security-review",
+      "type": "security-finding",
+      "source": "review/security/feature-142",
+      "observed_at": "2026-08-17T11:55:00Z",
+      "content_hash": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "storage_ref": "artifact://reviews/feature-142-security.json",
+      "context_cost_bytes": 5000,
+      "importance": "critical",
+      "sensitivity": "confidential",
+      "required_for": ["claim:security-review"],
+      "summary": "Security review artifact contains one accepted low-risk finding and no blocker.",
+      "facts": ["review artifact exists"]
+    }
+  ]
+}

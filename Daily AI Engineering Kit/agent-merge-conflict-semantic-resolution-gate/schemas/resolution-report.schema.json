@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["version", "status", "repository_revision", "inventory_fingerprint", "policy_fingerprint", "findings", "conflict_results", "report_fingerprint"],
+  "properties": {
+    "version": {"const": "1.0"},
+    "status": {"enum": ["pass", "review-required", "blocked"]},
+    "repository_revision": {"type": "string"},
+    "inventory_fingerprint": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "policy_fingerprint": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "findings": {"type": "array", "items": {"type": "string"}},
+    "conflict_results": {"type": "array", "items": {"type": "object"}},
+    "report_fingerprint": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "additionalProperties": false
+}

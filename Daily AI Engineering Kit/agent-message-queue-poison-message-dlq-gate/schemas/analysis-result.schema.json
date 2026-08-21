@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["status", "message_id", "classification", "evidence", "recommended_action", "verification_status"],
+  "properties": {
+    "status": {"enum": ["pass", "quarantine", "needs-review", "blocked"]},
+    "message_id": {"type": "string", "minLength": 1},
+    "classification": {"enum": ["transient", "poison", "schema", "business-rule", "dependency", "unknown"]},
+    "evidence": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+    "recommended_action": {"type": "string", "minLength": 1},
+    "verification_status": {"enum": ["not-run", "passed", "failed"]},
+    "attempt_count": {"type": "integer", "minimum": 0},
+    "correlation_id": {"type": "string"},
+    "risk": {"enum": ["low", "medium", "high", "critical"]}
+  },
+  "additionalProperties": false
+}

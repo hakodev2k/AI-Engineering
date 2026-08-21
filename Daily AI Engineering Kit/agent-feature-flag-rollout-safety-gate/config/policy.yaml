@@ -1,0 +1,27 @@
+version: 1
+production_environment_names:
+  - production
+  - prod
+  - live
+require_kill_switch: true
+require_owner: true
+require_expiry: true
+max_expiry_days: 90
+require_observability: true
+required_metrics:
+  - error_rate
+  - latency
+max_stages: 8
+min_stage_duration_minutes: 5
+max_initial_percentage: 10
+max_percentage_step: 50
+require_canary_before_full_rollout: true
+require_approval_for_production: true
+require_approval_for_full_rollout: true
+require_rollback_plan: true
+allowed_target_types:
+  - percentage
+  - user
+  - tenant
+  - region
+  - internal

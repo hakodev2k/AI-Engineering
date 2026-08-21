@@ -1,0 +1,32 @@
+flag_key: feature.example
+owner: team-or-person
+service: example-service
+environment: staging
+expires_on: 2026-10-31
+kill_switch: true
+risk_summary: Describe the main failure modes and affected users.
+rollback:
+  trigger: Any abort threshold breach or critical incident attributable to the flag.
+  action: Return the flag to the previous verified exposure level or disable it.
+observability:
+  metrics:
+    - name: error_rate
+      abort_threshold: "greater than 2% for 5 minutes in the exposed cohort"
+    - name: latency
+      abort_threshold: "p95 increases by more than 20% versus the control cohort"
+stages:
+  - name: canary
+    target_type: percentage
+    percentage: 5
+    duration_minutes: 15
+    success_criteria: Required metrics remain below abort thresholds and no critical incident is attributable to the flag.
+  - name: expanded
+    target_type: percentage
+    percentage: 25
+    duration_minutes: 30
+    success_criteria: Required metrics remain below abort thresholds and business validation passes.
+  - name: majority
+    target_type: percentage
+    percentage: 75
+    duration_minutes: 60
+    success_criteria: Required metrics remain stable and fallback path remains healthy.

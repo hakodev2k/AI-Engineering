@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "workspace_roots": ["."],
+  "protected_roots": [
+    "~/.cache/codex-runtimes",
+    "~/.config",
+    "~/.ssh",
+    "~/.gnupg"
+  ],
+  "allow_symlinks_within_same_writable_root": true,
+  "allow_explicit_symlink_roots": [],
+  "reject_broken_symlinks_for_write": true,
+  "reject_symlink_to_protected_root": true,
+  "reject_parent_identity_drift": true,
+  "reject_target_identity_drift": true,
+  "max_symlink_depth": 16,
+  "require_commit_recheck": true,
+  "audit": {
+    "emit_json": true,
+    "include_lexical_path": true,
+    "include_canonical_path": true,
+    "include_matched_root": true
+  }
+}

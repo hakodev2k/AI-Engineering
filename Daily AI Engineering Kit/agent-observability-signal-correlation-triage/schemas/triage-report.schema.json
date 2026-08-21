@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Observability Triage Report",
+  "type": "object",
+  "required": ["status", "window", "signals", "hypotheses", "verification", "risks"],
+  "properties": {
+    "status": {"enum": ["investigating", "correlated", "blocked", "needs-approval", "verified"]},
+    "window": {"type": "object", "required": ["start", "end"], "properties": {"start": {"type": "string"}, "end": {"type": "string"}}},
+    "signals": {"type": "array", "minItems": 1, "items": {"type": "object", "required": ["type", "source", "observed_at", "finding"], "properties": {"type": {"enum": ["logs", "metrics", "traces", "deployments", "alerts"]}, "source": {"type": "string", "minLength": 1}, "observed_at": {"type": "string"}, "finding": {"type": "string", "minLength": 1}, "evidence_ref": {"type": "string"}}}},
+    "hypotheses": {"type": "array", "items": {"type": "object", "required": ["claim", "confidence", "supporting_evidence", "contradicting_evidence"], "properties": {"claim": {"type": "string"}, "confidence": {"type": "number", "minimum": 0, "maximum": 1}, "supporting_evidence": {"type": "array", "items": {"type": "string"}}, "contradicting_evidence": {"type": "array", "items": {"type": "string"}}}}},
+    "verification": {"type": "object", "required": ["checks", "result"], "properties": {"checks": {"type": "array", "items": {"type": "string"}}, "result": {"enum": ["not-run", "failed", "passed", "inconclusive"]}}},
+    "risks": {"type": "array", "items": {"type": "string"}},
+    "recommended_action": {"type": "string"}
+  },
+  "additionalProperties": false
+}

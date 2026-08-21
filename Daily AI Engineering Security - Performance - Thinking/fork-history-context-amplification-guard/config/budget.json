@@ -1,0 +1,7 @@
+{
+  "max_total_bytes": 536870912,
+  "max_record_bytes": 16777216,
+  "max_compacted_share": 0.75,
+  "max_duplicate_blob_bytes": 67108864,
+  "max_compaction_records": 32
+}

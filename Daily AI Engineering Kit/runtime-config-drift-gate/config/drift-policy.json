@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "freshness_minutes": 30,
+  "classifications": ["public", "sensitive", "secret"],
+  "secret_name_patterns": ["password", "passwd", "secret", "token", "apikey", "api_key", "connectionstring", "connection_string", "privatekey", "private_key"],
+  "normalization": {
+    "trim_strings": true,
+    "lowercase_boolean_strings": true,
+    "numeric_string_equivalence": true,
+    "null_strings": ["null", "none"]
+  },
+  "severity": {
+    "missing-runtime": "high",
+    "unexpected-runtime": "medium",
+    "type-mismatch": "high",
+    "value-mismatch": "medium",
+    "fingerprint-mismatch": "high",
+    "source-mismatch": "medium",
+    "presence-mismatch": "high"
+  },
+  "critical_key_patterns": ["auth", "security", "encryption", "connection", "database", "queue", "storage", "tenant", "issuer", "audience"],
+  "secret_mismatch_severity": "critical",
+  "required_key_missing_severity": "critical",
+  "allowed_exception_statuses": ["approved"],
+  "gate": {
+    "blocking_severities": ["critical", "high"],
+    "approval_severities": ["critical"],
+    "require_independent_review_for": ["critical", "high"]
+  }
+}

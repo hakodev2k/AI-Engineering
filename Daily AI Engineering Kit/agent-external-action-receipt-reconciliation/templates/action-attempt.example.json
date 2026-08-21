@@ -1,0 +1,14 @@
+{
+  "version": "1.0",
+  "attempt_id": "attempt-2026-08-17-001",
+  "task_id": "task-1842",
+  "action_name": "create-remote-job",
+  "risk": "medium",
+  "target_system": "example-queue-api",
+  "target_resource": "jobs/customer-42",
+  "idempotency_key": "task-1842-create-remote-job-v1",
+  "request_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "planned_at_utc": "2026-08-17T14:30:00Z",
+  "dangerous_action": false,
+  "approval_fingerprint": null
+}

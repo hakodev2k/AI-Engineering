@@ -1,0 +1,18 @@
+{
+  "result_id": "deploy-status-001",
+  "supersedes_result_id": null,
+  "source": {
+    "kind": "deployment",
+    "identity": "service:payments-api:production",
+    "revision": "deploy-2026-08-17-0042"
+  },
+  "tool_name": "deployment-status-read",
+  "query_fingerprint": "9dca40ea00b9c42e0464a8e2d889f30c20cc8f2730e2c8d4fd0bbde41c760ea1",
+  "result_fingerprint": "4c9a81bc4ec14d2c0718345340ca6fe5190504d8ce6ce1f05b75a834297319a8",
+  "observed_at": "2026-08-17T10:30:00Z",
+  "volatility": "high",
+  "policy_id": "1.0.0",
+  "invalidation_signals": ["deployment-completed", "configuration-updated", "external-resource-mutated"],
+  "dependent_decisions": ["production-deploy"],
+  "artifact_path": "evidence/deploy-status-001.json"
+}

@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Cache Invalidation Assessment",
+  "type": "object",
+  "required": ["status", "findings", "verification"],
+  "properties": {
+    "status": {"enum": ["pass", "fail", "blocked", "needs-approval", "inconclusive"]},
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["cache_key", "mutation_source", "invalidation_path", "consistency_expectation", "risk"],
+        "properties": {
+          "cache_key": {"type": "string", "minLength": 1},
+          "mutation_source": {"type": "string", "minLength": 1},
+          "invalidation_path": {"type": "string", "minLength": 1},
+          "consistency_expectation": {"type": "string", "minLength": 1},
+          "risk": {"enum": ["low", "medium", "high"]},
+          "evidence": {"type": "array", "items": {"type": "string"}}
+        },
+        "additionalProperties": false
+      }
+    },
+    "verification": {
+      "type": "object",
+      "required": ["result", "checks"],
+      "properties": {
+        "result": {"enum": ["pass", "fail", "blocked", "inconclusive"]},
+        "checks": {"type": "array", "items": {"type": "string"}},
+        "remaining_risks": {"type": "array", "items": {"type": "string"}}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

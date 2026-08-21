@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "tool-result-freshness-record.schema.json",
+  "type": "object",
+  "required": ["result_id", "source", "tool_name", "query_fingerprint", "result_fingerprint", "observed_at", "volatility", "policy_id", "invalidation_signals", "dependent_decisions"],
+  "properties": {
+    "result_id": {"type": "string", "minLength": 1},
+    "supersedes_result_id": {"type": ["string", "null"]},
+    "source": {
+      "type": "object",
+      "required": ["kind", "identity", "revision"],
+      "properties": {
+        "kind": {"type": "string", "minLength": 1},
+        "identity": {"type": "string", "minLength": 1},
+        "revision": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
+    "tool_name": {"type": "string", "minLength": 1},
+    "query_fingerprint": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "result_fingerprint": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "observed_at": {"type": "string", "format": "date-time"},
+    "volatility": {"enum": ["low", "medium", "high", "event-driven"]},
+    "policy_id": {"type": "string", "minLength": 1},
+    "invalidation_signals": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "dependent_decisions": {"type": "array", "items": {"type": "string", "minLength": 1}, "minItems": 1, "uniqueItems": true},
+    "artifact_path": {"type": ["string", "null"]}
+  },
+  "additionalProperties": false
+}

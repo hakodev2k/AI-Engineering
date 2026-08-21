@@ -1,0 +1,16 @@
+version: 1
+severity_threshold: warning
+max_include_chain: 2
+max_materialization_before_filter: 0
+max_savechanges_in_loop: 0
+warn_on_asenumerable: true
+warn_on_sync_terminal_in_async_method: true
+warn_on_unbounded_tolist: true
+ignore_globs:
+  - "**/Migrations/**"
+  - "**/Generated/**"
+  - "**/*.Designer.cs"
+approval_required_for:
+  - query-filter-removal
+  - tracking-mode-change-on-write-path
+  - production-index-change

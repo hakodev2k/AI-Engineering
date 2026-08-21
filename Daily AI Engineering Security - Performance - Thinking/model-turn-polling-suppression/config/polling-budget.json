@@ -1,0 +1,6 @@
+{
+  "max_poll_turn_ratio": 0.20,
+  "max_poll_token_ratio": 0.20,
+  "max_consecutive_no_progress_polls": 3,
+  "max_wakeup_delay_ms": 120000
+}

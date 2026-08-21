@@ -1,0 +1,12 @@
+{
+  "migration_id":"customer-normalization-v1",
+  "revision":1,
+  "plan_fingerprint":"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "checkpoint_version":0,
+  "cursor":null,
+  "processed_total":0,
+  "status":"ready",
+  "updated_at":"2026-08-17T11:30:00Z",
+  "lease_owner":"",
+  "lease_expires_at":"2026-08-17T11:30:00Z"
+}

@@ -1,0 +1,21 @@
+{
+  "task_id": "feature-auth-20260819",
+  "agent_id": "worker-api",
+  "repo_root": "/workspace/project-wt-api",
+  "worktree": "/workspace/project-wt-api",
+  "branch": "agent/feature-auth-api",
+  "base_sha": "0123456789abcdef0123456789abcdef01234567",
+  "owned_paths": [
+    "src/Api",
+    "tests/Api.Tests"
+  ],
+  "forbidden_paths": [
+    "src/Web",
+    "package-lock.json"
+  ],
+  "required_tests": [
+    "dotnet test tests/Api.Tests/Api.Tests.csproj"
+  ],
+  "require_clean_start": true,
+  "active": true
+}

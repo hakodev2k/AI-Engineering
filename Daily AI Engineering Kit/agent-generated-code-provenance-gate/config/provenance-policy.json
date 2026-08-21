@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "max_review_revision_cycles": 2,
+  "max_verification_reruns": 2,
+  "require_independent_reviewer_for_high_risk": true,
+  "high_risk_tags": [
+    "deletion",
+    "dependency",
+    "public-contract",
+    "security",
+    "database",
+    "infrastructure",
+    "production-config",
+    "irreversible"
+  ],
+  "approval_required_tags": [
+    "deletion",
+    "public-contract",
+    "security",
+    "database",
+    "infrastructure",
+    "production-config",
+    "irreversible"
+  ],
+  "allowed_review_decisions": [
+    "pending",
+    "pass",
+    "needs-revision",
+    "human-approval-required",
+    "block"
+  ],
+  "required_change_fields": [
+    "path",
+    "classification",
+    "rationale",
+    "requirement_ids",
+    "evidence_ids",
+    "verification_checks",
+    "risk_tags"
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "decision_id": "deploy-window-001",
+  "decision_type": "production-deploy-window",
+  "risk": "high",
+  "timezone": "Asia/Bangkok",
+  "condition": {
+    "kind": "between",
+    "at": null,
+    "start": "2026-08-17T12:00:00Z",
+    "end": "2026-08-17T13:00:00Z",
+    "issued_at": null,
+    "ttl_seconds": null
+  },
+  "time_observation": {
+    "observation_id": "obs-example-001",
+    "source_id": "platform-time",
+    "source_type": "platform",
+    "trust_level": "verified",
+    "observed_at_utc": "2026-08-17T12:20:00Z",
+    "monotonic_ns": 123456789,
+    "timezone": "UTC",
+    "clock_skew_ms": 250,
+    "reference_source": "independent-reference-clock",
+    "reference_observed_at_utc": "2026-08-17T12:20:00Z",
+    "notes": "Example only; replace with current captured evidence."
+  },
+  "executor_id": "deployment-agent",
+  "status": "pending",
+  "evaluation": null,
+  "approval_required": true
+}

@@ -1,0 +1,13 @@
+{
+  "version": "1.0",
+  "attempt_id": "attempt-2026-08-17-001",
+  "attempt_fingerprint": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "reviewer_id": "reconciliation-verifier-agent",
+  "status": "approved",
+  "decision": "accept-success",
+  "findings": [
+    "Authoritative status probe returned the expected target resource and confirmed the operation exists.",
+    "Receipt idempotency key and request fingerprint match the original attempt."
+  ],
+  "reviewed_at_utc": "2026-08-17T14:35:00Z"
+}

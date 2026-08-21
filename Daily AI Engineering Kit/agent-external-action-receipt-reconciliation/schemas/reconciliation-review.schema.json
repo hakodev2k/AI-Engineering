@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Reconciliation Review",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version","attempt_id","attempt_fingerprint","reviewer_id","status","decision","findings","reviewed_at_utc"],
+  "properties": {
+    "version": {"const": "1.0"},
+    "attempt_id": {"type": "string", "minLength": 1},
+    "attempt_fingerprint": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "reviewer_id": {"type": "string", "minLength": 1},
+    "status": {"enum": ["approved","blocked","human-decision-required"]},
+    "decision": {"enum": ["accept-success","accept-failure","safe-retry","compensate","human-decision-required"]},
+    "findings": {"type": "array", "items": {"type": "string"}},
+    "reviewed_at_utc": {"type": "string", "format": "date-time"}
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Idempotency Retry Safety Assessment",
+  "type": "object",
+  "required": ["status", "scope", "side_effects", "retry_paths", "findings", "verification"],
+  "properties": {
+    "status": {"enum": ["pass", "fail", "blocked", "needs-approval"]},
+    "scope": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+    "side_effects": {"type": "array", "items": {"type": "object", "required": ["component", "effect", "duplicate_impact"], "properties": {"component": {"type": "string"}, "effect": {"type": "string"}, "duplicate_impact": {"type": "string"}, "guard": {"type": "string"}}}},
+    "retry_paths": {"type": "array", "items": {"type": "object", "required": ["trigger", "max_attempts", "failure_mode"], "properties": {"trigger": {"type": "string"}, "max_attempts": {"type": "integer", "minimum": 0}, "failure_mode": {"type": "string"}, "evidence": {"type": "array", "items": {"type": "string"}}}}},
+    "findings": {"type": "array", "items": {"type": "object", "required": ["severity", "finding", "evidence", "recommended_action"], "properties": {"severity": {"enum": ["low", "medium", "high", "critical"]}, "finding": {"type": "string"}, "evidence": {"type": "array", "items": {"type": "string"}, "minItems": 1}, "recommended_action": {"type": "string"}}}},
+    "verification": {"type": "object", "required": ["duplicate_delivery_test", "retry_path_test", "diff_review"], "properties": {"duplicate_delivery_test": {"enum": ["pass", "fail", "not-run"]}, "retry_path_test": {"enum": ["pass", "fail", "not-run"]}, "diff_review": {"enum": ["pass", "fail", "not-run"]}}},
+    "open_risks": {"type": "array", "items": {"type": "string"}}
+  }
+}

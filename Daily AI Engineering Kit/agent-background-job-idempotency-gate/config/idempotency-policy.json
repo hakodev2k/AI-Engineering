@@ -1,0 +1,7 @@
+{
+  "version": 1,
+  "max_retries": 2,
+  "required_properties": ["stable_operation_key", "duplicate_detection", "atomic_effect_boundary", "retry_classification", "observable_outcome"],
+  "approval_required_for": ["schema-change", "production-config", "data-deletion", "queue-purge", "breaking-contract", "production-deployment"],
+  "risk_patterns": ["non_atomic_check_then_write", "random_idempotency_key", "side_effect_before_dedup", "unbounded_retry", "ack_before_commit", "external_effect_without_receipt"]
+}

@@ -1,0 +1,16 @@
+{
+  "requests": [
+    {
+      "task_id": "inspect-issue-482",
+      "agent": "repository-explorer",
+      "tool": "github.issue.read",
+      "scope": "issues.read",
+      "action": "read",
+      "risk": "read",
+      "resource": "owner/repo#482",
+      "justification": "Read the target issue to collect evidence for the requested analysis.",
+      "expires_after_task": true,
+      "approval_id": null
+    }
+  ]
+}

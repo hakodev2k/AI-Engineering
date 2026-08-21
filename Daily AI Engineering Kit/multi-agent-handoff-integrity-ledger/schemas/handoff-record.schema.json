@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "HandoffRecord",
+  "type": "object",
+  "required": [
+    "id", "sequence", "created_at", "producer", "receiver", "stage",
+    "scope", "completion_state", "verification_state", "artifacts",
+    "assumptions", "decisions", "risks", "approvals", "next_actions"
+  ],
+  "properties": {
+    "id": {"type": "string", "minLength": 1},
+    "sequence": {"type": "integer", "minimum": 1},
+    "created_at": {"type": "string", "minLength": 1},
+    "producer": {"type": "string", "minLength": 1},
+    "receiver": {"type": "string", "minLength": 1},
+    "stage": {"type": "string", "minLength": 1},
+    "scope": {
+      "type": "object",
+      "required": ["included", "excluded"],
+      "properties": {
+        "included": {"type": "array", "items": {"type": "string"}},
+        "excluded": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "completion_state": {"type": "string"},
+    "verification_state": {"type": "string"},
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["kind", "path_or_ref"],
+        "properties": {
+          "kind": {"type": "string", "enum": ["file", "url", "command-output", "test-result", "approval", "other"]},
+          "path_or_ref": {"type": "string", "minLength": 1},
+          "sha256": {"type": "string", "pattern": "^[a-fA-F0-9]{64}$"},
+          "description": {"type": "string"}
+        }
+      }
+    },
+    "assumptions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["statement", "verified"],
+        "properties": {
+          "statement": {"type": "string", "minLength": 1},
+          "verified": {"type": "boolean"},
+          "evidence_ref": {"type": "string"}
+        }
+      }
+    },
+    "decisions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["statement"],
+        "properties": {
+          "statement": {"type": "string", "minLength": 1},
+          "evidence_ref": {"type": "string"},
+          "rejected_alternatives": {"type": "array", "items": {"type": "string"}}
+        }
+      }
+    },
+    "risks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["description", "severity", "owner", "resolved"],
+        "properties": {
+          "description": {"type": "string", "minLength": 1},
+          "severity": {"type": "string", "enum": ["low", "medium", "high", "critical"]},
+          "owner": {"type": "string", "minLength": 1},
+          "resolved": {"type": "boolean"},
+          "resolution_ref": {"type": "string"}
+        }
+      }
+    },
+    "approvals": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["action", "approval_ref"],
+        "properties": {
+          "action": {"type": "string", "minLength": 1},
+          "approval_ref": {"type": "string", "minLength": 1},
+          "approved_scope": {"type": "string"}
+        }
+      }
+    },
+    "verification_evidence": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "next_actions": {"type": "array", "items": {"type": "string"}},
+    "review": {
+      "type": "object",
+      "properties": {
+        "decision": {"type": "string"},
+        "reviewer": {"type": "string"},
+        "reason": {"type": "string"}
+      }
+    },
+    "supersedes": {"type": "string"}
+  },
+  "additionalProperties": false
+}

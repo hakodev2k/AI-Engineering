@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "sanitization-report.schema.json",
+  "title": "Agent Sensitive Context Sanitization Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "generated_at",
+    "input_path",
+    "input_sha256",
+    "destination",
+    "trust_level",
+    "policy_version",
+    "release_decision",
+    "findings",
+    "summary"
+  ],
+  "properties": {
+    "version": { "type": "integer", "const": 1 },
+    "generated_at": { "type": "string", "format": "date-time" },
+    "input_path": { "type": "string", "minLength": 1 },
+    "input_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "destination": { "type": "string", "minLength": 1 },
+    "trust_level": { "type": "string", "enum": ["trusted", "internal", "external"] },
+    "policy_version": { "type": ["integer", "string"] },
+    "release_decision": {
+      "type": "string",
+      "enum": ["allow", "redact", "approval-required", "deny"]
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "category",
+          "severity",
+          "disposition",
+          "detector",
+          "start",
+          "end",
+          "line",
+          "value_sha256"
+        ],
+        "properties": {
+          "id": { "type": "string", "pattern": "^F[0-9]{4,}$" },
+          "category": { "type": "string", "minLength": 1 },
+          "severity": { "type": "string", "enum": ["low", "medium", "high", "critical"] },
+          "disposition": {
+            "type": "string",
+            "enum": ["allow", "redact", "approval-required", "deny"]
+          },
+          "detector": { "type": "string", "minLength": 1 },
+          "start": { "type": "integer", "minimum": 0 },
+          "end": { "type": "integer", "minimum": 1 },
+          "line": { "type": "integer", "minimum": 1 },
+          "value_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["total_findings", "by_category"],
+      "properties": {
+        "total_findings": { "type": "integer", "minimum": 0 },
+        "by_category": {
+          "type": "object",
+          "additionalProperties": { "type": "integer", "minimum": 0 }
+        }
+      }
+    }
+  }
+}

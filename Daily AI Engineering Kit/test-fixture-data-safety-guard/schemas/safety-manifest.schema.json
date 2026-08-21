@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Test Fixture Data Safety Manifest",
+  "type": "object",
+  "required": ["version", "run_id", "target", "fixture", "mutations", "isolation", "cleanup", "side_effects", "approval", "status"],
+  "properties": {
+    "version": {"type": "integer", "const": 1},
+    "run_id": {"type": "string", "minLength": 3},
+    "target": {
+      "type": "object",
+      "required": ["name", "environment_class", "identifier", "evidence"],
+      "properties": {
+        "name": {"type": "string", "minLength": 1},
+        "environment_class": {"type": "string"},
+        "identifier": {"type": "string", "minLength": 1},
+        "evidence": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}
+      },
+      "additionalProperties": false
+    },
+    "fixture": {
+      "type": "object",
+      "required": ["provenance", "source", "contains_sensitive_data", "sanitization_evidence"],
+      "properties": {
+        "provenance": {"type": "string"},
+        "source": {"type": "string", "minLength": 1},
+        "contains_sensitive_data": {"type": "boolean"},
+        "sanitization_evidence": {"type": "array", "items": {"type": "string"}}
+      },
+      "additionalProperties": false
+    },
+    "mutations": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "isolation": {
+      "type": "object",
+      "required": ["boundary_type", "boundary_id", "evidence"],
+      "properties": {
+        "boundary_type": {"type": "string", "minLength": 1},
+        "boundary_id": {"type": "string", "minLength": 1},
+        "evidence": {"type": "array", "minItems": 1, "items": {"type": "string"}}
+      },
+      "additionalProperties": false
+    },
+    "cleanup": {
+      "type": "object",
+      "required": ["strategy", "scoped_to_run", "command_or_method"],
+      "properties": {
+        "strategy": {"type": "string", "minLength": 1},
+        "scoped_to_run": {"type": "boolean"},
+        "command_or_method": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
+    "side_effects": {"type": "array", "items": {"type": "string"}},
+    "forbidden_identifiers_present": {"type": "array", "items": {"type": "string"}},
+    "approval": {
+      "type": "object",
+      "required": ["required", "approved", "evidence"],
+      "properties": {
+        "required": {"type": "boolean"},
+        "approved": {"type": "boolean"},
+        "evidence": {"type": "array", "items": {"type": "string"}}
+      },
+      "additionalProperties": false
+    },
+    "status": {"type": "string"}
+  },
+  "additionalProperties": false
+}

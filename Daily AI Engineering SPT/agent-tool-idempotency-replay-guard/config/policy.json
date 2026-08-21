@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "operationKey": {
+    "algorithm": "sha256",
+    "include": ["tenant", "workflow", "tool", "business_scope", "canonical_args"],
+    "exclude": ["runtime_attempt_id", "timestamp", "trace_id"]
+  },
+  "effects": {
+    "read": {"reservationRequired": false, "maxAttempts": 3},
+    "idempotent-write": {"reservationRequired": true, "maxAttempts": 3},
+    "non-idempotent-write": {"reservationRequired": true, "maxAttempts": 1}
+  },
+  "reservation": {
+    "leaseSeconds": 120,
+    "staleAfterSeconds": 300,
+    "completedTtlSeconds": 86400
+  },
+  "reconciliation": {
+    "maxAttempts": 2,
+    "baseDelayMs": 500,
+    "requireBeforeRetryForAmbiguousWrites": true
+  },
+  "resultStorage": {
+    "maxInlineBytes": 32768,
+    "hashAlgorithm": "sha256"
+  },
+  "failClosed": true
+}

@@ -1,0 +1,12 @@
+{
+  "environments": {
+    "production": {
+      "path": "production.json",
+      "format": "json"
+    },
+    "staging": {
+      "path": "staging.json",
+      "format": "json"
+    }
+  }
+}

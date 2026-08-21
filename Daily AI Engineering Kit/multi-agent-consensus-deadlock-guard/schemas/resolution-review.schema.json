@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["disagreement_id","reviewer","decision","disagreement_fingerprint","reason"],
+  "properties": {
+    "disagreement_id": {"type":"string","minLength":1},
+    "reviewer": {"type":"string","minLength":1},
+    "decision": {"enum":["approved","rejected","human-decision-required"]},
+    "disagreement_fingerprint": {"type":"string","pattern":"^[a-f0-9]{64}$"},
+    "reason": {"type":"string","minLength":1},
+    "evidence_ids": {"type":"array","items":{"type":"string"}}
+  },
+  "additionalProperties": false
+}

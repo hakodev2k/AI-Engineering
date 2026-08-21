@@ -1,0 +1,20 @@
+version: 1
+limits:
+  task_input_tokens: 24000
+  planning_tokens: 6000
+  execution_context_tokens: 32000
+  verifier_tokens: 8000
+  total_task_tokens: 70000
+thresholds:
+  warn_ratio: 0.75
+  block_ratio: 1.0
+  context_growth_ratio: 1.35
+retention:
+  preserve_recent_turns: 8
+  preserve_evidence_items: 20
+  max_file_excerpt_lines: 220
+behavior:
+  require_budget_plan: true
+  block_on_total_budget_exceeded: true
+  allow_human_override: true
+  max_optimization_passes: 2

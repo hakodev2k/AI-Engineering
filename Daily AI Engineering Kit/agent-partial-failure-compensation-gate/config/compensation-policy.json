@@ -1,0 +1,36 @@
+{
+  "version": "1.0.0",
+  "execution": {
+    "max_transient_retries_per_step": 1,
+    "max_recovery_attempts": 2,
+    "require_operation_key": true,
+    "require_precondition_evidence": true,
+    "require_postcondition_evidence": true,
+    "unknown_outcome_requires_reconciliation": true
+  },
+  "review": {
+    "independent_review_for": ["high", "critical"],
+    "allow_self_review": false
+  },
+  "compensation": {
+    "require_reverse_order": true,
+    "allow_compensation_for_unknown_outcome": false,
+    "require_verification_after_compensation": true
+  },
+  "approval_required_actions": [
+    "production-deployment",
+    "destructive-sql",
+    "database-schema-change",
+    "data-deletion",
+    "file-deletion",
+    "force-push",
+    "git-history-rewrite",
+    "infrastructure-change",
+    "secret-change",
+    "production-config-change",
+    "breaking-api-contract",
+    "security-control-weakening",
+    "irreversible-migration",
+    "large-dependency-upgrade"
+  ]
+}

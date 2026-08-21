@@ -1,0 +1,37 @@
+{
+  "version": 1,
+  "thresholds": {"low": 2, "medium": 5, "high": 8},
+  "weights": {
+    "database_migration": 5,
+    "public_api": 4,
+    "production_config": 4,
+    "security_control": 5,
+    "dependency_lockfile": 2,
+    "infrastructure": 4,
+    "data_transform": 5,
+    "test_gap": 3
+  },
+  "patterns": {
+    "database_migration": ["migrations/", "migration", ".sql"],
+    "public_api": ["controllers/", "openapi", "swagger", "contracts/", "dto/"],
+    "production_config": ["appsettings.production", "values-prod", "production.json", "prod.yaml", "prod.yml"],
+    "security_control": ["auth", "authorization", "authentication", "security", "policy"],
+    "dependency_lockfile": ["packages.lock.json", "package-lock.json", "pnpm-lock.yaml", "yarn.lock", "poetry.lock"],
+    "infrastructure": ["terraform/", ".tf", "bicep/", ".bicep", "helm/", "k8s/"],
+    "data_transform": ["seed", "backfill", "data-fix", "datafix"]
+  },
+  "approval_required_categories": [
+    "database_migration",
+    "production_config",
+    "security_control",
+    "infrastructure",
+    "data_transform"
+  ],
+  "max_retry_attempts": 2,
+  "required_rollback_evidence": [
+    "rollback_command_or_procedure",
+    "rollback_owner",
+    "verification_command",
+    "known_data_loss_risk"
+  ]
+}

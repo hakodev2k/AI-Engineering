@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "max_retries": 2,
+  "secret_key_patterns": ["password", "passwd", "secret", "token", "authorization", "cookie", "api_key", "apikey", "client_secret", "private_key", "connection_string"],
+  "pii_key_patterns": ["email", "phone", "ssn", "national_id", "credit_card", "card_number"],
+  "allowed_correlation_fields": ["trace_id", "span_id", "request_id", "correlation_id", "operation_id"],
+  "replacement": "[REDACTED]",
+  "approval_required_for": ["production-config-change", "secret-change", "logging-sink-change", "data-deletion", "production-deployment", "security-control-change"]
+}

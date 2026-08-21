@@ -1,0 +1,12 @@
+{
+  "default_approval": "ask",
+  "default_placement": "sandbox",
+  "fail_closed_on_unknown_broker": true,
+  "require_explicit_host_placement": true,
+  "preserve_confidentiality_invariants": true,
+  "trusted_brokers": {},
+  "allowed_approval_values": ["allow", "ask", "deny"],
+  "allowed_placement_values": ["sandbox", "host-via-broker", "deny"],
+  "high_risk_capabilities": ["secret_read", "credential_use", "deploy", "publish", "delete", "system_write"],
+  "require_human_approval_for_high_risk_broker_actions": true
+}

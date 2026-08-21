@@ -1,0 +1,25 @@
+{
+  "policy_version": "1.0",
+  "required_phases": ["tool_start", "tool_end", "result_ingested", "next_model_start", "next_agent_action"],
+  "budgets_ms": {
+    "tool_runtime_p95": 5000,
+    "result_ingestion_p95": 2000,
+    "continuation_gap_p95": 10000,
+    "model_continuation_p95": 15000,
+    "tool_cycle_p95": 30000
+  },
+  "regression": {
+    "max_relative_increase": 0.20,
+    "max_absolute_increase_ms": 2000,
+    "minimum_samples": 5
+  },
+  "classification": {
+    "continuation_dominance_ratio": 3.0,
+    "slow_cycle_ms": 30000
+  },
+  "safety": {
+    "allow_security_control_disable_for_benchmark": false,
+    "allow_destructive_probe": false,
+    "redact_tool_outputs": true
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "reviewer_id":"independent-reviewer",
+  "plan_fingerprint":"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "verdict":"resume-approved",
+  "findings":[],
+  "evidence":["test://backfill-smoke","query://read-only-invariant-check"]
+}

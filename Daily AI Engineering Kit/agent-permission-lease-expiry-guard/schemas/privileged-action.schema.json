@@ -1,0 +1,14 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "type":"object",
+  "required":["operation_id","actor_id","capability","resource","risk_category","action_fingerprint"],
+  "properties":{
+    "operation_id":{"type":"string","minLength":1},
+    "actor_id":{"type":"string","minLength":1},
+    "capability":{"type":"string","minLength":1},
+    "resource":{"type":"string","minLength":1},
+    "risk_category":{"type":"string","minLength":1},
+    "action_fingerprint":{"type":"string","pattern":"^[0-9a-f]{64}$"}
+  },
+  "additionalProperties":false
+}

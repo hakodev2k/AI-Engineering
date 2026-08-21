@@ -1,0 +1,23 @@
+{
+  "status": "pass",
+  "target": "GET /api/orders",
+  "findings": [
+    {
+      "finding": "Per-order customer lookup was replaced by a single projection query.",
+      "evidence": ["baseline representative request executed 11 SQL commands", "changed request executed 1 SQL command", "focused result-equivalence test passed"],
+      "risk": "low",
+      "recommendation": "Keep the bounded query-count regression test for this endpoint."
+    }
+  ],
+  "metrics": {
+    "baseline_query_count": 11,
+    "changed_query_count": 1,
+    "result_equivalent": true
+  },
+  "verification": {
+    "focused_tests_passed": true,
+    "query_count_verified": true,
+    "diff_reviewed": true
+  },
+  "remaining_risks": ["Re-measure if projection shape or pagination semantics change."]
+}

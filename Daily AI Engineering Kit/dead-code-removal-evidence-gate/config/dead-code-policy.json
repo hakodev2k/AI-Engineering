@@ -1,0 +1,56 @@
+{
+  "version": 1,
+  "required_channels": [
+    "static-references",
+    "dynamic-discovery",
+    "configuration-registration",
+    "tests",
+    "contract-exposure"
+  ],
+  "runtime_evidence_required_for_exposure": [
+    "public",
+    "external-contract",
+    "runtime-discovered"
+  ],
+  "high_risk_candidate_kinds": [
+    "file",
+    "endpoint",
+    "job",
+    "config-key",
+    "module",
+    "public-api",
+    "event-contract",
+    "database-object"
+  ],
+  "human_approval_required_for": [
+    "file-deletion",
+    "public-contract-removal",
+    "external-contract-removal",
+    "database-change",
+    "data-deletion",
+    "production-config-change",
+    "infrastructure-change",
+    "security-control-removal",
+    "git-history-rewrite"
+  ],
+  "allowed_candidate_statuses": [
+    "investigating",
+    "candidate",
+    "blocked",
+    "approved-pending-human",
+    "approved-for-removal",
+    "removed"
+  ],
+  "allowed_verification_statuses": [
+    "unverified",
+    "partially-verified",
+    "verified",
+    "failed"
+  ],
+  "max_review_revisions": 1,
+  "max_transient_retries": 1,
+  "fail_on_unknown_required_channel": true,
+  "fail_on_live_reference": true,
+  "require_independent_review": true,
+  "require_post_removal_scan": true
+}

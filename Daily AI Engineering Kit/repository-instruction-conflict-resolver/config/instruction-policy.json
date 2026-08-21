@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "instruction_files": [
+    {"pattern": "AGENTS.md", "source_type": "agents", "authority": 80, "inherits_to_descendants": true},
+    {"pattern": "CLAUDE.md", "source_type": "claude", "authority": 70, "inherits_to_descendants": true},
+    {"pattern": ".cursor/rules/*.md", "source_type": "cursor-rule", "authority": 65, "inherits_to_descendants": true},
+    {"pattern": ".github/copilot-instructions.md", "source_type": "copilot", "authority": 60, "inherits_to_descendants": true},
+    {"pattern": "AI-INSTRUCTIONS.md", "source_type": "repository", "authority": 75, "inherits_to_descendants": true}
+  ],
+  "scope_rules": {
+    "nested_more_specific_when_equal_authority": true,
+    "ancestor_files_apply_to_descendants": true,
+    "unknown_source_requires_review": true
+  },
+  "high_risk_subjects": [
+    "security",
+    "secrets",
+    "permissions",
+    "production",
+    "destructive-action",
+    "database-data-loss",
+    "git-history-rewrite",
+    "verification",
+    "breaking-contract"
+  ],
+  "statuses": [
+    "resolved",
+    "verified-pending-review",
+    "human-review-required",
+    "blocked"
+  ],
+  "max_revision_cycles": 1
+}

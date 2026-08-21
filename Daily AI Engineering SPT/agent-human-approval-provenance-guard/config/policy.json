@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "human_sources": ["human"],
+  "non_human_sources": ["system", "runtime", "watchdog", "background_task", "unknown"],
+  "require_session_match": true,
+  "require_request_id_for_human_attribution": true,
+  "require_tool_use_id_when_available": true,
+  "max_decision_age_seconds": 900,
+  "allow_one_reconciliation_retry": true,
+  "on_ambiguous": "block_human_attribution",
+  "on_cross_session": "fail",
+  "on_conflicting_decisions": "fail",
+  "on_orphan_decision": "fail",
+  "agent_correction_message": "Permission outcome is unverified or non-human. Do not attribute approval, denial, or interruption to the user. Reconcile once, then stop and escalate if identity remains ambiguous."
+}

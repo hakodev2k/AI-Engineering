@@ -1,0 +1,37 @@
+{
+  "version": "1.0",
+  "task_id": "feature-order-export",
+  "actor": "implementation-agent",
+  "plan_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "base_revision": "abc123",
+  "head_revision": "def456",
+  "changes": [
+    {
+      "path": "src/Orders/OrderExportService.cs",
+      "status": "modified",
+      "content_fingerprint": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "plan_item_ids": ["export-service"],
+      "acceptance_criteria": ["Exported CSV contains the documented columns in stable order"],
+      "reason": "Implements the planned CSV serialization behavior.",
+      "risk_categories": [],
+      "approval_id": null
+    },
+    {
+      "path": "tests/Orders/OrderExportServiceTests.cs",
+      "status": "modified",
+      "content_fingerprint": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "plan_item_ids": ["export-service"],
+      "acceptance_criteria": ["Exported CSV contains the documented columns in stable order", "Existing API responses remain backward compatible"],
+      "reason": "Verifies export output and existing contract behavior.",
+      "risk_categories": [],
+      "approval_id": null
+    }
+  ],
+  "plan_item_status": [
+    {
+      "id": "export-service",
+      "status": "implemented",
+      "evidence": ["dotnet test tests/Orders/Orders.Tests.csproj: passed"]
+    }
+  ]
+}

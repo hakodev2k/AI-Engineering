@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SQL Safety Gate Result",
+  "type": "object",
+  "required": ["status", "environment", "statement_count", "findings", "approvals", "executed"],
+  "properties": {
+    "status": {"enum": ["passed", "blocked", "approval_required"]},
+    "environment": {"type": "string", "minLength": 1},
+    "statement_count": {"type": "integer", "minimum": 0},
+    "executed": {"const": false},
+    "findings": {"type": "array", "items": {"$ref": "#/$defs/item"}},
+    "approvals": {"type": "array", "items": {"$ref": "#/$defs/item"}}
+  },
+  "$defs": {
+    "item": {
+      "type": "object",
+      "required": ["code"],
+      "properties": {
+        "code": {"type": "string", "minLength": 1},
+        "severity": {"type": "string"},
+        "statement": {"type": "integer", "minimum": 1},
+        "evidence": {}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

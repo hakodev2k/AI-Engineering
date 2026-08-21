@@ -1,0 +1,39 @@
+version: 1
+sensitive_key_patterns:
+  - password
+  - secret
+  - token
+  - api_key
+  - connection_string
+  - private_key
+protected_keys:
+  - environment
+  - database.provider
+  - auth.authority
+  - auth.audience
+  - storage.provider
+approval_required_keys:
+  - feature_flags.*
+  - auth.*
+  - database.*
+  - storage.*
+  - messaging.*
+blocked_change_patterns:
+  - key_regex: '(?i).*allow_insecure.*'
+    new_value_regex: '(?i)^(true|1|yes)$'
+  - key_regex: '(?i).*require_https.*'
+    new_value_regex: '(?i)^(false|0|no)$'
+  - key_regex: '(?i).*validate_certificate.*'
+    new_value_regex: '(?i)^(false|0|no)$'
+ignore_keys:
+  - build.timestamp
+  - deployment.id
+  - runtime.instance_id
+max_changed_keys: 25
+max_added_keys: 10
+max_removed_keys: 10
+production_environment_names:
+  - production
+  - prod
+  - live
+block_protected_key_changes_in_production: true

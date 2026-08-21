@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Dependency License Gate Result",
+  "type": "object",
+  "required": ["status", "component_count", "findings", "approvals", "changed_dependencies"],
+  "properties": {
+    "status": {"enum": ["passed", "blocked", "approval_required"]},
+    "component_count": {"type": "integer", "minimum": 0},
+    "changed_dependencies": {"const": false},
+    "findings": {"type": "array", "items": {"$ref": "#/$defs/item"}},
+    "approvals": {"type": "array", "items": {"$ref": "#/$defs/item"}}
+  },
+  "$defs": {
+    "item": {
+      "type": "object",
+      "required": ["code", "package"],
+      "properties": {
+        "code": {"type": "string", "minLength": 1},
+        "package": {"type": "string", "minLength": 1},
+        "version": {"type": "string"},
+        "licenses": {"type": "array", "items": {"type": "string"}},
+        "severity": {"type": "string"},
+        "decision": {"type": "string"},
+        "reason": {"type": "string"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

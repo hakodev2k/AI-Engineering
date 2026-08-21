@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Evidence Gain Action Ledger",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["signature", "uncertainty", "expected_gain", "actual_gain", "evidence"],
+    "properties": {
+      "signature": {"type": "string", "minLength": 1},
+      "uncertainty": {"type": "string", "minLength": 1},
+      "expected_gain": {"type": "integer", "minimum": 0, "maximum": 3},
+      "actual_gain": {"type": "integer", "minimum": 0, "maximum": 3},
+      "evidence": {},
+      "decision_change": {"type": ["string", "null"]},
+      "status_claim": {"type": ["string", "null"]},
+      "status_evidence": {},
+      "reopens_settled_decision": {"type": "boolean"},
+      "contradictory_evidence": {}
+    },
+    "additionalProperties": true
+  }
+}

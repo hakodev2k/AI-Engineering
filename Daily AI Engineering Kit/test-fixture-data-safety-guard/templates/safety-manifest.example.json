@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "run_id": "test-run-20260817-001",
+  "target": {
+    "name": "local-integration-db",
+    "environment_class": "ephemeral",
+    "identifier": "postgres://localhost/test_db",
+    "evidence": ["container created for this test run"]
+  },
+  "fixture": {
+    "provenance": "generated",
+    "source": "tests/fixtures/builders",
+    "contains_sensitive_data": false,
+    "sanitization_evidence": []
+  },
+  "mutations": ["insert test users", "update test orders"],
+  "isolation": {
+    "boundary_type": "database",
+    "boundary_id": "test_db",
+    "evidence": ["dedicated disposable database"]
+  },
+  "cleanup": {
+    "strategy": "drop disposable container",
+    "scoped_to_run": true,
+    "command_or_method": "docker compose down -v for run-specific project"
+  },
+  "side_effects": [],
+  "forbidden_identifiers_present": [],
+  "approval": {
+    "required": false,
+    "approved": false,
+    "evidence": []
+  },
+  "status": "draft"
+}

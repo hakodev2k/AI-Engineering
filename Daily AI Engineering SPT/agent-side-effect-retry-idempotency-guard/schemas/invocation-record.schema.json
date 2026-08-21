@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.local/agent-side-effect-retry-idempotency-guard/invocation-record.schema.json",
+  "title": "Logical Tool Invocation Ledger",
+  "type": "object",
+  "required": ["version", "operations"],
+  "properties": {
+    "version": {"type": "string"},
+    "operations": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["operation_key", "fingerprint", "classification", "state", "attempts", "created_at", "updated_at"],
+        "properties": {
+          "operation_key": {"type": "string", "minLength": 8},
+          "fingerprint": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "classification": {"enum": ["read_only", "idempotent_write", "non_idempotent_write"]},
+          "state": {"enum": ["reserved", "in_progress", "completed", "known_failed", "outcome_unknown", "cancelled"]},
+          "attempts": {"type": "integer", "minimum": 0},
+          "created_at": {"type": "string"},
+          "updated_at": {"type": "string"},
+          "result_reference": {"type": ["string", "null"]},
+          "failure_reason": {"type": ["string", "null"]},
+          "downstream_idempotency": {"type": "boolean"},
+          "probe_status": {"enum": ["not_run", "effect_present", "effect_absent", "unknown"]},
+          "human_approval": {"type": ["string", "null"]}
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

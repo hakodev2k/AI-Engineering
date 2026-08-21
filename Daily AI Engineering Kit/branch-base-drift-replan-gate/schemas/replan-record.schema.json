@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Branch Base Drift Replan Record",
+  "type": "object",
+  "required": ["version", "plan_id", "plan_revision", "repository", "refs", "planned_scope", "assumptions", "steps", "tests", "risk"],
+  "properties": {
+    "version": {"type": "string", "minLength": 1},
+    "plan_id": {"type": "string", "minLength": 1},
+    "plan_revision": {"type": "integer", "minimum": 1},
+    "repository": {"type": "string", "minLength": 1},
+    "refs": {
+      "type": "object",
+      "required": ["target_ref", "head_ref", "target_sha", "head_sha", "merge_base_sha"],
+      "properties": {
+        "target_ref": {"type": "string", "minLength": 1},
+        "head_ref": {"type": "string", "minLength": 1},
+        "target_sha": {"type": "string", "pattern": "^[0-9a-fA-F]{40,64}$"},
+        "head_sha": {"type": "string", "pattern": "^[0-9a-fA-F]{40,64}$"},
+        "merge_base_sha": {"type": "string", "pattern": "^[0-9a-fA-F]{40,64}$"}
+      },
+      "additionalProperties": true
+    },
+    "planned_scope": {
+      "type": "object",
+      "required": ["paths"],
+      "properties": {
+        "paths": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+        "components": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "assumptions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "statement", "status"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "statement": {"type": "string", "minLength": 1},
+          "status": {"enum": ["current", "revalidate", "invalid", "open-question"]},
+          "evidence": {"type": "array", "items": {"type": "string"}}
+        }
+      }
+    },
+    "steps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "summary", "disposition"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "summary": {"type": "string", "minLength": 1},
+          "disposition": {"enum": ["unchanged", "revalidate", "replan", "blocked"]},
+          "affected_by": {"type": "array", "items": {"type": "string"}},
+          "evidence": {"type": "array", "items": {"type": "string"}}
+        }
+      }
+    },
+    "tests": {"type": "array", "items": {"type": "string"}},
+    "risk": {"enum": ["low", "medium", "high"]},
+    "baseline_missing": {"type": "boolean"}
+  },
+  "additionalProperties": true
+}

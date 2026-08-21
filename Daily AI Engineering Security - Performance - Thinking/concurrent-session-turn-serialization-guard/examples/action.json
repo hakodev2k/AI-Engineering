@@ -1,0 +1,9 @@
+{
+  "session_id": "session-42",
+  "expected_revision": 7,
+  "current_revision": 7,
+  "logical_operation_id": "dispatch-ticket-314",
+  "capability": "dispatch",
+  "action_fingerprint": "sha256:example-nonsecret-fingerprint",
+  "receipt": null
+}

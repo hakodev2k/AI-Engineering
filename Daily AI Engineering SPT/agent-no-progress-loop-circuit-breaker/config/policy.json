@@ -1,0 +1,22 @@
+{
+  "window_size": 8,
+  "warn_after_no_progress_turns": 4,
+  "stop_after_no_progress_turns": 6,
+  "max_identical_action_fingerprint": 3,
+  "max_identical_result_fingerprint": 3,
+  "max_recovery_attempts": 2,
+  "minimum_novelty_ratio": 0.25,
+  "polling": {
+    "allow_if_result_changes": true,
+    "max_unchanged_polls": 3
+  },
+  "progress_event_types": [
+    "file_changed",
+    "test_outcome_changed",
+    "new_evidence",
+    "task_state_changed",
+    "hypothesis_eliminated",
+    "blocker_declared",
+    "human_decision"
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Tool Batch Event",
+  "type": "object",
+  "required": ["batch_id", "event", "timestamp"],
+  "properties": {
+    "batch_id": {"type": "string", "minLength": 1},
+    "tool_call_id": {"type": "string", "minLength": 1},
+    "session_id": {"type": "string"},
+    "session_version": {"type": ["string", "integer"]},
+    "event": {
+      "enum": ["batch_created", "started", "approval_requested", "approval_resolved", "handoff_requested", "handoff_committed", "retry_requested", "succeeded", "failed", "rejected", "cancelled"]
+    },
+    "timestamp": {"type": "string", "minLength": 1},
+    "tool_call_ids": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+    "idempotency_key": {"type": "string"},
+    "state_scope": {"type": "string"}
+  },
+  "additionalProperties": true
+}

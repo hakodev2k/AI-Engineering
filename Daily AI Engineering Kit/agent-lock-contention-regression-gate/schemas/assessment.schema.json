@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Lock Contention Assessment",
+  "type": "object",
+  "required": ["status", "scope", "findings", "before_evidence", "after_evidence", "verification"],
+  "properties": {
+    "status": {"enum": ["pass", "fail", "blocked", "needs-approval"]},
+    "scope": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["finding", "evidence", "risk", "recommended_action"],
+        "properties": {
+          "finding": {"type": "string"},
+          "evidence": {"type": "string"},
+          "risk": {"enum": ["low", "medium", "high", "critical"]},
+          "recommended_action": {"type": "string"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "before_evidence": {"type": "array", "items": {"type": "string"}},
+    "after_evidence": {"type": "array", "items": {"type": "string"}},
+    "verification": {
+      "type": "object",
+      "required": ["contention_test", "diff_review", "independent_verifier"],
+      "properties": {
+        "contention_test": {"type": "boolean"},
+        "diff_review": {"type": "boolean"},
+        "independent_verifier": {"type": "boolean"}
+      },
+      "additionalProperties": false
+    },
+    "open_risks": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": false
+}

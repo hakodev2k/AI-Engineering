@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Agent Progress Ledger",
+  "type": "object",
+  "required": ["run_id", "policy_version", "baseline", "events"],
+  "properties": {
+    "run_id": {"type": "string", "minLength": 1},
+    "policy_version": {"type": "string", "minLength": 1},
+    "baseline": {
+      "type": "object",
+      "required": ["sha256", "tasks"],
+      "properties": {
+        "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "tasks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "title", "mandatory"],
+            "properties": {
+              "id": {"type": "string", "pattern": "^[A-Z0-9][A-Z0-9._-]{1,63}$"},
+              "title": {"type": "string", "minLength": 1},
+              "mandatory": {"type": "boolean"},
+              "acceptance": {"type": "array", "items": {"type": "string"}}
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "events": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["seq", "task_id", "from", "to", "actor", "timestamp"],
+        "properties": {
+          "seq": {"type": "integer", "minimum": 1},
+          "task_id": {"type": "string"},
+          "from": {"type": ["string", "null"]},
+          "to": {"type": "string"},
+          "actor": {"type": "string", "minLength": 1},
+          "timestamp": {"type": "string", "format": "date-time"},
+          "reason": {"type": "string"},
+          "evidence": {"type": "array", "items": {"type": "string"}},
+          "approval": {"type": "string"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "risk": {"type": "string", "enum": ["low", "medium", "high"]},
+    "verifier": {"type": "string"}
+  },
+  "additionalProperties": false
+}

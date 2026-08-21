@@ -1,0 +1,18 @@
+{
+  "next_fencing_token": 13,
+  "resources": {
+    "repo:example/service:main": {
+      "resource_key": "repo:example/service:main",
+      "owner_id": "implementation-agent-7",
+      "lease_id": "11111111-2222-3333-4444-555555555555",
+      "fencing_token": 12,
+      "acquired_at": "2026-08-17T11:35:00Z",
+      "expires_at": "2026-08-17T11:37:00Z",
+      "heartbeat_at": "2026-08-17T11:35:30Z",
+      "status": "active",
+      "scope_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "risk": "medium",
+      "evidence": []
+    }
+  }
+}

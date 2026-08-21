@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "baseline_runs": 3,
+  "post_change_runs": 3,
+  "max_total_runs_per_decision": 8,
+  "command_timeout_seconds": 600,
+  "accept_single_pass_as_fix": false,
+  "require_unchanged_code_reproduction": true,
+  "require_independent_verification": true,
+  "mixed_outcome_classification": "FLAKY_OR_NONDETERMINISTIC",
+  "unknown_requires_stop": true,
+  "normalize_patterns": [
+    "timestamps",
+    "temporary_paths",
+    "process_ids",
+    "ports",
+    "durations"
+  ],
+  "infrastructure_markers": [
+    "ECONNRESET",
+    "ETIMEDOUT",
+    "ENETUNREACH",
+    "503 Service Unavailable",
+    "502 Bad Gateway",
+    "rate limit",
+    "dependency resolution",
+    "DNS",
+    "connection refused"
+  ]
+}

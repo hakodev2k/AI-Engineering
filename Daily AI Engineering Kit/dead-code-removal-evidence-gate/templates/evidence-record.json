@@ -1,0 +1,55 @@
+{
+  "candidate": {
+    "identifier": "LegacyPaymentAdapter",
+    "kind": "symbol",
+    "path": "src/Payments/LegacyPaymentAdapter.cs",
+    "visibility": "internal",
+    "exposure": "internal"
+  },
+  "repository": {
+    "root": ".",
+    "revision": "replace-with-commit-sha"
+  },
+  "status": "investigating",
+  "verification_status": "unverified",
+  "channels": {
+    "static-references": {
+      "status": "unknown",
+      "evidence": [],
+      "limitations": []
+    },
+    "dynamic-discovery": {
+      "status": "unknown",
+      "evidence": [],
+      "limitations": []
+    },
+    "configuration-registration": {
+      "status": "unknown",
+      "evidence": [],
+      "limitations": []
+    },
+    "tests": {
+      "status": "unknown",
+      "evidence": [],
+      "limitations": []
+    },
+    "contract-exposure": {
+      "status": "unknown",
+      "evidence": [],
+      "limitations": []
+    }
+  },
+  "review": {
+    "decision": "pending",
+    "reviewer": "",
+    "independent": false,
+    "notes": []
+  },
+  "approvals": [],
+  "artifacts": {
+    "pre_removal_scan": ".dead-code/reference-scan-before.json",
+    "post_removal_scan": "",
+    "build_test_evidence": []
+  },
+  "remaining_risks": []
+}

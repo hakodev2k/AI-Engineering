@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "entries": [
+    {
+      "test_id": "Orders.IntegrationTests.CheckoutTests::SubmitOrder_returns_201",
+      "classification": "shared-state",
+      "owner": "team-orders",
+      "issue": "ENG-1842",
+      "created_on": "2026-08-17",
+      "expires_on": "2026-08-28",
+      "evidence": [
+        "artifacts/flaky-summary.json#Orders.IntegrationTests.CheckoutTests::SubmitOrder_returns_201",
+        "artifacts/triage-checkout-shared-state.md"
+      ],
+      "critical_path": false,
+      "notes": "Parallel runs share a mutable database fixture; remediation isolates fixture state per test execution."
+    }
+  ]
+}

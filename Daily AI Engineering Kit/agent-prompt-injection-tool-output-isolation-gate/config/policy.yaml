@@ -1,0 +1,27 @@
+version: 1
+untrusted_sources:
+  - web
+  - email
+  - issue
+  - pull_request_comment
+  - tool_output
+  - uploaded_document
+trusted_instruction_sources:
+  - system
+  - developer
+  - repository_rules
+max_untrusted_chars: 20000
+require_source_label: true
+block_instruction_patterns:
+  - "ignore previous instructions"
+  - "reveal system prompt"
+  - "send secrets"
+  - "disable safety"
+  - "run this command"
+allow_tool_calls_from_untrusted_content: false
+require_human_approval_for:
+  - secret_access
+  - production_change
+  - destructive_action
+  - permission_change
+  - outbound_message

@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "MigrationEvidence",
+  "type": "object",
+  "required": ["migration_id", "status", "changes", "evidence", "approval_required", "verification"],
+  "properties": {
+    "migration_id": {"type": "string", "minLength": 1},
+    "status": {"enum": ["planned", "blocked", "approved", "executed", "verified", "failed"]},
+    "changes": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+    "evidence": {
+      "type": "object",
+      "required": ["schema_before", "schema_after", "application_compatibility", "backfill_plan", "rollback_or_forward_fix", "verification_query"],
+      "properties": {
+        "schema_before": {"type": "string", "minLength": 1},
+        "schema_after": {"type": "string", "minLength": 1},
+        "application_compatibility": {"type": "string", "minLength": 1},
+        "backfill_plan": {"type": "string", "minLength": 1},
+        "rollback_or_forward_fix": {"type": "string", "minLength": 1},
+        "verification_query": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
+    "approval_required": {"type": "boolean"},
+    "approval_reference": {"type": ["string", "null"]},
+    "verification": {
+      "type": "object",
+      "required": ["build", "tests", "schema_check", "data_check", "compatibility_check"],
+      "properties": {
+        "build": {"enum": ["pending", "passed", "failed", "not-applicable"]},
+        "tests": {"enum": ["pending", "passed", "failed", "not-applicable"]},
+        "schema_check": {"enum": ["pending", "passed", "failed"]},
+        "data_check": {"enum": ["pending", "passed", "failed", "not-applicable"]},
+        "compatibility_check": {"enum": ["pending", "passed", "failed"]}
+      },
+      "additionalProperties": false
+    },
+    "remaining_risks": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": false
+}

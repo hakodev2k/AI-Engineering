@@ -1,0 +1,10 @@
+{
+  "required": ["impact", "timeline", "evidence", "rootCause", "verification"],
+  "properties": {
+    "impact": {"type": "string"},
+    "timeline": {"type": "array"},
+    "evidence": {"type": "array"},
+    "rootCause": {"type": "string"},
+    "verification": {"type": "string"}
+  }
+}

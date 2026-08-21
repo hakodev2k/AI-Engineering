@@ -1,0 +1,23 @@
+version: 1
+mode: redact
+replacement: "[REDACTED:{type}]"
+max_input_bytes: 10485760
+fail_closed: true
+preserve_line_count: true
+scan_types:
+  - email
+  - ipv4
+  - jwt
+  - bearer_token
+  - api_key
+  - connection_string
+  - credit_card
+  - private_key
+custom_patterns: []
+allowlist_patterns: []
+block_on_types:
+  - private_key
+  - connection_string
+  - bearer_token
+  - jwt
+report_sample_limit: 20

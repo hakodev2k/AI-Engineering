@@ -1,0 +1,27 @@
+version: 1
+name: agent-message-ordering-consistency-gate
+max_fix_retest_attempts: 2
+ordering:
+  require_explicit_partition_key_for_ordered_streams: true
+  require_monotonic_sequence_or_version: true
+  allow_timestamp_only_ordering: false
+  reject_stale_events: true
+  require_duplicate_detection: true
+  require_idempotent_consumer: true
+  require_replay_behavior: true
+risk_thresholds:
+  warn_score: 3
+  block_score: 6
+approval_required_for:
+  - production-broker-reconfiguration
+  - partition-count-change
+  - retention-policy-change
+  - destructive-message-purge
+  - breaking-event-contract
+  - disabling-duplicate-detection
+  - weakening-ordering-guarantees
+verification:
+  require_out_of_order_test: true
+  require_duplicate_replay_test: true
+  require_stale_event_test: true
+  require_parallel_consumer_test: true

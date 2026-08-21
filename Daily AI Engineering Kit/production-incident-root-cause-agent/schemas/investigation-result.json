@@ -1,0 +1,11 @@
+{
+  "status": "completed",
+  "incident": "",
+  "findings": [],
+  "evidence": [],
+  "confidence": 0,
+  "verification": {
+    "passed": false,
+    "checks": []
+  }
+}

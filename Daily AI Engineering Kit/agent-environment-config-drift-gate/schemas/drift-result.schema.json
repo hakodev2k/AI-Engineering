@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Configuration Drift Gate Result",
+  "type": "object",
+  "required": ["status", "environment", "counts", "changed", "added", "removed", "findings", "approvals", "modified"],
+  "properties": {
+    "status": {"enum": ["passed", "blocked", "approval_required"]},
+    "environment": {"type": "string", "minLength": 1},
+    "counts": {
+      "type": "object",
+      "required": ["changed", "added", "removed"],
+      "properties": {
+        "changed": {"type": "integer", "minimum": 0},
+        "added": {"type": "integer", "minimum": 0},
+        "removed": {"type": "integer", "minimum": 0}
+      },
+      "additionalProperties": false
+    },
+    "changed": {"type": "array", "items": {"$ref": "#/$defs/change"}},
+    "added": {"type": "array", "items": {"$ref": "#/$defs/add"}},
+    "removed": {"type": "array", "items": {"$ref": "#/$defs/remove"}},
+    "findings": {"type": "array", "items": {"$ref": "#/$defs/finding"}},
+    "approvals": {"type": "array", "items": {"$ref": "#/$defs/finding"}},
+    "modified": {"const": false}
+  },
+  "$defs": {
+    "change": {"type": "object", "required": ["key", "old", "new"], "properties": {"key": {"type": "string"}, "old": {}, "new": {}}, "additionalProperties": false},
+    "add": {"type": "object", "required": ["key", "new"], "properties": {"key": {"type": "string"}, "new": {}}, "additionalProperties": false},
+    "remove": {"type": "object", "required": ["key", "old"], "properties": {"key": {"type": "string"}, "old": {}}, "additionalProperties": false},
+    "finding": {"type": "object", "required": ["code"], "properties": {"code": {"type": "string"}, "severity": {"type": "string"}, "key": {"type": "string"}, "old": {}, "new": {}, "count": {"type": "integer", "minimum": 0}}, "additionalProperties": false}
+  },
+  "additionalProperties": false
+}

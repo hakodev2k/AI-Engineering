@@ -1,0 +1,18 @@
+target: Example.Package
+current_version: "1.0.0"
+requested_version: "1.1.0"
+ecosystem: dotnet
+reason: bug fix and compatibility update
+security_sensitive: false
+expected_files:
+  - src/App/App.csproj
+  - packages.lock.json
+verification_commands:
+  - dotnet restore --locked-mode
+  - dotnet build --no-restore --nologo
+  - dotnet test --no-build --nologo
+acceptance_criteria:
+  - target dependency resolves to requested version
+  - build succeeds
+  - tests succeed
+  - no unrelated dependency changes are present

@@ -1,0 +1,43 @@
+version: 1
+status: planned
+database:
+  engine: ""
+  version: ""
+  target_environment: "non-production"
+migration:
+  files: []
+  affected_objects: []
+  operations: []
+risk:
+  level: ""
+  destructive: false
+  irreversible: false
+  locking_risk: ""
+  compatibility_risk: ""
+prechecks:
+  backup_available: false
+  free_space_checked: false
+  schema_version_checked: false
+  permissions_checked: false
+  commands: []
+dry_run:
+  command: ""
+  expected_result: ""
+rollback:
+  strategy: ""
+  command: ""
+  limitations: []
+verification:
+  commands: []
+  expected_schema_changes: []
+  data_invariants: []
+  application_tests: []
+approval:
+  required: false
+  reasons: []
+  approved_by: ""
+evidence:
+  analyzer_report: ""
+  dry_run_output: ""
+  test_output: ""
+unresolved_risks: []

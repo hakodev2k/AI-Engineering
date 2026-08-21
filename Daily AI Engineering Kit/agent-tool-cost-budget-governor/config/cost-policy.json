@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "currency": "USD",
+  "soft_limit_ratio": 0.8,
+  "minimum_verification_reserve_ratio": 0.2,
+  "max_retries_per_operation": 2,
+  "telemetry_retry_limit": 1,
+  "allow_unknown_cost_operations": false,
+  "approval_required_cost_classes": ["metered-unknown", "high-cost"],
+  "high_cost_operation_threshold": 2.0,
+  "require_approval_for_budget_increase": true,
+  "require_failed_billable_attempts_in_ledger": true,
+  "require_unique_operation_attempt_keys": true,
+  "final_gate_requires_verification_stage": true
+}

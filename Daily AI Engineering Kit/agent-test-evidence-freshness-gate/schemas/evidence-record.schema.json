@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TestEvidenceRecord",
+  "type": "object",
+  "required": ["version", "evidence_id", "category", "command", "status", "source_revision", "base_revision", "input_fingerprint", "observed_at", "artifacts"],
+  "properties": {
+    "version": {"const": 1},
+    "evidence_id": {"type": "string", "minLength": 1},
+    "category": {"enum": ["build", "unit", "integration", "e2e", "static-analysis", "format", "security", "performance", "database", "migration", "release", "production", "other"]},
+    "command": {"type": "string", "minLength": 1},
+    "status": {"enum": ["passed", "failed", "unknown"]},
+    "source_revision": {"type": "string", "minLength": 7},
+    "base_revision": {"type": "string", "minLength": 7},
+    "input_fingerprint": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "environment_fingerprint": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
+    "observed_at": {"type": "string", "format": "date-time"},
+    "duration_ms": {"type": ["integer", "null"], "minimum": 0},
+    "artifacts": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "notes": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": false
+}

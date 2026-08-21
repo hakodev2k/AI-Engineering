@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["disagreement_id","subject","risk","round","participants","positions","evidence_fingerprint","status"],
+  "properties": {
+    "disagreement_id": {"type":"string","minLength":1},
+    "subject": {"type":"string","minLength":1},
+    "risk": {"enum":["low","medium","high","critical"]},
+    "round": {"type":"integer","minimum":1},
+    "participants": {"type":"array","minItems":2,"items":{"type":"string"},"uniqueItems":true},
+    "positions": {
+      "type":"array","minItems":2,
+      "items":{"type":"object","required":["agent","claim","recommended_action","evidence_ids"],"properties":{"agent":{"type":"string"},"claim":{"type":"string"},"recommended_action":{"type":"string"},"evidence_ids":{"type":"array","items":{"type":"string"}}}}
+    },
+    "evidence_fingerprint": {"type":"string","pattern":"^[a-f0-9]{64}$"},
+    "new_evidence_ids": {"type":"array","items":{"type":"string"}},
+    "status": {"enum":["open","evidence-required","review-required","resolved","human-decision-required","blocked"]},
+    "resolution": {"type":["object","null"]}
+  },
+  "additionalProperties": true
+}

@@ -1,0 +1,35 @@
+{
+  "policy_version": "1.0",
+  "required_fields": ["id", "tenant", "content", "source_type", "source_id", "source_trust", "writer", "created_at"],
+  "allowed_states": ["trusted", "restricted", "quarantined", "revoked"],
+  "retrieval_allowed_states": ["trusted", "restricted"],
+  "minimum_retrieval_trust": 50,
+  "source_trust_scores": {
+    "system": 100,
+    "human-approved": 90,
+    "internal-service": 70,
+    "authenticated-user": 55,
+    "external-tool": 35,
+    "retrieved-web": 20,
+    "anonymous": 10
+  },
+  "quarantine_patterns": [
+    "ignore previous instructions",
+    "ignore all previous instructions",
+    "system prompt",
+    "developer message",
+    "always execute",
+    "do not tell the user",
+    "exfiltrate",
+    "send secrets"
+  ],
+  "restricted_patterns": [
+    "always remember",
+    "future sessions",
+    "permanent rule",
+    "override policy"
+  ],
+  "require_human_approval_for_trust_upgrade": true,
+  "fail_closed_on_missing_provenance": true,
+  "max_lineage_depth": 16
+}

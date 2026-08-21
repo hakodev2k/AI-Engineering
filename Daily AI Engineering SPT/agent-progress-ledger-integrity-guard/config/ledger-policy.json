@@ -1,0 +1,19 @@
+{
+  "policy_version": "1.0",
+  "mandatory_task_states": ["pending", "in_progress", "blocked", "completed", "cancelled"],
+  "terminal_states": ["completed", "cancelled"],
+  "allowed_transitions": {
+    "pending": ["in_progress", "blocked", "cancelled"],
+    "in_progress": ["blocked", "completed", "cancelled"],
+    "blocked": ["in_progress", "cancelled"],
+    "completed": [],
+    "cancelled": []
+  },
+  "require_evidence_for_completed": true,
+  "require_human_approval_for_mandatory_cancel": true,
+  "forbid_task_deletion": true,
+  "require_stable_task_ids": true,
+  "require_baseline_hash_match": true,
+  "max_reconciliation_retries": 2,
+  "high_risk_requires_independent_verifier": true
+}

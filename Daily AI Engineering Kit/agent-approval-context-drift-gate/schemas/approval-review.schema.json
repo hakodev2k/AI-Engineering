@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ApprovalReview",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version","task_id","context_fingerprint","reviewer_id","status","reviewed_at_utc"],
+  "properties": {
+    "version": {"const":"1.0"},
+    "task_id": {"type":"string","minLength":1},
+    "context_fingerprint": {"type":"string","pattern":"^[a-f0-9]{64}$"},
+    "reviewer_id": {"type":"string","minLength":1},
+    "status": {"enum":["approved","blocked","needs-changes"]},
+    "reviewed_at_utc": {"type":"string","format":"date-time"},
+    "findings": {"type":"array","items":{"type":"string"}}
+  }
+}

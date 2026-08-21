@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "reviewer_id": "parity-reviewer",
+  "implementation_owner": "implementation-agent",
+  "contract_fingerprint": "replace-with-evaluator-fingerprint",
+  "snapshot_fingerprint": "replace-with-evaluator-fingerprint",
+  "verdict": "approved",
+  "reviewed_gap_ids": [],
+  "evidence": ["ci://integration/123"],
+  "notes": "No unresolved critical parity gaps."
+}

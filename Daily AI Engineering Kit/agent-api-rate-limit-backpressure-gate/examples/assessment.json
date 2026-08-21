@@ -1,0 +1,19 @@
+{
+  "status": "pass",
+  "target": "PartnerApiClient",
+  "findings": [
+    {
+      "finding": "Outbound concurrency is bounded and 429 responses honor Retry-After before bounded jittered retry.",
+      "evidence": ["storm test peak in-flight remained at configured limit", "Retry-After delay observed before second attempt"],
+      "risk": "low",
+      "recommendation": "Keep burst, saturation, and recovery regression tests."
+    }
+  ],
+  "verification": {
+    "retry_after_tested": true,
+    "parallelism_bounded": true,
+    "queue_bounded": true,
+    "storm_tested": true
+  },
+  "remaining_risks": ["Provider-specific quota semantics must be re-verified if the external contract changes."]
+}

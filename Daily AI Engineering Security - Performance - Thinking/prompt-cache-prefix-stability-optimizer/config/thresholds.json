@@ -1,0 +1,8 @@
+{
+  "minimum_cached_input_ratio": 0.60,
+  "maximum_quality_regression_rate": 0.01,
+  "maximum_latency_regression_ratio": 0.05,
+  "minimum_comparable_samples": 5,
+  "stable_segment_hash_variants_allowed": 1,
+  "require_quality_evidence": true
+}

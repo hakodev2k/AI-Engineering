@@ -1,0 +1,13 @@
+{
+  "tenant": "tenant-a",
+  "tenant_source": "claim",
+  "tenant_source_trusted": true,
+  "operation": "orders:list",
+  "kind": "read",
+  "read_tenant_scoped": true,
+  "write_tenant_match_verified": false,
+  "cross_tenant": false,
+  "exception_approved": false,
+  "uses_query_filter_bypass": false,
+  "tenant_from_request_body": false
+}

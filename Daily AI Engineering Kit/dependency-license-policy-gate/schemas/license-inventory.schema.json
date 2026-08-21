@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Dependency License Inventory",
+  "type": "object",
+  "required": ["inventory_version", "generated_at", "distribution_context", "dependencies"],
+  "properties": {
+    "inventory_version": {"type": "string", "minLength": 1},
+    "generated_at": {"type": "string", "format": "date-time"},
+    "distribution_context": {"type": "string", "minLength": 1},
+    "dependencies": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["package_key", "ecosystem", "name", "version", "change_type", "source_fingerprint", "license_expression", "raw_license", "evidence_confidence", "evidence_references", "direct"],
+        "properties": {
+          "package_key": {"type": "string", "minLength": 1},
+          "ecosystem": {"type": "string", "minLength": 1},
+          "name": {"type": "string", "minLength": 1},
+          "version": {"type": "string", "minLength": 1},
+          "change_type": {"enum": ["added", "upgraded", "replaced", "source-changed", "vendored"]},
+          "source_fingerprint": {"type": "string", "minLength": 1},
+          "license_expression": {"type": "string", "minLength": 1},
+          "raw_license": {"type": "string", "minLength": 1},
+          "evidence_confidence": {"enum": ["verified", "partial", "unknown"]},
+          "evidence_references": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+          "direct": {"type": "boolean"}
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": true
+}

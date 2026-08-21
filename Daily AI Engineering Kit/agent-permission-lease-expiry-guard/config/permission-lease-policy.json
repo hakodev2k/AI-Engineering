@@ -1,0 +1,14 @@
+{
+  "policy_version": "1.0",
+  "default_lease_seconds": 900,
+  "max_lease_seconds": 3600,
+  "default_max_uses": 1,
+  "renewal_limit": 1,
+  "high_risk_requires_independent_review": true,
+  "high_risk_categories": ["production-write", "secret-management", "infrastructure-change", "destructive-data", "security-control-change", "breaking-contract"],
+  "require_revocation_verification": true,
+  "deny_on_unknown_scope": true,
+  "deny_on_expired_lease": true,
+  "deny_on_operation_mismatch": true,
+  "deny_on_scope_expansion": true
+}

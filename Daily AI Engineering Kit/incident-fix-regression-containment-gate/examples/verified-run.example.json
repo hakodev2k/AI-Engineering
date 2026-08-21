@@ -1,0 +1,20 @@
+{
+  "verification": {
+    "incident_id": "INC-2026-001",
+    "targeted_checks_passed": true,
+    "negative_control_passed": true,
+    "rollback_ready": true,
+    "transient_retry_count": 0,
+    "evidence": [
+      "test:PaymentResponseMapper:passed",
+      "test:PaymentCaptureFlow:passed",
+      "rollback:prior-artifact-available"
+    ]
+  },
+  "review": {
+    "reviewer": "containment-reviewer",
+    "status": "verified",
+    "findings": [],
+    "notes": "Diff is limited to the declared mapper and tests; rollback evidence is present."
+  }
+}

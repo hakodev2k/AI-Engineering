@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "flags": [
+    {
+      "key": "checkout-v2",
+      "type": "release",
+      "state": "rolling-out",
+      "owner": "team-checkout",
+      "created_on": "2026-08-17",
+      "expires_on": "2026-10-15",
+      "default_behavior": "disabled",
+      "cleanup_trigger": "Retire after 100% rollout remains healthy for 14 days and rollback dependency ends.",
+      "permanent_behavior": "unknown",
+      "rollout_evidence": [
+        "error-rate dashboard",
+        "checkout conversion comparison",
+        "support incident review"
+      ],
+      "risk_tags": ["billing", "public-api"],
+      "approval_required": false,
+      "approval_ref": null,
+      "verification_status": "not-verified",
+      "notes": "Disabled branch remains valid during rollout and rollback window."
+    }
+  ]
+}

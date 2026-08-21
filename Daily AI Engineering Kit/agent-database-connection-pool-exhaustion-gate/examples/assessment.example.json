@@ -1,0 +1,22 @@
+{
+  "status": "pass",
+  "summary": "Bounded worker concurrency and corrected connection disposal reduced pool-exhaustion risk in the changed job path.",
+  "findings": [
+    {
+      "affected_component": "jobs/import-worker",
+      "finding": "Database work previously fan-out concurrently without an explicit bound.",
+      "evidence": ["Worker concurrency is now limited before each database operation.", "Targeted concurrency test completed successfully."],
+      "confidence": "high",
+      "risk": "high",
+      "recommended_action": "Keep bounded concurrency and monitor acquisition latency under representative load.",
+      "verification_status": "pass"
+    }
+  ],
+  "verification": {
+    "scanner_exit_code": 0,
+    "tests": ["targeted concurrency regression test: pass", "repository build: pass"],
+    "diff_reviewed": true
+  },
+  "unresolved_risks": [],
+  "approval": null
+}

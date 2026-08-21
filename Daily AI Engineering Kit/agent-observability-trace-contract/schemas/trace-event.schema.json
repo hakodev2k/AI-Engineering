@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "agent-observability-trace-contract/trace-event.schema.json",
+  "title": "Agent Trace Event",
+  "type": "object",
+  "required": ["event_version", "timestamp", "trace_id", "span_id", "event", "actor", "status", "attributes"],
+  "properties": {
+    "event_version": {"const": 1},
+    "timestamp": {"type": "string", "format": "date-time"},
+    "trace_id": {"type": "string", "minLength": 8},
+    "span_id": {"type": "string", "minLength": 4},
+    "parent_span_id": {"type": ["string", "null"]},
+    "event": {"type": "string", "pattern": "^[a-z0-9-]+\\.[a-z0-9-]+$"},
+    "actor": {"type": "string", "minLength": 1},
+    "status": {"enum": ["started", "completed", "failed", "unknown", "abandoned", "scheduled", "requested", "granted", "denied", "expired"]},
+    "attempt": {"type": "integer", "minimum": 1},
+    "risk": {"enum": ["low", "medium", "high", "critical"]},
+    "side_effect_class": {"type": ["string", "null"]},
+    "evidence_refs": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "attributes": {"type": "object"}
+  },
+  "additionalProperties": false
+}

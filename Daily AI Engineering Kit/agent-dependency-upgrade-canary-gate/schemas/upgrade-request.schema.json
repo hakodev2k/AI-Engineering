@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Dependency Upgrade Request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["target", "current_version", "requested_version", "ecosystem", "reason", "verification_commands"],
+  "properties": {
+    "target": {"type": "string", "minLength": 1},
+    "current_version": {"type": "string", "minLength": 1},
+    "requested_version": {"type": "string", "minLength": 1},
+    "ecosystem": {"enum": ["dotnet", "npm", "python", "other"]},
+    "reason": {"type": "string", "minLength": 3},
+    "security_sensitive": {"type": "boolean", "default": false},
+    "expected_files": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "verification_commands": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "acceptance_criteria": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"type": "string", "minLength": 1}
+    }
+  }
+}

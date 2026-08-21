@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ApprovalContext",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version","task_id","risk","action_type","target_environment","repository_revision","plan_fingerprint","resource_fingerprint","command_fingerprint","permission_fingerprint","actor_id"],
+  "properties": {
+    "version": {"const": "1.0"},
+    "task_id": {"type":"string","minLength":1},
+    "risk": {"enum":["low","medium","high","critical"]},
+    "action_type": {"type":"string","minLength":1},
+    "target_environment": {"type":"string","minLength":1},
+    "repository_revision": {"type":"string","minLength":1},
+    "plan_fingerprint": {"type":"string","pattern":"^[a-f0-9]{64}$"},
+    "resource_fingerprint": {"type":"string","pattern":"^[a-f0-9]{64}$"},
+    "command_fingerprint": {"type":"string","pattern":"^[a-f0-9]{64}$"},
+    "permission_fingerprint": {"type":"string","pattern":"^[a-f0-9]{64}$"},
+    "actor_id": {"type":"string","minLength":1},
+    "dangerous_action": {"type":"boolean","default":false}
+  }
+}

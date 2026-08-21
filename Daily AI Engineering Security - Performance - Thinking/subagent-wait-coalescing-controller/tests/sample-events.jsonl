@@ -1,0 +1,4 @@
+{"event_type":"wait_agent","child_id":"a","state_fingerprint":"a:running:v1","material_change":true,"model_turn":true,"input_tokens":120000,"target_valid":true}
+{"event_type":"wait_agent","child_id":"a","state_fingerprint":"a:running:v1","material_change":false,"model_turn":false,"input_tokens":0,"target_valid":true}
+{"event_type":"wait_agent","child_id":"a","state_fingerprint":"a:running:v1","material_change":false,"model_turn":false,"input_tokens":0,"target_valid":true}
+{"event_type":"terminal","child_id":"a","state_fingerprint":"a:completed:v2","material_change":true,"model_turn":true,"input_tokens":120000,"target_valid":true}

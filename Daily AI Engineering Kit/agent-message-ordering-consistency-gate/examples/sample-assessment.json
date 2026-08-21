@@ -1,0 +1,22 @@
+{
+  "status": "pass",
+  "stream": "order-events",
+  "ordering_key": "orderId",
+  "sequence_strategy": "monotonic aggregate version; reject version <= persisted version",
+  "duplicate_strategy": "persist processed message id atomically with state update",
+  "replay_strategy": "replayed messages pass through the same stale-version and idempotency guards",
+  "findings": [
+    {
+      "severity": "medium",
+      "finding": "Parallel consumers can observe delayed delivery for the same aggregate.",
+      "evidence": "Concurrency is greater than one, but all messages for an order share the same partition key and version guard.",
+      "recommended_action": "Keep per-order partitioning and retain the monotonic version check."
+    }
+  ],
+  "verification": {
+    "out_of_order": true,
+    "duplicate_replay": true,
+    "stale_event": true,
+    "parallel_consumer": true
+  }
+}

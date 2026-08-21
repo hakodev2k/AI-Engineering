@@ -1,0 +1,22 @@
+[
+  {
+    "name": "new-send",
+    "input": {"workflow_id":"w1","action":"send","target":"msg:1","canonical_arguments":{"body_hash":"a"},"side_effect_class":"send","ledger_record":null},
+    "expected_decision": "execute"
+  },
+  {
+    "name": "already-succeeded",
+    "input": {"workflow_id":"w1","action":"send","target":"msg:1","canonical_arguments":{"body_hash":"a"},"side_effect_class":"send","ledger_record":{"state":"succeeded","attempts":1,"operation_key":"COMPUTE_FROM_INPUT","result_ref":"provider:42"}},
+    "expected_decision": "reuse"
+  },
+  {
+    "name": "unknown-high-impact",
+    "input": {"workflow_id":"w2","action":"deploy","target":"prod:api","canonical_arguments":{"release":"r7"},"side_effect_class":"deploy","ledger_record":{"state":"unknown","attempts":1,"operation_key":"COMPUTE_FROM_INPUT"}},
+    "expected_decision": "block"
+  },
+  {
+    "name": "definitive-failure-retry",
+    "input": {"workflow_id":"w3","action":"publish","target":"artifact:9","canonical_arguments":{"sha":"abc"},"side_effect_class":"publish","ledger_record":{"state":"failed","attempts":1,"operation_key":"COMPUTE_FROM_INPUT","definitive_failure":true}},
+    "expected_decision": "execute"
+  }
+]

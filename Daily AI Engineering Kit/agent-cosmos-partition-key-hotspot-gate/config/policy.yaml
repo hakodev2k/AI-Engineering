@@ -1,0 +1,13 @@
+version: 1
+hot_partition_share_threshold: 0.20
+hot_partition_ru_threshold: 0.30
+minimum_sample_count: 100
+lookback_minutes: 30
+max_retry_attempts: 2
+require_human_approval_for_partition_key_change: true
+require_human_approval_for_container_recreation: true
+require_human_approval_for_bulk_data_migration: true
+accepted_statuses:
+  - pass
+  - warn
+  - block

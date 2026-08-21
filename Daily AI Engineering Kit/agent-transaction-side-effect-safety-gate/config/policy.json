@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "transactionPatterns": ["BeginTransaction", "TransactionScope", "ExecuteInTransaction", "CreateExecutionStrategy"],
+  "sideEffectPatterns": ["SendAsync", "PublishAsync", "ProduceAsync", "SendEmail", "SendSms", "UploadAsync", "DeleteAsync", "PostAsync", "PutAsync"],
+  "safePatterns": ["Outbox", "EnqueueOutbox", "AddOutboxMessage"],
+  "scanExtensions": [".cs"],
+  "maxContextLines": 120,
+  "failOnHigh": true
+}

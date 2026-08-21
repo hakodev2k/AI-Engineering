@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DeliveryResult",
+  "type": "object",
+  "required": ["status", "eventId", "idempotencyKey", "evidence", "verification"],
+  "properties": {
+    "status": {"enum": ["pass", "block", "needs-approval", "error"]},
+    "eventId": {"type": "string", "minLength": 1},
+    "idempotencyKey": {"type": "string", "minLength": 1},
+    "evidence": {"type": "array", "items": {"type": "string"}},
+    "verification": {
+      "type": "object",
+      "required": ["transactionalEnqueue", "dedupeObserved", "sideEffectCount"],
+      "properties": {
+        "transactionalEnqueue": {"type": "boolean"},
+        "dedupeObserved": {"type": "boolean"},
+        "sideEffectCount": {"type": "integer", "minimum": 0}
+      },
+      "additionalProperties": false
+    },
+    "errors": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": false
+}

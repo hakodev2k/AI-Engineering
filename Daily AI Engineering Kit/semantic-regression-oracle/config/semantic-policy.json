@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "critical_categories": [
+    "authorization",
+    "security",
+    "billing",
+    "financial-calculation",
+    "destructive-action",
+    "public-contract"
+  ],
+  "default_numeric_tolerance": 0.0,
+  "require_independent_reviewer_for_critical": true,
+  "require_human_approval_for_critical_allowed_change": true,
+  "max_transient_execution_retries": 1,
+  "fail_on_missing_scenarios": true,
+  "fail_on_suite_hash_mismatch": true,
+  "fail_on_invariant_violation": true
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": "feature-427",
+  "status": "draft",
+  "sources": [
+    {
+      "id": "src-code",
+      "type": "repository-file",
+      "location": "src/orders/OrderService.cs",
+      "authority": 95,
+      "relevance": 95,
+      "corroborated": true,
+      "dynamic": false,
+      "observed_at": null,
+      "notes": "Current implementation"
+    },
+    {
+      "id": "src-test",
+      "type": "test-output",
+      "location": "artifacts/order-tests.txt",
+      "authority": 90,
+      "relevance": 90,
+      "corroborated": true,
+      "dynamic": false,
+      "observed_at": null,
+      "notes": "Focused test evidence"
+    }
+  ],
+  "claims": [
+    {
+      "id": "claim-entrypoint",
+      "statement": "OrderService is the implementation entry point covered by the focused tests.",
+      "source_ids": ["src-code", "src-test"],
+      "confidence": "high"
+    }
+  ],
+  "verification": {"score": 0, "errors": [], "warnings": []}
+}

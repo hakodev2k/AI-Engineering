@@ -1,0 +1,21 @@
+{
+  "policy_version": "1.0.0",
+  "independent_review_severities": ["sev0", "sev1"],
+  "max_transient_retries": 1,
+  "require_negative_control": true,
+  "require_rollback": true,
+  "max_temporary_exception_hours": 168,
+  "approval_required_actions": [
+    "production-deploy",
+    "destructive-operation",
+    "database-schema-change",
+    "infrastructure-change",
+    "secret-change",
+    "breaking-api-change",
+    "security-weakening",
+    "irreversible-action"
+  ],
+  "verified_status": "verified",
+  "blocked_status": "blocked",
+  "approval_status": "human-approval-required"
+}

@@ -1,0 +1,12 @@
+{
+  "success_states": ["succeeded", "completed", "success"],
+  "failure_states": ["failed", "error"],
+  "interrupted_states": ["interrupted", "cancelled", "canceled"],
+  "running_states": ["queued", "starting", "running"],
+  "require_terminal_receipt_for_required_child": true,
+  "require_acceptance_evidence_for_success": true,
+  "require_start_evidence_for_required_child": true,
+  "max_reconcile_attempts": 2,
+  "allow_partial_status": true,
+  "block_retry_when_commit_state_unknown": true
+}

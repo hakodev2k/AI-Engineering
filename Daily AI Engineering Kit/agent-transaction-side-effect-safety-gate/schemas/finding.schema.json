@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TransactionSideEffectFinding",
+  "type": "object",
+  "required": ["classification","file","line","side_effect","evidence","confidence","risk","recommended_action","approval_required"],
+  "properties": {
+    "classification": {"enum": ["confirmed","dismissed","unresolved"]},
+    "file": {"type":"string","minLength":1},
+    "line": {"type":"integer","minimum":1},
+    "transaction_boundary": {"type":"string"},
+    "side_effect": {"type":"string","minLength":1},
+    "retry_semantics": {"type":"string"},
+    "idempotency": {"type":"string"},
+    "evidence": {"type":"array","items":{"type":"string"},"minItems":1},
+    "confidence": {"enum":["low","medium","high"]},
+    "risk": {"enum":["low","medium","high","critical"]},
+    "recommended_action": {"type":"string","minLength":1},
+    "approval_required": {"type":"boolean"},
+    "verification_status": {"enum":["not-run","failed","passed","blocked"]}
+  },
+  "additionalProperties": false
+}

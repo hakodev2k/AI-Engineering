@@ -1,0 +1,35 @@
+{
+  "plan_id": "feature-contract-v2",
+  "risk": "high",
+  "repositories": [
+    {
+      "name": "service-api",
+      "revision": "1111111",
+      "role": "producer",
+      "state": "ready",
+      "changes": ["Add backward-compatible v2 response field"],
+      "verification": ["dotnet test tests/ContractTests"],
+      "approval_actions": []
+    },
+    {
+      "name": "web-client",
+      "revision": "2222222",
+      "role": "consumer",
+      "state": "ready",
+      "changes": ["Consume v2 response field with v1 fallback"],
+      "verification": ["npm test -- contract"],
+      "approval_actions": []
+    }
+  ],
+  "edges": [
+    {
+      "from": "service-api",
+      "to": "web-client",
+      "contract": "GET /api/items response schema",
+      "compatibility": "requires-ordering"
+    }
+  ],
+  "rollout": ["service-api", "web-client"],
+  "rollback": ["web-client", "service-api"],
+  "approvals": []
+}

@@ -1,0 +1,10 @@
+{
+  "reviewer_id": "freshness-reviewer",
+  "curator_id": "freshness-curator",
+  "reviewed_result_ids": ["deploy-status-001"],
+  "decision_risk": "high",
+  "status": "approved",
+  "human_approval_required": true,
+  "human_approval_present": true,
+  "reasons": ["source revision matches", "no invalidation event after observation", "query binding unchanged"]
+}

@@ -1,0 +1,28 @@
+{
+  "gates": [
+    {
+      "id": "fresh-build-before-benchmark",
+      "actions": ["benchmark", "long-run"],
+      "required_evidence": [
+        {"key": "build_passed", "equals": true, "max_age_seconds": 900, "same_epoch": true}
+      ],
+      "on_failure": "block"
+    },
+    {
+      "id": "explicit-approval-before-git-commit",
+      "actions": ["git-commit"],
+      "required_evidence": [
+        {"key": "human_commit_approval", "equals": true, "max_age_seconds": 600, "same_epoch": true}
+      ],
+      "on_failure": "block"
+    },
+    {
+      "id": "declared-launcher-before-direct-run",
+      "actions": ["direct-launch"],
+      "required_evidence": [
+        {"key": "launcher_equivalence_verified", "equals": true, "max_age_seconds": 1800, "same_epoch": true}
+      ],
+      "on_failure": "review"
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "max_compaction_attempts": 2,
+  "minimum_token_reduction_ratio": 0.20,
+  "minimum_required_invariant_retention": 1.0,
+  "minimum_critical_identifier_retention": 1.0,
+  "minimum_probe_pass_rate": 1.0,
+  "fail_closed_on_missing_metrics": true,
+  "critical_classes": ["constraint", "decision", "identifier", "pending-work", "safety-boundary"]
+}

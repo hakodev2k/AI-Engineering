@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "hash_algorithm": "sha256",
+  "max_hash_bytes": 8388608,
+  "max_cached_bytes_per_entry": 1048576,
+  "metadata_shortcut": true,
+  "require_hash_on_metadata_change": true,
+  "context_residency": {
+    "default": "present",
+    "after_compaction": "unknown",
+    "rehydrate_when_exact_text_required": true
+  },
+  "ranges": {
+    "allow_superset_hits": true,
+    "merge_adjacent_ranges": true
+  },
+  "invalidation_events": ["write", "edit", "move", "delete", "external-change"],
+  "force_read_reasons": ["post-compaction-exact-text", "verification", "user-request", "cache-integrity-check"],
+  "metrics": {
+    "minimum_target_duplicate_byte_reduction_percent": 80,
+    "maximum_false_cache_hits": 0
+  }
+}

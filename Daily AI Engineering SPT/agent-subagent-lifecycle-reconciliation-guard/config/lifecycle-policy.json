@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "terminal_states": ["completed", "failed", "cancelled", "aborted", "timed_out"],
+  "active_states": ["queued", "starting", "running", "working", "processing", "waiting"],
+  "evidence_precedence": [
+    "terminal_event",
+    "task_complete_event",
+    "authoritative_registry",
+    "closed_spawn_edge",
+    "delivered_result",
+    "persisted_status",
+    "watched_status",
+    "ui_status"
+  ],
+  "max_stale_active_seconds": 120,
+  "max_wait_attempts": 4,
+  "initial_wait_seconds": 15,
+  "max_wait_seconds": 120,
+  "require_new_execution_id_for_terminal_to_active": true,
+  "fail_closed_on_conflict_without_authoritative_evidence": true
+}

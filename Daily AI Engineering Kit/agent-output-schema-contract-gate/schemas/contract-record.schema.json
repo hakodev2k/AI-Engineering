@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.local/agent-output-schema-contract-gate/contract-record.schema.json",
+  "title": "Agent Output Contract Record",
+  "type": "object",
+  "required": ["contract_name", "risk", "baseline", "candidate", "consumers", "replay_checks"],
+  "properties": {
+    "contract_name": {"type": "string", "minLength": 1},
+    "risk": {"enum": ["low", "medium", "high", "critical"]},
+    "producer": {"type": "string"},
+    "candidate_author": {"type": "string"},
+    "baseline": {"$ref": "#/$defs/binding"},
+    "candidate": {"$ref": "#/$defs/binding"},
+    "consumers": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["name"],
+        "properties": {
+          "name": {"type": "string", "minLength": 1},
+          "mandatory_replay": {"type": "boolean"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "replay_checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["consumer", "status", "candidate_schema_sha256"],
+        "properties": {
+          "consumer": {"type": "string"},
+          "status": {"enum": ["pass", "fail", "not-run"]},
+          "evidence": {"type": "string"},
+          "candidate_schema_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "approval": {
+      "type": ["object", "null"],
+      "properties": {
+        "approved": {"type": "boolean"},
+        "approver": {"type": "string"},
+        "candidate_revision": {"type": "string"},
+        "candidate_schema_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "$defs": {
+    "binding": {
+      "type": "object",
+      "required": ["schema_path", "schema_sha256", "revision", "contract_version"],
+      "properties": {
+        "schema_path": {"type": "string", "minLength": 1},
+        "schema_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "revision": {"type": "string", "minLength": 1},
+        "contract_version": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

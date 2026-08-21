@@ -1,0 +1,9 @@
+{
+  "contract_name": "example-agent-result",
+  "contract_version": "1.1",
+  "status": "partial",
+  "findings": [
+    {"id": "F-001", "message": "Representative finding", "confidence": 0.82, "risk": "medium"}
+  ],
+  "summary": "Representative compatible candidate instance"
+}

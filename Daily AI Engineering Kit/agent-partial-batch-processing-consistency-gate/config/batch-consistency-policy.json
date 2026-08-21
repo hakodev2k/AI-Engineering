@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "max_retries": 2,
+  "required_properties": [
+    "stable_item_identity",
+    "checkpoint_strategy",
+    "per_item_result",
+    "retry_scope",
+    "completion_criteria"
+  ],
+  "approval_required_for": [
+    "schema-change",
+    "production-deployment",
+    "production-config",
+    "data-deletion",
+    "queue-purge",
+    "breaking-contract",
+    "irreversible-backfill"
+  ],
+  "risk_patterns": [
+    "batch_level_success_only",
+    "non_durable_checkpoint",
+    "retry_entire_batch_without_dedup",
+    "swallowed_item_failure",
+    "unbounded_parallelism",
+    "partial_commit_without_result_record"
+  ]
+}

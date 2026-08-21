@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Incident Hotfix Plan",
+  "type": "object",
+  "required": ["incident_id", "severity", "implementer", "confirmed_symptom", "allowed_paths", "forbidden_paths", "expected_behavior", "verification", "rollback", "approval_actions", "temporary_exceptions"],
+  "properties": {
+    "incident_id": {"type": "string", "minLength": 1},
+    "severity": {"enum": ["sev0", "sev1", "sev2", "sev3"]},
+    "implementer": {"type": "string", "minLength": 1},
+    "confirmed_symptom": {"type": "string", "minLength": 1},
+    "hypothesis": {"type": "string"},
+    "allowed_paths": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+    "forbidden_paths": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "expected_behavior": {"type": "string", "minLength": 1},
+    "verification": {
+      "type": "object",
+      "required": ["commands", "negative_control_commands"],
+      "properties": {
+        "commands": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+        "negative_control_commands": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}
+      }
+    },
+    "rollback": {
+      "type": "object",
+      "required": ["mechanism", "trigger"],
+      "properties": {
+        "mechanism": {"type": "string", "minLength": 1},
+        "trigger": {"type": "string", "minLength": 1}
+      }
+    },
+    "approval_actions": {"type": "array", "items": {"type": "string"}},
+    "approval_granted": {"type": "boolean"},
+    "temporary_exceptions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "owner", "reason", "expires_at", "follow_up"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "owner": {"type": "string", "minLength": 1},
+          "reason": {"type": "string", "minLength": 1},
+          "expires_at": {"type": "string", "format": "date-time"},
+          "follow_up": {"type": "string", "minLength": 1}
+        }
+      }
+    }
+  },
+  "additionalProperties": true
+}

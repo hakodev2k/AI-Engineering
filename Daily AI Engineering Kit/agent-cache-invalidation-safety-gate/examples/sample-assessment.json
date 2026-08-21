@@ -1,0 +1,25 @@
+{
+  "status": "pass",
+  "findings": [
+    {
+      "cache_key": "customer:{tenantId}:{customerId}",
+      "mutation_source": "CustomerService.UpdateAsync",
+      "invalidation_path": "RemoveAsync(customer key) after durable commit",
+      "consistency_expectation": "Subsequent reads in the same tenant must not return the previous customer value after successful update completion.",
+      "risk": "medium",
+      "evidence": [
+        "CustomerService.cs mutation and invalidation are in the same application workflow",
+        "CustomerServiceTests.cs verifies update then cached read returns the new value"
+      ]
+    }
+  ],
+  "verification": {
+    "result": "pass",
+    "checks": [
+      "targeted tests passed",
+      "assessment validator passed",
+      "no broad cache flush introduced"
+    ],
+    "remaining_risks": []
+  }
+}

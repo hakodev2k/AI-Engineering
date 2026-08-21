@@ -1,0 +1,9 @@
+max_retry: 2
+require_approval:
+  - production_deployment
+  - breaking_api_change
+  - database_migration
+verification:
+  - build
+  - tests
+  - diff_review

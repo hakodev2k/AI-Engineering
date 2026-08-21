@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "EF Core N+1 Detection Result",
+  "type": "object",
+  "required": ["status", "total_commands", "suspect_groups"],
+  "properties": {
+    "status": {"enum": ["pass", "fail"]},
+    "total_commands": {"type": "integer", "minimum": 0},
+    "suspect_groups": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["request_id", "normalized_sql", "query_count", "distinct_parameter_sets", "severity", "evidence"],
+        "properties": {
+          "request_id": {"type": "string"},
+          "normalized_sql": {"type": "string"},
+          "query_count": {"type": "integer", "minimum": 1},
+          "distinct_parameter_sets": {"type": "integer", "minimum": 0},
+          "severity": {"enum": ["medium", "high"]},
+          "evidence": {"type": "array"}
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

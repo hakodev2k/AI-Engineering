@@ -1,0 +1,8 @@
+{
+  "max_instruction_bytes": 16384,
+  "trusted_servers": [],
+  "high_impact_capabilities": ["exec", "write", "secret_read", "network_egress", "deploy", "publish", "delete"],
+  "require_approval_for_untrusted_high_impact": true,
+  "deny_control_characters": true,
+  "invalidate_approval_on_instruction_change": true
+}

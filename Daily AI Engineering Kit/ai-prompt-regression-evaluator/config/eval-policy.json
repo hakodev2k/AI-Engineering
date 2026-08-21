@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "minimum_repetitions": 3,
+  "critical_minimum_repetitions": 5,
+  "max_additional_evidence_rounds": 1,
+  "transient_retry_per_run": 1,
+  "minimum_candidate_quality": 0.8,
+  "maximum_quality_drop": 0.03,
+  "maximum_critical_worst_run_drop": 0.05,
+  "maximum_cost_increase_ratio": 0.25,
+  "maximum_latency_increase_ratio": 0.30,
+  "block_on_critical_assertion_failure": true,
+  "require_independent_review_for_high_impact": true,
+  "allow_missing_cost": true,
+  "allow_missing_latency": true
+}

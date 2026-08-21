@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["task_id", "head", "items"],
+  "properties": {
+    "task_id": {"type": "string", "minLength": 1},
+    "head": {"type": "string", "minLength": 1},
+    "implementation_owner": {"type": "string"},
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["path", "classification", "evidence"],
+        "properties": {
+          "path": {"type": "string", "minLength": 1},
+          "classification": {"enum": ["source", "generated", "vendor", "derived", "unknown"]},
+          "evidence": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+          "source_path": {"type": "string"},
+          "generator_command": {"type": "string"},
+          "generator_version": {"type": "string"},
+          "exception": {
+            "type": "object",
+            "properties": {
+              "approved": {"type": "boolean"},
+              "approved_by": {"type": "string"},
+              "reason": {"type": "string"},
+              "expires_at": {"type": "string"}
+            }
+          }
+        }
+      }
+    }
+  }
+}

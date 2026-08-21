@@ -1,0 +1,25 @@
+{
+  "disagreement_id": "db-index-choice-001",
+  "subject": "Whether to add a composite index for the reporting query",
+  "risk": "medium",
+  "round": 1,
+  "participants": ["implementation-agent", "database-reviewer"],
+  "positions": [
+    {
+      "agent": "implementation-agent",
+      "claim": "The composite index is required to remove the observed table scan.",
+      "recommended_action": "add-index",
+      "evidence_ids": ["query-plan-before"]
+    },
+    {
+      "agent": "database-reviewer",
+      "claim": "The current evidence does not prove the index benefit exceeds write amplification cost.",
+      "recommended_action": "collect-production-like-plan-and-write-cost",
+      "evidence_ids": ["query-plan-before", "write-volume-sample"]
+    }
+  ],
+  "evidence_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "new_evidence_ids": [],
+  "status": "open",
+  "resolution": null
+}

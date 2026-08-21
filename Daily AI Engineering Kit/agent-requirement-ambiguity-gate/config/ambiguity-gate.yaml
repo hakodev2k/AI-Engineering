@@ -1,0 +1,17 @@
+version: 1
+package: agent-requirement-ambiguity-gate
+thresholds:
+  max_open_blockers: 0
+  max_high_risk_assumptions: 0
+  max_replan_attempts: 2
+  min_acceptance_criteria: 1
+approval_required_for:
+  - breaking-api-contract
+  - database-schema-change
+  - production-configuration-change
+  - security-control-change
+  - destructive-operation
+  - irreversible-migration
+  - large-dependency-upgrade
+statuses: [ready, blocked, needs-approval, rejected]
+evidence_types: [repository, requirement, test, api-contract, database, configuration, official-doc]

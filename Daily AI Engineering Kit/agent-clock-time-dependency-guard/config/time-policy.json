@@ -1,0 +1,38 @@
+{
+  "policy_version": "1.0.0",
+  "max_transient_retries": 1,
+  "max_clock_skew_ms": 2000,
+  "max_observation_age_seconds": {
+    "low": 300,
+    "medium": 120,
+    "high": 30,
+    "critical": 10
+  },
+  "required_trust_by_risk": {
+    "low": "asserted",
+    "medium": "asserted",
+    "high": "verified",
+    "critical": "verified"
+  },
+  "high_risk_decisions": [
+    "production-deploy-window",
+    "production-config-window",
+    "secret-rotation-window",
+    "destructive-operation-window",
+    "irreversible-migration-window",
+    "security-expiry-decision",
+    "financial-cutoff-decision"
+  ],
+  "require_independent_review_for": ["high", "critical"],
+  "fail_closed_on": [
+    "missing-time-observation",
+    "naive-local-timestamp",
+    "unknown-timezone",
+    "expired-observation",
+    "clock-skew-exceeded",
+    "insufficient-trust",
+    "decision-binding-mismatch",
+    "stale-review"
+  ],
+  "dangerous_actions_require_human_approval": true
+}

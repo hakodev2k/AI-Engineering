@@ -1,0 +1,15 @@
+{
+  "policy_version": "1.0",
+  "context_ttl_seconds": 30,
+  "fail_closed_on_detached_head": false,
+  "require_exact_branch_when_declared": true,
+  "require_common_git_dir_match": true,
+  "require_worktree_path_match": true,
+  "require_head_oid_match_for_patch_apply": true,
+  "require_upstream_match_when_declared": false,
+  "require_clean_index_for_patch_apply": true,
+  "dangerous_operations": ["commit", "push", "patch-apply", "branch-mutate"],
+  "human_approval_operations": ["push", "branch-mutate"],
+  "allowed_operations": ["read", "write", "commit", "push", "patch-apply", "branch-mutate"],
+  "max_revalidation_retries": 1
+}

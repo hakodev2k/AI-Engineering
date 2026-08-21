@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Test Selection Plan",
+  "type": "object",
+  "required": ["version","plan_revision","base_ref","change_fingerprint","changed_paths","risk_triggers","impacted_components","selected_tests","mandatory_suites","fallback_mode","confidence","unresolved_impact"],
+  "properties": {
+    "version": {"type": "integer", "minimum": 1},
+    "plan_revision": {"type": "string", "minLength": 1},
+    "base_ref": {"type": "string", "minLength": 1},
+    "change_fingerprint": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "author_id": {"type": "string"},
+    "changed_paths": {"type": "array", "items": {"type": "object", "required": ["path","classes"], "properties": {"path": {"type": "string"}, "classes": {"type": "array", "minItems": 1, "items": {"type": "string"}}}}},
+    "risk_triggers": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "impacted_components": {"type": "array", "items": {"type": "object", "required": ["component","confidence","evidence"], "properties": {"component": {"type": "string"}, "confidence": {"type": "number", "minimum": 0, "maximum": 1}, "evidence": {"type": "array", "minItems": 1, "items": {"type": "string"}}}}},
+    "selected_tests": {"type": "array", "items": {"type": "object", "required": ["id","suite","command","reason"], "properties": {"id": {"type": "string"}, "suite": {"type": "string"}, "command": {"type": "string"}, "reason": {"type": "string"}}}},
+    "mandatory_suites": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "fallback_mode": {"enum": ["targeted","module","integration","full"]},
+    "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+    "unresolved_impact": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": true
+}

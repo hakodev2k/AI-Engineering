@@ -1,0 +1,8 @@
+{
+  "max_duplicate_read_token_ratio": 0.15,
+  "max_post_compaction_duplicate_reads": 0,
+  "max_cache_read_to_input_ratio": 10.0,
+  "minimum_events_for_ratio_gate": 2,
+  "require_content_hash": true,
+  "quality_regression_tolerance": 0.0
+}

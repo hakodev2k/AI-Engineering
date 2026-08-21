@@ -1,0 +1,24 @@
+{
+  "eventId": "order-123-paid-v1",
+  "idempotencyKey": "order-123-paid-v1",
+  "approvalRequired": false,
+  "approvalPresent": false,
+  "outbox": {
+    "transactionalEnqueue": true,
+    "stableEventId": true,
+    "boundedRetries": true,
+    "markDeliveredAfterAck": true,
+    "crashRecoverable": true,
+    "maxObservedAttempts": 3
+  },
+  "inbox": {
+    "atomicDedupe": true,
+    "durableIdentity": true,
+    "ackAfterCommit": true,
+    "boundedRetries": true
+  },
+  "effects": {
+    "sideEffectCountAfterDuplicateDelivery": 1,
+    "externalSideEffectsIdempotentOrReconciled": true
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "version": 1,
+  "max_retries": 2,
+  "ignore_patterns": ["*.local.*", "*.example", "node_modules/**", "bin/**", "obj/**"],
+  "secret_name_patterns": ["password", "secret", "token", "apikey", "api_key", "connectionstring", "connection_string", "privatekey", "private_key"],
+  "approval_required_for": ["production-config-change", "secret-change", "infrastructure-change", "deployment", "breaking-contract", "data-deletion"],
+  "required_verification": ["expected-source-identified", "actual-source-identified", "drift-reproduced", "secret-values-redacted", "unintended-changes-checked"]
+}

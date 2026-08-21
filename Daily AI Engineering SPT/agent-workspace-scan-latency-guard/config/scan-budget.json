@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "limits": {
+    "maxGitStatusMs": 2000,
+    "maxBoundedWalkMs": 3000,
+    "maxRegressionPercent": 50,
+    "maxEntriesPerProbe": 50000,
+    "probeTimeoutSeconds": 10
+  },
+  "policy": {
+    "failClosedOnGitStatusTimeout": true,
+    "warnOnWslMountedDrive": true,
+    "neverDisableSandboxAutomatically": true,
+    "requireBeforeAfterMeasurement": true,
+    "requireExplicitApprovalForGlobalGitConfigChanges": true
+  },
+  "knownHeavyDirectoryNames": [
+    "node_modules",
+    ".pnpm-store",
+    ".next",
+    "dist",
+    "build",
+    "bin",
+    "obj",
+    "coverage",
+    ".cache",
+    ".venv",
+    "venv"
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "timeout_seconds": 3,
+  "max_probes": 20,
+  "allow": [
+    {"name": "required-api", "url": "https://example.com/", "method": "HEAD"}
+  ],
+  "deny": [
+    {"name": "blocked-control", "url": "https://blocked.invalid/", "method": "HEAD"}
+  ]
+}

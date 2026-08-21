@@ -1,0 +1,11 @@
+{
+  "max_argument_bytes": 1048576,
+  "max_chunks": 20000,
+  "preview_interval_chunks": 64,
+  "preview_interval_ms": 250,
+  "max_stream_seconds": 300,
+  "require_final_event_for_execution": true,
+  "allow_incremental_execution_tools": [],
+  "final_payload_authoritative": true,
+  "max_benchmark_regression_percent": 10.0
+}

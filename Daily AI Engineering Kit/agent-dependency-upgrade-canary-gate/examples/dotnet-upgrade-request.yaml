@@ -1,0 +1,18 @@
+target: Microsoft.Extensions.Http
+current_version: "9.0.7"
+requested_version: "9.0.8"
+ecosystem: dotnet
+reason: consume a servicing update while keeping the runtime family unchanged
+security_sensitive: false
+expected_files:
+  - Directory.Packages.props
+  - packages.lock.json
+verification_commands:
+  - dotnet restore --locked-mode
+  - dotnet build --no-restore --nologo
+  - dotnet test --no-build --nologo
+acceptance_criteria:
+  - Microsoft.Extensions.Http resolves to 9.0.8
+  - no unrelated direct package versions change
+  - build succeeds
+  - tests succeed

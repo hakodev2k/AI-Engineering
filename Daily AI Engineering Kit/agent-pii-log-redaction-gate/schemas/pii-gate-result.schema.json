@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PII Log Gate Result",
+  "type": "object",
+  "required": ["status", "finding_count", "findings"],
+  "properties": {
+    "status": {"enum": ["passed", "blocked"]},
+    "finding_count": {"type": "integer", "minimum": 0},
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["file", "line", "type", "severity", "sample"],
+        "properties": {
+          "file": {"type": "string", "minLength": 1},
+          "line": {"type": "integer", "minimum": 1},
+          "type": {"enum": ["email", "phone", "ipv4", "jwt", "bearer_token", "credit_card_like", "connection_string_secret", "api_key_like"]},
+          "severity": {"enum": ["low", "medium", "high", "critical"]},
+          "sample": {"const": "[REDACTED]"}
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

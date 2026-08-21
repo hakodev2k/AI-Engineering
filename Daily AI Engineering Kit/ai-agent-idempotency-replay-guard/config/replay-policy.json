@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "max_mutation_retries": 1,
+  "max_read_reconciliation_retries": 1,
+  "high_risk_categories": ["financial", "destructive", "production", "security", "external-message"],
+  "automatic_retry_states": ["failed-safe-to-retry"],
+  "terminal_success_states": ["succeeded", "compensated"],
+  "review_required_states": ["failed-unknown-outcome"],
+  "block_on_payload_fingerprint_mismatch": true,
+  "require_independent_review_for_high_risk_unknown": true,
+  "require_human_approval_for_high_risk_compensation": true,
+  "require_provider_verification_for_success": true,
+  "volatile_payload_fields": ["trace_id", "request_timestamp", "correlation_id"]
+}

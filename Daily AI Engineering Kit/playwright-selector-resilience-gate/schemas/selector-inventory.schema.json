@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "selector-inventory.schema.json",
+  "type": "object",
+  "required": ["version", "generated_at", "repository_revision", "selectors"],
+  "properties": {
+    "version": {"type": "string"},
+    "generated_at": {"type": "string", "format": "date-time"},
+    "repository_revision": {"type": "string", "minLength": 1},
+    "selectors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "file", "line", "kind", "expression", "risk", "score", "evidence"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "file": {"type": "string", "minLength": 1},
+          "line": {"type": "integer", "minimum": 1},
+          "kind": {"type": "string"},
+          "expression": {"type": "string"},
+          "risk": {"enum": ["low", "medium", "high", "critical"]},
+          "score": {"type": "integer", "minimum": 0},
+          "evidence": {"type": "array", "items": {"type": "string"}},
+          "runtime_probe": {
+            "type": ["object", "null"],
+            "properties": {
+              "status": {"enum": ["passed", "failed", "not-run"]},
+              "match_count": {"type": "integer", "minimum": 0},
+              "visible_count": {"type": "integer", "minimum": 0},
+              "url": {"type": "string"},
+              "observed_at": {"type": "string", "format": "date-time"},
+              "error": {"type": ["string", "null"]}
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

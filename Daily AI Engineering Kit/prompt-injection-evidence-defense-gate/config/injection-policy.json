@@ -1,0 +1,56 @@
+{
+  "version": 1,
+  "trusted_source_types": ["host-instruction", "user-instruction", "approved-repository-policy"],
+  "conditionally_trusted_source_types": ["repository-file", "internal-tool-output"],
+  "evidence_only_source_types": ["web", "external-document", "email", "ticket", "chat-export", "log", "api-response", "uploaded-file", "external-tool-output", "subagent-output"],
+  "critical_markers": [
+    "ignore previous instructions",
+    "ignore all previous instructions",
+    "reveal secret",
+    "reveal secrets",
+    "send credentials",
+    "upload credentials",
+    "disable security",
+    "bypass security",
+    "delete all",
+    "force push"
+  ],
+  "high_markers": [
+    "run this command",
+    "execute this command",
+    "change your role",
+    "system prompt",
+    "developer message",
+    "do not tell the user",
+    "send this data",
+    "download and execute"
+  ],
+  "actions_requiring_trusted_authority": [
+    "write-file",
+    "execute-command",
+    "send-message",
+    "access-secret",
+    "deploy",
+    "modify-infrastructure",
+    "modify-database",
+    "delete-file",
+    "delete-data",
+    "force-push",
+    "modify-security-control",
+    "external-upload"
+  ],
+  "actions_requiring_human_approval": [
+    "access-secret",
+    "deploy",
+    "modify-infrastructure",
+    "modify-database",
+    "delete-file",
+    "delete-data",
+    "force-push",
+    "modify-security-control",
+    "external-upload",
+    "scope-expansion"
+  ],
+  "block_unresolved_severities": ["critical", "high"],
+  "max_semantic_revisions": 2
+}

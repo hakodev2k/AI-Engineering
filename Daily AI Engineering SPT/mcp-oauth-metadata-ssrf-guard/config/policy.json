@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "allowed_schemes": ["https"],
+  "development_loopback_http": false,
+  "allow_hosts": [],
+  "deny_hosts": ["metadata.google.internal"],
+  "max_redirects": 3,
+  "connect_timeout_seconds": 5,
+  "read_timeout_seconds": 10,
+  "max_response_bytes": 1048576,
+  "require_global_ip": true,
+  "reject_embedded_credentials": true,
+  "reject_non_default_ports": false,
+  "browser_allowed_schemes": ["https"],
+  "browser_allow_loopback_http": false,
+  "verify_redirect_target": true,
+  "verify_resolved_addresses": true,
+  "verify_peer_address_when_supported": true,
+  "fail_closed_on_dns_error": true
+}

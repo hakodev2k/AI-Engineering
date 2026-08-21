@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "initial_poll_seconds": 5,
+  "max_poll_seconds": 60,
+  "backoff_multiplier": 1.8,
+  "max_wait_seconds": 3600,
+  "material_progress_delta": 0.05,
+  "max_unchanged_polls": 120,
+  "completion_detection_sla_seconds": 65,
+  "wake_on": ["completed", "failed", "cancelled", "material_progress", "user_input", "deadline"],
+  "reject_targets": ["noop", "none", "null", ""],
+  "require_target_id": true,
+  "model_reentry_on_unchanged_state": false,
+  "emit_metrics": true
+}

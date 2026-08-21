@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Regression Evidence",
+  "type": "object",
+  "required": ["change", "obligations"],
+  "properties": {
+    "change": {
+      "type": "object",
+      "required": ["summary"],
+      "properties": {
+        "summary": {"type": "string", "minLength": 1},
+        "source": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "obligations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "behavior", "risk", "required", "status", "evidenceType", "expected"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^[A-Z0-9_-]+$"},
+          "behavior": {"type": "string", "minLength": 1},
+          "risk": {"enum": ["low", "medium", "high"]},
+          "required": {"type": "boolean"},
+          "status": {"enum": ["uncovered", "covered", "approved-exception", "blocked"]},
+          "evidenceType": {"enum": ["unit", "integration", "contract", "end-to-end", "static", "manual"]},
+          "expected": {"type": "string", "minLength": 1},
+          "testFile": {"type": "string"},
+          "testName": {"type": "string"},
+          "command": {"type": "string"},
+          "result": {"enum": ["pass", "fail", "not-run", "inconclusive"]},
+          "evidenceNote": {"type": "string"},
+          "approval": {"type": "string"},
+          "exclusionReason": {"type": "string"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "broaderChecks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["command", "result"],
+        "properties": {
+          "command": {"type": "string", "minLength": 1},
+          "result": {"enum": ["pass", "fail", "not-run", "inconclusive"]},
+          "note": {"type": "string"}
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

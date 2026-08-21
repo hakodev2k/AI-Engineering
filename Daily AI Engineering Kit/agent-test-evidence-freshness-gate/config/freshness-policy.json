@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "max_evidence_age_seconds": 3600,
+  "require_exact_revision": true,
+  "require_input_fingerprint": true,
+  "require_environment_fingerprint_for": ["integration", "e2e", "performance"],
+  "high_risk_categories": ["security", "database", "migration", "release", "production"],
+  "high_risk_requires_independent_review": true,
+  "invalidate_on_changed_inputs": ["source_revision", "base_revision", "dependency_lockfiles", "build_config", "test_config", "environment_fingerprint", "policy"],
+  "max_transient_retries": 1,
+  "approval_required_actions": ["production-deploy", "database-schema-change", "destructive-data-change", "force-push", "infrastructure-change", "secret-change", "production-config-change", "breaking-api-change", "security-control-weakening"]
+}

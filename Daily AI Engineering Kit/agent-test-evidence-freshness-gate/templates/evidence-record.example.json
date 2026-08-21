@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "evidence_id": "unit-auth-service",
+  "category": "unit",
+  "command": "dotnet test tests/Auth.Tests/Auth.Tests.csproj --no-restore",
+  "status": "passed",
+  "source_revision": "0123456789abcdef0123456789abcdef01234567",
+  "base_revision": "89abcdef0123456789abcdef0123456789abcdef",
+  "input_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "environment_fingerprint": null,
+  "observed_at": "2026-08-17T14:00:00Z",
+  "duration_ms": 18420,
+  "artifacts": ["artifacts/test-results/auth.trx"],
+  "notes": ["Example only; replace revision, hashes, time, command result, and artifacts with current evidence."]
+}

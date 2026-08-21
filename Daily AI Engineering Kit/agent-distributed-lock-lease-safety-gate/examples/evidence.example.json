@@ -1,0 +1,21 @@
+{
+  "status": "fail",
+  "findings": [
+    {
+      "id": "LOCK-001",
+      "risk": "critical",
+      "evidence": [
+        "Holder A lease expires during long work",
+        "Holder B acquires the same key",
+        "Holder A resumes and unconditional release removes B's lease"
+      ],
+      "recommendation": "Use unique owner tokens with atomic compare-and-release; add fencing for protected writes if stale holders can continue."
+    }
+  ],
+  "verification": {
+    "contention": true,
+    "expiry": true,
+    "stale_owner": false
+  },
+  "open_questions": ["Can the protected resource enforce monotonically increasing fencing tokens?"]
+}

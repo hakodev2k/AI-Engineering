@@ -1,0 +1,59 @@
+{
+  "incident_id": "INC-2026-08-17-001",
+  "status": "investigating",
+  "impact": {
+    "summary": "Orders API error rate increased and refund queue depth rose sharply.",
+    "first_known_impact": "2026-08-17T00:07:00+07:00",
+    "last_known_healthy": "2026-08-17T00:03:00+07:00",
+    "affected_components": ["orders-api", "refund-worker"]
+  },
+  "timeline_file": "incident-timeline.json",
+  "hypotheses": [
+    {
+      "id": "H1",
+      "statement": "The new orders-api deployment changed refund publication behavior, increasing queue load and causing request failures.",
+      "status": "active",
+      "confidence": "medium",
+      "predicted_observations": [
+        "Queue growth begins after the deployment.",
+        "The changed code path publishes more refund requests per cancellation."
+      ],
+      "disconfirming_observations": [
+        "Queue growth began before the deployment.",
+        "The deployed diff does not affect refund publication behavior."
+      ],
+      "supporting_evidence": ["evt-deploy-001", "evt-queue-001"],
+      "contradicting_evidence": []
+    }
+  ],
+  "root_cause": {
+    "status": "unconfirmed",
+    "summary": "Investigation is still in progress.",
+    "evidence": []
+  },
+  "mitigation": {
+    "action": "No production action executed yet.",
+    "expected_effect": "N/A",
+    "rollback_path": "N/A",
+    "requires_approval": false,
+    "approval_granted": false,
+    "result": "not-run"
+  },
+  "recovery_checks": [
+    {
+      "name": "Orders API error rate",
+      "result": "not-run",
+      "evidence": []
+    }
+  ],
+  "approvals": [],
+  "uncertainties": [
+    "The exact start time of queue saturation is sampled at one-minute intervals."
+  ],
+  "review": {
+    "decision": "revise",
+    "findings": [
+      "Test whether the deploy changed the refund publication count per request."
+    ]
+  }
+}

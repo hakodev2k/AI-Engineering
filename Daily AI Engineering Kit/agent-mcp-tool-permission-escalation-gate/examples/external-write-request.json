@@ -1,0 +1,10 @@
+{
+  "request_id": "req-write-001",
+  "tool": "github.update_file",
+  "action": "write_external",
+  "risk": "high",
+  "resources": ["owner/repo:src/Orders/OrderService.cs"],
+  "reason": "Apply an approved bug fix after tests pass",
+  "requested_minutes": 10,
+  "approval_id": null
+}

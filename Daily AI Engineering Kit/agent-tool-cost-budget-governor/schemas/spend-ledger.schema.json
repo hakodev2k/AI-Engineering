@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Agent Tool Spend Ledger",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version","task_id","currency","entries"],
+  "properties": {
+    "version":{"type":"integer","const":1},
+    "task_id":{"type":"string","minLength":1},
+    "currency":{"type":"string","minLength":1},
+    "entries":{
+      "type":"array",
+      "items":{
+        "type":"object","additionalProperties":false,
+        "required":["stage","operation","attempt","cost_class","actual_cost","status"],
+        "properties":{
+          "stage":{"type":"string","minLength":1},
+          "operation":{"type":"string","minLength":1},
+          "attempt":{"type":"integer","minimum":1},
+          "cost_class":{"enum":["free","metered-known","metered-unknown","high-cost"]},
+          "actual_cost":{"type":"number","minimum":0},
+          "status":{"enum":["succeeded","failed","cancelled"]},
+          "provider":{"type":"string"},
+          "tool":{"type":"string"},
+          "units":{"type":"object"},
+          "recorded_at":{"type":"string"}
+        }
+      }
+    }
+  }
+}

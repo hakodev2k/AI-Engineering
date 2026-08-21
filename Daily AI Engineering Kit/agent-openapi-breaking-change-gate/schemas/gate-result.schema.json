@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "OpenAPI Breaking Change Gate Result",
+  "type": "object",
+  "required": ["status", "baseline", "candidate", "findings", "blocking_count"],
+  "properties": {
+    "status": {"enum": ["pass", "blocked", "validation-error"]},
+    "baseline": {"type": "string", "minLength": 1},
+    "candidate": {"type": "string", "minLength": 1},
+    "blocking_count": {"type": "integer", "minimum": 0},
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["type", "location", "message", "blocking"],
+        "properties": {
+          "type": {"type": "string", "minLength": 1},
+          "location": {"type": "string", "minLength": 1},
+          "message": {"type": "string", "minLength": 1},
+          "blocking": {"type": "boolean"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "errors": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,35 @@
+version: 1
+required_fields:
+  - timestamp
+  - service
+  - level
+correlation_fields:
+  preferred:
+    - trace_id
+    - request_id
+    - correlation_id
+    - operation_id
+  secondary:
+    - user_id
+    - tenant_id
+    - job_id
+    - message_id
+window:
+  before_seconds: 120
+  after_seconds: 300
+limits:
+  max_events: 5000
+  max_files: 25
+  max_retry_count: 2
+safety:
+  redact_keys:
+    - authorization
+    - cookie
+    - password
+    - secret
+    - api_key
+    - access_token
+  production_write_allowed: false
+outputs:
+  evidence_json: artifacts/log-correlation-evidence.json
+  report_md: artifacts/root-cause-report.md

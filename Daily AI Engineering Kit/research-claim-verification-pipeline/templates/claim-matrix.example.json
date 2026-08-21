@@ -1,0 +1,53 @@
+{
+  "question": "Can dependency X replace dependency Y for our supported runtime?",
+  "claims": [
+    {
+      "id": "CLM-001",
+      "claim": "Dependency X supports the required runtime version.",
+      "impact": "high",
+      "status": "verified",
+      "confidence": 0.95,
+      "scope": "Target runtime used by the application",
+      "evidence": [
+        {
+          "source": "official-documentation-or-repository-reference",
+          "source_type": "primary",
+          "relationship": "supports",
+          "strength": "strong",
+          "summary": "The primary source explicitly lists the required runtime as supported.",
+          "published": null,
+          "blocking": false
+        }
+      ]
+    },
+    {
+      "id": "CLM-002",
+      "claim": "Migration preserves every feature currently used by the application without code changes.",
+      "impact": "high",
+      "status": "blocked",
+      "confidence": 0.4,
+      "scope": "Features currently exercised by the application",
+      "evidence": [
+        {
+          "source": "migration-guide-reference",
+          "source_type": "primary",
+          "relationship": "contradicts",
+          "strength": "strong",
+          "summary": "The migration guide identifies behavior that requires adaptation.",
+          "published": null,
+          "blocking": true
+        }
+      ]
+    }
+  ],
+  "reviewer": {
+    "status": "blocked",
+    "findings": [
+      {
+        "claim_id": "CLM-002",
+        "severity": "blocker",
+        "reason": "Primary evidence contradicts the no-code-change claim."
+      }
+    ]
+  }
+}

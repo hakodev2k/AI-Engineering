@@ -1,0 +1,34 @@
+version: 1
+name: agent-database-connection-pool-exhaustion-gate
+max_fix_retries: 2
+thresholds:
+  high_risk_score: 7
+  warning_risk_score: 3
+signals:
+  connection_open: 2
+  missing_dispose: 4
+  blocking_db_wait: 3
+  unbounded_parallelism: 4
+  retry_loop: 3
+  long_transaction: 3
+  singleton_db_context: 5
+  manual_connection_string_pool_tuning: 2
+approval_required_for:
+  - production-config-change
+  - connection-string-change
+  - database-schema-change
+  - infrastructure-change
+  - destructive-sql
+required_evidence:
+  - affected_component
+  - finding
+  - evidence
+  - confidence
+  - risk
+  - recommended_action
+  - verification_status
+allowed_statuses:
+  - pass
+  - fail
+  - needs-approval
+  - blocked

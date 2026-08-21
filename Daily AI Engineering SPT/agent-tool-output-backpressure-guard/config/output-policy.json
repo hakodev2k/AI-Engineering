@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "per_tool_soft_bytes": 1048576,
+  "per_tool_hard_bytes": 8388608,
+  "session_soft_bytes": 33554432,
+  "session_hard_bytes": 134217728,
+  "head_preview_bytes": 65536,
+  "tail_preview_bytes": 65536,
+  "rate_window_seconds": 5,
+  "rate_soft_bytes_per_second": 2097152,
+  "rate_hard_bytes_per_second": 8388608,
+  "persist_oversized_output": true,
+  "artifact_directory": ".agent-output-artifacts",
+  "replace_session_payload_with_reference": true,
+  "lazy_replay": true,
+  "max_inline_session_record_bytes": 262144,
+  "deduplicate_by_sha256": true,
+  "cleanup_ttl_hours": 168,
+  "max_recovery_attempts": 2,
+  "fail_closed_on_accounting_error": true,
+  "require_explicit_full_artifact_load": true
+}

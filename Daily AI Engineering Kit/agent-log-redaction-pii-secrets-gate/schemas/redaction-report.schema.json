@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Redaction Report",
+  "type": "object",
+  "required": ["status", "findings_count", "counts", "output", "raw_persisted"],
+  "properties": {
+    "status": {"enum": ["sanitized", "blocked_sensitive_input"]},
+    "findings_count": {"type": "integer", "minimum": 0},
+    "counts": {
+      "type": "object",
+      "additionalProperties": {"type": "integer", "minimum": 0}
+    },
+    "output": {"type": "string", "minLength": 1},
+    "raw_persisted": {"const": false},
+    "samples": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["type", "start", "length"],
+        "properties": {
+          "type": {"type": "string", "minLength": 1},
+          "start": {"type": "integer", "minimum": 0},
+          "length": {"type": "integer", "minimum": 1}
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

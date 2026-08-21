@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "task": {
+    "id": "TASK-001",
+    "title": "Describe the requested change",
+    "implementation_owner": "agent-or-developer-id"
+  },
+  "baseline_ref": "origin/main",
+  "diff_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+  "allowed_scope": ["src/**", "tests/**"],
+  "requirements": [
+    {"id": "REQ-001", "text": "Atomic requirement"}
+  ],
+  "evidence": [
+    {"id": "EVID-001", "source": "issue/test/log/file", "summary": "Why this evidence supports the change"}
+  ],
+  "changes": [
+    {
+      "path": "src/example.cs",
+      "classification": "requirement",
+      "rationale": "Explain why this file must change.",
+      "requirement_ids": ["REQ-001"],
+      "evidence_ids": ["EVID-001"],
+      "verification_checks": [
+        {"id": "unit-tests", "status": "pending", "owner": "verification-owner"}
+      ],
+      "risk_tags": []
+    }
+  ],
+  "human_approval": null,
+  "review": {
+    "reviewer": "independent-reviewer-id",
+    "decision": "pending",
+    "findings": []
+  }
+}

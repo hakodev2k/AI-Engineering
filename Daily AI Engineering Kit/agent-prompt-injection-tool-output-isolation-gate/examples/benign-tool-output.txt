@@ -1,0 +1,4 @@
+Build result: success
+Tests: 143 passed, 0 failed
+Artifact: ./dist/service.zip
+Deployment was not performed.

@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "plan_revision": "plan-001",
+  "base_ref": "main",
+  "change_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "author_id": "impact-planner",
+  "changed_paths": [
+    {"path": "src/orders/OrderService.cs", "classes": ["source"]},
+    {"path": "src/Contracts/OrderDto.cs", "classes": ["public-contract"]}
+  ],
+  "risk_triggers": ["public-contract"],
+  "impacted_components": [
+    {"component": "orders", "confidence": 0.95, "evidence": ["changed service", "contract consumed by orders API"]}
+  ],
+  "selected_tests": [
+    {"id": "orders-unit", "suite": "unit", "command": "dotnet test tests/Orders.UnitTests", "reason": "direct component coverage"},
+    {"id": "orders-contract", "suite": "contract", "command": "dotnet test tests/Orders.ContractTests", "reason": "public-contract trigger"}
+  ],
+  "mandatory_suites": ["contract"],
+  "fallback_mode": "targeted",
+  "confidence": 0.95,
+  "unresolved_impact": []
+}

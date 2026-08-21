@@ -1,0 +1,29 @@
+version: 1
+topic: agent-transaction-boundary-consistency-gate
+max_fix_retries: 2
+risk_levels: [low, medium, high, critical]
+status_values: [pass, fail, blocked, needs-approval]
+required_checks:
+  - transaction-entry-point
+  - persistence-boundary
+  - external-side-effect-ordering
+  - retry-safety
+  - rollback-behavior
+  - concurrency-control
+  - outbox-inbox-usage
+  - verification-evidence
+approval_required_for:
+  - database-schema-change
+  - destructive-sql
+  - production-config-change
+  - breaking-api-contract
+  - data-deletion
+  - irreversible-migration
+  - production-deployment
+scanner:
+  include_extensions: [.cs, .ts, .js, .py, .java, .sql]
+  exclude_dirs: [.git, node_modules, bin, obj, dist, build, vendor]
+verification:
+  require_test_evidence: true
+  require_diff_review: true
+  require_unresolved_risks: true

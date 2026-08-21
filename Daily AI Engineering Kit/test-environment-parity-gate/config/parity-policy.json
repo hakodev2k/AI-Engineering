@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "status_values": ["verified", "review-required", "blocked"],
+  "default_minimum_score": 0.85,
+  "production_minimum_score": 0.95,
+  "critical_dimensions": ["runtime", "database", "message_broker", "browser", "external_provider"],
+  "severity_weights": {"critical": 1.0, "high": 0.75, "medium": 0.45, "low": 0.2},
+  "dimension_weights": {"runtime": 1.0, "operating_system": 0.65, "database": 1.0, "cache": 0.65, "message_broker": 0.9, "browser": 0.8, "external_provider": 1.0, "feature_flags": 0.75},
+  "independent_review_required_for": ["production-target", "critical-gap", "unverified-provider-emulation"],
+  "max_transient_retries": 1,
+  "approval_required_actions": ["production-deployment", "destructive-sql", "database-schema-change", "data-deletion", "force-push", "infrastructure-change", "secret-change", "production-config-change", "breaking-api-change", "security-weakening", "irreversible-migration", "large-dependency-upgrade"]
+}

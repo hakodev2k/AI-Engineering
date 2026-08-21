@@ -1,0 +1,13 @@
+{
+  "version": "1.0",
+  "session_id": "feature-orders-20260817-01",
+  "actor_id": "agent-implementation-01",
+  "repository": "example/service",
+  "base_revision": "3f4d5e6a7b8c9d0e1f23456789abcdef01234567",
+  "branch": "agent/feature-orders-20260817-01",
+  "worktree_path": "/workspace/service-wt-feature-orders-20260817-01",
+  "started_at_utc": "2026-08-17T14:00:00Z",
+  "allowed_paths": ["src/orders/**", "tests/orders/**"],
+  "dirty_at_start": false,
+  "risk": "medium"
+}

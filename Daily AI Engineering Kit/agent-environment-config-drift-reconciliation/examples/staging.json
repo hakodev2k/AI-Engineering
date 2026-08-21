@@ -1,0 +1,11 @@
+{
+  "Logging": {
+    "Level": "Debug"
+  },
+  "Features": {
+    "NewCheckout": true
+  },
+  "RateLimit": {
+    "RequestsPerMinute": 120
+  }
+}

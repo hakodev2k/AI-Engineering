@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "OracleReview",
+  "type": "object",
+  "required": ["version", "oracle_fingerprint", "reviewer", "implementation_owner", "verdict", "findings"],
+  "properties": {
+    "version": {"const": "1.0.0"},
+    "oracle_fingerprint": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "reviewer": {"type": "string", "minLength": 1},
+    "implementation_owner": {"type": "string", "minLength": 1},
+    "verdict": {"enum": ["approved", "rejected"]},
+    "findings": {"type": "array", "items": {"type": "string"}},
+    "reviewed_at": {"type": "string"}
+  },
+  "additionalProperties": false
+}

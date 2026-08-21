@@ -1,0 +1,8 @@
+{
+  "version": 1,
+  "max_retries": 2,
+  "allowed_styles": ["cursor", "offset", "keyset"],
+  "required_contract_properties": ["stable_ordering", "deterministic_tiebreaker", "bounded_page_size", "continuation_semantics", "duplicate_gap_verification"],
+  "approval_required_for": ["breaking-api-contract", "database-schema-change", "production-config-change", "production-deployment", "data-deletion"],
+  "risk_patterns": ["unordered_pagination", "offset_without_stable_order", "cursor_without_tiebreaker", "client_page_size_unbounded", "continuation_token_exposes_state"]
+}

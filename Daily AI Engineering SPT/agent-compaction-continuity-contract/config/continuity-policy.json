@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "max_capsule_bytes": 24576,
+  "max_rehydrate_attempts": 2,
+  "critical_fields": [
+    "task_id",
+    "generation",
+    "active_turn.id",
+    "active_goal",
+    "constraints",
+    "decisions",
+    "completed",
+    "failed_approaches",
+    "open_items",
+    "blockers",
+    "evidence_refs"
+  ],
+  "mutation_gate_requires": "valid",
+  "require_evidence_for_decisions": true,
+  "require_reason_for_failed_approaches": true,
+  "require_artifact_for_completed_items": true,
+  "allow_goal_change_without_authorization": false,
+  "stale_turn_is_blocking": true,
+  "unknown_state_is_blocking": true,
+  "checkpoint_triggers": [
+    "before_compaction",
+    "after_major_decision",
+    "after_verified_milestone",
+    "before_handoff",
+    "before_context_usage_80_percent"
+  ]
+}
