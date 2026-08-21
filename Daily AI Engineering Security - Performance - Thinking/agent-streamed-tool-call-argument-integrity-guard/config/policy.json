@@ -1,0 +1,8 @@
+{
+  "max_retries_before_execution": 2,
+  "block_lossy_repair_for_side_effects": true,
+  "require_stream_completion_for_side_effects": true,
+  "side_effecting_tools": ["write_file", "delete_file", "deploy", "publish", "send", "execute", "secret_read"],
+  "allow_empty_object_for_zero_required_fields": true,
+  "require_model_visible_failure_on_block": true
+}
