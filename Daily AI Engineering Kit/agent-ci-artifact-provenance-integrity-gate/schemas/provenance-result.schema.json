@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CI Artifact Provenance Result",
+  "type": "object",
+  "required": ["status", "commit", "artifacts", "findings", "verified_at"],
+  "properties": {
+    "status": {"enum": ["verified", "blocked", "needs-approval"]},
+    "commit": {"type": "string", "minLength": 7},
+    "verified_at": {"type": "string"},
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["path", "sha256", "size"],
+        "properties": {
+          "path": {"type": "string"},
+          "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "size": {"type": "integer", "minimum": 0}
+        },
+        "additionalProperties": false
+      }
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["severity", "code", "message"],
+        "properties": {
+          "severity": {"enum": ["info", "warning", "error"]},
+          "code": {"type": "string"},
+          "message": {"type": "string"}
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}
