@@ -1,0 +1,52 @@
+id: stripe
+name: Stripe
+upstream:
+  - rest
+  - sdk
+api:
+  base_url: https://api.stripe.com
+auth:
+  type: restricted_api_key
+  env: STRIPE_API_KEY
+  recommended: restricted_key
+capabilities:
+  - account.read
+  - customer.list
+  - customer.get
+  - customer.create
+  - payment_intent.list
+  - payment_intent.get
+  - refund.create
+  - product.list
+  - price.list
+  - subscription.list
+  - subscription.get
+  - webhook.verify
+risk:
+  default: read
+  tools:
+    stripe.account.get: READ
+    stripe.customer.list: READ
+    stripe.customer.get: READ
+    stripe.customer.create: WRITE
+    stripe.payment_intent.list: READ
+    stripe.payment_intent.get: READ
+    stripe.refund.create: HIGH_RISK
+    stripe.product.list: READ
+    stripe.price.list: READ
+    stripe.subscription.list: READ
+    stripe.subscription.get: READ
+    stripe.webhook.verify: READ
+approval:
+  write: configurable
+  high_risk: required
+  destructive: disabled_by_default
+environment:
+  - STRIPE_API_KEY
+  - STRIPE_WEBHOOK_SECRET
+  - STRIPE_API_VERSION
+  - STRIPE_LIVE_MODE_ALLOWED
+  - STRIPE_APPROVAL_SECRET
+security:
+  credentials_exposed_to_llm: false
+  live_mode_default: false
