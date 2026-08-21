@@ -1,0 +1,15 @@
+steps:
+  - name: Build
+    run: dotnet publish -c Release -o artifacts
+
+  - name: Generate artifact manifest
+    env:
+      BUILD_COMMIT_SHA: ${{ github.sha }}
+    run: python scripts/provenance_gate.py --write-manifest --expected-commit "$BUILD_COMMIT_SHA"
+
+  - name: Verify artifact provenance
+    env:
+      BUILD_COMMIT_SHA: ${{ github.sha }}
+      RELEASE_BUILD: "false"
+      ARTIFACT_SIGNATURE_VERIFIED: "false"
+    run: python scripts/provenance_gate.py --expected-commit "$BUILD_COMMIT_SHA"
