@@ -106,3 +106,18 @@ Use bounded retries. After repeated failure: stop, preserve evidence, identify r
 
 ## Definition of Done
 See `checklists/definition-of-done.md`. A task is done only when outputs are contract-valid, verified with evidence, monitored, recoverable, documented, handed off and approved where required.
+
+## Standalone integration and usage
+
+Copy the entire `data-engineer/` directory into the consuming agent workspace, preserving relative paths. Load this README, `rules/operating-rules.md`, and `config/role-config.yaml` first, then select only the skill/workflow and supporting artifacts relevant to the data task. The Markdown guidance has no runtime dependency; local validators require Python 3.10+ and only the standard library.
+
+## Verification
+
+Run from the copied package root:
+
+```bash
+python scripts/validate-package.py
+python scripts/validate-data-contract.py examples/data-contract.example.json
+```
+
+The checks are local and read-only. They validate package/contract structure, not source freshness, pipeline execution, data quality, or production readiness.

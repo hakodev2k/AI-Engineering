@@ -150,3 +150,7 @@ Scanner error: preserve stderr and command, fix the local environment, retry onc
 
 ## Portability
 Core instructions are tool-neutral and can be used with Codex, Claude Code, Cursor, ChatGPT, GitHub Copilot, OpenCode, or other agents that can read repository files and execute local commands. Tool-specific hook wiring belongs in the host repository; the deterministic Python scanner remains the source of truth for this kit.
+
+## Schema example
+
+`examples/scan-result.example.json` is a synthetic instance of `schemas/scan-result.schema.json` for contract smoke tests. It contains no production data and demonstrates shape only; validate it with the package's documented checker or a Draft 2020-12 JSON Schema validator before adapting it.

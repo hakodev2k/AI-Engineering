@@ -88,12 +88,25 @@ Failure → Root Cause → Lesson → Process Improvement → Future Prevention.
 Retries are bounded to two attempts for transient validation or deployment failures when the cause is understood and retry is safe. Otherwise stop, preserve evidence, and escalate.
 
 ## Usage
+Copy the entire `azure-cloud-engineer/` directory into the consuming agent workspace and preserve relative paths. Load this README, `rules/operating-rules.md`, and `config/role-config.yaml` first; Azure credentials and tools are supplied separately only for explicitly authorized live work.
+
 1. Provide a request and all known constraints.
 2. Instantiate the relevant skill or workflow.
 3. Validate structured inputs using the schemas and scripts.
 4. Run advisory subagents in parallel only when their scopes are independent.
 5. Apply approval gates before dangerous actions.
 6. Verify outcomes and use `templates/handoff.md` when ownership changes.
+
+## Validation and prerequisites
+
+The role guidance itself requires no agent-specific installation. The deterministic validators require Python 3.10+ and only the Python standard library. From this role directory, verify the package and the included workload request:
+
+```bash
+python scripts/validate-package.py
+python scripts/validate-workload-request.py examples/workload-request.example.json
+```
+
+Both commands return a non-zero exit code for missing or invalid input. `scripts/validate-workload-request.py` validates the portable request contract only; it does not query Azure, authenticate to a tenant, estimate live pricing, validate IaC, or deploy resources. `scripts/validate-package.py` checks the package manifest and local script readiness. No Azure credentials are required for either command.
 
 ## Definition of Done
 See `checklists/definition-of-done.md`. The task is complete only when intended Azure state and workload outcome are both verified, not merely when a deployment command succeeds.

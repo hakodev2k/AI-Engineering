@@ -4,13 +4,14 @@ A focused policy package for validating baseline webhook authenticity, freshness
 
 ## Scope
 
-This package validates the structure and internal consistency of `config/policy.yaml`. It does not verify provider signatures, persist idempotency claims, or execute business side effects. For a complete reference gate with atomic SQLite claims, tests, workflow, and integration guidance, use the sibling [Agent Webhook Replay Idempotency Gate](../agent-webhook-replay-idempotency-gate/).
+This package validates the structure and internal consistency of `config/policy.yaml`. It does not verify provider signatures, persist idempotency claims, or execute business side effects. If you also need an atomic replay store, adopt or implement that capability separately; this standalone package has no required sibling-package dependency.
 
 ## Package contents
 
 ```text
 agent-webhook-idempotency-replay-protection-gate/
 ├── README.md
+├── requirements.txt
 ├── config/policy.yaml
 ├── schemas/policy.schema.json
 ├── scripts/validate_policy.py
@@ -20,9 +21,9 @@ agent-webhook-idempotency-replay-protection-gate/
 ## Prerequisites and installation
 
 - Python 3.10 or newer.
-- PyYAML 6.x, available through the collection-level `requirements.txt`.
+- PyYAML 6.x, declared in this package's `requirements.txt`.
 
-From the parent collection directory:
+From this package directory:
 
 ```bash
 python -m pip install -r requirements.txt
@@ -40,7 +41,7 @@ python -m pip install -r requirements.txt
 
 Provider-specific cryptography can require a different algorithm or canonicalization process. Do not change `hash_algorithm` without matching the provider's official signature contract and adding deterministic signature fixtures.
 
-## Validate
+## Run and verification
 
 Run from this package directory:
 
@@ -54,3 +55,7 @@ The validator writes a secret-free JSON decision to stdout. Exit `0` means valid
 ## Integration requirements
 
 Validation is a preflight check, not a runtime replay store. A production handler must verify the signature over the exact raw bytes, compare timestamps using a trusted clock, atomically claim a provider event identifier, bind the identifier to a payload digest, and define duplicate and crash-recovery behavior. Apply datastore, deployment, secret, and production configuration changes only with the required human approval.
+
+## Schema example
+
+`examples/policy.example.json` is a synthetic instance of `schemas/policy.schema.json` for contract smoke tests. It contains no production data and demonstrates shape only; validate it with the package's documented checker or a Draft 2020-12 JSON Schema validator before adapting it.

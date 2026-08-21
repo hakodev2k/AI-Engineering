@@ -179,7 +179,14 @@ No workflow may increase permissions to acquire or break a lease.
 
 ## Verification
 Success requires more than the agent executing its steps:
-1. `validate-lease-state.py` passes.
+
+```bash
+python scripts/validate-lease-state.py --store .agent/lease-store.json
+```
+
+The validator emits one JSON object. Exit `0` means the structural, timestamp, and fencing invariants it checks passed; exit `2` means the store is blocked and its `errors` array explains why. This does not prove atomic storage or correct mutation-time enforcement.
+
+1. `scripts/validate-lease-state.py` passes.
 2. Every protected mutation has evidence of a current mutation gate.
 3. Fencing token was current at the mutation boundary.
 4. Takeover, if any, was bound to the exact previous token/resource and had required review/approval.

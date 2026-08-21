@@ -194,3 +194,7 @@ The task is verified successfully only when:
 
 ## Customization
 Keep the workflow and safety rules tool-neutral. Adapt command execution or agent syntax for Codex, Claude Code, Cursor, ChatGPT, GitHub Copilot, OpenCode, or another coding agent without changing the evidence, bounded retry, approval, or independent verification requirements.
+
+## Schema example
+
+`examples/investigation.example.json` is a synthetic instance of `schemas/investigation.schema.json` for contract smoke tests. It contains no production data and demonstrates shape only; validate it with the package's documented checker or a Draft 2020-12 JSON Schema validator before adapting it.

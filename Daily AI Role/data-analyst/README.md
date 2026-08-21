@@ -118,3 +118,14 @@ See `checklists/definition-of-done.md`. A task is not done because a query ran; 
 
 ## Customization
 Keep the core tool-neutral. Add warehouse/BI-specific adapters separately. Never hardcode credentials, production identifiers, or sensitive sample records into this package.
+
+## Verification
+
+Copy the entire `data-analyst/` directory into the consuming agent workspace and preserve relative paths. Python 3.10+ is required only for the standard-library validators. Run from the copied package root:
+
+```bash
+python scripts/validate-package.py
+python scripts/validate-analysis-contract.py examples/analysis-contract.example.json
+```
+
+These checks validate local package and contract structure. They do not query data, evaluate source freshness, reproduce an analysis, or establish causal validity.

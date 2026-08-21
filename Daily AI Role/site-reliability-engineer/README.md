@@ -83,7 +83,7 @@ Diagnostics and mitigations use bounded retries. Repeated identical failure is e
 Verification must be independent of implementation where practical and include user-visible behavior plus relevant SLI, saturation, and dependency state. A green dashboard alone is insufficient.
 
 ## Installation / Usage
-This package is tool-agnostic. Load `README.md`, `rules/operating-rules.md`, the relevant skill/workflow, and `config/role-config.yaml` into the agent context. Use templates for handoffs/reviews. Run scripts locally with Python 3:
+Copy the entire `site-reliability-engineer/` directory into the consuming agent workspace and preserve relative paths. This package is tool-agnostic. Load `README.md`, `rules/operating-rules.md`, the relevant skill/workflow, and `config/role-config.yaml` into the agent context. Use templates for handoffs/reviews. Run scripts locally with Python 3.10+:
 
 ```bash
 python scripts/validate-package.py .

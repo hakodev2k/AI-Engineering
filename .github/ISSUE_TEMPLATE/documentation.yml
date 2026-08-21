@@ -18,6 +18,7 @@ body:
         - Incorrect or outdated information
         - Unclear instructions
         - Broken navigation or link
+        - Standalone adoption or missing dependency
         - Inconsistent terminology
         - Accessibility or formatting
     validations:

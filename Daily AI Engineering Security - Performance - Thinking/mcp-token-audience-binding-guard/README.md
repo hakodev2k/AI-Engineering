@@ -20,6 +20,7 @@ mcp-token-audience-binding-guard/
 ├── README.md
 ├── evidence/research.md
 ├── config/policy.json
+├── examples/request-metadata.example.json
 ├── scripts/token_binding_guard.py
 ├── tests/test_token_binding_guard.py
 ├── skills/mcp-auth-boundary-analysis.md
@@ -28,7 +29,7 @@ mcp-token-audience-binding-guard/
 ```
 
 ## Installation
-Python 3.10+; standard library only. The script is a policy guard, not a JWT verifier. Perform signature/introspection validation in the identity layer first.
+Copy this entire directory into the consumer repository and keep its relative paths intact. Python 3.10+ and the standard library are sufficient; no collection-root dependency is needed. The script is a policy guard, not a JWT verifier. Perform signature/introspection validation in the identity layer first.
 
 ## Configuration
 Replace example resource and issuer values in `config/policy.json` with deployment-specific canonical values. Define minimum scopes per protected operation.
@@ -42,10 +43,12 @@ Never include actual bearer/refresh tokens or client secrets.
 
 ## Usage
 ```bash
-python scripts/token_binding_guard.py request-metadata.json --policy config/policy.json
+python scripts/token_binding_guard.py examples/request-metadata.example.json --policy config/policy.json
 python -m unittest tests/test_token_binding_guard.py
 ```
 Exit codes: `0` allow, `2` invalid input/configuration, `5` deny.
+
+The bundled metadata is synthetic and matches the example policy. Replace both resource/issuer values and request metadata in the consumer integration; fixture success is not authentication proof.
 
 ## Workflow
 Follow `workflows/authorize-and-verify.md`: observe → baseline adversarial paths → diagnose → implement explicit boundaries → remeasure → independent security verification. Remediation retries are bounded to two per root cause.

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 from pathlib import Path
-import sys
+import os, sys
 
 REQUIRED = [
 "README.md","checklists/definition-of-done.md","config/role-config.yaml",
@@ -23,7 +23,7 @@ def main():
     if missing: errors.append("missing files: " + ", ".join(missing))
     for script in ["scripts/validate-impediment-record.py", "scripts/validate-package.py"]:
         p = root / script
-        if p.exists() and not (p.stat().st_mode & 0o111): errors.append(f"not executable: {script}")
+        if os.name != "nt" and p.exists() and not (p.stat().st_mode & 0o111): errors.append(f"not executable: {script}")
     if errors:
         for e in errors: print("error:", e, file=sys.stderr)
         return 1

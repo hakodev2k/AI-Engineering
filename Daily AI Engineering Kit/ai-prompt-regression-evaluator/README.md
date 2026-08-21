@@ -253,3 +253,7 @@ The easiest extension points are:
 - Store raw outputs behind `output_ref` for reviewer traceability.
 - Wrap the scripts in CI without changing their core contracts.
 - Add a provider-specific runner adapter outside this core package while keeping normalized JSONL stable.
+
+## Schema example
+
+`examples/eval-suite.example.json` is a synthetic instance of `schemas/eval-suite.schema.json` for contract smoke tests. It contains no production data and demonstrates shape only; validate it with the package's documented checker or a Draft 2020-12 JSON Schema validator before adapting it.

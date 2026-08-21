@@ -1,0 +1,12 @@
+{
+  "status": "passed",
+  "files_scanned": 1,
+  "findings": [
+    {
+      "code": "example-code",
+      "severity": "info",
+      "file": "artifacts/example.json"
+    }
+  ],
+  "blocking_count": 1
+}

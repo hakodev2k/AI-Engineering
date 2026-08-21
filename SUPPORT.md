@@ -20,6 +20,8 @@ Do not use public support channels for credentials, personal data, proprietary p
 ## What to include
 
 - the affected path or package;
+- the upstream commit or release copied and its target-repository location;
+- whether the copied package was renamed, partially copied, or locally modified;
 - what you were trying to accomplish;
 - expected and actual behavior;
 - exact validation steps or error output;

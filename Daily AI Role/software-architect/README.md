@@ -77,7 +77,7 @@ software-architect/
 ```
 
 ## Installation and configuration
-No vendor-specific runtime is required. Load `config/role.yaml`, this README, `rules/core-rules.md`, and the workflow/skill relevant to the task. Add project-specific standards as separate context rather than editing stable principles. Python 3.10+ is sufficient for validation scripts.
+Copy the entire `software-architect/` directory into the consuming agent workspace and preserve relative paths. No vendor-specific runtime is required. Load `config/role.yaml`, this README, `rules/core-rules.md`, and the workflow/skill relevant to the task. Add project-specific standards as separate context rather than editing stable principles. Python 3.10+ is sufficient for validation scripts.
 
 ## Usage
 1. Classify the request: new design, change impact, incident architecture review, or technology evaluation.
@@ -88,6 +88,17 @@ No vendor-specific runtime is required. Load `config/role.yaml`, this README, `r
 6. Consolidate findings, resolve conflicts explicitly, and record decisions.
 7. Run final review and deterministic validators.
 8. Obtain human approval for bounded decisions before execution.
+
+### Deterministic validation
+
+Python 3.10+ is required; the scripts use only the Python standard library. From this role directory, run:
+
+```bash
+python scripts/validate-package.py
+python scripts/check-decision-record.py templates/architecture-decision-record.md
+```
+
+`scripts/validate-package.py` verifies the documented package artifacts. `scripts/check-decision-record.py` checks required ADR metadata and headings and returns a non-zero exit code when they are absent. These structural checks do not validate technical facts, stakeholder agreement, architecture fitness, or production readiness.
 
 ## Multi-task strategy
 Prioritize with: production/security impact > dependency blocking > deadline/cost-of-delay > reversibility > effort. Maintain separate work items with owner, due date, dependency, risk, evidence, and next checkpoint. Do not parallelize tasks that mutate the same decision baseline or depend on unsettled requirements.

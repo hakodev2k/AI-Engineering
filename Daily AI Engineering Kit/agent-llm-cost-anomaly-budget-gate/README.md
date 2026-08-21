@@ -186,3 +186,7 @@ Success is evidence-based. At minimum:
 
 ## Customization
 Adapt threshold values and telemetry adapters, not the safety model. Provider-specific collectors can live outside this package as long as they emit the usage-event contract. Add organization-specific functional tests or cost attribution fields without removing hard-budget approval, bounded retries, evidence preservation, or independent verification.
+
+## Schema example
+
+`examples/gate-result.example.json` is a synthetic instance of `schemas/gate-result.schema.json` for contract smoke tests. It contains no production data and demonstrates shape only; validate it with the package's documented checker or a Draft 2020-12 JSON Schema validator before adapting it.

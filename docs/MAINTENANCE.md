@@ -1,6 +1,6 @@
 # Repository Maintenance
 
-This guide covers repository-wide maintenance without prescribing the internal design of individual collections.
+This guide covers repository-wide maintenance of the source library. None of these commands are required merely to use a copied rule, skill, role, or kit.
 
 ## Routine checks
 
@@ -9,6 +9,7 @@ From the repository root:
 ```bash
 npm ci
 npm run audit
+npm run audit:standalone
 ```
 
 For MCP changes or a complete verification run:
@@ -18,7 +19,7 @@ npm --prefix MCP-API ci
 npm run check
 ```
 
-Use `npm run audit:strict` when intentionally enforcing README and index completeness across the main collections. Default audit mode reports those legacy or in-progress documentation gaps as warnings so repository-wide docs work can remain independent of collection edits.
+Use `npm run audit:strict` and `npm run audit:standalone:strict` when enforcing collection and standalone-package completeness. Default audit modes report non-structural maturity gaps as warnings so maintainers can inspect them before making the strict gate blocking.
 
 ## Pull-request maintenance
 
@@ -42,6 +43,18 @@ Use `npm run audit:strict` when intentionally enforcing README and index complet
 The repository audit checks relative links, JSON/YAML syntax, Python syntax, collection structure, indexes, and MCP package shape. It does not prove semantic correctness, execute every Python utility, contact providers, or validate production permissions.
 
 When renaming or moving content, search for inbound references before the change and run the audit afterward.
+
+## Standalone package maintenance
+
+Review changes from the perspective of a developer who copies only the supported unit:
+
+- a rule or skill must remain understandable as an individual Markdown document;
+- a role, kit, or guard must not rely on an undocumented parent or sibling file;
+- every executable package must keep dependency declarations, safe examples, and verification commands beside the scripts;
+- relative links required for operation must resolve inside the copied package;
+- collection-level dependency files may help repository maintainers, but cannot be the only installation contract for an independently copied package.
+
+Run `npm run audit:standalone` after changing package layout, dependencies, scripts, or documentation.
 
 ## Release hygiene
 

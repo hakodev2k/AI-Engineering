@@ -102,6 +102,12 @@ Optional:
 
 - `PyYAML` when the OpenAPI source is YAML instead of JSON.
 
+Install the optional YAML parser inside the copied package's environment with:
+
+```bash
+python -m pip install "PyYAML>=6,<7"
+```
+
 The comparator itself uses only the Python standard library for JSON input.
 
 ## Installation

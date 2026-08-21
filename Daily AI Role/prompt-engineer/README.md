@@ -65,5 +65,16 @@ For material failures record: Failure -> Root Cause -> Lesson -> Process Improve
 ## Definition of Done
 Use `checklists/definition-of-done.md`. No task is done merely because one example looks good.
 
+## Standalone integration, usage, and verification
+
+Copy the entire `prompt-engineer/` directory into the consuming agent workspace and preserve relative paths. Load this README, `rules/operating-rules.md`, and `config/role-config.yaml` first, then the relevant skill/workflow, evaluation evidence, and templates. The role guidance has no agent-specific installation requirement. The deterministic validators require Python 3.10+ and use only the Python standard library. Run from this role directory:
+
+```bash
+python scripts/validate-package.py
+python scripts/validate-prompt-spec.py examples/prompt-spec.example.json
+```
+
+`scripts/validate-package.py` checks the core package manifest and JSON syntax. `scripts/validate-prompt-spec.py` checks required fields and acceptance-rate ranges and returns a non-zero exit code on invalid input. It does not call a model, execute an evaluation suite, measure quality, or prove prompt safety; those steps require task-specific evaluation data and an authorized runtime.
+
 ## Tool neutrality
 The core package is model/tool neutral. Adapter-specific constraints belong in local configuration, not in the role's fundamental procedures.

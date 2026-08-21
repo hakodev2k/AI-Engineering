@@ -2,6 +2,8 @@
 
 A collection of reusable engineering gates, guards, investigators, and workflow packages for AI-assisted software delivery. Each child directory is an independent package and should be adopted only when its problem statement and risk profile match the target repository.
 
+Browse the complete alphabetical [standalone package catalog](CATALOG.md) to select a package by purpose, runtime type, and topic.
+
 ## Package model
 
 Most packages combine some of the following assets:
@@ -21,6 +23,16 @@ Most packages combine some of the following assets:
 
 Not every package is executable. A package containing only rules, skills, or research is a reference package; its README must state that no install or run step is required.
 
+## Runtime classification
+
+Classify a package from its own files before adopting it:
+
+- **Executable gate/guard:** contains a runnable file under `scripts/` or `hooks/`. Run it only with the inputs and working directory documented by that package. A script that only inspects or initializes evidence does not authorize the protected change.
+- **Reference workflow:** contains Markdown contracts but no runnable implementation. It requires no dependency installation; integrate its rules, skills, hooks, and workflow into the host before claiming it is enforced.
+- **Adapter required:** documents a lifecycle hook or orchestration contract whose host-specific binding is intentionally absent. The adopter must implement that binding and verify both allow and deny paths.
+
+Presence of a script means only that the package has a reference implementation. It does not make the package a globally installed command, background service, CI integration, or production-safe automation.
+
 ## Prerequisites
 
 - A Markdown-capable agent or documentation workflow for all packages.
@@ -28,7 +40,7 @@ Not every package is executable. A package containing only rules, skills, or res
 - Bash for `.sh` utilities. Invoke repository scripts as `bash path/to/script.sh` because executable file-mode support varies across platforms.
 - Package-specific tools named in the package README, such as Git, .NET, Docker, or a database client.
 
-## Install Python dependencies
+## Maintainer environment
 
 From this collection directory:
 
@@ -45,7 +57,7 @@ For tests that use pytest-style discovery, also run:
 python -m pip install -r requirements-dev.txt
 ```
 
-The collection-level dependency files cover scripts in this repository. When copying one package elsewhere, keep only the dependencies imported by that package and follow its README.
+The collection-level dependency files are convenience tooling for maintainers of this source repository. They are not part of the standalone package contract. When copying one package elsewhere, use only its package-local dependency file or the exact install command in that package's README.
 
 ## Use a package
 
@@ -65,6 +77,12 @@ python -m pytest tests
 ```
 
 Use only commands actually supported by the selected package. A missing test directory does not imply that a generic test command is valid.
+
+Maintainers can run `npm run audit:strict` from the repository root to check documentation presence, local links, JSON/JSON Schema, YAML, and Python syntax. Consumers who copy one package do not need the root npm workspace. This static audit does not replace package tests or host-repository verification.
+
+## Package readiness contract
+
+Before enabling a copied package, confirm that its README identifies its runtime type, exact entrypoint, input/output contract, exit-code meaning, verification command, side effects, and approval boundary. Treat missing information as a blocked integration rather than guessing. Example inputs are synthetic; generated reports and artifacts should go to an ignored working directory, not back into the package.
 
 ## Configuration and secrets
 

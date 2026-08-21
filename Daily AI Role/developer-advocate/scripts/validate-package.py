@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 from pathlib import Path
-import json, sys
+import json, os, sys
 ROOT = Path(__file__).resolve().parents[1]
 required = [
 "README.md","checklists/definition-of-done.md","config/role-config.yaml","examples/advocacy-work.example.json","hooks/lifecycle-hooks.md",
@@ -18,5 +18,5 @@ for p in [ROOT/"schemas/advocacy-work.schema.json",ROOT/"examples/advocacy-work.
     try: json.loads(p.read_text(encoding="utf-8"))
     except Exception as e: print(f"ERROR {p}: {e}", file=sys.stderr); sys.exit(1)
 for p in [ROOT/"scripts/validate-advocacy-work.py",ROOT/"scripts/validate-package.py"]:
-    if not (p.stat().st_mode & 0o111): print(f"ERROR not executable: {p}", file=sys.stderr); sys.exit(1)
+    if os.name != "nt" and not (p.stat().st_mode & 0o111): print(f"ERROR not executable: {p}", file=sys.stderr); sys.exit(1)
 print(f"OK: {len(required)} required artifacts present")

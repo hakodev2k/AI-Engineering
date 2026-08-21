@@ -139,7 +139,7 @@ Every normalized evidence record binds:
 
 Preserve the original plan artifact separately for high-risk review. The normalized record is an automation contract, not a replacement for the original plan.
 
-## SQL Server example
+## Run: SQL Server example
 
 Capture an actual Showplan XML using approved tooling, collect measured duration/CPU/logical reads, then normalize:
 

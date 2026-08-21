@@ -27,7 +27,7 @@ Validate history, construct atomic protocol units, prune oldest unprotected comp
 - `hooks/pre-model-context-check.md` — deterministic pre-model gate.
 
 ## Installation
-Python 3.10+; no third-party dependencies. Copy `config/budget.example.json` to `config/budget.json` and set the budget to the real invocation path's effective context limit, not a UI-advertised value that may differ from provider limits.
+Python 3.10+; no third-party dependencies. Copy `config/budget.example.json` to a consumer-owned, ignored path, set `CONTEXT_BUDGET_PATH` to it, and use the real invocation path's effective context limit rather than a UI-advertised value that may differ from provider limits.
 
 ## Input format
 
@@ -44,7 +44,7 @@ Python 3.10+; no third-party dependencies. Copy `config/budget.example.json` to 
 ## Usage
 
 ```bash
-python3 scripts/context_pruner.py context.json --config config/budget.json --output pruned.json
+python3 scripts/context_pruner.py context.json --config "$CONTEXT_BUDGET_PATH" --output pruned.json
 ```
 
 Exit `0` means valid output within budget. Exit `2` means invalid history/configuration. Exit `4` means protected context prevents meeting the budget safely.

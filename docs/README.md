@@ -6,7 +6,8 @@ Use this directory for repository-wide guidance. Package-specific behavior remai
 
 | Guide | Purpose |
 | --- | --- |
-| [Getting started](GETTING_STARTED.md) | Choose a collection, validate the repository, and adopt content safely. |
+| [Getting started](GETTING_STARTED.md) | Choose and copy the smallest useful unit into a target repository. |
+| [Adoption guide](ADOPTION_GUIDE.md) | Apply the standalone package contract, selective checkout, integration, and update workflow. |
 | [Repository structure](REPOSITORY_STRUCTURE.md) | Understand the six main collections and how they compose. |
 | [Documentation style guide](STYLE_GUIDE.md) | Write consistent, navigable, and testable documentation. |
 | [Maintenance guide](MAINTENANCE.md) | Keep navigation, dependencies, checks, and release notes healthy. |
@@ -22,6 +23,6 @@ Use this directory for repository-wide guidance. Package-specific behavior remai
 
 ## Documentation boundaries
 
-Repository-wide guidance belongs in `docs/` or a root policy file. Collection-level guidance belongs in that collection. Package-specific installation, configuration, commands, schemas, and limitations belong beside the package they describe.
+Repository-wide guidance belongs in `docs/` or a root policy file. Collection-level guidance belongs in that collection. Package-specific installation, configuration, commands, schemas, examples, dependencies, and limitations belong inside the directory that adopters copy. A package must not require an undocumented file from a parent collection or sibling package.
 
 Avoid duplicating the same operational instruction across multiple locations. Prefer one authoritative page and link to it.

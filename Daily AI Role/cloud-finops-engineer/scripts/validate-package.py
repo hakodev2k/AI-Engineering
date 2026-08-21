@@ -18,6 +18,6 @@ missing = [p for p in REQUIRED if not (ROOT / p).is_file()]
 if missing:
     print("Missing files:\n" + "\n".join(missing), file=sys.stderr); sys.exit(1)
 for p in ["scripts/validate-finops-work-item.py","scripts/validate-package.py"]:
-    if not os.access(ROOT / p, os.X_OK):
+    if os.name != "nt" and not os.access(ROOT / p, os.X_OK):
         print(f"Not executable: {p}", file=sys.stderr); sys.exit(1)
-print(f"VALID package: {len(REQUIRED)} required files present")
+print(f"VALID package: {len(REQUIRED)} required files present; POSIX script permissions valid when applicable")

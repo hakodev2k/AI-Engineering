@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "max_clock_skew_seconds": 1,
+  "replay_window_seconds": 1,
+  "idempotency_ttl_seconds": 1,
+  "require_signature": true,
+  "require_timestamp": true,
+  "require_event_id": true,
+  "allow_unsigned_in_development": true,
+  "hash_algorithm": "sha256",
+  "signature_header": "example-signature-header",
+  "timestamp_header": "example-timestamp-header",
+  "event_id_header": "example-event-id-header",
+  "idempotency_key_header": "example-idempotency-key-header",
+  "secret_env_var": "EXAMPLE_SECRET"
+}

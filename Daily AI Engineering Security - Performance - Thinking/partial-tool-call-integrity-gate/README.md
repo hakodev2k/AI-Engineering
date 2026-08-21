@@ -59,3 +59,7 @@ Detection: gate returns partial/reconcile/deny/invalid or a lifecycle invariant 
 
 ## Customization
 Map provider-specific terminal/finish events into the common envelope, add tool-specific postcondition checks, and integrate API-native idempotency receipts. Preserve the invariant that model intent alone never upgrades a partial or unknown call into an executable/committed state.
+
+## Schema example
+
+`examples/tool-call-envelope.example.json` is a synthetic instance of `schemas/tool-call-envelope.schema.json` for contract smoke tests. It contains no production data and demonstrates shape only; validate it with the package's documented checker or a Draft 2020-12 JSON Schema validator before adapting it.

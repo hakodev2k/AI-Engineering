@@ -69,12 +69,25 @@ Escalate when authority is unclear, strategy conflicts cannot be resolved, regul
 - `schemas/`, `templates/`, `examples/`, `metrics/`, `checklists/`, `config/`
 
 ## Usage
+Copy the entire `enterprise-architect/` directory into the consuming agent workspace and preserve relative paths. Load this README, `rules/operating-rules.md`, and `config/role-config.yaml`; enterprise repositories, standards, and portfolio data remain separately authorized inputs.
+
 1. Start with `templates/architecture-intake.md` or a JSON intake matching the schema.
 2. Apply `rules/operating-rules.md`.
 3. Select the relevant workflow.
 4. Delegate bounded analysis to subagents without transferring final ownership.
 5. Run review gates and validators.
 6. Record decisions, exceptions, roadmap impacts and handoff.
+
+## Validation and prerequisites
+
+The role guidance has no agent-specific installation requirement. The validators require Python 3.10+ and use only the Python standard library. From this role directory, run:
+
+```bash
+python scripts/validate-package.py
+python scripts/validate-architecture-intake.py examples/architecture-intake.example.json
+```
+
+`scripts/validate-package.py` checks that the documented package artifacts are present. `scripts/validate-architecture-intake.py` validates the portable intake structure and returns a non-zero exit code for missing or malformed fields. These commands do not verify source accuracy, approve an architecture decision, update an architecture repository, or contact enterprise systems.
 
 ## Human approval gates
 Human approval is required for material investment recommendations, enterprise-standard exceptions, irreversible platform/vendor commitments, regulated-data boundary changes, material security trade-offs, broad decommissioning, and changes that transfer accountability across business units.

@@ -10,10 +10,9 @@ Provide a bounded workflow where agents inspect context, review changes, run det
 
 ## Components
 - skills: repeatable review procedures
-- rules: safety constraints
 - subagents: separated responsibilities
 - workflows: bounded lifecycle
-- hooks/scripts: deterministic validation
+- scripts: deterministic validation
 
 ## Workflow
 Trigger -> Gather diff/context -> Plan review -> Analyze -> Test -> Verify -> Report
@@ -27,3 +26,17 @@ No automatic merge, production deployment, destructive migration, secret changes
 - Checks executed
 - Risks documented
 - Verification report generated
+
+## Run
+
+Requires Git and Bash. Run from the target repository root:
+
+```bash
+bash path/to/ai-pr-change-verification-gate/scripts/validate-repo.sh
+```
+
+The script runs `git diff --check`. Exit `0` means Git found no whitespace/conflict-marker errors in the current diff; nonzero means the repository preflight or diff check failed. It does not build, test, inspect acceptance criteria, or review committed changes outside the selected diff.
+
+## Verification
+
+Follow `workflows/pr-verification-flow.md` and `skills/change-verification.md`, bind evidence to immutable base/head revisions, and use `subagents/verification-agent.md` for independent review.

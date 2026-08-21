@@ -130,3 +130,7 @@ A task is complete only when target environment and context were identified; the
 
 ## Customization
 Add dialect-specific blocked operations and schema allowlists in `policy.yaml`. For stronger guarantees, replace or supplement the lexical scanner with a dialect-aware AST parser while preserving the same three-state contract. Integrate database-native read-only roles, statement timeouts, row-level security, transaction controls, and audited privileged execution outside this package rather than embedding credentials here.
+
+## Schema example
+
+`examples/gate-result.example.json` is a synthetic instance of `schemas/gate-result.schema.json` for contract smoke tests. It contains no production data and demonstrates shape only; validate it with the package's documented checker or a Draft 2020-12 JSON Schema validator before adapting it.

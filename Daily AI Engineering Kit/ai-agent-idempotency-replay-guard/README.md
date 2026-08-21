@@ -114,6 +114,8 @@ For production use, the host application must provide a durable ledger implement
 
 Copy this directory into the repository. Customize `config/replay-policy.json`, then create one operation manifest per mutating business action using `templates/operation-manifest.example.json` as a starting point.
 
+## Run
+
 For a payload file:
 
 ```bash

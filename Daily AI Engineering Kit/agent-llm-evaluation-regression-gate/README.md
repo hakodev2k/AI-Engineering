@@ -55,7 +55,11 @@ flowchart LR
 `build-evaluation-corpus.md` defines corpus construction. `triage-regression.md` diagnoses failures. `evaluation-safety.md` prevents gaming the gate. Three subagents separate planning, implementation, and verification. `eval_gate.py` computes release-blocking metrics. `validate_eval_jsonl.py` rejects malformed handoffs. Hooks define lifecycle enforcement.
 
 ## Installation
-Requires Python 3.9+ and PyYAML. Install PyYAML with your normal dependency mechanism. For package self-tests, install pytest. Copy this directory into a repository and keep paths relative to the package root.
+Requires Python 3.9+ and PyYAML. Copy this directory into a repository and keep paths relative to the package root, then install the exact runtime/test dependency ranges in the copied package's environment:
+
+```bash
+python -m pip install "PyYAML>=6,<7" "pytest>=8,<9"
+```
 
 ## Configuration
 Edit `config/eval-gate.yaml` to reflect approved service SLOs and scoring dimensions. Threshold weakening, baseline replacement, or evaluator changes require explicit human approval. Do not store API keys in this file.
@@ -108,3 +112,7 @@ The Verification Agent independently reruns JSONL validation and the gate, check
 
 ## Customization
 Add dimensions only when they map to observable behavior. Prefer deterministic assertions to model judging where possible. Add repository-specific runners that produce this JSONL contract rather than coupling the core gate to a specific AI vendor, allowing use with Codex, Claude Code, Cursor, ChatGPT, Copilot, OpenCode, or custom agents.
+
+## Schema example
+
+`examples/eval-result.example.json` is a synthetic instance of `schemas/eval-result.schema.json` for contract smoke tests. It contains no production data and demonstrates shape only; validate it with the package's documented checker or a Draft 2020-12 JSON Schema validator before adapting it.

@@ -71,3 +71,7 @@ Required context and handler path are evidenced; failure classification is expli
 
 ## Portability
 The skills, rules and workflow can be used by Codex, Claude Code, Cursor, ChatGPT, GitHub Copilot, OpenCode or another coding agent. Broker-specific commands belong in the target repository or an explicitly approved adapter; this kit intentionally does not assume Azure Service Bus, RabbitMQ, Kafka, SQS or another provider.
+
+## Schema example
+
+`examples/finding.example.json` is a synthetic instance of `schemas/finding.schema.json` for contract smoke tests. It contains no production data and demonstrates shape only; validate it with the package's documented checker or a Draft 2020-12 JSON Schema validator before adapting it.

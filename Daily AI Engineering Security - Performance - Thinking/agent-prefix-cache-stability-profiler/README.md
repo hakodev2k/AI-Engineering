@@ -20,6 +20,7 @@ agent-prefix-cache-stability-profiler/
 ├── README.md
 ├── evidence/research.md
 ├── config/cache-policy.json
+├── examples/traces.example.jsonl
 ├── scripts/prefix_stability.py
 ├── tests/test_prefix_stability.py
 ├── skills/cache-baseline-and-diagnosis.md
@@ -28,7 +29,7 @@ agent-prefix-cache-stability-profiler/
 ```
 
 ## Installation
-Requires Python 3.10+ and only the standard library.
+Copy this entire directory into the consumer repository and keep its relative paths intact. It requires Python 3.10+ and only the standard library; no collection-root dependency is needed.
 
 ## Trace format
 One JSON object per line:
@@ -42,10 +43,12 @@ Edit `config/cache-policy.json`. `order_insensitive_sections` must remain empty 
 
 ## Usage
 ```bash
-python scripts/prefix_stability.py traces.jsonl --policy config/cache-policy.json --quality-pass true --output report.json
+python scripts/prefix_stability.py examples/traces.example.jsonl --policy config/cache-policy.json --quality-pass true --output report.json
 python -m unittest tests/test_prefix_stability.py
 ```
 Exit codes: `0` pass, `2` invalid input/configuration, `3` regression/gate failure.
+
+The bundled trace is synthetic and should pass as a smoke test. Replace it with redacted baseline/candidate telemetry from comparable tasks; a fixture pass is not evidence of production cache performance.
 
 ## Workflow
 Follow `workflows/measure-canonicalize-benchmark.md`: observe → baseline → diagnose → hypothesize → change → remeasure → independently verify quality. Maximum two failed hypotheses per run unless new evidence identifies a distinct cause.

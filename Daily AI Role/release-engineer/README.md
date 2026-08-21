@@ -118,3 +118,14 @@ A release is complete only when exact artifacts and versions are recorded, requi
 
 ## Customization
 Adjust approval roles, environment names, risk thresholds, release windows, evidence requirements, and metrics in `config/role-config.yaml`. Keep the core model tool-neutral.
+
+## Verification
+
+Copy the complete `release-engineer/` directory into the consuming agent workspace and preserve relative paths. Python 3.10+ is required only for standard-library validators. Run from the copied package root:
+
+```bash
+python scripts/validate-package.py
+python scripts/validate-release-request.py examples/release-request.example.json
+```
+
+These commands validate package/request structure. They do not build, sign, promote, deploy, approve, observe, or roll back a release.

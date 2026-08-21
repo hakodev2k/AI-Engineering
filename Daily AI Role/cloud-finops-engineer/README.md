@@ -81,12 +81,25 @@ A recommendation is blocked if pricing basis, cost ownership, production constra
 - `examples/`: valid example work item.
 
 ## Quick start
+Copy the entire `cloud-finops-engineer/` directory into the consuming agent workspace and preserve relative paths. Load this README plus `rules/operating-rules.md` before selecting task-specific files; cloud billing credentials and data are separate authorized inputs, not bundled dependencies.
+
 1. Create a work item from `templates/finops-work-item.md` or the JSON schema.
 2. Validate JSON with `python scripts/validate-finops-work-item.py <file>`.
 3. Select the relevant skill/workflow.
 4. Apply the rules and approval gates.
 5. Record baseline, assumptions, formula, confidence, owner, and verification method.
 6. Close only when `checklists/definition-of-done.md` is satisfied.
+
+### Deterministic validation
+
+The role guidance requires no agent-specific installation. The validators require Python 3.10+ and only the Python standard library. Run these commands from this role directory:
+
+```bash
+python scripts/validate-package.py
+python scripts/validate-finops-work-item.py examples/finops-work-item.example.json
+```
+
+`scripts/validate-package.py` checks the required package artifacts. `scripts/validate-finops-work-item.py` checks the portable JSON work-item contract and returns a non-zero exit code for invalid data. Neither script connects to a cloud account, retrieves prices, modifies resources, or proves that an optimization is safe; live cost and utilization evidence still has to be supplied and reviewed.
 
 ## Human approval gates
 Human authorization is mandatory before commitment purchases, contract/discount changes, destructive cleanup, production capacity reductions with non-trivial risk, changes to chargeback policy, budget ownership changes, or exceptions that weaken security/compliance/reliability controls.

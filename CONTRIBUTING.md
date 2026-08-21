@@ -33,6 +33,7 @@ Run the repository structure check before opening a pull request:
 ```bash
 npm ci
 npm run audit
+npm run audit:standalone:strict
 ```
 
 Changes affecting MCP connectors must also pass:
@@ -63,11 +64,11 @@ Follow the repository [documentation style guide](docs/STYLE_GUIDE.md) for struc
 
 ### Roles, kits, and guards
 
-Match the structure of a comparable package. Include a package-level `README.md` when the contribution contains multiple assets, and explain how its rules, skills, workflows, hooks, schemas, scripts, templates, tests, or subagents interact.
+Match the structure of a comparable package. Treat one child directory as the supported copy unit. Include a package-level `README.md`, explain how its rules, skills, workflows, hooks, schemas, scripts, templates, tests, or subagents interact, and keep all required runtime assets and third-party dependency declarations inside that directory.
 
 ### Rules and skills
 
-Keep each file focused on one responsibility. Rules should be explicit and testable where practical. Skills should describe when to use them, required context, a bounded procedure, verification, expected output, and conditions that require escalation.
+Keep each file focused on one responsibility and usable when copied by itself. Rules should be explicit and testable where practical. Skills should describe when to use them, required context, a bounded procedure, verification, expected output, and conditions that require escalation.
 
 ### MCP/API connectors
 

@@ -194,3 +194,7 @@ The package is tool-neutral. Its Skills, Rules, Subagents, Workflow, and Hooks c
 ## Customization
 
 Extend `scan_ef_queries.py` or replace its heuristics with Roslyn analyzers for stronger syntax awareness. Useful repository-specific extensions include detecting missing pagination on known high-cardinality DbSets, enforcing approved projection patterns, comparing query counts in integration tests, or exporting diagnostic artifacts from EF Core interceptors. Preserve the same evidence-first workflow even when the deterministic implementation changes.
+
+## Schema example
+
+`examples/scan-result.example.json` is a synthetic instance of `schemas/scan-result.schema.json` for contract smoke tests. It contains no production data and demonstrates shape only; validate it with the package's documented checker or a Draft 2020-12 JSON Schema validator before adapting it.

@@ -175,3 +175,7 @@ The task is complete only when the evidence artifact exists and is redacted, the
 
 ## Customization
 Adjust the correlation fields, time windows, maximum event count, and redaction keys in `config/correlation-policy.yaml`. Keep the core rules unchanged unless the host repository has stricter safety requirements. Project-specific build, formatting, test, and observability commands should be added to the host repository's execution instructions rather than hard-coded into the reusable core.
+
+## Schema example
+
+`examples/evidence.example.json` is a synthetic instance of `schemas/evidence.schema.json` for contract smoke tests. It contains no production data and demonstrates shape only; validate it with the package's documented checker or a Draft 2020-12 JSON Schema validator before adapting it.

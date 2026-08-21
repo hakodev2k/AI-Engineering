@@ -224,3 +224,18 @@ Failure → Root Cause / Contributing Conditions → Validated Lesson → Proces
 ```
 
 Do not optimize the process around a single unexplained anomaly.
+
+## Standalone integration and usage
+
+Copy the entire `incident-commander/` directory into the consuming incident workspace, preserving relative paths. Load this README and `rules/operating-rules.md` before the relevant workflow, subagent, template, and current incident evidence. Python 3.10+ is required only for the local state validator/status generator; both use the standard library and require no network access.
+
+## Verification
+
+Run these safe local checks from the copied package root:
+
+```bash
+python scripts/incident_validator.py examples/sample-incident.json
+python scripts/generate_status_summary.py examples/sample-incident.json
+```
+
+The generator writes only when an explicit output option is supplied. Neither command connects to monitoring, pages responders, mutates production, or verifies live incident recovery.

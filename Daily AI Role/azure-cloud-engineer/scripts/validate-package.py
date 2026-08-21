@@ -16,6 +16,6 @@ missing=[p for p in REQUIRED if not (ROOT/p).is_file()]
 if missing:
     print("ERROR: missing files:\n"+"\n".join(missing),file=sys.stderr); sys.exit(1)
 for p in ["scripts/validate-package.py","scripts/validate-workload-request.py"]:
-    if not os.access(ROOT/p, os.X_OK):
+    if os.name != "nt" and not os.access(ROOT/p, os.X_OK):
         print(f"ERROR: not executable: {p}",file=sys.stderr); sys.exit(1)
-print(f"OK: {len(REQUIRED)} required files present and scripts executable")
+print(f"OK: {len(REQUIRED)} required files present; POSIX script permissions valid when applicable")

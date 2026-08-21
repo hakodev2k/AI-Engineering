@@ -124,3 +124,14 @@ The validators use Python standard library only. `validate-package.py` returns `
 
 ## Portability
 Core behavior is tool-neutral and can be adapted to ChatGPT, Codex, Claude Code, Cursor, Copilot, OpenCode, or other agent systems. Tool-specific permissions must remain isolated from professional decision rules.
+
+## Verification
+
+Copy the entire `customer-success-engineer/` directory into the consuming agent workspace and preserve relative paths. Python 3.10+ is required only for the standard-library validators. From the copied package root, run:
+
+```bash
+python scripts/validate-package.py
+python scripts/validate-account-health.py examples/account-health.example.json
+```
+
+The commands validate local package/account-health structure. They do not connect to CRM, support, billing, telemetry, or customer systems and do not prove current customer health.

@@ -92,3 +92,7 @@ Task execution is not success. Verification requires bounded timeout/retry behav
 
 ## Customization
 Tune scanner extensions/exclusions and policy severity for the repository. Add framework-specific tests or adapters next to project code, but keep the workflow/rules tool-neutral. The sample C# client demonstrates bounded timeout/retry only; production circuit-breaker configuration should use the repository's chosen resilience library and measured thresholds rather than copying arbitrary constants.
+
+## Schema example
+
+`examples/finding.example.json` is a synthetic instance of `schemas/finding.schema.json` for contract smoke tests. It contains no production data and demonstrates shape only; validate it with the package's documented checker or a Draft 2020-12 JSON Schema validator before adapting it.

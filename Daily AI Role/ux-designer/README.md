@@ -112,3 +112,14 @@ Use `checklists/definition-of-done.md`. A work item is not done until outputs ar
 
 ## Customization
 Adjust `config/role-config.yaml`, domain knowledge, accessibility standards, design-system references, and approval thresholds without weakening evidence labeling, bounded retries, human approval gates, or review independence.
+
+## Verification
+
+Copy the complete `ux-designer/` directory into the consuming agent workspace and preserve relative paths. Python 3.10+ is required only for standard-library validators. Run from the copied package root:
+
+```bash
+python scripts/validate-package.py
+python scripts/validate-ux-work-item.py examples/ux-work-item.example.json
+```
+
+These checks validate package/work-item structure. They do not conduct user research, render designs, run accessibility/usability tests, contact design tools, or approve product decisions.

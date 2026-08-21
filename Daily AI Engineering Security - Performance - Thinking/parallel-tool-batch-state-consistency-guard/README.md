@@ -92,3 +92,7 @@ Evidence documented; sequential and parallel baselines captured; root cause iden
 
 ## Customization
 Extend the schema with framework-specific fields, but preserve stable batch/call identity. Replace warning-only session-version analysis with host-specific compare-and-swap checks where the orchestrator exposes versioned state. Add workload-specific benchmarks rather than relying on synthetic latency alone.
+
+## Schema example
+
+`examples/tool-batch-event.example.json` is a synthetic instance of `schemas/tool-batch-event.schema.json` for contract smoke tests. It contains no production data and demonstrates shape only; validate it with the package's documented checker or a Draft 2020-12 JSON Schema validator before adapting it.

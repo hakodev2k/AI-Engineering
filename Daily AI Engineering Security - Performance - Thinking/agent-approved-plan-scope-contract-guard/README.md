@@ -179,3 +179,7 @@ A task is complete only when:
 
 ## Customization
 Extend the schema for non-file resources such as database objects, cloud resources, APIs, queues, or deployment environments. Preserve the core semantics: immutable approval binding, default deny, cumulative evidence, explicit amendment for material deviation, bounded recovery, and independent verification.
+
+## Schema example
+
+`examples/plan-contract.example.json` is a synthetic instance of `config/plan-contract.schema.json` for contract smoke tests. It contains no production data and demonstrates shape only; validate it with the package's documented checker or a Draft 2020-12 JSON Schema validator before adapting it.

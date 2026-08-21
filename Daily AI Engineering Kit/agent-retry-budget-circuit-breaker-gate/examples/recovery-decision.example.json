@@ -1,0 +1,10 @@
+{
+  "decision": "retry",
+  "failure_class": "transient",
+  "evidence": [
+    "synthetic evidence"
+  ],
+  "remaining_attempts": 1,
+  "approval_required": true,
+  "reason": "example-reason"
+}

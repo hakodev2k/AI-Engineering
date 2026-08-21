@@ -77,3 +77,7 @@ Evidence documented; terminal objective represented; action ledger complete; low
 
 ## Customization
 Extend action signatures for shell/test/browser/MCP/delegation operations, add token/time telemetry, connect phase state to CI/deployment APIs, and add semantic duplicate detection. Preserve the core rule that repeated activity without evidence gain forces strategy change rather than more of the same.
+
+## Schema example
+
+`examples/action-ledger.example.json` is a synthetic instance of `schemas/action-ledger.schema.json` for contract smoke tests. It contains no production data and demonstrates shape only; validate it with the package's documented checker or a Draft 2020-12 JSON Schema validator before adapting it.

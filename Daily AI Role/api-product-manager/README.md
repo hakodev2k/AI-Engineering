@@ -116,3 +116,14 @@ Use `checklists/definition-of-done.md`. Completion requires deliverable, evidenc
 
 ## Customization
 Adapt metrics, approval gates, lifecycle states, and tooling to the organization while preserving consumer trust, evidence-based prioritization, compatibility discipline, and explicit authority boundaries.
+
+## Verification
+
+After copying the complete `api-product-manager/` directory, run from its root with Python 3.10+ (standard library only):
+
+```bash
+python scripts/validate-package.py
+python scripts/validate-api-change-request.py examples/api-change-request.example.json
+```
+
+These commands validate package and request structure only; they do not inspect a deployed API, contact consumers, approve a contract, or measure adoption.

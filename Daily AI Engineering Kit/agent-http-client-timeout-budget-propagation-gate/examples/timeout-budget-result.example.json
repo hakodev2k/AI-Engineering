@@ -1,0 +1,12 @@
+{
+  "status": "pass",
+  "count": 1,
+  "findings": [
+    {
+      "type": "example-type",
+      "file": "artifacts/example.json",
+      "line": 1,
+      "evidence": "synthetic evidence"
+    }
+  ]
+}

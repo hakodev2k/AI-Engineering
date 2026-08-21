@@ -120,3 +120,18 @@ The package's project work is complete only when objective/scope/owners are expl
 
 ## Customization
 Add organization-specific approval thresholds, status cadence, reporting format, cost model and project tooling in isolated adapters/configuration. Keep core contracts tool-neutral so the same role package can operate across GitHub, Jira, Azure DevOps, Linear, spreadsheets or other systems without changing professional behavior.
+
+## Standalone integration and usage
+
+Copy the complete `project-manager/` directory into the consuming agent workspace and preserve relative paths. Load this README, `rules/operating-rules.md`, and `config/role-config.yaml`, then use only the workflow/templates needed for the project. Python 3.10+ is required for local validators, which use the standard library and do not connect to project-management services.
+
+## Verification
+
+From the copied package root, run:
+
+```bash
+python scripts/validate-package.py
+python scripts/validate-project-plan.py examples/project-plan.example.json
+```
+
+These commands validate local package and plan structure. They do not update schedules, tickets, budgets, people assignments, or external systems.

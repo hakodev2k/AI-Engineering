@@ -1,0 +1,13 @@
+{
+  "classification": "confirmed",
+  "file": "artifacts/example.json",
+  "line": 1,
+  "side_effect": "example-side-effect",
+  "evidence": [
+    "synthetic evidence"
+  ],
+  "confidence": "low",
+  "risk": "low",
+  "recommended_action": "example-recommended-action",
+  "approval_required": true
+}

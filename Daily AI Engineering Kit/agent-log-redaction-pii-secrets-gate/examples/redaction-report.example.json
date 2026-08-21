@@ -1,0 +1,9 @@
+{
+  "status": "sanitized",
+  "findings_count": 1,
+  "counts": {
+    "example": 1
+  },
+  "output": "artifacts/example.json",
+  "raw_persisted": false
+}

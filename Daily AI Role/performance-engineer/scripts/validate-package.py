@@ -7,7 +7,7 @@ missing=[p for p in required if not (root/p).is_file()]
 if missing:
     print("ERROR missing:\n"+"\n".join(missing), file=sys.stderr); sys.exit(2)
 for p in [root/"scripts/validate-performance-contract.py", root/"scripts/validate-package.py"]:
-    if not os.access(p, os.X_OK):
+    if os.name != "nt" and not os.access(p, os.X_OK):
         print(f"ERROR not executable: {p.name}", file=sys.stderr); sys.exit(3)
 readme=(root/"README.md").read_text(encoding="utf-8")
 for token in ["Mission","Responsibilities","Non-responsibilities","Human approval boundaries","Definition of done"]:

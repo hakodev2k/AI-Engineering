@@ -2,6 +2,7 @@
 set -euo pipefail
 
 OUT=${1:-incident-context.txt}
+mkdir -p "$(dirname "$OUT")"
 {
   echo "Incident context collection"
   date -u

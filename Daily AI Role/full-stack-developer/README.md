@@ -192,3 +192,18 @@ full-stack-developer/
 
 ## Completion criteria
 The role package is complete only when the manifest exists, references resolve, contracts parse, required scripts are non-empty, responsibilities and non-responsibilities are explicit, priority/concurrency/dependency rules exist, bounded retries and failure learning are defined, human gates are preserved, review ownership is non-conflicting, workflows have checkpoints/DoD, and README reflects the actual tree.
+
+## Standalone integration and usage
+
+Copy the entire `full-stack-developer/` directory into the consuming agent workspace and preserve relative paths. Load this README, `rules/operating-rules.md`, and `config/role-config.yaml`, then only the skills/workflow and supporting files needed for the vertical change. Python 3.10+ is required for the local validators; they use no third-party packages or credentials.
+
+## Verification
+
+Run from the copied package root:
+
+```bash
+python scripts/validate-package.py
+python scripts/validate-work-item.py examples/work-item.example.json
+```
+
+These checks validate package and intake structure only. Application build, frontend/backend tests, contract tests, and runtime verification come from the target repository and must be supplied explicitly.

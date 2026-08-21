@@ -168,3 +168,7 @@ The first failure is preserved; classification is evidence-backed; retries staye
 Extend `allowed_test_commands` for the repository's actual runners. Keep probe orchestration tool-neutral: Codex, Claude Code, Cursor, ChatGPT, GitHub Copilot, OpenCode, or another agent can all invoke the same script and consume the JSON result. If a platform supports lifecycle hooks, map its post-test-failure event to `hooks/post-test-flake-gate.md`; keep platform-specific adapters outside the core workflow unless they add concrete value.
 
 For framework-specific diagnosis, add focused skills for known sources such as shared database fixtures, Playwright browser state, async timing, fixed ports, clock/timezone coupling, or random seed management without changing the classification contract or retry bounds.
+
+## Schema example
+
+`examples/flake-result.example.json` is a synthetic instance of `schemas/flake-result.schema.json` for contract smoke tests. It contains no production data and demonstrates shape only; validate it with the package's documented checker or a Draft 2020-12 JSON Schema validator before adapting it.

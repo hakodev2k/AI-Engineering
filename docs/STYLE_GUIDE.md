@@ -25,6 +25,20 @@ Every standalone document should have exactly one descriptive H1. Use a short in
 
 Guidance-only packages should say explicitly that they have no install or run step.
 
+## Standalone adoption contract
+
+Developers may copy content without the parent collection. Write every role, kit, guard, and connector as a self-contained child package:
+
+- use its `README.md` as the entry point;
+- keep required schemas, examples, templates, configuration, tests, and scripts inside the package;
+- declare third-party dependencies inside the package or provide exact package-local install commands;
+- avoid required relative links to a parent collection or sibling package;
+- state whether referenced content is required or optional;
+- make commands runnable from a clearly named working directory;
+- provide a harmless verification path when executable assets exist.
+
+Rules and skills should retain enough purpose, inputs, constraints, procedure, verification, and escalation context to be useful when their individual Markdown file is copied alone.
+
 ## Links and navigation
 
 - Use relative links for repository files.

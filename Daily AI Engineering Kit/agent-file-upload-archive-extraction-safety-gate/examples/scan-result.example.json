@@ -1,0 +1,19 @@
+{
+  "status": "pass",
+  "archive": "example-archive",
+  "entries": [
+    {
+      "path": "artifacts/example.json",
+      "size": 1,
+      "compressed_size": 1,
+      "safe": true
+    }
+  ],
+  "violations": [
+    "example-violations"
+  ],
+  "totals": {
+    "entry_count": 1,
+    "uncompressed_bytes": 1
+  }
+}

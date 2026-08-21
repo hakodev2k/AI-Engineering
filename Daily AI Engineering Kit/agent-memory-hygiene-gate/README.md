@@ -80,3 +80,7 @@ Never persist secrets, credentials, authentication tokens, private keys, raw per
 
 ## Customization
 Add project-specific memory kinds and scope fields in `config/memory-policy.json`. Extend the schema only when downstream adapters can consume the new fields. Keep semantic judgment in the skills/subagents and deterministic shape/expiry checks in scripts.
+
+## Schema example
+
+`examples/memory-record.example.json` is a synthetic instance of `schemas/memory-record.schema.json` for contract smoke tests. It contains no production data and demonstrates shape only; validate it with the package's documented checker or a Draft 2020-12 JSON Schema validator before adapting it.

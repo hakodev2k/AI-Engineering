@@ -21,6 +21,12 @@ body:
       description: Explain what is incorrect and its practical impact.
     validations:
       required: true
+  - type: input
+    id: revision
+    attributes:
+      label: Source revision
+      description: Provide the upstream commit or release and note whether the selected package was locally modified.
+      placeholder: commit SHA; copied unchanged
   - type: textarea
     id: reproduction
     attributes:

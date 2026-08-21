@@ -91,7 +91,7 @@ agent-hook-effective-state-attestation/
 Requires Python 3.10+ and no third-party runtime dependencies.
 
 1. Place the package in a trusted tooling location.
-2. Copy `config/hook-policy.example.json` to `config/hook-policy.json`.
+2. Copy `config/hook-policy.example.json` to a consumer-owned, ignored path and set `HOOK_POLICY_PATH` to it.
 3. Define approved required/optional/forbidden hooks.
 4. Build a small host-specific adapter that exports the effective runtime hook state as JSON.
 5. Keep policy and adapter outside agent-writable paths where practical.
@@ -114,7 +114,7 @@ Each policy item contains:
 
 ```bash
 python scripts/hook_state_guard.py \
-  --policy config/hook-policy.json \
+  --policy "$HOOK_POLICY_PATH" \
   --runtime .agent-attestation/runtime-hooks.json \
   --report .agent-attestation/report.json
 ```

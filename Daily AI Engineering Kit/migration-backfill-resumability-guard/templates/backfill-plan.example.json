@@ -10,5 +10,5 @@
   "chunk_size": 500,
   "idempotency_strategy": "no-op-if-complete",
   "verification": {"per_chunk":["affected_rows_match","read_back_keys"],"final":["remaining_eligible_zero","business_invariants_pass"]},
-  "plan_fingerprint": "replace-by-running-fingerprint-script"
+  "plan_fingerprint": "0000000000000000000000000000000000000000000000000000000000000000"
 }

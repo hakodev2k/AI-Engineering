@@ -19,10 +19,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - A documentation hub with onboarding, repository structure, style, and maintenance guidance.
 - Governance, ownership, issue forms, pull-request guidance, dependency updates, and repository-quality automation.
 - Editor and Git attribute defaults for consistent cross-platform contributions.
+- A standalone adoption guide and copy-unit contract for selecting individual rules, skills, roles, and engineering packages.
+- Alphabetical role and engineering-package catalogs for selecting content without loading entire collections.
+- A strict standalone-package audit for copy boundaries, catalog coverage, local paths, script documentation, dependency declarations, rule/skill contracts, schemas, and examples.
+- JSON Schema meta-validation for repository-wide structured contracts.
 
 ### Changed
 
 - Collection documentation gaps are reported as audit warnings by default and can be enforced with `npm run audit:strict`.
+- Root installation and audit commands are now explicitly documented as maintainer tooling rather than consumer prerequisites.
+- Role and engineering-package documentation now treats package-local setup and verification as the consumer contract.
 
 ### Fixed
 

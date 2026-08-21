@@ -90,3 +90,18 @@ See [definition-of-done.md](checklists/definition-of-done.md). Work is not compl
 
 ## Portability and customization
 The package is tool-neutral and uses Markdown, JSON, YAML, and Python. Adapt engine-specific commands in project-local extensions while preserving contracts, approval gates, evidence standards, retry limits, and verification ownership.
+
+## Standalone integration and usage
+
+Copy the complete `database-engineer/` directory into the consuming agent workspace. Preserve paths and load this README plus `rules/operating-rules.md` before adding the relevant skill/workflow, engine evidence, or project-specific commands. The role docs require no installation; validators require Python 3.10+ and only the standard library.
+
+## Verification
+
+From the copied package root, run:
+
+```bash
+python scripts/validate-package.py
+python scripts/validate-database-change.py examples/database-change.example.json
+```
+
+These checks validate local structure and the portable change contract. They do not connect to a database, inspect locks/query plans, execute SQL, or approve a production change.

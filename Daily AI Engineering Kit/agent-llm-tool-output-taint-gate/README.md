@@ -98,3 +98,7 @@ Relevant sources and sinks are mapped; high/critical paths have evidence; contai
 
 ## Customization
 Extend patterns conservatively in `scripts/scan-taint.py` or replace the scanner with a stronger deterministic engine while preserving exit semantics: `0` pass, `1` finding/block, `2` scanner/input failure. Extend policy source/sink labels to match local adapters. Keep tool-specific integration outside the core skills/rules so the workflow remains portable across coding agents.
+
+## Schema example
+
+`examples/evidence.example.json` is a synthetic instance of `schemas/evidence.schema.json` for contract smoke tests. It contains no production data and demonstrates shape only; validate it with the package's documented checker or a Draft 2020-12 JSON Schema validator before adapting it.

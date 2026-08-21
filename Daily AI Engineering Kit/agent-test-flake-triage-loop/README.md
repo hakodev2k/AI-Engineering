@@ -202,3 +202,7 @@ Validate the kit itself with:
 
 ## Customization
 Adjust retry budgets and approval categories in `config/flake-triage.yaml`. Keep the safety principle intact: extra retries may gather evidence, but retries must never become the only mechanism that makes a flaky test appear fixed. Project-specific agents can map these files into Codex, Claude Code, Cursor, ChatGPT, GitHub Copilot, OpenCode, or another coding-agent environment while preserving the same workflow contracts and stop conditions.
+
+## Schema example
+
+`examples/investigation-handoff.example.json` is a synthetic instance of `schemas/investigation-handoff.schema.json` for contract smoke tests. It contains no production data and demonstrates shape only; validate it with the package's documented checker or a Draft 2020-12 JSON Schema validator before adapting it.

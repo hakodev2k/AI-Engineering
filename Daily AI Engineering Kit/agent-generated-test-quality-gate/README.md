@@ -186,3 +186,7 @@ The package workflow is complete only when:
 Adapt test filename detection in `scripts/check-generated-tests.py` for repository-specific conventions. Extend the static guard only with deterministic checks that have acceptably low false-positive rates. Keep semantic judgments—such as whether an assertion genuinely proves a business behavior—in the reviewer skill rather than pretending they can always be reduced to regex checks.
 
 For non-.NET repositories, replace the default test command in configuration and retain the same behavior → test → evidence → independent verification model.
+
+## Schema example
+
+`examples/test-evidence.example.json` is a synthetic instance of `schemas/test-evidence.schema.json` for contract smoke tests. It contains no production data and demonstrates shape only; validate it with the package's documented checker or a Draft 2020-12 JSON Schema validator before adapting it.

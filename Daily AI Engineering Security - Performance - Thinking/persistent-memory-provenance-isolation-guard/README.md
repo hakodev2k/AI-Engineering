@@ -82,3 +82,7 @@ Evidence documented; baseline captured; every accepted test memory has valid pro
 
 ## Customization
 Extend the schema with retention, sensitivity, confidence, cryptographic provenance, or source signatures. Adapt quarantine and promotion workflows to the host platform while preserving the core invariants: tenant scope, source provenance, explicit authority, confirmation for promotion, and reversible lineage.
+
+## Schema example
+
+`examples/memory-envelope.example.json` is a synthetic instance of `schemas/memory-envelope.schema.json` for contract smoke tests. It contains no production data and demonstrates shape only; validate it with the package's documented checker or a Draft 2020-12 JSON Schema validator before adapting it.

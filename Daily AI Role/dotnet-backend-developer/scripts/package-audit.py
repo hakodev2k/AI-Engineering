@@ -22,6 +22,7 @@ REQUIRED = [
     "scripts/validate-task.py",
     "knowledge/backend-operating-guide.md",
     "checklists/definition-of-done.md",
+    "examples/task-contract.example.json",
     "schemas/task-contract.schema.json",
     "templates/handoff.md",
 ]

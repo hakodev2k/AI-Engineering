@@ -33,3 +33,17 @@ Human approval
 - Build/tests are verified.
 - Blocking risks are reported.
 - No unsafe action is performed automatically.
+
+## Run
+
+Requires Git and Bash. From the target repository root:
+
+```bash
+bash path/to/ai-pr-review-verification-agent/scripts/validate-review.sh
+```
+
+The script runs `git diff --check`; exit `0` means the current diff has no whitespace/conflict-marker errors, while nonzero blocks the preflight. It does not build, test, or validate review findings. Complete `workflows/`, apply `rules/`, and bind all evidence to the reviewed base/head revisions.
+
+## Verification
+
+Run the script against clean and intentionally malformed synthetic diffs, then independently reproduce all consumer build/test evidence. A clean whitespace check is not a complete PR review.

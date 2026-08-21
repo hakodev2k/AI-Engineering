@@ -7,7 +7,7 @@ def main():
     if missing:
         print('ERROR missing files:\n'+'\n'.join(missing),file=sys.stderr); return 1
     for p in ['scripts/validate-observability-change.py','scripts/validate-package.py']:
-        if not os.access(os.path.join(root,p),os.X_OK):
+        if os.name != 'nt' and not os.access(os.path.join(root,p),os.X_OK):
             print('ERROR not executable: '+p,file=sys.stderr); return 1
-    print(f'OK: {len(REQUIRED)+1} required artifacts present and scripts executable'); return 0
+    print(f'OK: {len(REQUIRED)+1} required artifacts present; POSIX script permissions valid when applicable'); return 0
 if __name__=='__main__': sys.exit(main())

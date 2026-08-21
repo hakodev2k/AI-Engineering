@@ -1,0 +1,13 @@
+{
+  "status": "passed",
+  "scanned_files": 1,
+  "findings": [
+    {
+      "severity": "warn",
+      "file": "artifacts/example.json",
+      "line": 1,
+      "pattern": "example-pattern",
+      "evidence": "synthetic evidence"
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "suite_id": "example-suite-id",
+  "version": "1.0.0",
+  "cases": [
+    {
+      "id": "example-id",
+      "input": "artifacts/example.json",
+      "severity": "normal",
+      "high_impact": true,
+      "weight": 1,
+      "assertions": [
+        {
+          "type": "required_substring"
+        }
+      ],
+      "rubric": [
+        {
+          "dimension": "example-dimension",
+          "weight": 1,
+          "description": "example-description"
+        }
+      ]
+    }
+  ]
+}

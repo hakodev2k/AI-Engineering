@@ -166,3 +166,7 @@ An evidence-sharing task is complete only when the question and minimal evidence
 
 ## Customization
 Add organization-specific credential formats through `custom_patterns` and synthetic regression tests. Prefer source-side structured logging and masking when possible. If stronger guarantees are required, integrate an enterprise DLP/secrets-scanning engine behind the same workflow contract while keeping the tool-neutral skills, rules, approval boundaries, and independent verification stage unchanged.
+
+## Schema example
+
+`examples/redaction-report.example.json` is a synthetic instance of `schemas/redaction-report.schema.json` for contract smoke tests. It contains no production data and demonstrates shape only; validate it with the package's documented checker or a Draft 2020-12 JSON Schema validator before adapting it.

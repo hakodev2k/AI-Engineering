@@ -129,3 +129,14 @@ A product decision is done only when evidence and assumptions are explicit, stra
 
 ## Customization
 Add domain-specific constraints, metrics, market knowledge, and approval rules without weakening evidence, review, bounded-retry, or traceability requirements.
+
+## Verification
+
+Copy the complete `product-manager/` directory into the consuming agent workspace and preserve relative paths. Python 3.10+ is needed only for standard-library validators. Run from the copied package root:
+
+```bash
+python scripts/validate-package.py
+python scripts/validate-opportunity.py examples/opportunity.example.json
+```
+
+These commands validate local package/opportunity structure. They do not conduct discovery, access product analytics, approve roadmap priority, or prove an outcome.

@@ -138,3 +138,14 @@ Use `checklists/definition-of-done.md`. Completion requires evidence, explicit o
 
 ## Configuration
 Tune thresholds in `config/role-config.yaml`. Never hard-code secrets or tool credentials in this package.
+
+## Verification
+
+Copy the entire `scrum-master/` directory into the consuming agent workspace and preserve relative paths. Python 3.10+ is required only for standard-library validators. From the copied package root, run:
+
+```bash
+python scripts/validate-package.py
+python scripts/validate-impediment-record.py examples/impediment-record.example.json
+```
+
+These checks validate package/record structure. They do not update a work tracker, change Sprint commitments, assign work, or prove team outcomes.

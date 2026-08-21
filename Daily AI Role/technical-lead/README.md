@@ -87,3 +87,18 @@ The package is intentionally technology-neutral. Teams can add stack-specific sk
 
 ## Continuous improvement
 When repeated failure or friction appears, update the most reusable layer: rule, workflow, template, checklist, script, knowledge guide, or agent contract. Keep changes small and explain the failure pattern they address.
+
+## Standalone integration and usage
+
+Copy the entire `technical-lead/` directory into the consuming agent workspace and preserve relative paths. Load this README and `rules/core-rules.md`, then only the workflow, skill, subagent, and project evidence needed for the delivery. Python 3.10+ is required for local validators; no third-party package, credential, or network access is required.
+
+## Verification
+
+Run from the copied package root:
+
+```bash
+python scripts/check-package.py .
+python scripts/validate-task.py examples/sample-task.json
+```
+
+These checks validate package and task-contract structure. They do not build or test the target software, approve a release, or verify production behavior.

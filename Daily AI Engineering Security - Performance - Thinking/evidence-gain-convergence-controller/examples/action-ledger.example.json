@@ -1,0 +1,9 @@
+[
+  {
+    "signature": "example-signature",
+    "uncertainty": "example-uncertainty",
+    "expected_gain": 1,
+    "actual_gain": 1,
+    "evidence": "synthetic evidence"
+  }
+]

@@ -95,12 +95,13 @@ agent-egress-policy-runtime-attestation/
 Requires Python 3.10+ and no third-party packages.
 
 ```bash
-cp config/policy.example.json config/policy.json
 python -m unittest tests/test_egress_attest.py -v
 ```
 
+For integration, copy `config/policy.example.json` to a consumer-owned, ignored path and review every destination. Set `EGRESS_POLICY_PATH` to that path; the generated file is intentionally not committed in this package.
+
 ## Configuration
-Edit `config/policy.json`:
+Edit the file named by `EGRESS_POLICY_PATH`:
 
 ```json
 {
@@ -122,7 +123,7 @@ Use organization-owned harmless endpoints for deny controls when possible. Never
 Run inside the same sandbox/container/VM boundary used by the agent:
 
 ```bash
-python scripts/egress_attest.py config/policy.json --output .agent/egress-attestation.json
+python scripts/egress_attest.py "$EGRESS_POLICY_PATH" --output .agent/egress-attestation.json
 ```
 
 Exit codes:

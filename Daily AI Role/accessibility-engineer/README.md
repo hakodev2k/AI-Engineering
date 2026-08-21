@@ -145,6 +145,8 @@ The core package is tool-neutral. Teams may map these procedures to axe, Accessi
 Track production escapes, remediation lead time, critical-journey coverage, regression/reopen rate, shared-component coverage, exception governance and evidence completeness. Never optimize solely for raw automated violation counts.
 
 ## Usage
+Copy the entire `accessibility-engineer/` directory into the consuming agent workspace and preserve relative paths. Load this README, `rules/operating-rules.md`, and `config/role-config.yaml` before selecting the relevant workflow and supporting evidence. Python 3.10+ is required only for the standard-library validators.
+
 1. Read `rules/operating-rules.md` and `config/role-config.yaml`.
 2. Create or validate a work item from the schema/example.
 3. Select the matching workflow.

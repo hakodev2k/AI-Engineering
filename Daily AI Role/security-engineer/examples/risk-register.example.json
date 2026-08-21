@@ -1,0 +1,12 @@
+[
+  {
+    "id": "RISK-EXAMPLE-001",
+    "asset": "customer document upload service",
+    "attack_path": "an unauthenticated oversized archive reaches extraction before quota enforcement",
+    "risk": "high",
+    "owner": "document-platform-owner",
+    "status": "mitigating",
+    "residual_risk": "medium after size, entry-count, depth, and decompressed-byte limits",
+    "verification": "security integration tests reject archives exceeding every configured extraction limit"
+  }
+]

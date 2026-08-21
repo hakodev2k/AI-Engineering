@@ -169,3 +169,7 @@ The core workflow is tool-neutral and can be used with Codex, Claude Code, Curso
 
 ## Customization
 Add project-specific patterns only when backed by representative synthetic fixtures and tests. Prefer structured logging field allowlists over ever-growing regex sets. For regulated environments, integrate this gate with the organization’s approved DLP and telemetry controls rather than treating local scanning as the sole control.
+
+## Schema example
+
+`examples/pii-gate-result.example.json` is a synthetic instance of `schemas/pii-gate-result.schema.json` for contract smoke tests. It contains no production data and demonstrates shape only; validate it with the package's documented checker or a Draft 2020-12 JSON Schema validator before adapting it.

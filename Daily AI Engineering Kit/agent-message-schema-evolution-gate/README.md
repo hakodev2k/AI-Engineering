@@ -203,3 +203,7 @@ The task is complete only when the output contract is satisfied, no blocking com
 
 ## Customization
 Extend `check-message-schema.py` with repository-specific rules only when they are deterministic and testable. For schema-registry systems, isolate provider-specific commands in a new adapter/script while keeping core skills, rules, contracts, workflow, bounded retries, and approval boundaries tool-neutral.
+
+## Schema example
+
+`examples/order-created-v1.example.json` is a synthetic instance of `examples/order-created-v1.schema.json` for contract smoke tests. It contains no production data and demonstrates shape only; validate it with the package's documented checker or a Draft 2020-12 JSON Schema validator before adapting it.

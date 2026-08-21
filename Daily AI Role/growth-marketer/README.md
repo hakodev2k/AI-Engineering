@@ -162,3 +162,14 @@ The package or a work item is done only when required inputs are present, eviden
 
 ## Customization
 Keep the core tool-neutral. Add channel-specific adapters, analytics queries, CRM platform details, experimentation-platform commands or paid-media APIs in separate organization-specific layers. Never place credentials or secrets in this package.
+
+## Verification
+
+After copying the complete `growth-marketer/` directory, run from its root with Python 3.10+ and the standard library:
+
+```bash
+python scripts/validate-package.py
+python scripts/validate-growth-work-item.py examples/growth-work-item.example.json
+```
+
+The commands validate local package/work-item structure. They do not launch campaigns, access analytics/ad accounts, prove attribution, or authorize spend.

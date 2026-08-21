@@ -1,0 +1,14 @@
+{
+  "status": "passed",
+  "findings": [
+    {
+      "path": "artifacts/example.json",
+      "line": 1,
+      "pattern_id": "example-pattern-id",
+      "severity": "low",
+      "value_hash": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  ],
+  "count": 1,
+  "scope": "working-tree"
+}

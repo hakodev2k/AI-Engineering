@@ -8,6 +8,14 @@ AI-generated changes can compile while introducing API, security, database, or r
 ## Workflow
 Trigger -> Gather Context -> Risk Analysis -> Independent Review -> Verification -> Report
 
+## Copy and install
+
+Copy this whole directory into the consumer repository. Python 3.10+ and the standard library are sufficient. Keep the schema, workflow, and validator paths together.
+
+## Run
+
+From the target repository root, run `python path/to/ai-pr-risk-review-agent/scripts/validate-repository.py`. It prints the current unstaged diff statistic and working-tree status and exits nonzero when Git fails; it accepts no arguments and does not fetch a PR. A host adapter must separately supply immutable base/head context before following `workflows/pr-review.md`.
+
 ## Components
 - skills/pr-risk-analysis.md
 - rules/review-boundaries.md

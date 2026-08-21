@@ -9,7 +9,7 @@ for p in REQ:
     if not q.is_file(): errs.append('missing '+p)
 for p in ['scripts/validate-documentation-request.py','scripts/validate-package.py']:
     q=ROOT/p
-    if q.exists() and not os.access(q,os.X_OK): errs.append('not executable '+p)
+    if os.name != 'nt' and q.exists() and not os.access(q,os.X_OK): errs.append('not executable '+p)
 if errs:
     print('\n'.join('ERROR: '+e for e in errs),file=sys.stderr); sys.exit(1)
-print(f'OK: {len(REQ)} required files present; scripts executable')
+print(f'OK: {len(REQ)} required files present; POSIX script permissions valid when applicable')

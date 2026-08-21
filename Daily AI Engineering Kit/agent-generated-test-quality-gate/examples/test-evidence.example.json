@@ -1,0 +1,23 @@
+{
+  "status": "planned",
+  "changed_behavior": [
+    "example-changed-behavior"
+  ],
+  "tests": [
+    {
+      "path": "artifacts/example.json",
+      "behavior": "example-behavior",
+      "assertion": "example-assertion",
+      "evidence": "synthetic evidence"
+    }
+  ],
+  "commands": [
+    {
+      "command": "python -m unittest",
+      "exit_code": 1
+    }
+  ],
+  "risks": [
+    "example-risks"
+  ]
+}

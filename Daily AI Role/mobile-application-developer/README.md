@@ -198,3 +198,18 @@ mobile-application-developer/
 
 ## Customization
 Extend device matrices, privacy requirements, performance budgets, analytics conventions and release gates to match the product. Add framework-specific commands or adapters in separate files rather than coupling core procedures to one tool. Preserve approval boundaries, bounded retries, evidence requirements and completion gates.
+
+## Standalone integration and usage
+
+Copy the entire `mobile-application-developer/` directory into the consuming agent workspace and preserve relative paths. Load this README, `rules/operating-rules.md`, and `config/role-config.yaml`, then add only relevant skills, workflow, platform evidence, and templates. Python 3.10+ is required only for the standard-library validators.
+
+## Verification
+
+From the copied package root, run:
+
+```bash
+python scripts/validate-package.py
+python scripts/validate-mobile-work-item.py examples/mobile-work-item.example.json
+```
+
+These commands validate local package/intake structure. They do not build an app, launch an emulator/device, access an app store, sign artifacts, or verify runtime behavior.

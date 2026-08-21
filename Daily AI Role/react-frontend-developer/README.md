@@ -109,3 +109,14 @@ See `checklists/definition-of-done.md`. Completion requires measurable evidence,
 
 ## Customization
 Adapt thresholds, browser matrix, test tooling and design-system rules, but preserve ownership boundaries, approval gates and evidence requirements.
+
+## Verification
+
+Copy the entire `react-frontend-developer/` directory into the consuming agent workspace, preserving relative paths. Python 3.10+ is required only for standard-library validators. From the copied package root, run:
+
+```bash
+python scripts/validate-package.py
+python scripts/validate-frontend-change.py examples/frontend-change.example.json
+```
+
+These checks validate package/change-contract structure. They do not install frontend dependencies, build React, launch a browser, run accessibility tests, or verify application behavior.

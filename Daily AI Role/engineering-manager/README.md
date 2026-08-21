@@ -77,6 +77,8 @@ Failure -> Root Cause -> Lesson -> Process Improvement -> Future Prevention. Rec
 A management task is done only when the decision or deliverable has an owner, evidence, affected stakeholders, risks, dependencies, review status, approvals where required, next checkpoint, and measurable completion condition. See `checklists/definition-of-done.md`.
 
 ## Usage
+Copy the entire `engineering-manager/` directory into the consuming agent workspace and preserve relative paths. Load this README, `rules/operating-rules.md`, and `config/role-config.yaml`; provide people-sensitive context only through an authorized environment. Local validators require Python 3.10+ and only the standard library.
+
 1. Capture the task in `schemas/team-work-contract.schema.json` format or `templates/team-work-contract.md`.
 2. Apply `rules/operating-rules.md`.
 3. Select the relevant skill or workflow.

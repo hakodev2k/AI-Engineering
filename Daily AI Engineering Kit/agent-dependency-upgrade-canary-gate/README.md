@@ -191,3 +191,7 @@ The package workflow is complete only when all of the following are true:
 
 ## Customization
 Adjust approval categories and default commands in `config/policy.yaml`; extend `detect-ecosystem.py` only when a new ecosystem has meaningful deterministic markers. Keep tool-specific agent adapters outside the core workflow so the same rules can be used with Codex, Claude Code, Cursor, ChatGPT, GitHub Copilot, OpenCode, or another coding agent.
+
+## Schema example
+
+`examples/upgrade-request.example.json` is a synthetic instance of `schemas/upgrade-request.schema.json` for contract smoke tests. It contains no production data and demonstrates shape only; validate it with the package's documented checker or a Draft 2020-12 JSON Schema validator before adapting it.

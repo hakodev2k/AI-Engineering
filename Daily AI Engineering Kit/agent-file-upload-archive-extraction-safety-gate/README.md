@@ -144,3 +144,7 @@ A run is verified successfully only when required context was captured, the dete
 
 ## Customization
 Keep the gate tool-neutral. Adapters for Codex, Claude Code, Cursor, ChatGPT, Copilot, OpenCode, CI systems, or web upload handlers should call the deterministic script rather than duplicate its security logic. Extend the workflow with MIME validation, antivirus scanning, content policies, archive hashing, and retention controls where required.
+
+## Schema example
+
+`examples/scan-result.example.json` is a synthetic instance of `schemas/scan-result.schema.json` for contract smoke tests. It contains no production data and demonstrates shape only; validate it with the package's documented checker or a Draft 2020-12 JSON Schema validator before adapting it.

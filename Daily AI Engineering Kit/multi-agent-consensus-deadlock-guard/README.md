@@ -117,6 +117,8 @@ Do not increase round limits merely because agents fail to agree. If repeated ro
 
 ## Core workflow
 
+### Run
+
 1. Detect a material conflict between at least two agents.
 2. Run the procedure in `skills/structure-agent-disagreement.md`.
 3. Validate the record:
@@ -124,6 +126,15 @@ Do not increase round limits merely because agents fail to agree. If repeated ro
 ```bash
 python scripts/validate-disagreement.py disagreement.json
 ```
+
+Bind later review to the exact disagreement content:
+
+```bash
+python scripts/fingerprint-disagreement.py disagreement.json
+python scripts/fingerprint-disagreement.py disagreement.json --output artifacts/fingerprint.json
+```
+
+The fingerprint utility excludes existing `evidence_fingerprint` and `resolution` fields, hashes the canonical remaining JSON, and exits `0`; malformed or unreadable input exits `2`. The optional output path is created or replaced. A fingerprint proves content identity, not correctness or consensus.
 
 4. Before round 2+, compare against the prior round:
 

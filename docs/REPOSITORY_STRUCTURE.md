@@ -1,6 +1,6 @@
 # Repository Structure
 
-The repository separates behavioral guidance, enforcement packages, role context, and external integrations so adopters can compose only what they need.
+The repository separates behavioral guidance, enforcement packages, role context, and external integrations so adopters can copy only what they need. Top-level collections organize discovery; they are not one combined runtime.
 
 ## Top-level map
 
@@ -43,6 +43,18 @@ Task objective
 
 Start small. Loading unrelated roles, rules, or skills can increase context size and introduce conflicting assumptions.
 
+## Unit of adoption
+
+| Content | Smallest supported copy unit | Entry point |
+| --- | --- | --- |
+| Rule | One rule Markdown file | The selected file |
+| Skill | One skill Markdown file | The selected file |
+| Role | One complete child directory | Package `README.md` |
+| Engineering kit or guard | One complete child directory | Package `README.md` |
+| MCP/API connector | One complete provider directory | Connector `README.md` and `package.json` |
+
+Collection-level READMEs, dependency files, and repository scripts support discovery and maintenance. A copied package must carry or explicitly document its own required runtime assets. Optional links back to this repository must not be treated as runtime dependencies.
+
 ## Package maturity
 
 A package may be:
@@ -51,7 +63,7 @@ A package may be:
 - **Executable reference:** scripts and tests that demonstrate or validate a behavior locally.
 - **Connector:** a runnable integration requiring installation, credentials, permissions, and provider-specific review.
 
-An executable reference is not automatically production-ready. Its README should identify the runtime, dependencies, configuration, commands, exit behavior, limitations, and verification path.
+An executable reference is not automatically production-ready. Its package-local README should identify the runtime, exact dependencies, configuration, commands, exit behavior, limitations, and verification path. Required schemas, examples, templates, and configuration must be copied with it.
 
 ## Where new content belongs
 

@@ -78,3 +78,7 @@ Agents must stop before applying production schema/configuration changes, destru
 
 ## Customization
 Keep the workflow, safety invariants and verification contract tool-neutral. Replace only the reference persistence implementation with the repository's transactional database, Redis conditional primitive, Cosmos conditional create, or equivalent atomic mechanism. Add provider-specific signature and response adapters outside the core gate, and extend focused tests with the real handler's observable side effects.
+
+## Schema example
+
+`examples/decision.example.json` is a synthetic instance of `schemas/decision.schema.json` for contract smoke tests. It contains no production data and demonstrates shape only; validate it with the package's documented checker or a Draft 2020-12 JSON Schema validator before adapting it.

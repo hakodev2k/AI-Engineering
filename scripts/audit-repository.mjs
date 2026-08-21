@@ -4,6 +4,7 @@ import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { dirname, extname, join, relative, resolve, sep } from "node:path";
 import process from "node:process";
 import { parser as pythonParser } from "@lezer/python";
+import Ajv2020 from "ajv/dist/2020.js";
 import { parseDocument } from "yaml";
 
 const root = resolve(import.meta.dirname, "..");
@@ -19,7 +20,8 @@ const collections = [
 const ignoredDirectories = new Set([".git", ".venv", "coverage", "dist", "node_modules", "__pycache__"]);
 const errors = [];
 const warnings = [];
-const counters = { files: 0, markdown: 0, json: 0, yaml: 0, python: 0, links: 0, packages: 0 };
+const counters = { files: 0, markdown: 0, json: 0, schemas: 0, yaml: 0, python: 0, links: 0, packages: 0 };
+const schemaValidator = new Ajv2020({ allErrors: true, strict: false, validateSchema: true });
 
 function reportCollectionGap(message) {
   (strictCollections ? errors : warnings).push(message);
@@ -112,7 +114,17 @@ function validateMarkdown(path) {
 function validateJson(path) {
   counters.json += 1;
   try {
-    JSON.parse(readFileSync(path, "utf8"));
+    const value = JSON.parse(readFileSync(path, "utf8"));
+    if (/\.schema\.json$/i.test(path)) {
+      counters.schemas += 1;
+      if (!value.$schema) errors.push(`JSON Schema has no $schema declaration: ${display(path)}`);
+      if (!schemaValidator.validateSchema(value)) {
+        const details = schemaValidator.errors
+          ?.map((error) => `${error.instancePath || "/"} ${error.message}`)
+          .join("; ");
+        errors.push(`invalid JSON Schema in ${display(path)}: ${details || "unknown schema error"}`);
+      }
+    }
   } catch (error) {
     errors.push(`invalid JSON in ${display(path)}: ${error.message}`);
   }

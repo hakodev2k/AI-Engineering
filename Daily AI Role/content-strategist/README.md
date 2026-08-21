@@ -326,3 +326,14 @@ Given a request such as “refresh our onboarding guide before next week's relea
 The role's work is complete only when the applicable deliverable is **implemented or handed off, verified, evidence-backed, review-complete, approval-complete, measurable, and operationally traceable**. A draft, generated artifact, publication attempt, or stakeholder message by itself is not completion.
 
 For the full measurable checklist, use [`checklists/definition-of-done.md`](checklists/definition-of-done.md).
+
+## Verification
+
+After copying the complete `content-strategist/` directory, run its local standard-library checks from the package root with Python 3.10+:
+
+```bash
+python scripts/validate-package.py
+python scripts/validate-work-item.py examples/content-work-item.example.json
+```
+
+These checks validate package and work-item structure. They do not publish content, query analytics, verify claims against external sources, or approve brand/legal statements.

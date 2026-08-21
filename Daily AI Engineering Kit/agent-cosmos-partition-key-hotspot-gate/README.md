@@ -204,3 +204,7 @@ The package-specific task is complete only when:
 
 ## Customization
 Tune `config/policy.yaml` to the workload and replace the CSV-export step with a project-specific telemetry adapter if needed. Keep the core evidence, approval, bounded-retry, and independent-verification rules unchanged unless an equivalent stronger control replaces them.
+
+## Schema example
+
+`examples/hotspot-report.example.json` is a synthetic instance of `schemas/hotspot-report.schema.json` for contract smoke tests. It contains no production data and demonstrates shape only; validate it with the package's documented checker or a Draft 2020-12 JSON Schema validator before adapting it.

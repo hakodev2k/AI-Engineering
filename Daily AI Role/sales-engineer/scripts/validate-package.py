@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import json, sys
+import json, os, sys
 from pathlib import Path
 
 REQUIRED = [
@@ -24,7 +24,7 @@ def main():
         except Exception as e:
             print(f"ERROR: invalid JSON {p}: {e}", file=sys.stderr); return 1
     for p in (root / "scripts/validate-engagement.py", root / "scripts/validate-package.py"):
-        if p.stat().st_mode & 0o111 == 0:
+        if os.name != "nt" and p.stat().st_mode & 0o111 == 0:
             print(f"ERROR: script not executable: {p}", file=sys.stderr); return 1
     text = (root / "README.md").read_text(encoding="utf-8")
     for forbidden in ("implementation omitted","remaining files omitted","same as above","TODO"):

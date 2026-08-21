@@ -368,3 +368,7 @@ You can extend the schema and host layer with:
 - dashboards for progress-integrity metrics.
 
 Any extension should preserve the core principle: **progress must be derived from a durable record of the obligations that existed, not from a mutable story about what remains.**
+
+## Schema example
+
+`examples/progress-ledger.example.json` is a synthetic instance of `schemas/progress-ledger.schema.json` for contract smoke tests. It contains no production data and demonstrates shape only; validate it with the package's documented checker or a Draft 2020-12 JSON Schema validator before adapting it.

@@ -33,3 +33,17 @@ The agent must request approval before production changes, database writes, infr
 - Validation completed
 - Risks documented
 - Remediation approved
+
+## Run
+
+Requires Git and Bash. From the target repository root:
+
+```bash
+bash path/to/production-root-cause-agent/scripts/validate-repository.sh
+```
+
+Exit `0` confirms a Git working tree and a clean `git diff --check`; exit `1` means no repository and exit `2` means diff validation failed. This is not an incident collector and does not verify the RCA. Follow `workflows/rca-workflow.md`, validate the final report against `schemas/rca-report.json`, and require independently reproducible evidence before accepting a root cause or remediation.
+
+## Verification
+
+Exercise repository and diff-failure paths in a disposable fixture, validate the final RCA against `schemas/rca-report.json`, and independently reproduce its supporting evidence. The Git preflight alone is not incident verification.

@@ -156,6 +156,8 @@ dotnet-backend-developer/
 │   └── handoff.md
 ├── checklists/
 │   └── definition-of-done.md
+├── examples/
+│   └── task-contract.example.json
 └── schemas/
     └── task-contract.schema.json
 ```
@@ -206,13 +208,15 @@ Provide at minimum:
 - Goal
 - Acceptance criteria
 
-For higher-risk work, also provide constraints and approval boundaries. A sample JSON shape is defined by `schemas/task-contract.schema.json`.
+For higher-risk work, also provide constraints and approval boundaries. The contract is defined by `schemas/task-contract.schema.json`; start with the safe local example at `examples/task-contract.example.json`.
 
 Validate a structured intake:
 
 ```bash
-python scripts/validate-task.py task.json
+python scripts/validate-task.py examples/task-contract.example.json
 ```
+
+Copy the example before editing it for a real task. The example contains no credentials, production identifiers, or external dependencies.
 
 ### 2. Choose the relevant skill/workflow
 - New endpoint/feature → `skills/api-feature.md` + `workflows/feature-delivery.md`

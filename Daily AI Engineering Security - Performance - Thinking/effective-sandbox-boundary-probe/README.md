@@ -2,6 +2,10 @@
 
 A deterministic evaluator for comparing a declared agent sandbox policy with harmless observed effects. It detects fail-open, fail-closed, and unknown boundaries before high-autonomy execution is enabled.
 
+## Purpose
+
+Compare declared policy with operator-supplied, harmless observations while keeping real probing outside this package and explicit approval boundaries intact.
+
 ## Safety boundary
 
 This package evaluates observations supplied by an operator; it does not perform filesystem, network, remote-execution, or destructive probes itself. Create canaries only in an explicitly disposable fixture. Never target production paths, real secrets, real remote hosts, or data you do not own.
@@ -51,6 +55,10 @@ Exit codes:
 | `4` | `FAIL_CLOSED` | Investigate availability without weakening policy automatically. |
 
 The example is designed to pass as a format demonstration; it is not evidence about your runtime.
+
+## Verification
+
+The package test command above must pass, and a real integration must additionally preserve the observation input, evaluator output, runtime/policy versions, and approval state. Re-run after any boundary-affecting change; a passing bundled example is format verification only.
 
 ## Operational use
 

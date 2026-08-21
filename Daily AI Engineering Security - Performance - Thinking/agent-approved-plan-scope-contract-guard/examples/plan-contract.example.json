@@ -1,0 +1,23 @@
+{
+  "contract_id": "example-contract-id",
+  "version": 1,
+  "goal": "example-goal",
+  "allowed_paths": [
+    "artifacts/example.json"
+  ],
+  "forbidden_paths": [
+    "artifacts/example.json"
+  ],
+  "allowed_operation_classes": [
+    "read"
+  ],
+  "acceptance_criteria": [
+    "example-acceptance-criteria"
+  ],
+  "invariants": [
+    "example-invariants"
+  ],
+  "baseline_ref": "example-baseline-ref",
+  "approved_by": "example-approved-by",
+  "approved_at": "2026-08-22T00:00:00Z"
+}

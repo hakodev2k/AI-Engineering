@@ -73,3 +73,18 @@ A task is complete only when scope and evidence are traceable, threats/findings 
 
 ## Portability
 All artifacts use Markdown, JSON, YAML, and Python with no required vendor-specific agent runtime.
+
+## Standalone integration and usage
+
+Copy the entire `security-engineer/` directory into the consuming agent workspace, preserving relative paths. Load this README, `rules/operating-rules.md`, and `config/role-config.yaml` first; add only the authorized workflow, skill, reviewer, evidence, and template needed for the review. Python 3.10+ is required for the local validators and only the standard library is used.
+
+## Verification
+
+From the copied package root, run:
+
+```bash
+python scripts/validate-package.py
+python scripts/validate-risk-register.py examples/risk-register.example.json
+```
+
+These commands validate local structure and risk-record shape. They do not scan a target, confirm exploitability, expose secrets, accept risk, or modify external systems.

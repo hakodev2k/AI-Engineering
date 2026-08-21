@@ -87,6 +87,8 @@ A task is complete only when signals are verified, dashboards/alerts consume the
 Maintain one queue with impact, severity, deadline, dependency, effort, reversibility, confidence and approval status. Keep incident support preemptive. Parallelize evidence collection but serialize conflicting production changes. The Observability Engineer owns final consolidation when subagents disagree.
 
 ## Tool-neutral usage
+Copy the entire `observability-engineer/` directory into the consuming agent workspace and preserve relative paths. Load this README, `rules/operating-rules.md`, and `config/role-config.yaml`; telemetry backends and credentials are separate authorized adapters. Local validators require Python 3.10+ and only the standard library.
+
 The package is vendor neutral. Map semantic contracts to OpenTelemetry, cloud-native or commercial observability platforms only at the adapter layer. Do not embed provider-specific assumptions in core rules.
 
 ## Validation

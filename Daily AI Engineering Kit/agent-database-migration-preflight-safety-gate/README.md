@@ -83,3 +83,7 @@ The migration scope and target are identified; generated SQL is captured; determ
 
 ## Customization
 Edit `config/policy.yaml` to tune keywords, severity, and limits. Keep organization-specific execution commands outside this kit so the core remains tool-neutral and non-destructive.
+
+## Schema example
+
+`examples/preflight-result.example.json` is a synthetic instance of `schemas/preflight-result.schema.json` for contract smoke tests. It contains no production data and demonstrates shape only; validate it with the package's documented checker or a Draft 2020-12 JSON Schema validator before adapting it.

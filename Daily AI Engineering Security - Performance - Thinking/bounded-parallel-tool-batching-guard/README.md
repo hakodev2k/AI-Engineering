@@ -2,6 +2,10 @@
 
 A guidance package for reducing avoidable agent turns, latency, and token use by batching only tool calls that are already justified, independent, non-conflicting, and safe to execute concurrently.
 
+## Purpose
+
+Help a host decide which already-justified calls may be grouped without weakening ordering, approval, mutation, cancellation, or evidence guarantees.
+
 ## Status
 
 This is a reference-only package. It contains no executable runtime integration and requires no installation. The host agent or orchestration platform must provide tool-call telemetry, concurrency primitives, permission enforcement, and cancellation behavior.

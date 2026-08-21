@@ -68,7 +68,11 @@ mcp-tool-schema-budget-gate/
 ```
 
 ## Installation
-Requires Python 3.9+ and otherwise uses only the standard library. Optional exact tokenization can use `tiktoken` if installed and configured. Copy the package into your repository and export MCP tool definitions to JSON.
+Requires Python 3.9+ and otherwise uses only the standard library. Copy the package into your repository and export MCP tool definitions to JSON. Optional exact tokenization can use `tiktoken` when installed in the copied package's environment:
+
+```bash
+python -m pip install "tiktoken>=0.7,<1"
+```
 
 ## Configuration
 Edit `config/budget.json`:

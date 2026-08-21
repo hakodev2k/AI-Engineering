@@ -183,3 +183,7 @@ The workflow is tool-neutral. It can be used with OpenAI Codex, Claude Code, Cur
 
 ## Customization
 Adapt the baseline/candidate schema locations, repository-specific test commands, and allowed compatibility rules for your system. Keep breaking-change approval, bounded retries, independent verification, and evidence preservation intact unless an equally strict control replaces them.
+
+## Schema example
+
+`examples/baseline.example.json` is a synthetic instance of `examples/baseline.schema.json` for contract smoke tests. It contains no production data and demonstrates shape only; validate it with the package's documented checker or a Draft 2020-12 JSON Schema validator before adapting it.

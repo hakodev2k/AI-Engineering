@@ -88,7 +88,7 @@ business-analyst/
 ```
 
 ## Installation and validation
-Requires Python 3.9+ only for validation helpers. No secrets are required.
+Copy the entire `business-analyst/` directory into the consuming agent workspace and preserve relative paths. Requires Python 3.10+ only for standard-library validation helpers. No secrets or external connections are required.
 
 ```bash
 python scripts/validate-package.py

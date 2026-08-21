@@ -129,3 +129,7 @@ The task is complete only when the expected behavior is known; failure/change ev
 
 ## Customization
 Adjust `scan_globs`, `exclude_globs`, blocked/warning patterns, and thresholds for the repository. Add project-specific stable locator conventions such as approved `data-testid` naming. Keep static policy separate from agent instructions so the same gate can be used with Codex, Claude Code, Cursor, ChatGPT, GitHub Copilot, OpenCode, or other agents.
+
+## Schema example
+
+`examples/selector-gate-result.example.json` is a synthetic instance of `schemas/selector-gate-result.schema.json` for contract smoke tests. It contains no production data and demonstrates shape only; validate it with the package's documented checker or a Draft 2020-12 JSON Schema validator before adapting it.

@@ -85,3 +85,18 @@ Work is complete only when the workload is representative, baseline and target a
 
 ## Portability
 The package is tool-neutral. Vendor-specific profilers, APM systems, load generators, cloud services, and CI systems may be substituted as long as the contracts and evidence requirements remain intact.
+
+## Standalone integration and usage
+
+Copy the complete `performance-engineer/` directory into the consuming agent workspace, preserving relative paths. Load this README and `rules/operating-rules.md` first, then supply the relevant skill/workflow and target-system evidence. The docs need no runtime; local validators require Python 3.10+ and only the standard library.
+
+## Verification
+
+Run from the copied package root:
+
+```bash
+python scripts/validate-package.py
+python scripts/validate-performance-contract.py examples/performance-test-contract.example.json
+```
+
+These checks validate package and benchmark-contract structure. They do not generate load, execute a benchmark, connect to APM, judge workload representativeness, or prove a performance improvement.

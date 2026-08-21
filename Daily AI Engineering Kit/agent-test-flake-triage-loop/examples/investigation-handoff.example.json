@@ -1,0 +1,28 @@
+{
+  "status": "reproduced",
+  "test_command": "python -m unittest",
+  "attempts": 1,
+  "passes": 1,
+  "failures": 1,
+  "classification": "timing",
+  "facts": [
+    "example-facts"
+  ],
+  "hypotheses": [
+    {
+      "statement": "example-statement",
+      "supporting_evidence": [
+        "synthetic evidence"
+      ],
+      "contradicting_evidence": [
+        "synthetic evidence"
+      ],
+      "confidence": "low",
+      "next_experiment": "example-next-experiment"
+    }
+  ],
+  "evidence_paths": [
+    "artifacts/example.json"
+  ],
+  "next_action": "example-next-action"
+}

@@ -2,6 +2,14 @@
 
 Reusable operating packages for AI agents acting in engineering, architecture, product, operations, design, research, and go-to-market roles.
 
+Browse all 45 packages in the alphabetic [role catalog](CATALOG.md).
+
+## Standalone adoption model
+
+This is a pick-and-copy library, not a monorepo that a consuming team must run wholesale. Select one primary role, copy that entire role directory into the target agent/workspace, and preserve its relative paths. The copied package's own `README.md` is authoritative for prerequisites, integration, examples, local validators, and limitations. Copy supporting files from another role only when its separate responsibility is genuinely needed; do not combine whole collections by default.
+
+Markdown guidance needs no installation. A package that contains `scripts/` documents its package-local runtime and commands in its own README. Collection-wide repository audits are maintainer gates and are not runtime dependencies of copied roles.
+
 ## What a role package provides
 
 A role defines a mission, responsibilities, non-responsibilities, expected inputs and outputs, operating workflow, approval boundaries, and completion criteria. Larger roles may also provide rules, skills, checklists, schemas, templates, hooks, knowledge, scripts, and specialist subagents.
@@ -10,7 +18,7 @@ Role packages are behavioral guidance. They are not standalone applications and 
 
 ## Select and compose roles
 
-1. Choose one primary role that owns the outcome.
+1. Choose one primary role from [CATALOG.md](CATALOG.md) that owns the outcome.
 2. Add specialist roles only when responsibility or independent review must be separated.
 3. Read the role's non-responsibilities and approval boundaries before execution.
 4. Combine the role with the matching [Rules](../Rules/) and [Skills](../Skills/) discipline when available.

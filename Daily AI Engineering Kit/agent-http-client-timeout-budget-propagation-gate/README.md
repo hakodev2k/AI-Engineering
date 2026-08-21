@@ -141,3 +141,7 @@ The workflow and contracts are tool-neutral. Agent-specific adapters are unneces
 
 ## Customization
 Extend the deterministic scanner only for patterns that can be tested reliably. Keep runtime tracing rules in Skills rather than encoding uncertain semantic conclusions into regex. For languages other than .NET, add focused detectors and matching unit tests instead of broad unverified patterns.
+
+## Schema example
+
+`examples/timeout-budget-result.example.json` is a synthetic instance of `schemas/timeout-budget-result.schema.json` for contract smoke tests. It contains no production data and demonstrates shape only; validate it with the package's documented checker or a Draft 2020-12 JSON Schema validator before adapting it.

@@ -27,7 +27,7 @@ Prefer removing free-form destinations entirely and derive endpoints from truste
 - `hooks/pre-credentialed-request.md` — action-time blocking integration point.
 
 ## Installation
-Requires Python 3.10+ and only the standard library. Copy `config/policy.example.json` to `config/policy.json` and replace example hosts with reviewed destinations.
+Requires Python 3.10+ and only the standard library. Copy `config/policy.example.json` to a consumer-owned, ignored path, replace example hosts with reviewed destinations, and set `DESTINATION_POLICY_PATH` to that file.
 
 ## Configuration
 Use exact hosts where possible. Suffix rules must begin with `.` and require a strict subdomain match. Keep `redirects_allowed` false for credential-bearing traffic. Do not copy the sample Amazon-like suffix into production without validating the real service endpoint rules.
@@ -47,7 +47,7 @@ Create a request envelope such as:
 Run:
 
 ```bash
-python3 scripts/destination_guard.py request.json --policy config/policy.json
+python3 scripts/destination_guard.py request.json --policy "$DESTINATION_POLICY_PATH"
 ```
 
 Exit codes: `0` allow, `2` invalid input/config, `4` approval required, `5` deny. The script does not send the network request.

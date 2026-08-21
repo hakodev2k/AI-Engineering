@@ -9,7 +9,6 @@ AI coding agents often waste tokens by reading unrelated files and lose reliabil
 Trigger -> Map Repository -> Select Evidence -> Build Context Package -> Execute -> Verify
 
 ## Components
-- skills: context procedures
 - rules: loading and safety constraints
 - subagents: ownership separation
 - workflows: bounded execution
@@ -17,3 +16,13 @@ Trigger -> Map Repository -> Select Evidence -> Build Context Package -> Execute
 
 ## Safety
 Never expose secrets. Never edit code before required context is collected.
+
+## Prerequisites, run, and verification
+
+Requires Bash plus standard `find` and `head` utilities. Run against a local target repository:
+
+```bash
+bash scripts/validate-context.sh /path/to/target-repository
+```
+
+The script prints at most 50 directories within depth two and exits `0` when enumeration completes; exit `1` means the path does not exist. It is an inventory aid, not evidence that selected context is complete. Follow `workflows/context-driven-change.md`, apply `rules/context-safety.md`, and record why each loaded file is relevant plus which likely sources were intentionally excluded.

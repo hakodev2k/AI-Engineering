@@ -82,3 +82,7 @@ All in-scope config parses; required baseline snapshots exist; no unexplained re
 
 ## Customization
 Extend policy globs for repository conventions. Add application-specific validators/build commands to the final hook rather than putting nondeterministic reasoning into the Python gate. Keep vendor-specific agent adapters outside the core workflow so the same kit can be used with Codex, Claude Code, Cursor, ChatGPT, Copilot, OpenCode, or another coding agent capable of following repository instructions and invoking local commands.
+
+## Schema example
+
+`examples/handoff.example.json` is a synthetic instance of `schemas/handoff.schema.json` for contract smoke tests. It contains no production data and demonstrates shape only; validate it with the package's documented checker or a Draft 2020-12 JSON Schema validator before adapting it.

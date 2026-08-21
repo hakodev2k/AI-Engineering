@@ -76,3 +76,7 @@ Evidence documented; terminal objective and acceptance criteria persisted; basel
 
 ## Customization
 Adapt phase names and evidence collectors to the lifecycle (code-only, release, incident response, research). Keep the core invariants: observable terminal criteria, decision finality, action-target mapping, evidence-gain measurement, bounded loops, and independent verification.
+
+## Schema example
+
+`examples/objective-ledger.example.json` is a synthetic instance of `schemas/objective-ledger.schema.json` for contract smoke tests. It contains no production data and demonstrates shape only; validate it with the package's documented checker or a Draft 2020-12 JSON Schema validator before adapting it.

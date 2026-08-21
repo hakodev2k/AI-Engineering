@@ -1,0 +1,9 @@
+{
+  "status": "accepted",
+  "key": "example-key",
+  "payload_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+  "evidence": [
+    "synthetic evidence"
+  ],
+  "verification": "pending"
+}

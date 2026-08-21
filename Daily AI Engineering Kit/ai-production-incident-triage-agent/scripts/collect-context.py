@@ -2,6 +2,7 @@ import json
 import os
 import sys
 from datetime import datetime, timezone
+from pathlib import Path
 
 output = {
     "timestamp": datetime.now(timezone.utc).isoformat(),
@@ -10,8 +11,9 @@ output = {
     "status": "collected"
 }
 
-path = sys.argv[1] if len(sys.argv) > 1 else "incident-context.json"
-with open(path, "w", encoding="utf-8") as file:
+path = Path(sys.argv[1] if len(sys.argv) > 1 else "incident-context.json")
+path.parent.mkdir(parents=True, exist_ok=True)
+with path.open("w", encoding="utf-8") as file:
     json.dump(output, file, indent=2)
 
 print(path)

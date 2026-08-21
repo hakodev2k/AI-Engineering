@@ -8,6 +8,6 @@ def main():
     if missing:
         print('ERROR: missing files: '+', '.join(missing),file=sys.stderr); return 1
     for p in ['scripts/validate-frontend-change.py','scripts/validate-package.py']:
-        if not os.access(ROOT/p,os.X_OK): print(f'ERROR: not executable: {p}',file=sys.stderr); return 1
+        if os.name != 'nt' and not os.access(ROOT/p,os.X_OK): print(f'ERROR: not executable: {p}',file=sys.stderr); return 1
     print(f'OK: package manifest valid ({len(REQ)+1} files including validator)'); return 0
 if __name__=='__main__': sys.exit(main())

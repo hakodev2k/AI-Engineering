@@ -75,3 +75,14 @@ Retries are bounded to two cycles. Unresolved authority, ambiguity or evidence g
 
 ## Customization
 Adjust priority factors, approval boundaries and metrics in `config/role-config.yaml` to local governance, but do not weaken evidence, explicit ownership, bounded retries or irreversible-change approval controls.
+
+## Verification
+
+Copy the complete `product-owner/` directory into the consuming agent workspace and preserve relative paths. Python 3.10+ is required only for local standard-library validators. Run from the copied package root:
+
+```bash
+python scripts/validate-package.py
+python scripts/validate-product-item.py examples/product-item.example.json
+```
+
+These checks validate package and backlog-item structure. They do not update a backlog system, approve scope, confirm stakeholder agreement, or accept delivered behavior.

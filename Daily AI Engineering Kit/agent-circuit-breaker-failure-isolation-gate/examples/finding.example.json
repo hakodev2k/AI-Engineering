@@ -1,0 +1,18 @@
+{
+  "status": "pass",
+  "findings": [
+    {
+      "id": "example-id",
+      "severity": "info",
+      "file": "artifacts/example.json",
+      "line": 1,
+      "finding": "example-finding",
+      "evidence": "synthetic evidence",
+      "recommended_action": "example-recommended-action"
+    }
+  ],
+  "verification": {
+    "scanner_exit_code": 1,
+    "blocking_findings": 1
+  }
+}

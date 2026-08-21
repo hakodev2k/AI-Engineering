@@ -1,0 +1,32 @@
+{
+  "status": "investigating",
+  "symptom": "example-symptom",
+  "facts": [
+    "example-facts"
+  ],
+  "hypotheses": [
+    {
+      "statement": "example-statement",
+      "confidence": "low",
+      "evidenceFor": [
+        "synthetic evidence"
+      ],
+      "evidenceAgainst": [
+        "synthetic evidence"
+      ],
+      "nextExperiment": "example-nextExperiment"
+    }
+  ],
+  "evidence": {
+    "sourceLocations": [
+      "example-sourceLocations"
+    ],
+    "generatedSql": "example-generatedSql",
+    "workloadShape": "example-workloadShape",
+    "measurements": [
+      "example-measurements"
+    ]
+  },
+  "affectedComponent": "example-affectedComponent",
+  "recommendedAction": "example-recommendedAction"
+}

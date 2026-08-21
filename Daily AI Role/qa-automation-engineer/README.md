@@ -203,3 +203,13 @@ After meaningful failures: document root cause, update the relevant rule/knowled
 
 ## Portability
 The package is tool-neutral at its core and can guide ChatGPT, Codex, Claude Code, Cursor, Copilot, OpenCode, or human QA engineers. Tool-specific commands belong in project configuration or execution adapters; professional responsibilities and approval boundaries remain independent.
+
+## Verification
+
+After copying the entire `qa-automation-engineer/` directory, verify its local package/task contract with Python 3.10+:
+
+```bash
+python scripts/validate-package.py --task examples/task-contract.example.json
+```
+
+The optional `scripts/run-quality-gates.ps1` requires PowerShell 7+ plus an explicitly supplied target repository and that repository's real lint/test commands. It is not a package self-test, and this package does not install Playwright, Node dependencies, browsers, or application test data.

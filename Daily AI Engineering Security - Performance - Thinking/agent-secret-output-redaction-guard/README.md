@@ -2,6 +2,10 @@
 
 A deterministic output-boundary guard that masks registered secret values and high-confidence credential patterns before tool output is persisted or returned to an agent. It also provides a conservative preflight check for commands that commonly dump credentials or the process environment.
 
+## Purpose
+
+Provide a dependency-free redaction and command-preflight reference implementation for output paths that may reach logs, transcripts, persistence, or model context.
+
 ## Threat model and limits
 
 The guard reduces accidental disclosure through stdout, stderr, transcripts, logs, and model reinjection. It does not replace a secret manager, sandbox, least-privilege permissions, provider-side rotation, or repository secret scanning. Pattern matching cannot identify every credential and can produce false positives; known-value masking is stronger when the host supplies a narrow allowlist of secret environment-variable names.

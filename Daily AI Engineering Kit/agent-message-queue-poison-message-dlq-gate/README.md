@@ -133,3 +133,7 @@ python -m pytest tests/test_analyze_message.py -q
 
 ## Customization
 Broker-specific adapters may be added to collect envelopes or execute approved replay, but keep them separate from the provider-neutral investigation workflow. Never make provider adapters automatically replay DLQs by default. For RabbitMQ, Azure Service Bus, AWS SQS, Kafka retry topics, or other brokers, map broker metadata to the common envelope and preserve the package's bounded retry, quarantine, evidence, and approval semantics.
+
+## Schema example
+
+`examples/analysis-result.example.json` is a synthetic instance of `schemas/analysis-result.schema.json` for contract smoke tests. It contains no production data and demonstrates shape only; validate it with the package's documented checker or a Draft 2020-12 JSON Schema validator before adapting it.

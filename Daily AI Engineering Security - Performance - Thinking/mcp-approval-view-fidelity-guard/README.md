@@ -58,8 +58,9 @@ mcp-approval-view-fidelity-guard/
 
 Requires Python 3.9+ and no third-party packages.
 
+Copy this entire directory into a trusted tooling location and run commands from the copied package root; no collection-level files are required.
+
 ```bash
-cd "Daily AI Engineering SPT/mcp-approval-view-fidelity-guard"
 python scripts/mcp_descriptor_guard.py check examples/clean-tool.json
 python scripts/mcp_descriptor_guard.py approve examples/clean-tool.json \
   --server mcp://docs --out approval.json

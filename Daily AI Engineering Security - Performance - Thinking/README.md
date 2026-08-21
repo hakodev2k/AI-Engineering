@@ -2,6 +2,8 @@
 
 A collection of advanced guards and measurement packages for agent security boundaries, runtime integrity, context efficiency, tool orchestration, permission handling, and failure recovery.
 
+Browse the complete alphabetical [standalone package catalog](CATALOG.md) to select a control by purpose, runtime type, and topic.
+
 ## Intended use
 
 These packages are controls and reference implementations for teams building or operating agent systems. They are not universal runtime plugins: the host must map each rule, hook, schema, and script to its own tool protocol, approval system, telemetry, and sandbox model.
@@ -21,6 +23,14 @@ Use a package when its threat model or performance problem is present and measur
 
 A research- or guidance-only package must be treated as non-executable until it includes an implementation and verification path.
 
+## Runtime classification
+
+- **Executable guard/probe:** has a deterministic `scripts/` or hook entrypoint. Run only the command documented by the package and interpret unknown, invalid, or stale evidence as blocked unless its policy explicitly says otherwise.
+- **Reference-only control:** contains research, rules, skills, or templates but no runnable evaluator. It needs no installation and is not enforced until the host implements the documented lifecycle binding.
+- **Host adapter required:** includes an evaluator but depends on runtime events, identity, approval, sandbox, or telemetry supplied by the host. Validate the adapter separately; a passing fixture does not prove the real boundary.
+
+The package README is authoritative for its entrypoint. Executable files are reference implementations, not automatically installed commands or production integrations.
+
 ## Prerequisites
 
 - Python 3.10 or newer for Python utilities; Python 3.11+ is recommended.
@@ -28,7 +38,7 @@ A research- or guidance-only package must be treated as non-executable until it 
 - Access to runtime events, tool metadata, or session evidence required by the selected guard.
 - A disposable validation environment for sandbox, filesystem, network, credential, or side-effect probes.
 
-Install the shared Python dependencies from this directory:
+Maintainers may install the shared source-repository dependencies from this directory:
 
 ```bash
 python -m venv .venv
@@ -37,6 +47,8 @@ python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 python -m pip install -r requirements-dev.txt
 ```
+
+Consumers who copy one package should instead use that package's local dependency file or exact README install command; the collection root is not required.
 
 ## Integration workflow
 
@@ -55,6 +67,12 @@ Common test commands, when supported by a package, are:
 python -m unittest discover -s tests -p "test*.py"
 python -m pytest tests
 ```
+
+Maintainers can run `npm run audit:strict` from the repository root for documentation, link, structured-file, JSON Schema, and Python syntax checks. Consumers who copy one package do not need the root npm workspace. This static audit is additive to package-local tests and cannot prove runtime policy enforcement.
+
+## Package readiness contract
+
+Do not enable a copied guard until its README identifies its input and output, exit-code meaning, lifecycle placement, fail-open/fail-closed behavior, evidence freshness rule, side effects, and verification command. Treat a missing adapter or unknown result as a blocked integration for high-autonomy or high-impact actions. Use synthetic examples only and keep generated evidence outside the package.
 
 ## Safety requirements
 

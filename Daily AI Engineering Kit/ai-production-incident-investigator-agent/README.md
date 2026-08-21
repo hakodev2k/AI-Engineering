@@ -21,12 +21,14 @@ D --> E[Root Cause Analysis]
 E --> F[Verification]
 ```
 
+## Copy and install
+
+Copy the complete package into a trusted incident workspace. It requires Python 3.10+ and only the standard library. The host must separately provide approved read-only access to sanitized logs, metrics, and traces; this package contains no production connector.
+
 ## Package
 - skills/incident-investigation.md
-- skills/evidence-collection.md
 - rules/incident-safety.md
 - subagents/root-cause-analyst.md
-- subagents/verification-agent.md
 - workflows/incident-response.md
 - hooks/pre-investigation.md
 - scripts/collect-context.py
@@ -41,3 +43,7 @@ Agents must not change production data, deploy fixes, or modify infrastructure w
 - Root cause separated from symptoms
 - Verification completed
 - Risks documented
+
+## Run and verification
+
+Requires Python 3.10+ and uses only the standard library. From the package directory, run `python scripts/collect-context.py` and capture its sanitized JSON output as described by the workflow. The collector is a local context scaffold, not a telemetry connector. Validate the completed handoff against `schemas/investigation-result.json`, reproduce the supported hypothesis independently, and record unavailable evidence as a limitation rather than a pass.

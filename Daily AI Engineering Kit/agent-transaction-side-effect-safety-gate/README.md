@@ -2,6 +2,10 @@
 
 Reusable gate for finding and remediating external side effects that occur inside or near database transactions and retryable execution strategies. The failure mode is subtle: database work can roll back or be replayed while an email, HTTP call, message publication, or storage mutation has already escaped, producing duplicates or inconsistent state.
 
+## Purpose
+
+Detect transaction/side-effect candidates deterministically, require semantic investigation, and verify a bounded remediation without treating static matches as confirmed defects.
+
 ## Use / do not use
 Use for transaction/retry changes, duplicate-delivery incidents, code review, or before enabling database retry strategies. Do not use as proof from static matching alone, or as a substitute for domain-specific consistency analysis.
 
@@ -75,3 +79,7 @@ The task is executed only after scan/investigation/implementation stages run. It
 
 ## Customization
 Extend policy patterns for repository naming conventions. Keep deterministic detection in scripts and semantic classification in the investigation skill. Do not broaden scanner matches without tests because false positives weaken the gate.
+
+## Schema example
+
+`examples/finding.example.json` is a synthetic instance of `schemas/finding.schema.json` for contract smoke tests. It contains no production data and demonstrates shape only; validate it with the package's documented checker or a Draft 2020-12 JSON Schema validator before adapting it.

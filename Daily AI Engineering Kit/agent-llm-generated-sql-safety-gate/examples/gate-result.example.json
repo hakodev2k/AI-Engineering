@@ -1,0 +1,16 @@
+{
+  "status": "passed",
+  "environment": "example-environment",
+  "statement_count": 1,
+  "findings": [
+    {
+      "code": "example-code"
+    }
+  ],
+  "approvals": [
+    {
+      "code": "example-code"
+    }
+  ],
+  "executed": false
+}

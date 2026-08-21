@@ -134,3 +134,18 @@ Research updates SHOULD distinguish confirmed findings, current hypotheses, bloc
 
 ## Customization
 Adjust source classes, confidence thresholds, approval roles, benchmark tolerances, domain-specific quality gates, and review depth while preserving evidence traceability, explicit uncertainty, bounded retries, reproducibility, and human approval for dangerous or irreversible actions.
+
+## Standalone integration and usage
+
+Copy the entire `technical-researcher/` directory into the consuming agent workspace and preserve relative paths. Load this README and `rules/operating-rules.md`, then only the relevant research workflow, skill, reviewers, templates, and supplied evidence. Python 3.10+ is required for local validators and only the standard library is used.
+
+## Verification
+
+Run from the copied package root:
+
+```bash
+python scripts/validate-package.py
+python scripts/validate-research-work-item.py examples/research-work-item.example.json
+```
+
+These commands validate package and work-item structure; they do not browse sources, reproduce experiments, establish source authority, or prove a research conclusion.

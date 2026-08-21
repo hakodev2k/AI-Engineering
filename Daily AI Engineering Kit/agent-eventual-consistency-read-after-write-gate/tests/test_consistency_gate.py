@@ -43,5 +43,18 @@ def test_missing_contract_fails():
         cp=subprocess.run([sys.executable,str(SCRIPT),'--request',str(req)], capture_output=True, text=True)
         assert cp.returncode == 2
 
+def test_request_cannot_exceed_policy_attempts():
+    with tempfile.TemporaryDirectory() as d:
+        req = Path(d) / 'bad-attempts.json'
+        req.write_text(json.dumps({
+            'read_url': 'http://127.0.0.1:1/order/1',
+            'correlation_id': 'test-policy-limit',
+            'expect': {'value': 'confirmed'},
+            'max_attempts': 5
+        }), encoding='utf-8')
+        cp = subprocess.run([sys.executable, str(SCRIPT), '--request', str(req)], capture_output=True, text=True)
+        assert cp.returncode == 2
+        assert 'policy maximum' in cp.stderr
+
 if __name__=='__main__':
-    test_eventual_success(); test_missing_contract_fails(); print('ok')
+    test_eventual_success(); test_missing_contract_fails(); test_request_cannot_exceed_policy_attempts(); print('ok')

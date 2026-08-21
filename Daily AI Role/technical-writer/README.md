@@ -102,3 +102,14 @@ workflows/release-and-migration-docs.md
 
 ## Customization
 Adapt terminology, repository paths, publication platform, style rules, approval roles, risk thresholds, supported versions, and metrics in `config/role-config.yaml`; keep the core evidence-first and audience-first operating model tool-neutral.
+
+## Verification
+
+Copy the complete `technical-writer/` directory into the consuming agent workspace and preserve relative paths. Python 3.10+ is required only for standard-library validators. Run from the copied package root:
+
+```bash
+python scripts/validate-package.py
+python scripts/validate-documentation-request.py examples/documentation-request.example.json
+```
+
+These checks validate package/request structure. They do not verify technical facts, render documentation, run code examples, publish content, or confirm search/discovery quality.

@@ -79,3 +79,7 @@ Recovery is complete only when the policy validates; the failure was classified;
 
 ## Portability
 The Markdown procedures are tool-neutral and can be loaded by Codex, Claude Code, Cursor, ChatGPT, Copilot, OpenCode, or another agent. Keep provider-specific retry metadata handling in the integration layer; do not weaken the core budget, evidence, reconciliation, and approval rules.
+
+## Schema example
+
+`examples/recovery-decision.example.json` is a synthetic instance of `schemas/recovery-decision.schema.json` for contract smoke tests. It contains no production data and demonstrates shape only; validate it with the package's documented checker or a Draft 2020-12 JSON Schema validator before adapting it.

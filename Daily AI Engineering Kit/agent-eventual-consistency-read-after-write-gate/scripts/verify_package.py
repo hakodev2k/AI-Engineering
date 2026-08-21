@@ -3,11 +3,11 @@ import json, sys
 from pathlib import Path
 
 REQUIRED = [
- 'README.md','config/policy.yaml','scripts/consistency_gate.py','scripts/verify_package.py',
+ 'README.md','requirements.txt','config/policy.yaml','scripts/consistency_gate.py','scripts/verify_package.py',
  'skills/investigate-consistency.md','skills/verify-read-after-write.md','rules/safety.md',
  'subagents/consistency-investigator.md','subagents/verification-agent.md',
  'workflows/read-after-write-gate.md','hooks/lifecycle.md','schemas/result.schema.json',
- 'examples/sample-request.json','tests/test_consistency_gate.py'
+ 'examples/sample-request.json','examples/result.example.json','tests/test_consistency_gate.py'
 ]
 
 def main():

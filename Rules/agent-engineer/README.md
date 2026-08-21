@@ -2,11 +2,13 @@
 
 Operating constraints for designing, integrating, evaluating, and operating AI agents. These files are policy guidance, require no installation, and should be combined with repository-specific instructions and deterministic enforcement.
 
+Each rule file is self-contained and may be copied independently; this README and the sibling rules are navigation and optional context, not runtime dependencies.
+
 ## Usage
 
 1. Select the smallest set of rules that covers the agent behavior or platform change.
 2. Define authority, data, tool, cost, reliability, and human-approval boundaries before execution.
-3. Pair these rules with the related [AI Engineer skills](../../Skills/ai-engineer/) where appropriate.
+3. Where available, optionally pair these rules with related AI engineering procedures.
 4. Convert critical requirements into runtime policy, tests, hooks, telemetry, or CI gates.
 
 ## Catalogue
@@ -36,5 +38,4 @@ Operating constraints for designing, integrating, evaluating, and operating AI a
 
 ## Maintenance
 
-When adding a rule, keep it focused, link it from this index, preserve the surrounding terminology, and document verification and approval boundaries. See the repository [contribution guide](../../CONTRIBUTING.md).
-
+When adding a rule, keep it focused, link it from this index, preserve the surrounding terminology, and document verification and approval boundaries. Follow the host repository's contribution policy when one exists.

@@ -119,6 +119,17 @@ Adjust `config/role-config.yaml` for retry limits, approval thresholds, environm
 5. Execute deterministic checks before human approvals.
 6. Record evidence, decisions, residual risk, and next owner.
 
+### Deterministic validation
+
+Python 3.10+ is required for the validators; no third-party Python package is used. From this role directory, run:
+
+```bash
+python scripts/validate-package.py
+python scripts/validate-release.py examples/release-contract.example.json
+```
+
+`scripts/validate-package.py` checks that documented package artifacts are present and non-empty. `scripts/validate-release.py` checks the portable JSON contract and exits non-zero when required fields or risk/approval rules fail. It does not build an artifact, access CI/CD, deploy, approve a release, or verify a live environment.
+
 ## Prioritization
 Rank active work by: production severity/security > user/business impact > dependency blocking > deadline/change window > cost of delay > reversibility > effort. A lower-effort task must not displace a high-risk production blocker merely because it is easier.
 

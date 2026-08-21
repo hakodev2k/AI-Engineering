@@ -1,0 +1,10 @@
+{
+  "status": "pass",
+  "finding": "example-finding",
+  "evidence": [
+    "synthetic evidence"
+  ],
+  "risk": "low",
+  "recommended_action": "example-recommended-action",
+  "verification_status": "unverified"
+}

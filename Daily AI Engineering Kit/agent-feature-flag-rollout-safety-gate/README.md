@@ -165,3 +165,7 @@ The package is tool-neutral. It can be used with OpenAI Codex, Claude Code, Curs
 
 ## Customization
 Adjust metric names, expiry limits, stage duration, target types, and percentage rules in `config/policy.yaml`. Add organization-specific business metrics to `required_metrics` when they can be consistently evaluated. For stronger automation, build a provider adapter that consumes an approved rollout plan and changes only the requested stage, then returns authoritative readback. Keep production credentials in that adapter or secret store, never in prompts, plans, examples, or repository files.
+
+## Schema example
+
+`examples/rollout-result.example.json` is a synthetic instance of `schemas/rollout-result.schema.json` for contract smoke tests. It contains no production data and demonstrates shape only; validate it with the package's documented checker or a Draft 2020-12 JSON Schema validator before adapting it.

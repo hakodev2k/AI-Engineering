@@ -59,3 +59,7 @@ Detection: guard returns stop/invalid or integration misses a model-call path. E
 
 ## Customization
 Add provider-specific price calculation outside the deterministic guard, extend allowed progress markers, or establish workload-specific policies. Preserve the invariant that child spend is bounded by parent budget and that hard-cap bypass requires explicit approval.
+
+## Schema example
+
+`examples/usage-event.example.json` is a synthetic instance of `schemas/usage-event.schema.json` for contract smoke tests. It contains no production data and demonstrates shape only; validate it with the package's documented checker or a Draft 2020-12 JSON Schema validator before adapting it.

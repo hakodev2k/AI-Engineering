@@ -1,165 +1,106 @@
-# Agent Eventual Consistency Read-After-Write Gate
+# Eventual Consistency Read-After-Write Gate
 
-A reusable AI engineering kit for diagnosing and verifying cases where a write is acknowledged but the expected state is not immediately visible through a downstream read model, replica, projection, cache, or search index.
-
-## Problem
-Distributed systems often acknowledge a mutation before every derived read path has converged. Agents can misclassify normal propagation delay as a failed write, repeatedly mutate data, flush shared caches, or claim success without evidence. This package provides a bounded, evidence-driven workflow that separates write acknowledgement from verified read visibility.
+A standalone, bounded verifier for proving that an acknowledged write becomes observable through the read contract that users or downstream systems actually consume.
 
 ## Purpose
-Use this kit to investigate stale or missing reads after successful writes, identify the consistency boundary, and prove convergence with a deterministic read-only verification gate.
+
+Turn missing or stale read-after-write behavior into repeatable evidence without retrying the original mutation, hiding intermediate observations, or looping until success.
 
 ## When to use
-Use after API/database/message-driven writes that feed replicas, read models, caches, search indexes, projections, or asynchronous consumers. It is also useful when changing code in those paths and you need a regression gate.
 
-## When not to use
-Do not use it as a replacement for transactional correctness, durability testing, or destructive recovery. It does not authorize production writes, cache flushes, checkpoint rewinds, schema changes, or consistency-model changes.
+Use after an acknowledged write when a projection, cache, replica, event consumer, search index, or asynchronous workflow may delay visibility. It is also useful when changing one of those boundaries or investigating an intermittent stale-read incident.
 
-## Architecture
+Do not use it to issue the write, flush shared caches, alter a consistency model, or prove the root cause of delay. The verifier performs bounded HTTP GET requests only.
 
-```mermaid
-flowchart LR
-    A[Write acknowledged] --> B[Consistency Investigator]
-    B --> C[Trace async/cache/replica boundaries]
-    C --> D[Build verification contract]
-    D --> E[Deterministic read gate]
-    E -->|verified| F[Verification Agent]
-    E -->|unverified| G[One investigation re-entry]
-    G --> E
-    F --> H[Complete]
-    E -->|still unverified| I[Escalate with evidence]
-```
-
-The AI agents own investigation and interpretation. `scripts/consistency_gate.py` owns bounded polling and result evidence. The implementing/investigating role is not the only verifier.
-
-## Package tree
+## Package contents
 
 ```text
 agent-eventual-consistency-read-after-write-gate/
 ├── README.md
-├── config/
-│   └── policy.yaml
-├── examples/
-│   └── sample-request.json
-├── hooks/
-│   └── lifecycle.md
-├── rules/
-│   └── safety.md
-├── schemas/
-│   └── result.schema.json
-├── scripts/
-│   ├── consistency_gate.py
-│   └── verify_package.py
-├── skills/
-│   ├── investigate-consistency.md
-│   └── verify-read-after-write.md
-├── subagents/
-│   ├── consistency-investigator.md
-│   └── verification-agent.md
-├── tests/
-│   └── test_consistency_gate.py
-└── workflows/
-    └── read-after-write-gate.md
+├── requirements.txt
+├── config/policy.yaml
+├── examples/sample-request.json
+├── examples/result.example.json
+├── hooks/lifecycle.md
+├── rules/safety.md
+├── schemas/result.schema.json
+├── scripts/consistency_gate.py
+├── scripts/verify_package.py
+├── skills/investigate-consistency.md
+├── skills/verify-read-after-write.md
+├── subagents/consistency-investigator.md
+├── subagents/verification-agent.md
+├── tests/test_consistency_gate.py
+└── workflows/read-after-write-gate.md
 ```
 
-## Component responsibilities
+## Copy and install
 
-- `skills/investigate-consistency.md`: trace write-to-read propagation and classify the failure boundary.
-- `skills/verify-read-after-write.md`: run and interpret the deterministic verification gate.
-- `rules/safety.md`: enforce evidence, retry, permission, and production-safety boundaries.
-- `subagents/consistency-investigator.md`: owns root-cause investigation.
-- `subagents/verification-agent.md`: independently owns verification status.
-- `workflows/read-after-write-gate.md`: bounded end-to-end process with one investigation re-entry.
-- `hooks/lifecycle.md`: pre-task, post-evidence, and final package checks.
-- `scripts/consistency_gate.py`: read-only bounded polling with per-attempt evidence.
-- `scripts/verify_package.py`: confirms required package files exist and contain no omitted-implementation markers.
-- `config/policy.yaml`: reusable default retry/safety policy.
-- `schemas/result.schema.json`: output contract for deterministic results.
-- `examples/sample-request.json`: copyable request contract.
-- `tests/test_consistency_gate.py`: validates delayed convergence and invalid-contract behavior.
+Copy this entire directory into the consumer repository and keep its relative paths intact. Python 3.10+ is required. From the copied package root:
 
-## Installation
+```bash
+python -m pip install -r requirements.txt
+python scripts/verify_package.py
+python -m unittest tests/test_consistency_gate.py -v
+```
 
-Copy this folder into the target repository. Python 3.9+ is sufficient; the scripts use only the standard library.
+The runtime dependency is package-local; collection-root files are not required.
 
 ## Configuration
 
-Start from `examples/sample-request.json`. Set:
+`config/policy.yaml` sets the maximum attempt/delay envelope, default acceptable HTTP statuses, and approval boundaries. The CLI loads that file by default from the copied package. Pass `--policy path/to/policy.yaml` only for an explicitly reviewed consumer policy.
 
-- `read_url`: approved read-only endpoint to verify.
-- `correlation_id`: identifier from the acknowledged write.
-- `value_path`: dot-separated JSON field whose value must converge.
-- `expect.value`: expected state.
-- `expect.version_path` and `expect.min_version`: optional write/read monotonic version check.
-- retry parameters only within the service's documented consistency window.
+A request may narrow acceptable statuses or lower retry/delay values. It cannot exceed the policy maximum or introduce a status not allowed by policy. Keep `max_attempts` at or below four so output remains compatible with `schemas/result.schema.json`.
 
-`config/policy.yaml` defines package defaults and safety boundaries. The executable script accepts equivalent values from the request JSON so it remains dependency-free.
+## Input contract
 
-## Permissions
+Start from `examples/sample-request.json` and change the URL, correlation ID, value path, and expectation. The URL must use HTTP or HTTPS and must be an explicitly approved read-only endpoint. Do not place bearer tokens or secrets in committed examples; inject narrowly scoped headers at runtime through a protected consumer-owned request file.
 
-Prefer read-only credentials. The package requires no write permission for verification. Production writes, destructive compensation, global/shared cache flushes, consumer checkpoint changes, routing/infrastructure changes, security changes, and consistency-model changes require explicit human approval.
+`expect.value` is compared to the value selected by `value_path`. If `expect.version_path` and `expect.min_version` are present, the observed version must be at least the minimum using the reference script's string ordering. Use an application-specific adapter when the domain has different version semantics.
 
-## Usage
+## Run
 
-Create a request JSON from the example, then run:
+Run from the copied package root. The example URL is illustrative and requires a separately started local fixture; it is not contacted by package tests.
 
 ```bash
-python scripts/consistency_gate.py --request request.json --output consistency-result.json
+python scripts/consistency_gate.py \
+  --request path/to/request.json \
+  --policy config/policy.yaml \
+  --output artifacts/consistency-result.json
 ```
+
+The script creates the output parent directory when needed and prints the same secret-free JSON result to stdout. It performs only bounded GET requests, adds `X-Correlation-Id` when absent, records every attempt, respects numeric `Retry-After` values within the configured delay cap, and never retries the original mutation.
 
 Exit codes:
 
-- `0`: verified successfully.
-- `2`: invalid input/contract.
-- `3`: bounded verification completed but remained unverified.
+- `0`: expected value/version became observable and result is `verified`;
+- `2`: request/policy is missing, malformed, or outside the policy envelope;
+- `3`: bounded observations completed without verification.
 
-Validate the kit itself with:
+DNS, connection, timeout, and invalid-response failures are preserved as unverified attempt evidence rather than crashing or becoming a false pass.
 
-```bash
-python scripts/verify_package.py
-python tests/test_consistency_gate.py
-```
+## Integration
 
-## Example invocation
+Follow `workflows/read-after-write-gate.md`. Preserve the original write receipt, entity/correlation identity, timestamp, and version; run this verifier through the same read path whose consistency matters; then correlate its evidence with the asynchronous boundary using `skills/investigate-consistency.md`. The host must provide secret injection, endpoint allowlisting, and artifact retention.
 
-A write returns version `42`, while the first two reads still show `pending`. The gate records those stale observations, backs off, and only returns `verified` when the read endpoint returns the expected value and version. It never retries the original write.
+## Safety and approval
 
-## Workflow
-
-Follow `workflows/read-after-write-gate.md`:
-
-1. Gather write evidence and repository context.
-2. Trace asynchronous/read-model boundaries.
-3. Form evidence-backed hypotheses.
-4. Build the read verification contract.
-5. Run at most four read attempts.
-6. If unverified, allow one investigation re-entry.
-7. Run one final bounded gate.
-8. Complete only with verified evidence; otherwise escalate.
-
-## Approval boundaries
-
-Agents must stop before any production mutation, destructive compensation, shared cache flush, checkpoint rewind, infrastructure/routing change, permission expansion, or consistency-model change. Approval never grants permission implicitly; the required tool/account access must already be authorized.
-
-## Failure handling
-
-Transient HTTP/read failures are retried only inside the configured four-attempt budget. Validation and permission failures stop. Persistent stale or missing data gets one investigation re-entry and one final bounded verification. All attempt evidence is preserved. Repeated failure ends as `unverified`, not success.
+The package authorizes no production mutation. Explicit human approval remains required before a production write, destructive compensation, shared cache flush, consumer checkpoint change, infrastructure/routing change, consistency-model change, permission expansion, or security-control change. Never broaden credentials to make verification pass.
 
 ## Verification
 
-A task is **executed** when the gate ran. It is **verified successfully** only when the intended read contract exposes the expected value and, when supplied, a version not older than the acknowledged write version. Intermediate stale reads remain in evidence.
+```bash
+python scripts/verify_package.py
+python -m unittest tests/test_consistency_gate.py -v
+```
+
+Package verification covers eventual success through a local loopback server, invalid contract rejection, and policy-bound attempt validation without external services. A consumer integration is verified only when the output conforms to `schemas/result.schema.json`, all attempts are retained, the exact write identity/version is bound to the result, and an independent reviewer confirms the evidence. `examples/result.example.json` is synthetic shape evidence only.
+
+## Failure handling
+
+Correct invalid input instead of retrying it. A transient read may retry only within policy. Persistent stale/missing state permits one evidence-driven investigation re-entry and one final gate run; then stop with `unverified`. Preserve failures and unavailable evidence. Never interpret tool failure or missing output as verified.
 
 ## Definition of Done
 
-- The acknowledged write identity and expected state/version are recorded.
-- Writer, propagation boundaries, and intended read path were identified.
-- The deterministic gate ran within the configured retry budget.
-- The final result is `verified`, or the workflow explicitly reports `unverified` and escalates.
-- Evidence for every attempt is preserved.
-- No repeated mutation or unintended production change occurred.
-- Required approvals were respected.
-- Remaining risks are documented.
-- `python scripts/verify_package.py` and `python tests/test_consistency_gate.py` pass in a local copy.
+The expected value and version are observed within policy, evidence is schema-compatible and tied to the acknowledged write, no unintended mutation occurred, required approvals were respected, and remaining risk is recorded. Otherwise the outcome remains explicitly unverified or blocked.
 
-## Customization
-
-For numeric/vector-clock/custom version semantics, replace the simple version comparison with an application-specific comparator and add tests before use. For non-HTTP read models, keep the same workflow and output contract but adapt only the deterministic read adapter; do not move deterministic retry logic into an LLM prompt.

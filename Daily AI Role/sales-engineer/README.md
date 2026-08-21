@@ -115,3 +115,14 @@ See `checklists/definition-of-done.md`. Completion requires verified evidence, r
 
 ## Customization
 Extend product-specific knowledge separately from core operating behavior. Keep vendor-specific APIs, pricing, roadmap, security attestations, and deployment assumptions isolated and source-dated.
+
+## Verification
+
+Copy the complete `sales-engineer/` directory into the consuming agent workspace and preserve relative paths. Python 3.10+ is required only for standard-library validators. Run from the copied package root:
+
+```bash
+python scripts/validate-package.py
+python scripts/validate-engagement.py examples/engagement.example.json
+```
+
+These checks validate local package/engagement structure. They do not contact a customer, query CRM/product systems, verify product claims, authorize pricing, or approve commitments.

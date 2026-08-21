@@ -23,7 +23,7 @@ def main():
     bad_exec=[]
     for p in ["scripts/validate-platform-change.py","scripts/validate-package.py"]:
         fp=os.path.join(root,p)
-        if os.path.isfile(fp) and not os.access(fp, os.X_OK): bad_exec.append(p)
+        if os.name != "nt" and os.path.isfile(fp) and not os.access(fp, os.X_OK): bad_exec.append(p)
     if missing or bad_exec:
         if missing: print("Missing:\n"+"\n".join(missing), file=sys.stderr)
         if bad_exec: print("Not executable:\n"+"\n".join(bad_exec), file=sys.stderr)

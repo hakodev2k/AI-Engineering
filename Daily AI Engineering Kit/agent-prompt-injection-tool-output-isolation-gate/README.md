@@ -131,3 +131,7 @@ The workflow is complete only when external content was gated, provenance was re
 
 ## Customization
 You can add organization-specific source types and patterns, integrate the pre-context command into agent hooks, CI, or MCP adapters, and replace the simple YAML parser with your platform's configuration loader. Keep the core invariants unchanged: external content is data, tool authorization comes from trusted intent, dangerous actions require approval, and high-risk work receives independent verification.
+
+## Schema example
+
+`examples/gate-result.example.json` is a synthetic instance of `schemas/gate-result.schema.json` for contract smoke tests. It contains no production data and demonstrates shape only; validate it with the package's documented checker or a Draft 2020-12 JSON Schema validator before adapting it.

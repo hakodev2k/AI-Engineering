@@ -11,5 +11,11 @@ if ($null -eq $git) {
     exit 2
 }
 
+& $git.Source -C $Root rev-parse --is-inside-work-tree *> $null
+if ($LASTEXITCODE -ne 0) {
+    Write-Error "Root is not a Git working tree"
+    exit 3
+}
+
 Write-Host "Review validation context is ready"
 exit 0

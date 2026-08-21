@@ -2,11 +2,13 @@
 
 Operating constraints for AI-assisted work performed in the DevOps Engineer discipline. These files are policy guidance, require no installation, and should be combined with repository-specific instructions and deterministic checks.
 
+Each rule file is self-contained and may be copied independently; this README and the sibling rules are navigation and optional context, not runtime dependencies.
+
 ## Usage
 
 1. Select the smallest set of rules that covers the planned change.
 2. Resolve conflicts using repository policy, explicit approval boundaries, and the stricter safety requirement.
-3. Pair the rules with the matching [DevOps Engineer skills](../../Skills/devops-engineer/).
+3. Where available, optionally pair the rules with matching DevOps engineering procedures.
 4. Convert critical requirements into tests, hooks, or CI checks in the target repository.
 
 ## Catalogue
@@ -36,5 +38,4 @@ Operating constraints for AI-assisted work performed in the DevOps Engineer disc
 
 ## Maintenance
 
-When adding a rule, keep it focused, link it from this index, preserve the surrounding terminology, and document verification and approval boundaries. See the repository [contribution guide](../../CONTRIBUTING.md).
-
+When adding a rule, keep it focused, link it from this index, preserve the surrounding terminology, and document verification and approval boundaries. Follow the host repository's contribution policy when one exists.

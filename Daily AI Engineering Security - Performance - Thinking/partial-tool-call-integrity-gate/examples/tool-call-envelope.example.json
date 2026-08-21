@@ -1,0 +1,8 @@
+{
+  "call_id": "example-call-id",
+  "tool_name": "example-tool-name",
+  "arguments": {},
+  "stream_state": "partial",
+  "terminal_event_seen": true,
+  "risk_class": "read_only"
+}

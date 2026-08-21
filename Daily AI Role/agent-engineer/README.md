@@ -74,3 +74,18 @@ An agent task is complete only when the requested output exists, tool results an
 
 ## Portability
 The package uses Markdown, JSON, YAML, and Python with no required vendor-specific agent runtime.
+
+## Standalone integration and usage
+
+Copy the entire `agent-engineer/` directory into the consuming agent workspace, preserving relative paths. Load this README, `rules/operating-rules.md`, and `config/role-config.yaml` first; add only the relevant skill, workflow, subagent, knowledge, and template to the task context. Python 3.10+ is required only for the local validators, which use the standard library and need no credentials or network access.
+
+## Verification
+
+From the copied package root, verify both its manifest and included contract example:
+
+```bash
+python scripts/validate-package.py
+python scripts/validate-task-contract.py examples/agent-task-contract.example.json
+```
+
+These commands validate local structure and input shape only; they do not run an agent, call a model, grant tools, or prove task success.

@@ -86,3 +86,14 @@ python3 scripts/validate-package.py .
 
 ## Customization
 Adjust `config/role-config.yaml` for local SLO targets, approval owners, supported platform domains, and escalation thresholds. Keep the core operating model tool-neutral; map concrete products such as Kubernetes, GitHub Actions, Azure, Backstage, Terraform, or Argo CD at implementation time rather than embedding them as universal assumptions.
+
+## Verification
+
+Copy the entire `platform-engineer/` directory into the consuming agent workspace, preserving relative paths. Python 3.10+ is required only for standard-library validators. From the copied package root, run:
+
+```bash
+python scripts/validate-package.py .
+python scripts/validate-platform-change.py examples/platform-change.example.json
+```
+
+These checks validate package and change-contract structure; they do not provision infrastructure, contact a platform, evaluate live reliability, or approve a breaking migration.

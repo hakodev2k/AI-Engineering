@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import argparse, hashlib, json, sys
+from pathlib import Path
 
 def canonical(obj):
     clone = dict(obj)
@@ -13,7 +14,10 @@ def main():
         data=json.load(open(a.input,encoding="utf-8")); digest=hashlib.sha256(canonical(data)).hexdigest()
         out={"disagreement_id":data.get("disagreement_id"),"fingerprint":digest}
         text=json.dumps(out,indent=2)
-        if a.output: open(a.output,"w",encoding="utf-8").write(text+"\n")
+        if a.output:
+            output = Path(a.output)
+            output.parent.mkdir(parents=True, exist_ok=True)
+            output.write_text(text + "\n", encoding="utf-8")
         else: print(text)
     except Exception as e:
         print(f"fingerprint failed: {e}",file=sys.stderr); return 2

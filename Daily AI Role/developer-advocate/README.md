@@ -93,6 +93,8 @@ Escalate when facts conflict, release behavior is unstable, security/privacy/leg
 Failure → Root Cause → Lesson → Process Improvement → Future Prevention. Record reusable learning using `templates/failure-learning-record.md`.
 
 ## Usage
+Copy the entire `developer-advocate/` directory into the consuming agent workspace and preserve relative paths. Load this README, `rules/operating-rules.md`, and `config/role-config.yaml` before selecting relevant skills/workflows. Local validators require Python 3.10+ and only the standard library; product/community systems are optional authorized adapters.
+
 1. Fill `examples/advocacy-work.example.json` or another instance matching `schemas/advocacy-work.schema.json`.
 2. Run `python scripts/validate-advocacy-work.py <file>`.
 3. Select the relevant skill/workflow.

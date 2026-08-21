@@ -1,0 +1,20 @@
+{
+  "status": "passed",
+  "environment": "example-environment",
+  "flag_key": "example-flag-key",
+  "findings": [
+    {
+      "code": "example-code",
+      "message": "example-message",
+      "severity": "block"
+    }
+  ],
+  "approvals": [
+    {
+      "code": "example-code",
+      "message": "example-message"
+    }
+  ],
+  "validated": true,
+  "executed": false
+}
