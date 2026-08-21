@@ -1,0 +1,9 @@
+{
+  "max_attempts": 4,
+  "max_identical_request_retries": 1,
+  "max_no_progress_retries": 2,
+  "max_replayed_tokens": 100000,
+  "max_post_failure_tool_calls": 20,
+  "max_post_failure_wall_seconds": 900,
+  "require_checkpoint_for_full_turn_replay": true
+}
