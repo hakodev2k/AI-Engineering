@@ -1,0 +1,52 @@
+id: github
+name: GitHub
+upstream:
+  - mcp
+transport:
+  type: streamable-http
+  endpoint: https://api.githubcopilot.com/mcp/
+auth:
+  type: bearer-token
+  supported:
+    - oauth-2.1-access-token
+    - personal-access-token
+    - github-app-installation-token
+  credentials_env:
+    - GITHUB_ACCESS_TOKEN
+security:
+  upstream_tools_allowlisted: true
+  repository_allowlist_supported: true
+  credentials_exposed_to_llm: false
+  provider_content_untrusted: true
+capabilities:
+  - user.get
+  - repository.search
+  - file.read
+  - code.search
+  - issue.search
+  - issue.get
+  - pull_request.get
+  - branch.create
+  - issue.create
+  - issue.comment
+  - pull_request.create
+  - pull_request.merge
+risk:
+  default: READ
+  WRITE:
+    - github.branch.create
+    - github.issue.create
+    - github.issue.comment
+    - github.pull_request.create
+  HIGH_RISK:
+    - github.pull_request.merge
+approval:
+  write: required
+  high_risk: required
+required_environment:
+  - GITHUB_ACCESS_TOKEN
+  - GITHUB_APPROVAL_SECRET
+optional_environment:
+  - GITHUB_MCP_URL
+  - GITHUB_ALLOWED_OWNERS
+  - GITHUB_ALLOWED_REPOSITORIES
