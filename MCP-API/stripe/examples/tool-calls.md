@@ -4,7 +4,7 @@
 Tool: `stripe.account.get`
 Permission: READ
 Approval: No
-Input: `{}`
+Input: `{ "accountId": "acct_example" }`
 Output: Stripe account JSON.
 
 ## List customers
