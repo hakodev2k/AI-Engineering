@@ -36,7 +36,14 @@ def main():
             if not expected: raise ValueError('policy expected_resource is required')
             if expected not in aud: reasons.append('expected MCP resource not present in audience')
         if p.get('require_active',True) and active is not True: reasons.append('token active state is not explicitly true')
-        required=set(p.get('required_scopes_by_operation',{}).get(operation,[])); missing=sorted(required-sc)
+        scope_map=p.get('required_scopes_by_operation',{})
+        if not isinstance(scope_map,dict): raise ValueError('required_scopes_by_operation must be object')
+        if operation not in scope_map:
+            reasons.append('operation is not explicitly configured')
+            required=set()
+        else:
+            required=set(scope_map[operation])
+        missing=sorted(required-sc)
         if missing:reasons.append('required scopes missing')
         if p.get('forbid_token_passthrough',True) and passthrough:reasons.append('inbound token passthrough is forbidden')
         if downstream is not None and not isinstance(downstream,str):raise ValueError('downstream_target must be string when supplied')
