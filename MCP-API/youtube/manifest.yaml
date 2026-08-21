@@ -1,0 +1,51 @@
+id: youtube
+name: YouTube
+version: 1.0.0
+upstream:
+  - rest
+  - oauth2
+mcp:
+  official_server: false
+  note: No official Google/YouTube MCP server was identified during the 2026-08-22 research pass.
+api:
+  data_base_url: https://www.googleapis.com/youtube/v3
+  analytics_base_url: https://youtubeanalytics.googleapis.com/v2
+auth:
+  type: oauth2_or_api_key
+  scopes:
+    read: https://www.googleapis.com/auth/youtube.readonly
+    write: https://www.googleapis.com/auth/youtube.force-ssl
+    analytics: https://www.googleapis.com/auth/yt-analytics.readonly
+  environment:
+    - YOUTUBE_API_KEY
+    - YOUTUBE_ACCESS_TOKEN
+    - YOUTUBE_REFRESH_TOKEN
+    - YOUTUBE_CLIENT_ID
+    - YOUTUBE_CLIENT_SECRET
+    - YOUTUBE_REQUIRE_WRITE_APPROVAL
+    - YOUTUBE_TIMEOUT_MS
+capabilities:
+  - video.search
+  - video.get
+  - channel.get
+  - playlist.list
+  - playlist_items.list
+  - comment.list
+  - comment.create
+  - comment.reply
+  - playlist.create
+  - playlist_item.add
+  - subscription.list
+  - analytics.query
+risk:
+  default: READ
+  write_tools:
+    - youtube.comment.create
+    - youtube.comment.reply
+    - youtube.playlist.create
+    - youtube.playlist_item.add
+  destructive_tools: []
+approval:
+  write: configurable_default_required
+  high_risk: required
+  destructive: disabled
