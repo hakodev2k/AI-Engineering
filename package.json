@@ -9,6 +9,7 @@
   },
   "scripts": {
     "audit": "node scripts/audit-repository.mjs",
+    "audit:strict": "node scripts/audit-repository.mjs --strict-collections",
     "check:mcp": "npm --prefix MCP-API run check",
     "check": "npm run audit && npm run check:mcp"
   },

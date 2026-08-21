@@ -3,6 +3,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)](CONTRIBUTING.md)
 [![Repository status](https://img.shields.io/badge/status-active-2ea44f.svg)](CHANGELOG.md)
+[![Repository quality](https://github.com/hakodev2k/AI-Engineering/actions/workflows/repository-quality.yml/badge.svg)](https://github.com/hakodev2k/AI-Engineering/actions/workflows/repository-quality.yml)
 
 A practical, reusable knowledge base for building and operating AI-assisted engineering workflows. The repository brings together role definitions, engineering rules, focused skills, safety gates, and MCP/API connectors that can be adopted independently or composed into a larger agent system.
 
@@ -63,6 +64,12 @@ Please report suspected vulnerabilities through the private process described in
 
 ## Project documentation
 
+- [Documentation hub](docs/README.md)
+- [Getting started](docs/GETTING_STARTED.md)
+- [Repository structure](docs/REPOSITORY_STRUCTURE.md)
+- [Documentation style guide](docs/STYLE_GUIDE.md)
+- [Maintenance guide](docs/MAINTENANCE.md)
+- [Governance](GOVERNANCE.md)
 - [Changelog](CHANGELOG.md)
 - [Contributing guide](CONTRIBUTING.md)
 - [Code of Conduct](CODE_OF_CONDUCT.md)
@@ -78,7 +85,7 @@ npm ci
 npm run audit
 ```
 
-The audit checks collection and package READMEs, Rules/Skills indexes, relative Markdown links, JSON/YAML syntax, Python syntax, and required MCP connector files. Executable package tests must still be run with their documented runtime.
+The audit checks collection and package READMEs, Rules/Skills indexes, relative Markdown links, JSON/YAML syntax, Python syntax, and required MCP connector files. Collection documentation gaps are warnings by default; maintainers can enforce them with `npm run audit:strict`. Executable package tests must still be run with their documented runtime.
 
 For the complete repository check, including all MCP builds and tests:
 

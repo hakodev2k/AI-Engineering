@@ -57,6 +57,8 @@ All contributions should:
 
 Use English for repository content so additions remain consistent with the existing collections. Prefer UTF-8 text, fenced code blocks with a language identifier, and tables only when they improve comparison or scanning.
 
+Follow the repository [documentation style guide](docs/STYLE_GUIDE.md) for structure, links, examples, and security-sensitive content. Repository-wide decisions follow [GOVERNANCE.md](GOVERNANCE.md).
+
 ## Package expectations
 
 ### Roles, kits, and guards

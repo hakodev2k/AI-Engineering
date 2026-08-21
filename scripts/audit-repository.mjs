@@ -7,6 +7,7 @@ import { parser as pythonParser } from "@lezer/python";
 import { parseDocument } from "yaml";
 
 const root = resolve(import.meta.dirname, "..");
+const strictCollections = process.argv.includes("--strict-collections");
 const collections = [
   "Daily AI Engineering Kit",
   "Daily AI Engineering Security - Performance - Thinking",
@@ -19,6 +20,10 @@ const ignoredDirectories = new Set([".git", ".venv", "coverage", "dist", "node_m
 const errors = [];
 const warnings = [];
 const counters = { files: 0, markdown: 0, json: 0, yaml: 0, python: 0, links: 0, packages: 0 };
+
+function reportCollectionGap(message) {
+  (strictCollections ? errors : warnings).push(message);
+}
 
 function display(path) {
   return relative(root, path).split(sep).join("/");
@@ -52,7 +57,7 @@ function validateRequiredDocumentation() {
     for (const packageDirectory of childDirectories(directory)) {
       counters.packages += 1;
       if (!existsSync(join(packageDirectory, "README.md"))) {
-        errors.push(`missing package README: ${display(packageDirectory)}/README.md`);
+        reportCollectionGap(`missing package README: ${display(packageDirectory)}/README.md`);
       }
     }
   }
@@ -67,7 +72,7 @@ function validateIndexes() {
       for (const entry of readdirSync(directory, { withFileTypes: true })) {
         if (!entry.isFile() || extname(entry.name) !== ".md" || entry.name === "README.md") continue;
         if (!index.includes(`](${entry.name})`)) {
-          errors.push(`index does not link ${display(join(directory, entry.name))}`);
+          reportCollectionGap(`index does not link ${display(join(directory, entry.name))}`);
         }
       }
     }

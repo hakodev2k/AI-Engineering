@@ -16,6 +16,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - A shared MCP workspace for reproducible installation and repository-wide checks.
 - Central Python runtime and development dependency declarations for executable engineering packages.
 - A repository audit command for documentation coverage, links, JSON/YAML/Python syntax, indexes, and MCP structure.
+- A documentation hub with onboarding, repository structure, style, and maintenance guidance.
+- Governance, ownership, issue forms, pull-request guidance, dependency updates, and repository-quality automation.
+- Editor and Git attribute defaults for consistent cross-platform contributions.
+
+### Changed
+
+- Collection documentation gaps are reported as audit warnings by default and can be enforced with `npm run audit:strict`.
 
 ### Fixed
 
