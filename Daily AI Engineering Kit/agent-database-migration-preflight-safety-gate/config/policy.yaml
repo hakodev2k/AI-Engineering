@@ -1,0 +1,18 @@
+version: 1
+block_patterns:
+  - "DROP DATABASE"
+  - "TRUNCATE TABLE"
+approval_patterns:
+  - "DROP TABLE"
+  - "DROP COLUMN"
+  - "ALTER COLUMN"
+  - "DELETE FROM"
+  - "UPDATE "
+  - "CREATE INDEX"
+  - "DROP INDEX"
+  - "ALTER TABLE"
+warning_patterns:
+  - "NOT NULL"
+  - "WITH (ONLINE = OFF)"
+max_statements: 500
+require_where_for_delete_update: true
