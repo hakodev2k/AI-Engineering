@@ -19,7 +19,7 @@ function register(name: string, description: string, schema: Record<string, z.Zo
   });
 }
 
-register('stripe.account.get', 'Read the authenticated Stripe account.', {}, async () => client.accountGet());
+register('stripe.account.get', 'Retrieve one Stripe account by account ID.', { accountId: z.string().regex(/^acct_[A-Za-z0-9]+$/) }, async (a) => client.accountGet(a.accountId));
 register('stripe.customer.list', 'List customers with bounded pagination.', { limit, startingAfter: cursor }, async (a) => client.customerList(a.limit, a.startingAfter));
 register('stripe.customer.get', 'Get one customer.', { customerId: z.string().regex(/^cus_[A-Za-z0-9]+$/) }, async (a) => client.customerGet(a.customerId));
 register('stripe.customer.create', 'Create a customer. Requires approval.', {
