@@ -1,0 +1,76 @@
+id: gitlab
+name: GitLab
+version: 1.0.0
+runtime: node>=20
+
+upstream:
+  - mcp
+  - rest
+
+endpoints:
+  mcp: "${GITLAB_BASE_URL}/api/v4/mcp"
+  rest: "${GITLAB_BASE_URL}/api/v4"
+
+auth:
+  rest:
+    type: oauth2_or_access_token
+    env: GITLAB_TOKEN
+    recommended_scopes:
+      read_only: [read_api, read_repository]
+      read_write: [api]
+  mcp:
+    type: oauth2
+    env: GITLAB_MCP_ACCESS_TOKEN
+    required_scope: mcp
+
+capabilities:
+  - project.search
+  - project.get
+  - repository.file.read
+  - issue.get
+  - issue.create
+  - issue.comment
+  - merge_request.list
+  - merge_request.get
+  - merge_request.create
+  - merge_request.comment
+  - pipeline.list
+  - pipeline.retry
+
+risk:
+  default: READ
+  tools:
+    gitlab.project.search: READ
+    gitlab.project.get: READ
+    gitlab.repository.file.read: READ
+    gitlab.issue.get: READ
+    gitlab.issue.create: WRITE
+    gitlab.issue.comment: WRITE
+    gitlab.merge_request.list: READ
+    gitlab.merge_request.get: READ
+    gitlab.merge_request.create: WRITE
+    gitlab.merge_request.comment: WRITE
+    gitlab.pipeline.list: READ
+    gitlab.pipeline.retry: HIGH_RISK
+
+approval:
+  writes: configurable_default_required
+  high_risk: always_required
+  destructive: disabled_not_exposed
+
+environment:
+  required:
+    - GITLAB_TOKEN
+  optional:
+    - GITLAB_BASE_URL
+    - GITLAB_MCP_ACCESS_TOKEN
+    - GITLAB_USE_UPSTREAM_MCP
+    - GITLAB_REQUIRE_WRITE_APPROVAL
+    - GITLAB_HTTP_TIMEOUT_MS
+    - GITLAB_MAX_RETRIES
+
+security:
+  arbitrary_api_requests: false
+  upstream_mcp_tool_allowlist: true
+  retrieved_content_trusted: false
+  credentials_exposed_to_agent: false
