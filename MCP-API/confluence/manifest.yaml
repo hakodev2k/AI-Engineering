@@ -1,0 +1,50 @@
+id: confluence
+name: Confluence
+runtime: node20
+upstream:
+  - mcp
+  - rest
+mcp:
+  endpoint: https://mcp.atlassian.com/v1/mcp/authv2
+  official: true
+rest:
+  base_url: ${ATLASSIAN_SITE_URL}/wiki/api/v2
+auth:
+  preferred: oauth2.1
+  alternatives:
+    - api_token
+  required_environment:
+    - ATLASSIAN_CLOUD_ID
+  optional_environment:
+    - ATLASSIAN_ROVO_MCP_TOKEN
+    - ATLASSIAN_SITE_URL
+    - ATLASSIAN_EMAIL
+    - ATLASSIAN_API_TOKEN
+scopes:
+  - read:page:confluence
+  - read:hierarchical-content:confluence
+  - read:comment:confluence
+  - read:space:confluence
+  - search:confluence
+  - write:page:confluence
+  - write:comment:confluence
+capabilities:
+  - space.list
+  - page.list
+  - page.get
+  - page.search
+  - page.descendants
+  - comment.footer.list
+  - comment.inline.list
+  - page.create
+  - page.update
+  - comment.footer.create
+  - comment.inline.create
+risk:
+  default: read
+  write_requires_approval: true
+  destructive_tools: []
+security:
+  credential_isolation: true
+  upstream_tool_allowlist: true
+  untrusted_content: true
