@@ -1,0 +1,55 @@
+id: sentry
+name: Sentry
+runtime: node>=20
+upstream:
+  - rest
+mcp:
+  official_server: false
+  note: No official Sentry MCP server was found in Sentry's official API documentation during this run; the connector uses the official Web API.
+api:
+  base_url_env: SENTRY_BASE_URL
+  default_base_url: https://sentry.io
+  version: v0
+auth:
+  type: bearer-token-or-oauth2
+  token_env: SENTRY_AUTH_TOKEN
+  recommended: internal-integration-organization-token
+  oauth: authorization-code-with-pkce-supported
+scopes:
+  read:
+    - org:read
+    - event:read
+    - project:read
+  write:
+    - event:write
+    - project:releases
+    - org:ci
+capabilities:
+  - project.list
+  - team.list
+  - issue.search
+  - issue.get
+  - issue.events.list
+  - issue.event.get
+  - issue.update
+  - replay.list
+  - monitor.list
+  - release.list
+  - release.get
+  - release.create
+  - release.deploy.create
+risk:
+  default: READ
+  approval_env: SENTRY_REQUIRE_WRITE_APPROVAL
+  high_risk:
+    - release.deploy.create
+environment:
+  required:
+    - SENTRY_AUTH_TOKEN
+    - SENTRY_ORG
+  optional:
+    - SENTRY_BASE_URL
+    - SENTRY_ALLOWED_PROJECTS
+    - SENTRY_REQUIRE_WRITE_APPROVAL
+    - SENTRY_TIMEOUT_MS
+    - SENTRY_MAX_RETRIES
