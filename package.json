@@ -1,0 +1,19 @@
+{
+  "name": "ai-engineering-repository",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20",
+    "npm": ">=10"
+  },
+  "scripts": {
+    "audit": "node scripts/audit-repository.mjs",
+    "check:mcp": "npm --prefix MCP-API run check",
+    "check": "npm run audit && npm run check:mcp"
+  },
+  "devDependencies": {
+    "@lezer/python": "^1.1.0",
+    "yaml": "^2.0.0"
+  }
+}

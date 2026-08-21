@@ -10,7 +10,7 @@
     "decisions": {"type": "array", "items": {"type": "object", "required": ["decision", "status"], "properties": {"decision": {"type": "string"}, "status": {"enum": ["settled", "reopened"]}, "contradictory_evidence": {"type": ["string", "null"]}}, "additionalProperties": true}},
     "blockers": {"type": "array", "items": {"type": "string"}},
     "actions": {"type": "array", "items": {"type": "object", "required": ["target", "evidence_gain"], "properties": {"target": {"type": "string", "minLength": 1}, "evidence_gain": {"enum": ["decisive", "partial", "none"]}, "evidence": {"type": ["string", "null"]}, "tool": {"type": ["string", "null"]}}, "additionalProperties": true}},
-    "progress_claims": {"type": "array", "items": {"type": "object", "required": ["claim", "evidence"], "properties": {"claim": {"type": "string"}, "evidence": {"type": "string", "minLength": 1}}, "additionalProperties": true}
+    "progress_claims": {"type": "array", "items": {"type": "object", "required": ["claim", "evidence"], "properties": {"claim": {"type": "string"}, "evidence": {"type": "string", "minLength": 1}}, "additionalProperties": true}}
   },
   "additionalProperties": true
 }

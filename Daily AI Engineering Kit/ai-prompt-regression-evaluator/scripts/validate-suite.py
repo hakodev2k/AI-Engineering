@@ -51,7 +51,7 @@ def main():
         if errors:
             print(json.dumps({"valid": False, "errors": errors}, indent=2))
             return 10
-        print(json.dumps({"valid": True, "suite_id": suite["suite_id"], "version": suite["version"], "case_count": len(suite["cases"]}, indent=2))
+        print(json.dumps({"valid": True, "suite_id": suite["suite_id"], "version": suite["version"], "case_count": len(suite["cases"])}, indent=2))
         return 0
     except Exception as e:
         print(json.dumps({"valid": False, "error": str(e)}))

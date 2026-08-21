@@ -28,6 +28,20 @@ Thank you for helping improve this repository. Contributions are welcome when th
 
 Use clear branch names such as `docs/improve-navigation` or `feat/add-contract-gate`. Commit messages should be concise, imperative, and scoped to the change.
 
+Run the repository structure check before opening a pull request:
+
+```bash
+npm ci
+npm run audit
+```
+
+Changes affecting MCP connectors must also pass:
+
+```bash
+npm --prefix MCP-API ci
+npm run check
+```
+
 ## Content standards
 
 All contributions should:

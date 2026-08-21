@@ -16,7 +16,7 @@ A practical, reusable knowledge base for building and operating AI-assisted engi
 | [Daily AI Engineering Kit](Daily%20AI%20Engineering%20Kit/) | Modular gates, guards, workflows, hooks, schemas, and verification assets. | Adding a focused engineering control to an agent workflow. |
 | [Daily AI Engineering Security - Performance - Thinking](Daily%20AI%20Engineering%20Security%20-%20Performance%20-%20Thinking/) | Deep controls for agent safety, performance, context management, permissions, and execution integrity. | Hardening autonomous or long-running agent systems. |
 | [Daily AI Role](Daily%20AI%20Role/) | Role packages for engineering, product, operations, architecture, design, and go-to-market disciplines. | Giving an agent a bounded mission, operating model, and expected outputs. |
-| [MCP-API](MCP-API/) | Provider-scoped connectors for Discord, Slack, Stripe, and Telegram. | Integrating external services through narrow, reviewable capabilities. |
+| [MCP-API](MCP-API/) | Provider-scoped connectors for Discord, GitHub, Jira, Linear, Notion, Slack, Stripe, and Telegram. | Integrating external services through narrow, reviewable capabilities. |
 | [Rules](Rules/) | Technology- and role-specific operating constraints. | Establishing non-negotiable quality and safety expectations. |
 | [Skills](Skills/) | Focused procedures for common engineering tasks. | Supplying repeatable, task-level guidance without adopting a full role package. |
 
@@ -68,6 +68,25 @@ Please report suspected vulnerabilities through the private process described in
 - [Code of Conduct](CODE_OF_CONDUCT.md)
 - [Security policy](SECURITY.md)
 - [Support guide](SUPPORT.md)
+
+## Repository audit
+
+With Node.js 20+, install the locked audit dependency and run the structural audit from the repository root:
+
+```bash
+npm ci
+npm run audit
+```
+
+The audit checks collection and package READMEs, Rules/Skills indexes, relative Markdown links, JSON/YAML syntax, Python syntax, and required MCP connector files. Executable package tests must still be run with their documented runtime.
+
+For the complete repository check, including all MCP builds and tests:
+
+```bash
+npm ci
+npm --prefix MCP-API ci
+npm run check
+```
 
 ## License
 
