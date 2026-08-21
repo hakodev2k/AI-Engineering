@@ -11,10 +11,10 @@
     "AZURE_CLIENT_SECRET"
   ],
   "blocked_command_patterns": [
-    "(^|[;&|()[:space:]])env([[:space:]]|$)",
-    "(^|[;&|()[:space:]])printenv([[:space:]]|$)",
-    "cat[[:space:]]+/proc/(self|[0-9]+)/environ",
-    "declare[[:space:]]+-p([[:space:]]|$)"
+    "(^|[;&|()\\s])env(\\s|$)",
+    "(^|[;&|()\\s])printenv(\\s|$)",
+    "cat\\s+/proc/(self|[0-9]+)/environ",
+    "declare\\s+-p(\\s|$)"
   ],
   "sensitive_assignment_keys": [
     "api_key",
