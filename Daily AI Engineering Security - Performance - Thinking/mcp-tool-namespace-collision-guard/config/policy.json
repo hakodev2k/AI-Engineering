@@ -1,0 +1,7 @@
+{
+  "invalid_char_pattern": "[^A-Za-z0-9_]",
+  "replacement": "_",
+  "lowercase": true,
+  "separator": "__",
+  "digest_suffix_length": 8
+}
