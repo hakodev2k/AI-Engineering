@@ -1,0 +1,14 @@
+{
+  "status": "confirmed",
+  "finding": "External side effect can diverge from database commit",
+  "affected_component": "example-component",
+  "transaction_evidence": [{"file": "src/example.cs", "line": 10, "fact": "transaction begins"}],
+  "side_effect_evidence": [{"file": "src/example.cs", "line": 24, "fact": "external effect executes before commit"}],
+  "failure_windows": ["effect succeeds then commit fails", "retry duplicates effect"],
+  "existing_safeguards": [],
+  "confidence": "high",
+  "risk": "state divergence or duplicate external action",
+  "recommended_action": "use an established transactional outbox or approved equivalent",
+  "verification_status": "pending",
+  "open_questions": []
+}
