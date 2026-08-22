@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "untrusted_public_fallback": "private",
+  "trusted_public": {
+    "example-reviewed-server": [
+      "tools/list",
+      "prompts/list"
+    ]
+  }
+}
