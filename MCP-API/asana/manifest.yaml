@@ -1,0 +1,45 @@
+id: asana
+name: Asana
+upstream:
+  - official-mcp
+  - rest
+mcp:
+  official_url: https://mcp.asana.com/v2/mcp
+  auth: oauth2
+  status: generally_available
+  strategy: "Asana MCP V2 is official and preferred for direct compatible clients. This reusable connector uses REST for a stable, reviewable, least-privilege tool surface because MCP app tokens are MCP-only and grant access to all available MCP tools rather than scoped REST permissions."
+api:
+  base_url: https://app.asana.com/api/1.0
+auth:
+  type: bearer
+  supported:
+    - oauth2_access_token
+    - personal_access_token
+  required_env:
+    - ASANA_ACCESS_TOKEN
+  least_privilege_scopes:
+    - tasks:read
+    - tasks:write
+    - projects:read
+    - users:read
+    - workspaces:read
+    - stories:read
+    - stories:write
+capabilities:
+  - user.me
+  - workspace.list
+  - project.list
+  - project.get
+  - task.list
+  - task.search
+  - task.get
+  - task.create
+  - task.update
+  - task.complete
+  - task.add_project
+  - comment.list
+  - comment.create
+risk:
+  default: READ
+  writes_require_operator_approval: true
+  destructive_disabled_by_default: true
