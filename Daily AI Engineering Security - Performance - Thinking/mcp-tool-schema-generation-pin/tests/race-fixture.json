@@ -1,0 +1,9 @@
+{
+  "server_instance":"demo-server",
+  "tool":"report",
+  "call_id":"call-1",
+  "dispatch_generation":"gen-a",
+  "dispatch_output_schema":{"type":"object","properties":{"generation":{"const":"old"}},"required":["generation"]},
+  "validation_generation":"gen-a",
+  "validation_output_schema":{"type":"object","properties":{"generation":{"const":"old"}},"required":["generation"]}
+}
