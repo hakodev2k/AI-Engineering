@@ -1,0 +1,12 @@
+evaluation_model: first-match
+priority_order: ascending
+wildcard: "*"
+block_on:
+  - shadowed-deny
+  - shadowed-allow
+require_explicit_priority: true
+max_findings: 500
+approval_required_for:
+  - changing-default-effect
+  - widening-admin-scope
+  - removing-deny-rule
