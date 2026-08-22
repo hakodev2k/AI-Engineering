@@ -1,0 +1,7 @@
+{
+  "max_calls": 8,
+  "max_prompt_tokens": 300000,
+  "max_elapsed_ms": 60000,
+  "max_same_target_calls": 4,
+  "notes": "Example starting policy only. Calibrate against baseline traces before production enforcement; retain framework-native hard turn limits."
+}
