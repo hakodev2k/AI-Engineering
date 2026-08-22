@@ -1,0 +1,43 @@
+{
+  "productive": {
+    "retry_number": 0,
+    "strategy": "bounded-summary",
+    "previous_strategy": null,
+    "previous_failed_chars": null,
+    "previous_verified_summary_available": true,
+    "items": [
+      {"kind": "user", "chars": 12000},
+      {"kind": "assistant", "chars": 24000},
+      {"kind": "tool_output", "chars": 18000}
+    ],
+    "expected": "allow"
+  },
+  "retry_debris_loop": {
+    "retry_number": 1,
+    "strategy": "raw-middle-summary",
+    "previous_strategy": "raw-middle-summary",
+    "previous_failed_chars": 130000,
+    "previous_verified_summary_available": true,
+    "items": [
+      {"kind": "user", "chars": 30000},
+      {"kind": "assistant", "chars": 50000},
+      {"kind": "retry_diagnostic", "chars": 26000},
+      {"kind": "compaction_failure", "chars": 18000}
+    ],
+    "expected": "block"
+  },
+  "smaller_retry": {
+    "retry_number": 1,
+    "strategy": "drop-retry-debris",
+    "previous_strategy": "raw-middle-summary",
+    "previous_failed_chars": 140000,
+    "previous_verified_summary_available": true,
+    "items": [
+      {"kind": "summary", "chars": 18000},
+      {"kind": "user", "chars": 15000},
+      {"kind": "assistant", "chars": 26000},
+      {"kind": "tool_output", "chars": 12000}
+    ],
+    "expected": "allow"
+  }
+}
