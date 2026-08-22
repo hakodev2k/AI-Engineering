@@ -34,4 +34,7 @@ register('notion.page.move','Move pages to a new parent. High-risk; requires app
 register('notion.page.duplicate','Duplicate a page. Requires approval.',{page_id:z.string().min(1),approvalId:z.string()},'notion-duplicate-page','WRITE');
 register('notion.database.create','Create a database. Requires approval.',{parent:objectRecord(),title:z.string().min(1).max(200),properties:objectRecord(),approvalId:z.string()},'notion-create-database','WRITE');
 
+const shutdown = () => { void server.close().then(() => process.exit(0), () => process.exit(1)); };
+process.once('SIGINT', shutdown);
+process.once('SIGTERM', shutdown);
 await server.connect(new StdioServerTransport());

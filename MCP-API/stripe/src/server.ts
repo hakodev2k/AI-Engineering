@@ -42,4 +42,7 @@ register('stripe.webhook.verify', 'Verify a Stripe webhook signature and return 
   return { id: event.id, type: event.type, created: event.created, livemode: event.livemode, data: event.data };
 });
 
+const shutdown = () => { void server.close().then(() => process.exit(0), () => process.exit(1)); };
+process.once('SIGINT', shutdown);
+process.once('SIGTERM', shutdown);
 await server.connect(new StdioServerTransport());

@@ -60,4 +60,7 @@ server.tool('twilio.phone_number.list', 'READ: list incoming phone numbers owned
 
 server.tool('twilio.phone_number.get', 'READ: fetch one incoming phone number by PN SID.', { phoneNumberSid: numberSid }, ({ phoneNumberSid }) => safe(() => client.phoneNumberGet(phoneNumberSid)));
 
+const shutdown = () => { void server.close().then(() => process.exit(0), () => process.exit(1)); };
+process.once('SIGINT', shutdown);
+process.once('SIGTERM', shutdown);
 await server.connect(new StdioServerTransport());

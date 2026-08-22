@@ -14,6 +14,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Collection-level usage, installation, and validation guides.
 - Navigable indexes for every Rules and Skills discipline.
 - A shared MCP workspace for reproducible installation and repository-wide checks.
+- A production-readiness gate for all 22 MCP connectors covering structure, risk controls, bounded upstream calls, graceful shutdown, type safety, builds, tests, and dependency advisories.
 - Central Python runtime and development dependency declarations for executable engineering packages.
 - A repository audit command for documentation coverage, links, JSON/YAML/Python syntax, indexes, and MCP structure.
 - A documentation hub with onboarding, repository structure, style, and maintenance guidance.
@@ -33,7 +34,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Collection documentation gaps are reported as audit warnings by default and can be enforced with `npm run audit:strict`.
 - Root installation and audit commands are now explicitly documented as maintainer tooling rather than consumer prerequisites.
 - Role and engineering-package documentation now treats package-local setup and verification as the consumer contract.
-- Repository automation now runs content and standalone-package audits only; provider connector builds remain a changed-connector responsibility.
+- Repository automation now runs content audits plus validation, typechecking, builds, tests, and dependency auditing for every MCP connector.
 - MCP adoption now starts with one selected provider directory instead of a collection-wide installation flow.
 - Contribution and pull-request guidance now validates repository documentation centrally and executable connectors package by package.
 
@@ -42,3 +43,4 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - MCP TypeScript build output now matches each connector's documented `dist/server.js` start command.
 - MCP test tooling no longer resolves Vitest/Vite versions affected by known high- and critical-severity advisories.
 - The MCP index now lists all supported connectors and Notion and Telegram declare their minimum Node.js runtime.
+- YouTube OAuth refresh no longer performs a second forced refresh before retrying the original request.

@@ -91,4 +91,7 @@ server.tool('trello.webhook.create', 'Create a webhook for a model. WRITE; appro
   return json(await client.request('/webhooks', { method: 'POST', query: { callbackURL: callback_url, idModel: model_id, description } }));
 });
 
+const shutdown = () => { void server.close().then(() => process.exit(0), () => process.exit(1)); };
+process.once('SIGINT', shutdown);
+process.once('SIGTERM', shutdown);
 await server.connect(new StdioServerTransport());

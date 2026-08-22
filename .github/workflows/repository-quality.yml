@@ -37,3 +37,11 @@ jobs:
 
       - name: Run strict content audit
         run: npm run check
+
+      - name: Install MCP connector dependencies
+        working-directory: MCP-API
+        run: npm ci --ignore-scripts
+
+      - name: Validate, typecheck, build, test, and audit all MCP connectors
+        working-directory: MCP-API
+        run: npm run check

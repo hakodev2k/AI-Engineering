@@ -141,4 +141,7 @@ server.tool("youtube.analytics.query", "Query channel-owner YouTube Analytics. R
   return result(await client.analytics({ ids: "channel==MINE", startDate, endDate, metrics, dimensions, filters, sort, maxResults }), "youtube-analytics-rest-api");
 });
 
+const shutdown = () => { void server.close().then(() => process.exit(0), () => process.exit(1)); };
+process.once('SIGINT', shutdown);
+process.once('SIGTERM', shutdown);
 await server.connect(new StdioServerTransport());

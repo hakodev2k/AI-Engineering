@@ -94,4 +94,7 @@ server.tool('github.pull_request.merge', 'Merge a pull request. High risk and al
   return output(await upstream.call('merge_pull_request', { owner: a.owner, repo: a.repo, pullNumber: a.pullNumber, merge_method: a.mergeMethod, commit_title: a.commitTitle, commit_message: a.commitMessage }, 30_000));
 });
 
+const shutdown = () => { void server.close().then(() => process.exit(0), () => process.exit(1)); };
+process.once('SIGINT', shutdown);
+process.once('SIGTERM', shutdown);
 await server.connect(new StdioServerTransport());

@@ -54,4 +54,7 @@ server.tool('cloudflare.cache.purge.urls', 'Purge specific cached URLs. HIGH_RIS
 server.tool('cloudflare.cache.purge.everything', 'Purge all cached content for a zone. HIGH_RISK WRITE; explicit operator approval required.', { zone_id: ZoneId },
   async ({ zone_id }) => { assertWriteAllowed(config, zone_id, 'cloudflare.cache.purge.everything'); return json(await client.request(`/zones/${zone_id}/purge_cache`, { method: 'POST', body: { purge_everything: true } })); });
 
+const shutdown = () => { void server.close().then(() => process.exit(0), () => process.exit(1)); };
+process.once('SIGINT', shutdown);
+process.once('SIGTERM', shutdown);
 await server.connect(new StdioServerTransport());

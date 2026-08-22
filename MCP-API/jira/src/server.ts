@@ -78,4 +78,7 @@ server.tool('jira.issue.transition', 'Perform a Jira workflow transition. HIGH_R
   return text(await upstream.callMcp('transitionJiraIssue', { cloudId: a.cloudId, issueIdOrKey: a.issueIdOrKey, transitionId: a.transitionId }));
 });
 
+const shutdown = () => { void server.close().then(() => process.exit(0), () => process.exit(1)); };
+process.once('SIGINT', shutdown);
+process.once('SIGTERM', shutdown);
 await server.connect(new StdioServerTransport());

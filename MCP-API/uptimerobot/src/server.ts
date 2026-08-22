@@ -72,4 +72,7 @@ server.tool('uptimerobot.integration.list', 'List alert integrations configured 
 server.tool('uptimerobot.integration.get', 'Get one alert integration. READ; returned configuration may contain sensitive values.', { integration_id: Id },
   async ({ integration_id }) => json(await client.request(`/integrations/${encodeURIComponent(String(integration_id))}`)));
 
+const shutdown = () => { void server.close().then(() => process.exit(0), () => process.exit(1)); };
+process.once('SIGINT', shutdown);
+process.once('SIGTERM', shutdown);
 await server.connect(new StdioServerTransport());

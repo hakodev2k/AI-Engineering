@@ -69,4 +69,7 @@ server.tool('linear.document.save', 'Create or update a Linear document. Require
   return output(await upstream.call('save_document', clean));
 });
 
+const shutdown = () => { void server.close().then(() => process.exit(0), () => process.exit(1)); };
+process.once('SIGINT', shutdown);
+process.once('SIGTERM', shutdown);
 await server.connect(new StdioServerTransport());

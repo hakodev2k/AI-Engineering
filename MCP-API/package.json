@@ -4,14 +4,28 @@
   "private": true,
   "type": "module",
   "workspaces": [
+    "asana",
+    "cloudflare",
+    "confluence",
+    "datadog",
     "discord",
     "github",
+    "gitlab",
+    "grafana",
     "jira",
     "linear",
     "notion",
+    "openai",
+    "pagerduty",
+    "paypal",
+    "sentry",
     "slack",
     "stripe",
-    "telegram"
+    "telegram",
+    "trello",
+    "twilio",
+    "uptimerobot",
+    "youtube"
   ],
   "engines": {
     "node": ">=20",
@@ -19,7 +33,11 @@
   },
   "scripts": {
     "build": "npm run build --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
     "test": "npm run test --workspaces --if-present",
-    "check": "npm run build && npm run test"
+    "audit:dependencies": "npm audit --audit-level=high",
+    "validate:production": "node validate-production.mjs",
+    "check:offline": "npm run validate:production && npm run typecheck && npm run build && npm run test",
+    "check": "npm run check:offline && npm run audit:dependencies"
   }
 }

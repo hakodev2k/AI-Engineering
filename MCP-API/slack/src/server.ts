@@ -167,6 +167,9 @@ export function createSlackServer(config: ConnectorConfig, client = new SlackCon
 async function main() {
   const config = loadConfig();
   const server = createSlackServer(config);
+  const shutdown = () => { void server.close().then(() => process.exit(0), () => process.exit(1)); };
+  process.once("SIGINT", shutdown);
+  process.once("SIGTERM", shutdown);
   await server.connect(new StdioServerTransport());
 }
 

@@ -36,7 +36,7 @@ export class YouTubeClient {
       const headers: Record<string, string> = { accept: "application/json" };
       const needsOAuth = options.auth === "oauth";
       if (needsOAuth || (!this.config.apiKey && this.tokens.hasOAuth())) {
-        headers.authorization = `Bearer ${await this.tokens.getAccessToken(refreshed)}`;
+        headers.authorization = `Bearer ${await this.tokens.getAccessToken()}`;
       } else if (this.config.apiKey) {
         url.searchParams.set("key", this.config.apiKey);
       } else {

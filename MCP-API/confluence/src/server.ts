@@ -81,4 +81,7 @@ server.tool("confluence.comment.inline.create", "Create an inline comment tied t
   return result(await upstream.write("createConfluenceInlineComment", mcpArgs, "inline-comments", "POST", restBody));
 });
 
+const shutdown = () => { void server.close().then(() => process.exit(0), () => process.exit(1)); };
+process.once('SIGINT', shutdown);
+process.once('SIGTERM', shutdown);
 await server.connect(new StdioServerTransport());

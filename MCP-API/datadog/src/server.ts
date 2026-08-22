@@ -103,4 +103,7 @@ server.tool('datadog.event.list', 'List Event Management events with bounded pag
   'page[limit]': page_limit, 'page[cursor]': page_cursor, 'filter[from]': filter_from, 'filter[to]': filter_to, 'filter[query]': filter_query, sort
 } })));
 
+const shutdown = () => { void server.close().then(() => process.exit(0), () => process.exit(1)); };
+process.once('SIGINT', shutdown);
+process.once('SIGTERM', shutdown);
 await server.connect(new StdioServerTransport());

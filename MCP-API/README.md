@@ -27,6 +27,7 @@ Provider-scoped Model Context Protocol servers. Each connector exposes a deliber
 | Slack | Slack Web API | [`slack/`](slack/) |
 | Stripe | Stripe Node SDK/API | [`stripe/`](stripe/) |
 | Telegram | Telegram Bot API | [`telegram/`](telegram/) |
+| Trello | Trello REST API | [`trello/`](trello/) |
 | Twilio | Twilio API | [`twilio/`](twilio/) |
 | UptimeRobot | UptimeRobot API | [`uptimerobot/`](uptimerobot/) |
 | YouTube | YouTube Data and Analytics APIs | [`youtube/`](youtube/) |
@@ -44,6 +45,17 @@ Read the selected connector's README and `manifest.yaml` before copying it. Thos
 7. Exercise read-only tools with a test account before enabling any write capability.
 
 The root `package.json` and lockfile exist for source-repository maintenance. They are not an installation contract for arbitrary copied connectors, and `npm ci` in this directory does not replace installation inside a selected connector.
+
+## Repository production gate
+
+All connector directories are npm workspaces and must pass the same repository gate:
+
+```bash
+npm ci --ignore-scripts
+npm run check
+```
+
+The gate verifies package structure, manifest risk classification, safe example credentials, bounded upstream calls, approval controls, graceful stdio shutdown, patched MCP SDK versions, type safety, production builds, automated tests, and dependency advisories. Tests use provider mocks and do not replace pre-production credential, scope, rate-limit, and sandbox-account verification against the selected provider.
 
 ## Before enabling a connector
 

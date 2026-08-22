@@ -38,11 +38,12 @@ describe('Sentry connector', () => {
 
   it('sends bearer auth and exposes rate-limit metadata for reads', async () => {
     const headers = new Headers({ 'x-sentry-rate-limit-limit': '50', 'x-sentry-rate-limit-remaining': '49', 'link': '<next>; rel="next"' });
-    const mockFetch = vi.fn(async () => new Response(JSON.stringify([{ id: '1' }]), { status: 200, headers }));
+    const mockFetch = vi.fn(async (_input: RequestInfo | URL, _init?: RequestInit) =>
+      new Response(JSON.stringify([{ id: '1' }]), { status: 200, headers }));
     const client = new SentryClient(loadConfig(env), mockFetch as typeof fetch);
     const result = await client.request('GET', '/organizations/acme/projects/');
     expect(mockFetch).toHaveBeenCalledOnce();
-    const request = mockFetch.mock.calls[0][1];
+    const request = mockFetch.mock.calls[0]![1];
     expect((request?.headers as Record<string, string>).Authorization).toBe('Bearer test-token');
     expect(result).toMatchObject({ rateLimit: { limit: '50', remaining: '49' }, pagination: { link: '<next>; rel="next"' } });
   });

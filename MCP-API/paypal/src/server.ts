@@ -121,7 +121,11 @@ register("paypal.dispute.accept", "Accept a PayPal dispute claim in favor of the
   ...approvalFields
 }, "accept_dispute_claim", "HIGH_RISK");
 
-process.on("SIGINT", async () => { await upstream.close(); process.exit(0); });
-process.on("SIGTERM", async () => { await upstream.close(); process.exit(0); });
+const shutdown = async () => {
+  const results = await Promise.allSettled([upstream.close(), server.close()]);
+  process.exit(results.some(result => result.status === "rejected") ? 1 : 0);
+};
+process.once("SIGINT", shutdown);
+process.once("SIGTERM", shutdown);
 
 await server.connect(new StdioServerTransport());

@@ -33,4 +33,7 @@ server.tool("telegram.message.action.send", "Send a transient chat action such a
 server.tool("telegram.message.pin", "Pin a message. HIGH_RISK because it changes shared chat state; requires approval_id.", { chat_id: chatId, message_id: messageId, disable_notification: z.boolean().default(false), approval_id: approvalId }, async ({ chat_id, message_id, disable_notification, approval_id }) => safe(async () => { assertChatAllowed(config, chat_id); assertApproval(config, "HIGH_RISK", approval_id); return client.pinChatMessage(chat_id, message_id, disable_notification); }));
 server.tool("telegram.message.unpin", "Unpin one message, or the current pinned message when message_id is omitted. HIGH_RISK; requires approval_id.", { chat_id: chatId, message_id: messageId.optional(), approval_id: approvalId }, async ({ chat_id, message_id, approval_id }) => safe(async () => { assertChatAllowed(config, chat_id); assertApproval(config, "HIGH_RISK", approval_id); return client.unpinChatMessage(chat_id, message_id); }));
 
+const shutdown = () => { void server.close().then(() => process.exit(0), () => process.exit(1)); };
+process.once('SIGINT', shutdown);
+process.once('SIGTERM', shutdown);
 await server.connect(new StdioServerTransport());

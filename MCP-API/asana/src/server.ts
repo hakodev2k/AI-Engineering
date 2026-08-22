@@ -130,4 +130,7 @@ server.tool('asana.comment.create', 'Add a plain-text comment to a task. WRITE; 
   return json(await client.request(`/tasks/${task_gid}/stories`, { method: 'POST', body: { data: { text } } }));
 });
 
+const shutdown = () => { void server.close().then(() => process.exit(0), () => process.exit(1)); };
+process.once('SIGINT', shutdown);
+process.once('SIGTERM', shutdown);
 await server.connect(new StdioServerTransport());

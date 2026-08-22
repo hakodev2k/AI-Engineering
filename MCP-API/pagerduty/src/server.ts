@@ -70,4 +70,7 @@ server.tool('pagerduty.user.list', 'List PagerDuty users. READ.', {
   limit: z.number().int().min(1).max(100).default(25), offset: z.number().int().min(0).max(100000).default(0), query: z.string().max(200).optional()
 }, async (args) => json(await client.request('/users', { query: args })));
 
+const shutdown = () => { void server.close().then(() => process.exit(0), () => process.exit(1)); };
+process.once('SIGINT', shutdown);
+process.once('SIGTERM', shutdown);
 await server.connect(new StdioServerTransport());

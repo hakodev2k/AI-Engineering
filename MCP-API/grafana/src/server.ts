@@ -59,7 +59,7 @@ const DashboardOperation = z.object({
 
 server.tool('grafana.dashboard.upsert', 'Create or update a dashboard through official Grafana MCP. WRITE; explicit operator approval is required by default.', {
   uid: Uid.optional(),
-  dashboard: z.record(z.unknown()).optional(),
+  dashboard: z.record(z.string(), z.unknown()).optional(),
   operations: z.array(DashboardOperation).min(1).max(50).optional(),
   folderUid: Uid.optional(),
   message: z.string().max(500).optional(),
@@ -79,6 +79,10 @@ server.tool('grafana.folder.create', 'Create a folder through official Grafana M
   return json(await upstream.call('create_folder', args));
 });
 
-process.on('SIGINT', async () => { await upstream.close(); process.exit(0); });
-process.on('SIGTERM', async () => { await upstream.close(); process.exit(0); });
+const shutdown = async () => {
+  const results = await Promise.allSettled([upstream.close(), server.close()]);
+  process.exit(results.some(result => result.status === 'rejected') ? 1 : 0);
+};
+process.once('SIGINT', shutdown);
+process.once('SIGTERM', shutdown);
 await server.connect(new StdioServerTransport());

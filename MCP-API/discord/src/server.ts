@@ -113,5 +113,8 @@ if (process.argv[1] && import.meta.url === new URL(`file://${process.argv[1]}`).
     maxRetries: Number(process.env.DISCORD_MAX_RETRIES ?? 2)
   });
   const server = buildServer(client);
+  const shutdown = () => { void server.close().then(() => process.exit(0), () => process.exit(1)); };
+  process.once('SIGINT', shutdown);
+  process.once('SIGTERM', shutdown);
   await server.connect(new StdioServerTransport());
 }
