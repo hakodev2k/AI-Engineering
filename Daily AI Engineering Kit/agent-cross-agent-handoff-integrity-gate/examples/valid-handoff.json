@@ -1,0 +1,48 @@
+{
+  "handoff_id": "handoff-example-0001",
+  "producer": "repository-explorer",
+  "consumer": "planner",
+  "task": "Transfer repository evidence for planning a non-destructive refactor",
+  "status": "ready",
+  "risk": [],
+  "facts": [
+    {
+      "text": "The relevant implementation entry point was identified.",
+      "confidence": 1.0,
+      "evidence_ids": ["ev-1"]
+    }
+  ],
+  "hypotheses": [
+    {
+      "text": "The nearby test module is likely the smallest regression-test location.",
+      "confidence": 0.7,
+      "evidence_ids": ["ev-1"]
+    }
+  ],
+  "decisions": [
+    {
+      "text": "Limit planning context to the identified module and adjacent tests.",
+      "reason": "No evidence currently requires wider repository expansion.",
+      "approval_required": false
+    }
+  ],
+  "evidence": [
+    {
+      "id": "ev-1",
+      "source": "repo:src/example/service.py",
+      "summary": "Repository inspection identified the task entry point and adjacent test boundary."
+    }
+  ],
+  "open_questions": [],
+  "artifacts": [],
+  "verification": {
+    "status": "not-run",
+    "checks": [
+      {
+        "name": "handoff-structure",
+        "status": "passed",
+        "evidence": "Prepared for deterministic gate validation."
+      }
+    ]
+  }
+}
