@@ -33,7 +33,7 @@ capabilities:
   - contact.search
   - contact.get
   - contact.update
-  - conversation.search
+  - conversation.list
   - conversation.get
   - conversation.reply
   - conversation.note.add
@@ -41,6 +41,7 @@ capabilities:
   - conversation.close
   - conversation.reopen
   - help_center.list
+  - article.search
 risk:
   default: READ
   writes_require_operator_approval: true
