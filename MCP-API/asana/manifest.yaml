@@ -23,6 +23,8 @@ auth:
     - projects:read
     - users:read
     - workspaces:read
+    - stories:read
+    - stories:write
 capabilities:
   - user.me
   - workspace.list
