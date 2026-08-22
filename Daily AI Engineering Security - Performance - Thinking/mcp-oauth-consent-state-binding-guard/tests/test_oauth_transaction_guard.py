@@ -93,6 +93,24 @@ class GuardTests(unittest.TestCase):
         self.assertEqual(5, code)
         self.assertIn("redirect_uri_mismatch", body["violations"])
 
+    def test_expired_state_denied(self):
+        r = base_record(); r["issued_at"] = int(time.time()) - 900; r["expires_at"] = int(time.time()) - 1
+        code, body = run(r)
+        self.assertEqual(5, code)
+        self.assertIn("transaction_expired", body["violations"])
+
+    def test_resource_mismatch_denied(self):
+        r = base_record(); r["callback"]["resource"] = "https://other.example.test"
+        code, body = run(r)
+        self.assertEqual(5, code)
+        self.assertIn("resource_binding_mismatch", body["violations"])
+
+    def test_pkce_binding_mismatch_denied(self):
+        r = base_record(); r["callback"]["pkce_challenge_hash"] = "different"
+        code, body = run(r)
+        self.assertEqual(5, code)
+        self.assertIn("pkce_binding_mismatch", body["violations"])
+
 
 if __name__ == "__main__":
     unittest.main()
