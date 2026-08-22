@@ -32,7 +32,7 @@ describe('HTTP fallback', () => {
     await expect(grafanaHealth(loadConfig(baseEnv), mockFetch as unknown as typeof fetch)).resolves.toMatchObject({ database: 'ok' });
   });
 
-  it('maps failed health requests without retrying mutations or arbitrary URLs', async () => {
+  it('maps failed health requests without retrying unsafe operations', async () => {
     const mockFetch = vi.fn(async () => new Response(JSON.stringify({ message: 'forbidden' }), { status: 403 }));
     await expect(grafanaHealth(loadConfig(baseEnv), mockFetch as unknown as typeof fetch)).rejects.toThrow(/GRAFANA_HTTP_403/);
     expect(mockFetch).toHaveBeenCalledTimes(1);
@@ -40,13 +40,13 @@ describe('HTTP fallback', () => {
 });
 
 describe('tool surface', () => {
-  it('registers ten scoped tools and no generic upstream escape hatch', () => {
+  it('registers eleven scoped tools and no generic upstream escape hatch', () => {
     const source = readFileSync(new URL('../src/server.ts', import.meta.url), 'utf8');
     const names = [...source.matchAll(/server\.tool\('([^']+)'/g)].map(x => x[1]);
     expect(names).toEqual([
-      'grafana.mcp.status', 'grafana.health.get', 'grafana.dashboard.search', 'grafana.dashboard.get',
-      'grafana.dashboard.summary', 'grafana.dashboard.panel_queries', 'grafana.datasource.list',
-      'grafana.datasource.get', 'grafana.dashboard.upsert', 'grafana.folder.create'
+      'grafana.mcp.status', 'grafana.health.get', 'grafana.dashboard.search', 'grafana.folder.search',
+      'grafana.dashboard.get', 'grafana.dashboard.summary', 'grafana.dashboard.panel_queries',
+      'grafana.datasource.list', 'grafana.datasource.get', 'grafana.dashboard.upsert', 'grafana.folder.create'
     ]);
     expect(source).not.toContain('execute_any');
     expect(source).not.toContain('raw_request');
@@ -57,5 +57,6 @@ describe('tool surface', () => {
     expect(source).toContain('UPSTREAM_TOOL_DENIED');
     expect(source).toContain("'update_dashboard'");
     expect(source).toContain("'create_folder'");
+    expect(source).toContain("'search_folders'");
   });
 });
