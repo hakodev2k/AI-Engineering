@@ -20,8 +20,10 @@ server.tool('monday.user.context.get', 'Get current monday user/account context 
   async () => json(await upstream.call('get_user_context', {})));
 
 server.tool('monday.workspace.list', 'List workspaces visible to the authenticated monday user through the official Platform MCP. READ.', {
-  limit: z.number().int().min(1).max(100).default(50)
-}, async ({ limit }) => json(await upstream.call('list_workspaces', { limit })));
+  limit: z.number().int().min(1).max(100).default(50),
+  page: z.number().int().min(1).max(10000).default(1),
+  search_term: z.string().regex(/^[A-Za-z0-9 ]+$/).max(100).optional()
+}, async ({ limit, page, search_term }) => json(await upstream.call('list_workspaces', { limit, page, searchTerm: search_term })));
 
 server.tool('monday.board.get', 'Get board metadata, columns, groups, views, owners, and workspace through the official Platform MCP. READ.', {
   board_id: Id
@@ -92,7 +94,7 @@ server.tool('monday.webhook.list', 'List webhooks for one board through the offi
   return json(data.webhooks);
 });
 
-const WebhookEvent = z.enum(['change_column_value', 'create_item', 'create_update', 'delete_item']);
+const WebhookEvent = z.enum(['change_column_value', 'create_item', 'create_update', 'item_deleted']);
 
 server.tool('monday.webhook.create', 'Create a board webhook through the official GraphQL API fallback. WRITE/external callback; explicit human approval is required.', {
   board_id: Id,
