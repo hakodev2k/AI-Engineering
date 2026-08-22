@@ -1,0 +1,14 @@
+{
+  "message_id": "order-42:order-confirmed:v1",
+  "status": "verified",
+  "evidence": [
+    {"kind": "outbox-row", "source": "db:outbox/id", "value": "committed at 2026-08-22T02:01:00Z; payload_sha256=example"},
+    {"kind": "dispatch-attempt", "source": "dispatcher:trace/example", "value": "attempt 1 acknowledged at 2026-08-22T02:01:03Z"},
+    {"kind": "consumer-observation", "source": "consumer:trace/example", "value": "handler completed at 2026-08-22T02:01:04Z"}
+  ],
+  "verification": {
+    "duplicate_risk": "consumer uses message_id uniqueness guard",
+    "ordering_risk": "event is keyed by aggregate and sequence checked",
+    "result": "pass"
+  }
+}
