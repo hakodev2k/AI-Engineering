@@ -1,0 +1,9 @@
+{
+  "reviewer_id": "coverage-reviewer",
+  "status": "verified",
+  "plan_revision": "plan-001",
+  "change_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "findings": [],
+  "broader_suites_required": [],
+  "verification_evidence": ["mandatory contract suite passed", "all selected tests discovered and executed"]
+}

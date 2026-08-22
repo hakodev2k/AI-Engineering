@@ -1,0 +1,30 @@
+version: 1
+name: agent-api-contract-regression-gate
+baseline:
+  source: file
+  path: artifacts/openapi-baseline.json
+candidate:
+  source: file
+  path: artifacts/openapi-candidate.json
+comparison:
+  treat_removed_path_as_breaking: true
+  treat_removed_method_as_breaking: true
+  treat_removed_response_as_breaking: true
+  treat_new_required_parameter_as_breaking: true
+  treat_required_property_added_as_breaking: true
+  treat_type_change_as_breaking: true
+  treat_enum_narrowing_as_breaking: true
+  ignore_extensions_prefixes:
+    - x-generated-
+approval_required_for:
+  - breaking-api-contract
+  - removing-endpoint
+  - changing-required-input
+  - narrowing-enum
+retries:
+  capture: 2
+  compare: 1
+outputs:
+  report: artifacts/api-contract-report.json
+  baseline: artifacts/openapi-baseline.json
+  candidate: artifacts/openapi-candidate.json

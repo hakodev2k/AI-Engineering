@@ -1,0 +1,17 @@
+{
+  "read_url": "http://127.0.0.1:8080/api/orders/123",
+  "correlation_id": "example-write-123",
+  "headers": {"Accept": "application/json"},
+  "value_path": "status",
+  "expect": {
+    "value": "confirmed",
+    "version_path": "version",
+    "min_version": "42"
+  },
+  "acceptable_statuses": [200],
+  "max_attempts": 4,
+  "initial_delay_ms": 150,
+  "backoff_multiplier": 2.0,
+  "max_delay_ms": 1200,
+  "timeout_seconds": 5
+}

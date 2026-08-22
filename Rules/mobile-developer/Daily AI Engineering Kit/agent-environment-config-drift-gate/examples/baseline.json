@@ -1,0 +1,21 @@
+{
+  "environment": "staging",
+  "auth": {
+    "authority": "https://login.example.invalid/tenant-a",
+    "audience": "orders-api",
+    "require_https": true
+  },
+  "database": {
+    "provider": "postgresql",
+    "connection_string": "<managed-secret>"
+  },
+  "storage": {
+    "provider": "blob"
+  },
+  "feature_flags": {
+    "new_checkout": false
+  },
+  "build": {
+    "timestamp": "2026-08-20T00:00:00Z"
+  }
+}

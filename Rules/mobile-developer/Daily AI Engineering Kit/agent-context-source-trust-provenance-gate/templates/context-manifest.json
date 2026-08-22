@@ -1,0 +1,30 @@
+{
+  "task_id": "replace-with-task-id",
+  "status": "draft",
+  "sources": [
+    {
+      "id": "src-001",
+      "type": "repository-file",
+      "location": "src/example.cs",
+      "authority": 90,
+      "relevance": 90,
+      "corroborated": false,
+      "dynamic": false,
+      "observed_at": null,
+      "notes": "Direct implementation evidence"
+    }
+  ],
+  "claims": [
+    {
+      "id": "claim-001",
+      "statement": "Replace this statement with a task-specific claim.",
+      "source_ids": ["src-001"],
+      "confidence": "medium"
+    }
+  ],
+  "verification": {
+    "score": 0,
+    "errors": ["Run scripts/context_trust_gate.py before use"],
+    "warnings": []
+  }
+}

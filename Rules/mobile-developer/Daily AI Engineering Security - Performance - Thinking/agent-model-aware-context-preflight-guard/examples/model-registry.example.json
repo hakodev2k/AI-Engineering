@@ -1,0 +1,27 @@
+{
+  "models": {
+    "provider/model-a": {
+      "context_limit": 200000,
+      "reserve_output_tokens": 8192,
+      "reserve_reasoning_tokens": 0,
+      "counter": {
+        "kind": "provider-or-local-exact",
+        "required_above_utilization": 0.80
+      }
+    },
+    "provider/model-b": {
+      "context_limit": 1000000,
+      "reserve_output_tokens": 16384,
+      "reserve_reasoning_tokens": 0,
+      "counter": {
+        "kind": "provider-or-local-exact",
+        "required_above_utilization": 0.80
+      }
+    }
+  },
+  "notes": [
+    "Replace example identifiers and limits with authoritative current provider metadata.",
+    "Do not infer a subagent limit from its coordinator model.",
+    "Version this registry when provider/model limits or tokenizer behavior changes."
+  ]
+}

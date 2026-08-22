@@ -1,0 +1,21 @@
+{
+  "default_action": "deny",
+  "require_https": true,
+  "allow_userinfo": false,
+  "allow_ip_literals": false,
+  "allowed_ports": [443],
+  "credential_policies": {
+    "amazon-mq-basic": {
+      "allowed_host_suffixes": [".mq.amazonaws.com"],
+      "require_explicit_approval": false
+    },
+    "amazon-mq-oauth": {
+      "allowed_host_suffixes": [".mq.amazonaws.com"],
+      "require_explicit_approval": false
+    },
+    "generic-sensitive-token": {
+      "allowed_host_suffixes": [],
+      "require_explicit_approval": true
+    }
+  }
+}

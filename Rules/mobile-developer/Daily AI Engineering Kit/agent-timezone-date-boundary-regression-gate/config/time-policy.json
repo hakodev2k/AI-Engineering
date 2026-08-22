@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "canonical_storage_timezone": "UTC",
+  "required_test_zones": ["UTC", "Asia/Ho_Chi_Minh", "America/New_York"],
+  "required_boundaries": ["day-change", "month-change", "year-change", "dst-transition"],
+  "max_retries": 2,
+  "approval_required_for": ["database-schema-change", "production-config", "data-rewrite", "breaking-api-contract", "production-deployment"],
+  "risk_patterns": ["local-now-in-domain", "unspecified-datetime", "date-truncation-before-zone", "manual-offset-math", "server-local-time-assumption", "ambiguous-inclusive-end"]
+}

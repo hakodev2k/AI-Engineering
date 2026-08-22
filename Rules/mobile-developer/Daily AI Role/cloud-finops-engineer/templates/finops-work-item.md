@@ -1,0 +1,25 @@
+# FinOps Work Item
+
+- ID:
+- Title:
+- Owner:
+- Status:
+- Priority:
+- Deadline:
+- Time window:
+- Currency:
+- Objective:
+- Scope:
+- Baseline:
+- Evidence sources and freshness:
+- Assumptions:
+- Exclusions:
+- Recommendation / question:
+- Financial impact formula:
+- Confidence:
+- Risks:
+- Dependencies:
+- Required approvals:
+- Implementation owner:
+- Verification window/method:
+- Final outcome:

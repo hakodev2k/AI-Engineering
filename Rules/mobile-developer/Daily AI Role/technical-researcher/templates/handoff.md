@@ -1,0 +1,12 @@
+# Handoff
+- Decision/result:
+- Confidence:
+- Evidence package:
+- Open questions:
+- Risks:
+- Approvals:
+- Dependencies:
+- Next action:
+- Owner:
+- Due date:
+- Update trigger:

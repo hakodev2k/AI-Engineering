@@ -1,0 +1,16 @@
+role: technical-lead
+mission: reliable delivery through explicit ownership, evidence, risk control, and bounded delegation
+default_risk_threshold_for_independent_review: high
+max_author_review_loops: 2
+parallelism:
+  allow_independent_workstreams: true
+  conflicting_surface_edits: false
+approval_gates:
+  - production-destructive-action
+  - irreversible-data-migration
+  - broad-security-sensitive-change
+  - high-blast-radius-production-change
+quality:
+  require_acceptance_evidence: true
+  require_blocking_findings_closed: true
+  require_residual_risk_handoff: true

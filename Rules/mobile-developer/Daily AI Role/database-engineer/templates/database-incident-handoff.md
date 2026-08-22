@@ -1,0 +1,21 @@
+# Database Incident Handoff
+
+- Incident / severity:
+- Time / timezone:
+- Current owner:
+- Service and data affected:
+- Current topology/state:
+- User impact:
+- Data-loss/corruption status: confirmed / suspected / not observed / unknown
+- Timeline:
+- Evidence collected:
+- Changes already made:
+- Current containment:
+- Recovery point and recovery artifacts:
+- Leading root-cause hypothesis and confidence:
+- Rejected hypotheses:
+- Remaining risks:
+- Human approvals already granted:
+- Next safe action:
+- Explicit do-not-do actions:
+- Next checkpoint / owner:

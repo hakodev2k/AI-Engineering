@@ -1,0 +1,13 @@
+{
+  "name": "search_docs",
+  "title": "Documentation Search",
+  "description": "Search approved product documentation.",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "q": { "type": "string", "description": "Search query" }
+    },
+    "required": ["q"]
+  },
+  "annotations": { "readOnlyHint": true }
+}

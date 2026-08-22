@@ -1,0 +1,13 @@
+{
+  "total_budget_units": 24000,
+  "reserved_budget_units": 6000,
+  "warning_ratio": 0.8,
+  "max_active_items": 18,
+  "max_summary_units_per_item": 1200,
+  "evidence_refresh_policy": {
+    "critical": "refresh-after-source-change",
+    "supporting": "refresh-when-used-for-final-claim",
+    "reference": "refresh-on-demand"
+  },
+  "notes": "Budget units are configurable accounting units. Replace with tokenizer-specific measurement only when your runtime exposes one."
+}

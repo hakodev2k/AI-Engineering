@@ -1,0 +1,18 @@
+#!/usr/bin/env python3
+import json, pathlib, sys
+REQ={'status','scope','findings','verification','remaining_risks'}
+VREQ={'secret_fixture_tested','pii_fixture_tested','correlation_preserved','raw_payload_logging_checked'}
+def main():
+ if len(sys.argv)!=2: print('usage: validate-assessment.py assessment.json',file=sys.stderr); return 2
+ try: d=json.loads(pathlib.Path(sys.argv[1]).read_text(encoding='utf-8'))
+ except Exception as e: print(f'invalid json: {e}',file=sys.stderr); return 2
+ errors=[f'missing {x}' for x in sorted(REQ-set(d))]
+ if d.get('status') not in {'pass','fail','blocked','needs-approval'}: errors.append('invalid status')
+ v=d.get('verification',{}); errors += [f'missing verification.{x}' for x in sorted(VREQ-set(v))]
+ for i,f in enumerate(d.get('findings',[])):
+  for k in ('finding','evidence','risk','recommendation'):
+   if k not in f: errors.append(f'findings[{i}] missing {k}')
+ if d.get('status')=='pass' and not all(v.get(x) is True for x in VREQ): errors.append('pass requires all verification flags true')
+ if errors: print('\n'.join(errors),file=sys.stderr); return 1
+ print('assessment valid'); return 0
+if __name__=='__main__': raise SystemExit(main())

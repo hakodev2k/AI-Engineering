@@ -1,0 +1,13 @@
+{
+  "status": "pass",
+  "total_cost_usd": 1,
+  "soft_budget": 1,
+  "hard_budget": 1,
+  "findings": [
+    {
+      "code": "example-code",
+      "severity": "info",
+      "message": "example-message"
+    }
+  ]
+}

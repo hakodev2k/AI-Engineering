@@ -1,0 +1,27 @@
+version: 1
+name: agent-migration-dry-run-gate
+migration_globs:
+  - "**/*.sql"
+  - "**/Migrations/*.cs"
+block_patterns:
+  - "DROP TABLE"
+  - "DROP DATABASE"
+  - "TRUNCATE TABLE"
+  - "ALTER TABLE * DROP COLUMN"
+approval_patterns:
+  - "ALTER TABLE"
+  - "CREATE INDEX"
+  - "DROP INDEX"
+  - "UPDATE "
+  - "DELETE FROM"
+max_retry_attempts: 2
+require_backup_plan: true
+require_rollback_plan: true
+require_dry_run: true
+require_post_migration_verification: true
+allowed_statuses:
+  - planned
+  - blocked
+  - needs-approval
+  - dry-run-passed
+  - verified

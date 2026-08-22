@@ -1,0 +1,38 @@
+{
+  "version": "1.0",
+  "normalization": {
+    "preserve_argument_order": true,
+    "collapse_whitespace": true,
+    "case_sensitive_executable": false
+  },
+  "review": {
+    "require_independent_review_for_risk": ["high", "critical"],
+    "allow_self_review": false
+  },
+  "drift": {
+    "block_on_executable_change": true,
+    "block_on_target_change": true,
+    "block_on_environment_change": true,
+    "block_on_side_effect_escalation": true,
+    "review_on_argument_removal_or_reordering": true,
+    "max_unreviewed_added_flags": 0
+  },
+  "retry": {
+    "transient_read_retry_max": 1,
+    "replan_max": 1
+  },
+  "approval_required_actions": [
+    "production-deployment",
+    "destructive-sql",
+    "database-schema-change",
+    "data-or-file-deletion",
+    "force-push-or-history-rewrite",
+    "infrastructure-change",
+    "secret-change",
+    "production-config-change",
+    "breaking-api-change",
+    "security-control-weakening",
+    "irreversible-migration",
+    "large-dependency-upgrade"
+  ]
+}

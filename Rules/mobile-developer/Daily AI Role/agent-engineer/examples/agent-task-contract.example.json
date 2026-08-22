@@ -1,0 +1,17 @@
+{
+  "taskId": "agent-2026-08-17-001",
+  "goal": "Triage a failed CI run and prepare a reviewable fix",
+  "expectedOutput": "Root-cause evidence, scoped patch, test results, and handoff",
+  "priority": "P1",
+  "owner": "agent-engineer",
+  "deadline": null,
+  "sideEffectLevel": 2,
+  "allowedTools": ["repository-read", "ci-log-read", "workspace-edit", "test-runner"],
+  "dependencies": [],
+  "acceptanceCriteria": ["Failure cause is evidenced", "Relevant tests pass", "No unapproved remote write occurs"],
+  "stopConditions": ["acceptance-pass", "approval-needed", "retry-exhausted", "blocked"],
+  "retryLimit": 2,
+  "humanApprovalRequired": false,
+  "checkpointPolicy": "after diagnosis, after patch, before finish",
+  "risks": ["Changing unrelated code", "Misclassifying flaky CI"]
+}

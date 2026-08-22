@@ -1,0 +1,11 @@
+{
+  "context_limit_tokens": 128000,
+  "summary_prompt_tokens": 1800,
+  "reserved_output_tokens": 4000,
+  "safety_margin_tokens": 6000,
+  "trigger_utilization": 0.82,
+  "max_trim_attempts": 2,
+  "strip_metadata_keys": ["usage_metadata", "response_metadata", "logprobs", "system_fingerprint"],
+  "preserve_tool_pairs": true,
+  "require_all_required_ids": true
+}

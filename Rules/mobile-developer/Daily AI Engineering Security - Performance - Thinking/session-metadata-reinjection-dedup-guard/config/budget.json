@@ -1,0 +1,12 @@
+{
+  "protected_types": ["user", "assistant", "system", "permission-decision", "approval", "security-event"],
+  "superseding_types": ["last-prompt", "file-history-snapshot", "task_reminder", "progress"],
+  "ephemeral_types": ["hook_success", "hook_system_message", "queue-operation"],
+  "metadata_budget_bytes": 200000,
+  "warn_duplicate_ratio": 0.15,
+  "block_duplicate_ratio": 0.30,
+  "max_duplicate_groups": 100,
+  "token_estimate_chars_per_token": 4.0,
+  "minimum_quality_pass_rate": 1.0,
+  "minimum_protected_retention_rate": 1.0
+}

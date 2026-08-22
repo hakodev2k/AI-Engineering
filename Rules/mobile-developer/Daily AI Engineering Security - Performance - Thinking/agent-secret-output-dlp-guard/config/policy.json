@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "mode": "fail-closed",
+  "max_output_bytes": 1048576,
+  "known_secret_env_names": [
+    "API_KEY",
+    "TOKEN",
+    "SECRET",
+    "PASSWORD",
+    "PRIVATE_KEY",
+    "ACCESS_KEY",
+    "CLIENT_SECRET",
+    "AUTH_TOKEN"
+  ],
+  "sensitive_path_patterns": [
+    "(^|/)\\.env($|\\.)",
+    "(^|/)\\.secrets?(/|$)",
+    "credentials",
+    "id_rsa",
+    "id_ed25519",
+    "service-account",
+    "kubeconfig"
+  ],
+  "secret_patterns": [
+    {"name":"github_pat","regex":"\\bgh[pousr]_[A-Za-z0-9_]{20,}\\b"},
+    {"name":"openai_style","regex":"\\bsk-[A-Za-z0-9_-]{16,}\\b"},
+    {"name":"anthropic_style","regex":"\\bsk-ant-[A-Za-z0-9_-]{16,}\\b"},
+    {"name":"slack_token","regex":"\\bxox[baprs]-[A-Za-z0-9-]{10,}\\b"},
+    {"name":"aws_access_key","regex":"\\b(?:AKIA|ASIA)[A-Z0-9]{16}\\b"},
+    {"name":"jwt","regex":"\\beyJ[A-Za-z0-9_-]{5,}\\.[A-Za-z0-9_-]{5,}\\.[A-Za-z0-9_-]{5,}\\b"},
+    {"name":"private_key_header","regex":"-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----"}
+  ],
+  "key_name_regex": "(?i)(api[_-]?key|token|secret|password|passwd|private[_-]?key|client[_-]?secret|access[_-]?key|authorization)",
+  "replacement": "<REDACTED:{reason}>",
+  "block_on_private_key": true,
+  "block_on_scanner_error": true,
+  "hash_algorithm": "sha256",
+  "allow_raw_override": false,
+  "max_override_minutes": 5,
+  "audit_store_plaintext": false
+}

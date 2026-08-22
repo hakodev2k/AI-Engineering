@@ -1,0 +1,24 @@
+{
+  "status": "ready",
+  "facts": [
+    "example-facts"
+  ],
+  "evidence": [
+    {
+      "source": "example-source",
+      "finding": "example-finding"
+    }
+  ],
+  "affected_components": [
+    "example-affected-components"
+  ],
+  "risks": [
+    "example-risks"
+  ],
+  "verification": [
+    {
+      "check": "example-check",
+      "status": "pending"
+    }
+  ]
+}

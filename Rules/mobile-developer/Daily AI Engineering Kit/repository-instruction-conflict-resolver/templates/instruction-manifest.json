@@ -1,0 +1,26 @@
+{
+  "task": "Describe the current task",
+  "targets": ["src/example"],
+  "sources": [
+    {
+      "id": "src-1",
+      "path": "AGENTS.md",
+      "source_type": "agents",
+      "authority": 80,
+      "scope": ".",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  ],
+  "statements": [
+    {
+      "id": "stmt-1",
+      "source_id": "src-1",
+      "subject": "testing",
+      "action": "run-affected-tests",
+      "modality": "must",
+      "scope": "src/example",
+      "text": "Run affected tests before completion."
+    }
+  ],
+  "human_decisions": []
+}

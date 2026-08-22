@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "max_retries": 2,
+  "warn_query_count_growth_percent": 20,
+  "fail_query_count_growth_percent": 50,
+  "approval_required_for": ["schema-change", "production-config", "production-deployment", "breaking-api", "large-dependency-upgrade"],
+  "risk_patterns": ["query-inside-loop", "lazy-loading-navigation", "per-item-find", "per-item-count", "materialize-before-filter", "client-side-enumeration"],
+  "required_verification": ["baseline-query-count", "changed-query-count", "result-equivalence", "focused-tests", "diff-review"]
+}

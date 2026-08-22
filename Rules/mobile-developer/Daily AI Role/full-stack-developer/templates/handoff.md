@@ -1,0 +1,13 @@
+# Handoff
+- Work item / version:
+- Outcome delivered:
+- Current state:
+- Contracts / migrations changed:
+- Evidence and test results:
+- Deployment / feature-flag state:
+- Telemetry to watch:
+- Known limitations:
+- Open risks / blockers:
+- Follow-up actions and owners:
+- Recovery procedure:
+- Approvals / decision records:

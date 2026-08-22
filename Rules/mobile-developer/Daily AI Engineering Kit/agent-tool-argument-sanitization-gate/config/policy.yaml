@@ -1,0 +1,60 @@
+version: 1
+mode: enforce
+max_argument_length: 4096
+max_arguments: 64
+shell_tools:
+  - shell
+  - bash
+  - sh
+  - powershell
+  - pwsh
+  - cmd
+forbidden_shell_tokens:
+  - '&&'
+  - '||'
+  - ';'
+  - '|'
+  - '>'
+  - '<'
+  - '$('
+  - '`'
+forbidden_commands:
+  - rm
+  - del
+  - erase
+  - format
+  - shutdown
+  - reboot
+  - mkfs
+  - dd
+  - chmod
+  - chown
+  - sudo
+  - su
+  - curl
+  - wget
+  - nc
+  - netcat
+  - scp
+  - ssh
+approval_required_commands:
+  - git push
+  - git reset --hard
+  - git clean
+  - kubectl apply
+  - kubectl delete
+  - terraform apply
+  - terraform destroy
+  - dotnet ef database update
+  - sqlcmd
+  - psql
+path_rules:
+  block_absolute_paths_outside_repo: true
+  block_parent_traversal: true
+  allowed_write_roots:
+    - .
+secret_patterns:
+  - '(?i)(api[_-]?key|token|secret|password)\s*[=:]\s*[^\s]+'
+  - 'AKIA[0-9A-Z]{16}'
+  - 'gh[pousr]_[A-Za-z0-9_]{20,}'
+  - 'sk-[A-Za-z0-9_-]{20,}'

@@ -1,0 +1,12 @@
+# Emergency Release Record
+- Incident / business reason:
+- Release owner:
+- Version / artifact digest:
+- Scope and blast radius:
+- Standard controls bypassed:
+- Why bypass is necessary:
+- Approver:
+- Rollback / recovery plan:
+- Verification plan:
+- Follow-up deadline:
+- Final outcome:

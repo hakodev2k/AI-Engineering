@@ -1,0 +1,28 @@
+{
+  "status": "needs-approval",
+  "risk_score": 8,
+  "risk_level": "high",
+  "changed_files": [
+    "src/Migrations/20260819_AddCustomerIndex.cs",
+    "src/Customers/CustomerService.cs",
+    "tests/Customers/CustomerServiceTests.cs"
+  ],
+  "detected_categories": ["database_migration"],
+  "approval_required_for": ["database_migration"],
+  "findings": [
+    {
+      "path": "src/Migrations/20260819_AddCustomerIndex.cs",
+      "categories": ["database_migration"]
+    }
+  ],
+  "tests_changed": true,
+  "rollback_readiness": {
+    "required_evidence": [
+      "rollback_command_or_procedure",
+      "rollback_owner",
+      "verification_command",
+      "known_data_loss_risk"
+    ],
+    "evidence_complete": false
+  }
+}

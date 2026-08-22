@@ -1,0 +1,14 @@
+{
+  "project_id": "PRJ-042",
+  "objective": "Launch customer self-service export",
+  "sponsor": "Product Director",
+  "project_manager": "AI Project Manager",
+  "status": "at-risk",
+  "target_date": "2026-10-15",
+  "scope": ["export API", "audit logging", "admin controls"],
+  "out_of_scope": ["mobile offline export"],
+  "milestones": [{"id":"M1","name":"Design approved","date":"2026-09-01","owner":"Architecture"}],
+  "dependencies": [{"id":"D1","owner":"Security","need_by":"2026-08-28","status":"open"}],
+  "risks": [{"id":"R1","probability":"medium","impact":"high","response":"mitigate","owner":"PM"}],
+  "open_decisions": [{"id":"DEC-3","owner":"Sponsor","needed_by":"2026-08-25"}]
+}

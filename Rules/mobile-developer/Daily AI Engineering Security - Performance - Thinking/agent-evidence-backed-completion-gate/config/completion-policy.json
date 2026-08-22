@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "max_remediation_retries": 2,
+  "require_fresh_evidence_for_verified": true,
+  "require_all_mandatory_requirements": true,
+  "fail_closed_on_mid_tool_termination": true,
+  "fail_closed_on_schema_error": true,
+  "allowed_verified_evidence_types": [
+    "test",
+    "command",
+    "inspection",
+    "artifact"
+  ],
+  "require_exit_code_for_command_evidence": true,
+  "accept_exit_codes": [0],
+  "full_suite_labels": ["full", "regression", "e2e"],
+  "focused_suite_labels": ["focused", "unit", "targeted"],
+  "stale_if_changed_paths_overlap": true,
+  "final_complete_statuses": ["verified"],
+  "nonblocking_optional_statuses": [
+    "verified",
+    "partially_verified",
+    "implemented"
+  ]
+}

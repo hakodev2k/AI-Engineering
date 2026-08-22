@@ -1,0 +1,14 @@
+{
+  "status": "approved",
+  "reviewer": "independent-verification-agent",
+  "reviewed_at": "2026-08-17T12:05:00Z",
+  "bundle_fingerprint": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "retention_fingerprint": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+  "findings": [
+    {
+      "severity": "info",
+      "evidence_id": "ev:security-review",
+      "finding": "Critical evidence remains hash-bound and retrievable; confidential content is not embedded beyond policy."
+    }
+  ]
+}

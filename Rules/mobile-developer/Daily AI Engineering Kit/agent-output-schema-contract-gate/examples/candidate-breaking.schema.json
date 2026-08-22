@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Example Agent Result v2",
+  "type": "object",
+  "required": ["contract_name", "contract_version", "status", "findings", "summary"],
+  "properties": {
+    "contract_name": {"const": "example-agent-result"},
+    "contract_version": {"type": "string"},
+    "status": {"type": "string", "enum": ["ok", "blocked"]},
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "message", "confidence"],
+        "properties": {
+          "id": {"type": "string"},
+          "message": {"type": "string"},
+          "confidence": {"type": "number"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "summary": {"type": "string"}
+  },
+  "additionalProperties": false
+}

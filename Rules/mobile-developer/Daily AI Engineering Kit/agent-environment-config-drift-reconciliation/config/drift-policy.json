@@ -1,0 +1,44 @@
+{
+  "version": 1,
+  "baseline_environment": "production",
+  "ignored_keys": [
+    "APP_INSTANCE_ID",
+    "HOSTNAME",
+    "BUILD_TIMESTAMP"
+  ],
+  "secret_key_patterns": [
+    "SECRET",
+    "PASSWORD",
+    "TOKEN",
+    "API_KEY",
+    "CONNECTION_STRING"
+  ],
+  "approval_required_patterns": [
+    "DATABASE_URL",
+    "CONNECTION_STRING",
+    "AUTH_",
+    "OIDC_",
+    "SAML_",
+    "FEATURE_SECURITY_",
+    "RATE_LIMIT_"
+  ],
+  "high_risk_patterns": [
+    "DATABASE_URL",
+    "CONNECTION_STRING",
+    "AUTH_",
+    "OIDC_",
+    "SAML_",
+    "ENCRYPTION_",
+    "TLS_"
+  ],
+  "medium_risk_patterns": [
+    "FEATURE_",
+    "CACHE_",
+    "QUEUE_",
+    "RATE_LIMIT_",
+    "LOG_LEVEL"
+  ],
+  "max_reconcile_attempts": 2,
+  "require_human_approval_for_production_change": true,
+  "require_post_change_rescan": true
+}

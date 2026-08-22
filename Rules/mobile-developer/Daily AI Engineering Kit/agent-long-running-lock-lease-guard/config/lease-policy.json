@@ -1,0 +1,12 @@
+{
+  "policy_version": "1.0",
+  "default_lease_seconds": 120,
+  "max_lease_seconds": 900,
+  "heartbeat_interval_seconds": 30,
+  "max_clock_skew_seconds": 10,
+  "max_transient_retries": 1,
+  "max_takeover_attempts": 1,
+  "require_fencing_token_for_mutation": true,
+  "independent_review_required_for": ["production", "critical", "forced-takeover", "ambiguous-owner"],
+  "human_approval_required_for": ["forced-takeover", "production-lock-break", "production-deployment", "destructive-sql", "schema-change", "data-deletion", "force-push", "infrastructure-change", "secret-change", "production-config-change", "breaking-api", "security-weakening", "irreversible-migration", "large-dependency-upgrade"]
+}

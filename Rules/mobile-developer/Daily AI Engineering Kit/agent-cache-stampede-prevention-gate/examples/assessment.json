@@ -1,0 +1,24 @@
+{
+  "status": "pass",
+  "cache_key_scope": "product-catalog:tenant-42",
+  "findings": [
+    {
+      "finding": "Concurrent misses are coalesced to one backend regeneration per logical key.",
+      "evidence": [
+        "32 concurrent callers produced 1 backend invocation in the focused test",
+        "TTL jitter spread observed expiry times across the configured window"
+      ],
+      "risk": "low",
+      "recommendation": "Keep per-key coalescing, TTL jitter, and the concurrent-miss regression test."
+    }
+  ],
+  "verification": {
+    "concurrent_miss_tested": true,
+    "backend_call_count_verified": true,
+    "expiry_spread_verified": true,
+    "failure_path_tested": true
+  },
+  "remaining_risks": [
+    "Distributed coordination semantics must be re-verified if the cache provider or locking implementation changes."
+  ]
+}

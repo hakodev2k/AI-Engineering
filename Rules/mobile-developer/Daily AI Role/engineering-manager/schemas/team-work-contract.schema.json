@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Engineering Manager Team Work Contract",
+  "type": "object",
+  "required": ["id", "objective", "owner", "priority", "stakeholders", "risks", "approvalRequired", "successMeasures", "nextCheckpoint"],
+  "properties": {
+    "id": {"type": "string", "minLength": 1},
+    "objective": {"type": "string", "minLength": 10},
+    "owner": {"type": "string", "minLength": 1},
+    "priority": {"enum": ["critical", "high", "medium", "low"]},
+    "inputs": {"type": "array", "items": {"type": "string"}},
+    "stakeholders": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+    "dependencies": {"type": "array", "items": {"type": "string"}},
+    "risks": {"type": "array", "items": {"type": "string"}},
+    "approvalRequired": {"type": "boolean"},
+    "successMeasures": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+    "nextCheckpoint": {"type": "string", "format": "date"}
+  },
+  "additionalProperties": false
+}

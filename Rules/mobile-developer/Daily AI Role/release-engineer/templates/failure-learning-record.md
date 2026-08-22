@@ -1,0 +1,13 @@
+# Failure Learning Record
+- Release ID:
+- Failure:
+- Detection signal:
+- Root cause:
+- Contributing conditions:
+- Recovery action:
+- Lesson:
+- Process improvement:
+- Automation/guardrail change:
+- Owner:
+- Due date:
+- Future prevention evidence:

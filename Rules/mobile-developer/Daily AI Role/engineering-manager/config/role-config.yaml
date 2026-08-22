@@ -1,0 +1,23 @@
+role: engineering-manager
+timezone: Asia/Bangkok
+planning:
+  max_parallel_major_initiatives_per_engineer: 2
+  aging_work_days_warning: 7
+  blocked_work_hours_warning: 24
+people:
+  one_on_one_cadence_days: 14
+  growth_review_cadence_days: 90
+  evidence_window_days: 90
+operations:
+  incident_review_severity: high
+  repeated_interrupt_threshold_per_week: 3
+retries:
+  max_analysis_retries: 2
+  max_external_followups: 2
+approvals:
+  hiring_offer: human
+  termination: human
+  compensation_change: human
+  org_restructure: human
+  material_headcount_change: human
+  severe_risk_acceptance: human

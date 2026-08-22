@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "require_terminal_stream_evidence": true,
+  "require_nonempty_tool_name": true,
+  "require_nonempty_call_id": true,
+  "require_schema_valid_arguments": true,
+  "side_effecting_tools": ["write_file", "execute", "shell", "send", "deploy", "delete", "publish", "db_write"],
+  "require_idempotency_key_for_side_effects": true,
+  "require_postcondition_for_side_effects": true,
+  "unknown_outcome_action": "reconcile",
+  "max_repair_attempts": 2,
+  "allow_empty_object_arguments_only_for_tools": []
+}

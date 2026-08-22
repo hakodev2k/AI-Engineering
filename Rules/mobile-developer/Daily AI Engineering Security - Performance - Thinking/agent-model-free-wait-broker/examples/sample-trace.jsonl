@@ -1,0 +1,4 @@
+{"type":"model_turn","turn_id":"t1","input_tokens":12000,"output_tokens":24,"tool_calls":[{"name":"wait","target_id":"build-42"}]}
+{"type":"model_turn","turn_id":"t2","input_tokens":12100,"output_tokens":23,"tool_calls":[{"name":"status","target_id":"build-42"}]}
+{"type":"model_turn","turn_id":"t3","input_tokens":12400,"output_tokens":92,"tool_calls":[{"name":"exec"}],"action":"inspect completed build result"}
+{"type":"broker_event","target_id":"build-42","wake_reason":"completed","detection_lag_seconds":8.4,"polls":4}

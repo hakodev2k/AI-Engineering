@@ -1,0 +1,42 @@
+id: pagerduty
+name: PagerDuty
+upstream:
+  - official-mcp
+  - rest
+mcp:
+  hosted_us: https://mcp.pagerduty.com/mcp
+  hosted_eu: https://mcp.eu.pagerduty.com/mcp
+  self_hosted: https://github.com/PagerDuty/pagerduty-mcp-server
+  auth: user_api_token_or_oauth
+api:
+  base_url_us: https://api.pagerduty.com
+  base_url_eu: https://api.eu.pagerduty.com
+auth:
+  type: user_api_token
+  env: PAGERDUTY_API_TOKEN
+capabilities:
+  - incident.list
+  - incident.get
+  - incident.acknowledge
+  - incident.resolve
+  - incident.reassign
+  - service.list
+  - service.get
+  - schedule.list
+  - schedule.get
+  - oncall.list
+  - escalation_policy.list
+  - user.list
+risk:
+  default: READ
+  writes_require_operator_approval: true
+  destructive_disabled_by_default: true
+required_env:
+  - PAGERDUTY_API_TOKEN
+optional_env:
+  - PAGERDUTY_API_BASE_URL
+  - PAGERDUTY_FROM_EMAIL
+  - PAGERDUTY_TIMEOUT_MS
+  - PAGERDUTY_APPROVAL_MODE
+  - PAGERDUTY_APPROVED_ACTIONS
+  - PAGERDUTY_ALLOW_DESTRUCTIVE

@@ -1,0 +1,20 @@
+role: agent-engineer
+version: 1
+execution:
+  default_retry_limit: 2
+  max_delegation_depth: 3
+  require_stop_conditions: true
+  require_verifier_for_high_risk: true
+state:
+  checkpoint_before_consequential_write: true
+  reconcile_on_resume: true
+memory:
+  durable_memory_default: false
+  require_provenance: true
+permissions:
+  human_approval_side_effect_levels: [4, 5]
+  never_assume_approval: true
+quality:
+  require_acceptance_evidence: true
+  max_similar_fix_review_cycles: 2
+  prefer_deterministic_validation: true

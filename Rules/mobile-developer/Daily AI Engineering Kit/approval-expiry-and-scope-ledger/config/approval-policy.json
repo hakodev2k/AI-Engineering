@@ -1,0 +1,22 @@
+{
+  "policy_version": "1.0.0",
+  "default_reuse_mode": "single-use",
+  "default_ttl_minutes": 30,
+  "max_ttl_minutes": 240,
+  "max_reusable_uses": 3,
+  "independent_approval_required_for": [
+    "production",
+    "destructive-data",
+    "schema-change",
+    "secret-change",
+    "infrastructure-change",
+    "breaking-api",
+    "security-weakening",
+    "irreversible-migration",
+    "large-dependency-upgrade"
+  ],
+  "allowed_reusable_categories": ["staging-deploy", "bounded-maintenance"],
+  "require_ledger": true,
+  "require_review": true,
+  "fail_closed_on_unknown_category": true
+}

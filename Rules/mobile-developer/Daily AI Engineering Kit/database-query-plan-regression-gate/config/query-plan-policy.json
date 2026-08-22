@@ -1,0 +1,29 @@
+{
+  "version": "1.0",
+  "comparison": {
+    "require_same_engine": true,
+    "require_same_query_id": true,
+    "require_same_dataset_profile": true,
+    "max_evidence_age_minutes": 120
+  },
+  "thresholds": {
+    "duration_pct_warn": 25,
+    "duration_pct_block": 75,
+    "logical_reads_pct_warn": 30,
+    "logical_reads_pct_block": 100,
+    "cpu_pct_warn": 30,
+    "cpu_pct_block": 100,
+    "estimate_ratio_warn": 10,
+    "estimate_ratio_block": 100,
+    "new_full_scan_blocks": true,
+    "new_spill_blocks": true
+  },
+  "review": {
+    "independent_review_for": ["high", "critical"],
+    "allow_self_review": false
+  },
+  "retry": {
+    "transient_tool_retry_max": 1,
+    "validation_retry_max": 0
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "id": "analysis-activation-drop-001",
+  "question": "Why did 7-day activation fall after the onboarding release?",
+  "decision": "Decide whether to keep, modify, or roll back onboarding step B.",
+  "owner": "product-analytics",
+  "priority": "high",
+  "deadline": "2026-08-18T10:00:00+07:00",
+  "population": "new eligible signups",
+  "grain": "user",
+  "metrics": ["activation_7d"],
+  "dimensions": ["platform", "country", "acquisition_channel"],
+  "time_window": {"start": "2026-08-01", "end": "2026-08-17", "timezone": "Asia/Bangkok"},
+  "sources": ["analytics.fact_user_activation"],
+  "assumptions": ["eligibility definition unchanged"],
+  "restricted_data": false
+}

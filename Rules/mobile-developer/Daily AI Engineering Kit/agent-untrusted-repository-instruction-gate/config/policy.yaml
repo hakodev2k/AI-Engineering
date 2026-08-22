@@ -1,0 +1,42 @@
+version: 1
+mode: block-on-high
+scan:
+  include_extensions: [".md", ".txt", ".rst", ".yaml", ".yml", ".json", ".toml", ".xml", ".html", ".htm"]
+  exclude_paths:
+    - ".git/**"
+    - "node_modules/**"
+    - "bin/**"
+    - "obj/**"
+    - "vendor/**"
+    - "dist/**"
+    - "artifacts/**"
+  max_file_bytes: 1048576
+severity:
+  block: ["high"]
+  review: ["medium"]
+patterns:
+  high:
+    - "ignore previous instructions"
+    - "ignore all previous instructions"
+    - "reveal system prompt"
+    - "show hidden instructions"
+    - "exfiltrate secret"
+    - "print environment variables"
+    - "upload credentials"
+    - "disable safety"
+    - "bypass approval"
+    - "run this command without asking"
+  medium:
+    - "you are chatgpt"
+    - "system message"
+    - "developer message"
+    - "act as an autonomous agent"
+    - "do not tell the user"
+    - "do not ask for confirmation"
+approval_required_for:
+  - executing-repository-authored-instructions
+  - reading-secret-stores
+  - network-upload
+  - production-change
+  - destructive-command
+max_retries: 1

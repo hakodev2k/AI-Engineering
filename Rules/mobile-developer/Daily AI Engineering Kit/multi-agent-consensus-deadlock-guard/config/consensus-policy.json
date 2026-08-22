@@ -1,0 +1,13 @@
+{
+  "max_rounds": 3,
+  "max_no_progress_rounds": 1,
+  "max_transient_tool_retries": 1,
+  "require_evidence_delta_after_first_round": true,
+  "require_independent_verifier_for_high_risk": true,
+  "high_risk_levels": ["high", "critical"],
+  "terminal_statuses": ["resolved", "human-decision-required", "blocked"],
+  "allowed_resolution_modes": ["evidence-dominates", "policy-rule", "independent-verifier", "human-decision"],
+  "forbid_timeout_as_consensus": true,
+  "forbid_silence_as_consensus": true,
+  "forbid_self_verification_high_risk": true
+}

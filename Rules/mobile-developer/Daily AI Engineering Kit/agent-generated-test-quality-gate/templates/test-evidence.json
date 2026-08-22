@@ -1,0 +1,23 @@
+{
+  "status": "implemented",
+  "changed_behavior": [
+    "Describe the observable behavior changed by the implementation"
+  ],
+  "tests": [
+    {
+      "path": "tests/ExampleTests.cs",
+      "behavior": "Describe the behavior proven by this test",
+      "assertion": "Describe the observable assertion",
+      "evidence": "Explain why this test would detect the wrong behavior"
+    }
+  ],
+  "commands": [
+    {
+      "command": "dotnet test tests/Example.Tests/Example.Tests.csproj --no-restore",
+      "exit_code": 0,
+      "summary": "Relevant tests passed"
+    }
+  ],
+  "risks": [],
+  "approval": null
+}

@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "model_view_max_bytes": 40000,
+  "head_fraction": 0.5,
+  "artifact_dir": ".agent-output-artifacts",
+  "require_artifact_when_truncated": true,
+  "require_sha256": true,
+  "require_complete_capture_for_verification": true,
+  "max_targeted_recovery_reads": 3,
+  "targeted_read_max_bytes": 24000,
+  "evidence_sensitive_keywords": [
+    "error",
+    "failed",
+    "failure",
+    "exception",
+    "warning",
+    "summary",
+    "result",
+    "total",
+    "passed",
+    "failed tests"
+  ],
+  "fail_closed_on_unknown_omission": true
+}

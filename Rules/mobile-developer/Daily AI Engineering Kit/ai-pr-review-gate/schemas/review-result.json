@@ -1,0 +1,13 @@
+{
+  "type": "object",
+  "required": ["status", "findings"],
+  "properties": {
+    "status": {"enum": ["completed", "blocked"]},
+    "findings": {
+      "type": "array",
+      "items": {
+        "required": ["location", "severity", "evidence", "recommendation"]
+      }
+    }
+  }
+}

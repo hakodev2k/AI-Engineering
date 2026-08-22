@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TimeObservation",
+  "type": "object",
+  "required": ["observation_id","source_id","source_type","trust_level","observed_at_utc","monotonic_ns","timezone","clock_skew_ms"],
+  "properties": {
+    "observation_id": {"type":"string","minLength":1},
+    "source_id": {"type":"string","minLength":1},
+    "source_type": {"enum":["system","ntp","http-date","platform","database","other"]},
+    "trust_level": {"enum":["unverified","asserted","verified"]},
+    "observed_at_utc": {"type":"string","format":"date-time"},
+    "monotonic_ns": {"type":"integer","minimum":0},
+    "timezone": {"type":"string","minLength":1},
+    "clock_skew_ms": {"type":"number","minimum":0},
+    "reference_source": {"type":["string","null"]},
+    "reference_observed_at_utc": {"type":["string","null"],"format":"date-time"},
+    "notes": {"type":"string"}
+  },
+  "additionalProperties": false
+}

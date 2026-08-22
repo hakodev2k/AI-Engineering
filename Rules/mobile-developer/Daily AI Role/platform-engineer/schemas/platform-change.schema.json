@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "title", "user", "problem", "impact", "contract_change", "risk", "owner", "state"],
+  "properties": {
+    "id": {"type": "string", "minLength": 1},
+    "title": {"type": "string", "minLength": 1},
+    "user": {"type": "string", "minLength": 1},
+    "problem": {"type": "string", "minLength": 1},
+    "impact": {"enum": ["low", "medium", "high", "critical"]},
+    "contract_change": {"type": "string", "minLength": 1},
+    "dependencies": {"type": "array", "items": {"type": "string"}},
+    "risk": {"enum": ["low", "medium", "high", "critical"]},
+    "rollback": {"type": "string"},
+    "success_metric": {"type": "string"},
+    "owner": {"type": "string", "minLength": 1},
+    "state": {"enum": ["intake", "design", "implementation", "validation", "rollout", "migration", "done", "blocked"]}
+  }
+}

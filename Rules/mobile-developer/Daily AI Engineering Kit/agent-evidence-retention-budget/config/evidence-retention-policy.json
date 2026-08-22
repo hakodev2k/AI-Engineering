@@ -1,0 +1,41 @@
+{
+  "version": "1.0.0",
+  "budget": {
+    "max_context_bytes": 24000,
+    "max_full_items": 12,
+    "max_summary_items": 30,
+    "summary_cost_bytes": 600,
+    "reference_cost_bytes": 180
+  },
+  "retention": {
+    "mandatory_types": ["approval", "verification", "failure", "security-finding"],
+    "mandatory_claim_statuses": ["verified", "blocked"],
+    "minimum_reference_metadata": ["id", "type", "source", "observed_at", "content_hash", "storage_ref"],
+    "sensitive_default_mode": "reference-only",
+    "never_embed_sensitivity": ["secret", "credential", "personal-sensitive"],
+    "prefer_full_importance": ["critical", "high"],
+    "prefer_summary_importance": ["medium"],
+    "low_importance_default_mode": "reference-only"
+  },
+  "freshness": {
+    "max_age_minutes_for_active_verification": 120,
+    "stale_active_evidence_blocks": true
+  },
+  "review": {
+    "independent_review_for": ["critical"],
+    "allow_self_review": false
+  },
+  "retry": {
+    "transient_tool_retry_max": 1,
+    "validation_retry_max": 0,
+    "rebudget_cycles_max": 2
+  },
+  "approval_required_actions": [
+    "delete-source-evidence",
+    "weaken-retention-policy",
+    "remove-audit-artifact",
+    "remove-security-evidence",
+    "purge-production-log",
+    "change-secret-or-production-config"
+  ]
+}

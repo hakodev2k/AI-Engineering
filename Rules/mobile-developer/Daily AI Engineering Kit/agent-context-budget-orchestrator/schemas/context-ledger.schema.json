@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Agent Context Ledger",
+  "type": "object",
+  "required": ["task", "decision_questions", "items"],
+  "properties": {
+    "task": {"type": "string", "minLength": 1},
+    "decision_questions": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1}
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "source", "purpose", "tier", "status", "summary", "freshness", "reread_condition", "estimated_units"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "source": {"type": "string", "minLength": 1},
+          "purpose": {"type": "string"},
+          "tier": {"enum": ["critical", "supporting", "reference", "discardable"]},
+          "status": {"enum": ["active", "compressed", "stale", "discarded"]},
+          "summary": {"type": "string"},
+          "freshness": {"type": "string"},
+          "reread_condition": {"type": "string"},
+          "estimated_units": {"type": "integer", "minimum": 0},
+          "supports_questions": {
+            "type": "array",
+            "items": {"type": "string"}
+          },
+          "notes": {"type": "string"}
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

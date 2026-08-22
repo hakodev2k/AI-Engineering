@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "default_action": "review",
+  "require_exact_version": true,
+  "minimum_package_age_hours": 72,
+  "allowed_ecosystems": ["npm", "pypi"],
+  "allow_git_sources": false,
+  "allow_remote_archives": false,
+  "allow_local_paths": false,
+  "block_deprecated_npm": true,
+  "block_yanked_pypi": true,
+  "require_repository_url_for_unapproved": true,
+  "require_human_approval_for_fresh_packages": true,
+  "approved_packages": {
+    "npm": [],
+    "pypi": []
+  },
+  "blocked_packages": {
+    "npm": [],
+    "pypi": []
+  },
+  "trusted_scopes": [],
+  "network_timeout_seconds": 10,
+  "max_registry_response_bytes": 4194304,
+  "audit_log": ".agent-dependency-guard/decisions.jsonl"
+}

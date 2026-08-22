@@ -1,0 +1,2 @@
+{"timestamp":"2026-08-20T10:00:00+07:00","repo":"example-repo","worktree":"C:/work/example","scope":"workspace-root","reason":"initial-inventory","scanner":"rg --files","elapsed_ms":1200,"concurrent_scans":1,"files":4200,"paths":["src","tests"]}
+{"timestamp":"2026-08-20T10:01:00+07:00","repo":"example-repo","worktree":"C:/work/example","scope":"src","reason":"changed-files-refresh","scanner":"git ls-files","elapsed_ms":120,"concurrent_scans":1,"files":640,"paths":["src"]}

@@ -1,0 +1,25 @@
+version: 1
+name: agent-cache-invalidation-safety-gate
+max_fix_retries: 2
+required_evidence:
+  - cache_key
+  - mutation_source
+  - invalidation_path
+  - consistency_expectation
+  - verification_result
+risk_levels:
+  low: informational
+  medium: requires-targeted-test
+  high: requires-independent-verification
+approval_required_for:
+  - production-cache-flush
+  - destructive-cache-reset
+  - shared-cache-namespace-change
+  - production-config-change
+  - breaking-api-contract
+status_values:
+  - pass
+  - fail
+  - blocked
+  - needs-approval
+  - inconclusive

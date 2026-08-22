@@ -1,0 +1,28 @@
+{
+  "incident_id": "INC-2026-001",
+  "severity": "sev1",
+  "implementer": "implementation-agent",
+  "confirmed_symptom": "Checkout API returns 500 when payment provider sends an empty optional reference.",
+  "hypothesis": "Null handling regressed in payment response mapping.",
+  "allowed_paths": [
+    "src/payments/payment-response-mapper.cs",
+    "tests/payments/payment-response-mapper-tests.cs"
+  ],
+  "forbidden_paths": [
+    "infra/**",
+    "migrations/**",
+    "src/auth/**"
+  ],
+  "expected_behavior": "Empty optional provider reference is mapped to null without throwing while non-empty references remain unchanged.",
+  "verification": {
+    "commands": ["dotnet test tests/Payments.Tests --filter PaymentResponseMapper"],
+    "negative_control_commands": ["dotnet test tests/Payments.Tests --filter PaymentCaptureFlow"]
+  },
+  "rollback": {
+    "mechanism": "Revert the exact hotfix commit and redeploy the prior application artifact.",
+    "trigger": "Error rate, latency, or payment failure rate worsens after deployment."
+  },
+  "approval_actions": ["production-deploy"],
+  "approval_granted": false,
+  "temporary_exceptions": []
+}

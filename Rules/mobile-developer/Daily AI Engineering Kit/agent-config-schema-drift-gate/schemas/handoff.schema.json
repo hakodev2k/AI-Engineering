@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["status", "facts", "evidence", "affected_components", "risks", "verification"],
+  "properties": {
+    "status": {"enum": ["ready", "blocked", "inconclusive", "verified"]},
+    "facts": {"type": "array", "items": {"type": "string"}},
+    "hypotheses": {"type": "array", "items": {"type": "string"}},
+    "evidence": {"type": "array", "items": {"type": "object", "required": ["source", "finding"], "properties": {"source": {"type": "string"}, "finding": {"type": "string"}}}},
+    "affected_components": {"type": "array", "items": {"type": "string"}},
+    "risks": {"type": "array", "items": {"type": "string"}},
+    "approval_required": {"type": "boolean"},
+    "verification": {"type": "array", "items": {"type": "object", "required": ["check", "status"], "properties": {"check": {"type": "string"}, "status": {"enum": ["pending", "pass", "fail", "not-run"]}, "evidence": {"type": "string"}}}},
+    "errors": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": false
+}

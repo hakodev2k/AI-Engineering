@@ -1,0 +1,48 @@
+{
+  "policy_version": "1.0.0",
+  "max_clock_skew_seconds": 120,
+  "max_transient_refresh_retries": 1,
+  "default_ttl_seconds": 900,
+  "volatility_ttl_seconds": {
+    "low": 3600,
+    "medium": 900,
+    "high": 120,
+    "event-driven": 86400
+  },
+  "high_risk_decisions": [
+    "production-deploy",
+    "destructive-operation",
+    "database-schema-change",
+    "infrastructure-change",
+    "secret-change",
+    "production-config-change",
+    "breaking-api-change",
+    "security-control-change",
+    "irreversible-migration",
+    "large-dependency-upgrade"
+  ],
+  "require_independent_review_for_high_risk": true,
+  "mutable_source_kinds": [
+    "repository",
+    "database",
+    "logs",
+    "runtime",
+    "deployment",
+    "configuration",
+    "approval",
+    "external-api",
+    "issue-tracker",
+    "ci"
+  ],
+  "default_invalidation_events": [
+    "repository-head-changed",
+    "deployment-completed",
+    "database-mutated",
+    "configuration-updated",
+    "approval-updated",
+    "approval-revoked",
+    "external-resource-mutated",
+    "incident-state-changed"
+  ],
+  "fail_closed_on_unknown_high_risk": true
+}

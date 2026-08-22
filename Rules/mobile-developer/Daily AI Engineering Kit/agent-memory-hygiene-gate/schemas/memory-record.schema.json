@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Agent Memory Record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "kind", "claim", "scope", "source", "observed_at", "confidence", "expires_at", "sensitive_categories", "status", "conflicts_with"],
+  "properties": {
+    "id": {"type": "string", "minLength": 1},
+    "kind": {"type": "string", "minLength": 1},
+    "claim": {"type": "string", "minLength": 1},
+    "scope": {"type": "string", "minLength": 1},
+    "source": {"type": "string", "minLength": 1},
+    "observed_at": {"type": "string", "format": "date-time"},
+    "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+    "expires_at": {"type": "string", "format": "date-time"},
+    "sensitive_categories": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "status": {"type": "string", "enum": ["active", "superseded", "conflicted", "revoked"]},
+    "conflicts_with": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "supersedes": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+  }
+}

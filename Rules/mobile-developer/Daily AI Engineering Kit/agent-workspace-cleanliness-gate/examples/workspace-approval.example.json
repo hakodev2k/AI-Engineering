@@ -1,0 +1,7 @@
+{
+  "version": "1.0.0",
+  "task_id": "task-example",
+  "approver": "human-owner",
+  "owned_diff_fingerprint": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "approved_actions": ["delete-preexisting-file"]
+}

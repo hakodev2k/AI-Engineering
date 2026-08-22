@@ -1,0 +1,21 @@
+{
+  "default_context_limit": 200000,
+  "minimum_output_reserve": 12000,
+  "minimum_headroom_tokens": 8000,
+  "max_utilization_ratio": 0.9,
+  "allow_optional_context_reduction": true,
+  "allow_model_reroute": true,
+  "approved_reroute_models": {},
+  "required_components": [
+    "system",
+    "required_context",
+    "user_input"
+  ],
+  "optional_reduction_order": [
+    "duplicate_history",
+    "optional_tool_schemas",
+    "optional_attachments",
+    "optional_retrieval"
+  ],
+  "fail_closed_on_unknown_limit": true
+}

@@ -1,0 +1,30 @@
+{
+  "id": "CS-EX-001",
+  "title": "Refresh onboarding guide for new API users",
+  "status": "briefed",
+  "owner": "content-strategist",
+  "objective": "Reduce avoidable onboarding confusion for new API users",
+  "audience": "Developers evaluating and integrating the API for the first time",
+  "problem": "Users cannot distinguish prerequisites, first successful request, and common setup failures",
+  "desiredAction": "Complete the first successful request and continue to integration guidance",
+  "priority": "high",
+  "deadline": "2026-08-24T17:00:00+07:00",
+  "canonical": true,
+  "sourceOfTruth": ["current API documentation", "approved product behavior", "support issue analysis"],
+  "claims": [
+    {"text": "The documented quickstart reflects the current supported setup", "status": "verified", "source": "current API documentation"}
+  ],
+  "dependencies": ["Product review of current setup flow"],
+  "risks": ["Existing screenshots may be stale", "Derivative tutorials depend on this guide"],
+  "approvals": ["Product technical reviewer"],
+  "outputs": ["Updated canonical onboarding guide", "Derivative refresh list", "Content handoff"],
+  "verification": ["Claims verified", "Links checked", "First-run path tested", "Measurement checkpoint recorded"],
+  "metrics": {
+    "primary": "Successful progression from quickstart to integration guide",
+    "guardrails": ["Support tickets caused by onboarding instructions"],
+    "baseline": "Record before publishing",
+    "checkpoint": "2026-09-07T10:00:00+07:00"
+  },
+  "assumptions": ["The target audience already has the minimum account access described in prerequisites"],
+  "openQuestions": ["Which current setup failure accounts for the largest avoidable support volume?"]
+}

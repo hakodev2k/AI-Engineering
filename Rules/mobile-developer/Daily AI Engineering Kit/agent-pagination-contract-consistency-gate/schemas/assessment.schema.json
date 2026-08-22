@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["status", "endpoint", "pagination_style", "findings", "verification", "remaining_risks"],
+  "properties": {
+    "status": {"enum": ["pass", "fail", "blocked", "needs-approval"]},
+    "endpoint": {"type": "string", "minLength": 1},
+    "pagination_style": {"enum": ["cursor", "offset", "keyset", "unknown"]},
+    "findings": {"type": "array", "items": {"type": "object", "required": ["finding", "evidence", "risk", "recommendation"], "properties": {"finding": {"type": "string"}, "evidence": {"type": "array", "items": {"type": "string"}}, "risk": {"enum": ["low", "medium", "high", "critical"]}, "recommendation": {"type": "string"}}}},
+    "verification": {"type": "object", "required": ["stable_order_verified", "duplicate_gap_tested", "boundary_pages_tested", "contract_compatible"], "properties": {"stable_order_verified": {"type": "boolean"}, "duplicate_gap_tested": {"type": "boolean"}, "boundary_pages_tested": {"type": "boolean"}, "contract_compatible": {"type": "boolean"}}},
+    "remaining_risks": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": false
+}

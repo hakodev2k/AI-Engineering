@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "mode": "enforce",
+  "limits": {
+    "max_descendants": 12,
+    "max_depth": 2,
+    "max_concurrency": 4,
+    "max_estimated_tokens": 160000,
+    "max_wall_seconds": 1800,
+    "max_tool_calls": 240
+  },
+  "delegation": {
+    "child_token_fraction_max": 0.5,
+    "child_descendant_fraction_max": 0.5,
+    "minimum_child_token_reservation": 4000,
+    "allow_recursive_delegation": true,
+    "require_explicit_child_budget": true
+  },
+  "accounting": {
+    "unknown_usage_strategy": "hold_reservation",
+    "token_tolerance_percent": 5,
+    "reservation_ttl_seconds": 900
+  },
+  "response": {
+    "on_soft_threshold_percent": 75,
+    "on_hard_limit": "deny_spawn",
+    "on_anomalous_fanout": "cancel_newest_descendants",
+    "collect_partial_results": true,
+    "require_human_approval_to_raise_hard_limits": true
+  }
+}

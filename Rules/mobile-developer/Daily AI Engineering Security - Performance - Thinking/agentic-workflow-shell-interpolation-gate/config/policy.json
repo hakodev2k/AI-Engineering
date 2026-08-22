@@ -1,0 +1,18 @@
+{
+  "workflow_globs": [".github/workflows/*.yml", ".github/workflows/*.yaml"],
+  "high_risk_context_patterns": [
+    "github.event.issue.title",
+    "github.event.issue.body",
+    "github.event.comment.body",
+    "github.event.pull_request.title",
+    "github.event.pull_request.body",
+    "github.event.pull_request.head.ref",
+    "github.head_ref"
+  ],
+  "agent_action_markers": ["openai/codex-action", "anthropics/claude-code-action", "github/gh-aw"],
+  "require_explicit_permissions_for_agent_workflows": true,
+  "block_direct_run_interpolation": true,
+  "flag_pull_request_target_checkout": true,
+  "flag_wildcard_agent_users": true,
+  "max_findings": 200
+}

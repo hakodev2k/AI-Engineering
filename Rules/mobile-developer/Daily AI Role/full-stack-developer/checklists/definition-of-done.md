@@ -1,0 +1,15 @@
+# Definition of Done
+- [ ] Objective and acceptance criteria are unambiguous and traceable to source of truth.
+- [ ] Affected UI/API/data/integration contracts are documented and compatible or have approved migration plan.
+- [ ] Authentication, authorization, validation and sensitive-data handling reviewed.
+- [ ] Happy, invalid, unauthorized, concurrency, dependency-failure and recovery paths tested as applicable.
+- [ ] Persistence changes have migration/backfill/verification and recovery strategy.
+- [ ] Client behavior covers loading, empty, error, stale and retry states where applicable.
+- [ ] Accessibility and critical performance budgets checked.
+- [ ] Structured logs/metrics/traces or equivalent evidence cover material failure modes.
+- [ ] Reviewer blocker/high findings are closed or approved by correct authority.
+- [ ] Release plan defines blast radius, stop thresholds and rollback/roll-forward.
+- [ ] Human approvals are recorded for destructive, irreversible, security-exception or high-risk actions.
+- [ ] Documentation/handoff identifies owner, known limitations and follow-up work.
+- [ ] Post-release verification confirms intended user outcome.
+- [ ] Any discovered failure class has prevention action when recurrence risk is meaningful.

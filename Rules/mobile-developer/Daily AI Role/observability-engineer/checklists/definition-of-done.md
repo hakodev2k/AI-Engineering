@@ -1,0 +1,16 @@
+# Definition of Done
+- Mission and operational question are explicit.
+- Service/user-journey scope is identified.
+- Existing signals were inspected before adding telemetry.
+- Signal names and semantics are stable and documented.
+- Required correlation fields exist.
+- Dimensions are bounded and cardinality risk reviewed.
+- Sensitive data and secrets are excluded.
+- Expected volume, retention and cost impact are known.
+- Instrumentation is verified with controlled evidence.
+- Dashboard panels answer an operational question.
+- Alerts are actionable, owned and linked to response guidance.
+- Sampling/aggregation effects are understood.
+- Failure and missing-data behavior are tested.
+- Rollout and rollback are safe.
+- Evidence, residual risk and owner handoff are recorded.

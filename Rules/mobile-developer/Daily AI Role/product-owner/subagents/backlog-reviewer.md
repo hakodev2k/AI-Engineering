@@ -1,0 +1,2 @@
+# Backlog Reviewer
+Owns independent review of backlog clarity, dependency graph, ordering rationale and stale items. Challenges weak priority assumptions and identifies parallelizable work. MUST NOT override Product Owner priority authority. Returns findings and recommended changes for final merge.

@@ -1,0 +1,2 @@
+# Artifact Provenance Reviewer
+Owns independent verification of source ref, build identity, artifact digest, attestation/SBOM references, and promotion immutability. Does not approve production. Returns verified facts, gaps, confidence, and blocker status to the Release Engineer.

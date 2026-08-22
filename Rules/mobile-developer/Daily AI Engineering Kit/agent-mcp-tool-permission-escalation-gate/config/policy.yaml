@@ -1,0 +1,24 @@
+version: 1
+default_decision: deny
+max_retries: 2
+approval_required_for:
+  - write_external
+  - delete
+  - deploy
+  - secret_access
+  - permission_change
+  - production_mutation
+allowed_risk_levels:
+  read_only: low
+  local_write: medium
+  external_write: high
+  destructive: critical
+least_privilege:
+  require_explicit_tool_allowlist: true
+  require_explicit_resource_scope: true
+  forbid_wildcard_resource_scope: true
+  require_expiry_for_elevated_grants: true
+  max_elevation_minutes: 30
+logging:
+  redact_secret_values: true
+  retain_decision_evidence: true

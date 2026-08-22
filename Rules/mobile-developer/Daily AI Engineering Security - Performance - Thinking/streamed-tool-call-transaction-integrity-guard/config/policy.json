@@ -1,0 +1,9 @@
+{
+  "max_retries": 2,
+  "require_terminal_event": true,
+  "preserve_raw_fragments": true,
+  "allow_semantic_repair": false,
+  "normalize_empty_args_only_for_declared_empty_schema": true,
+  "completion_blocking_states": ["failed", "unknown", "not-started"],
+  "execution_states": ["not-started", "started", "succeeded", "failed", "unknown"]
+}

@@ -1,0 +1,113 @@
+{
+  "version": 1,
+  "default_trust_level": "external",
+  "destination_trust": {
+    "local-trusted": "trusted",
+    "internal-service": "internal",
+    "external-model": "external",
+    "external-tool": "external",
+    "external-subagent": "external"
+  },
+  "categories": {
+    "private-key": {
+      "severity": "critical",
+      "disposition_by_trust": {
+        "trusted": "redact",
+        "internal": "deny",
+        "external": "deny"
+      }
+    },
+    "credential": {
+      "severity": "critical",
+      "disposition_by_trust": {
+        "trusted": "redact",
+        "internal": "deny",
+        "external": "deny"
+      }
+    },
+    "connection-string": {
+      "severity": "critical",
+      "disposition_by_trust": {
+        "trusted": "redact",
+        "internal": "deny",
+        "external": "deny"
+      }
+    },
+    "email-address": {
+      "severity": "medium",
+      "disposition_by_trust": {
+        "trusted": "allow",
+        "internal": "redact",
+        "external": "redact"
+      }
+    },
+    "internal-network": {
+      "severity": "medium",
+      "disposition_by_trust": {
+        "trusted": "allow",
+        "internal": "allow",
+        "external": "redact"
+      }
+    },
+    "high-entropy-token": {
+      "severity": "high",
+      "disposition_by_trust": {
+        "trusted": "redact",
+        "internal": "approval-required",
+        "external": "redact"
+      }
+    }
+  },
+  "detectors": [
+    {
+      "id": "pem-private-key",
+      "category": "private-key",
+      "type": "regex",
+      "pattern": "-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----[\\s\\S]*?-----END (?:RSA |EC |OPENSSH )?PRIVATE KEY-----",
+      "flags": ["IGNORECASE"]
+    },
+    {
+      "id": "bearer-token",
+      "category": "credential",
+      "type": "regex",
+      "pattern": "\\bBearer\\s+[A-Za-z0-9._~+/=-]{12,}",
+      "flags": ["IGNORECASE"]
+    },
+    {
+      "id": "secret-assignment",
+      "category": "credential",
+      "type": "regex",
+      "pattern": "\\b(?:password|passwd|pwd|api[_-]?key|client[_-]?secret|access[_-]?token|refresh[_-]?token|authorization)\\b\\s*[:=]\\s*[\\\"']?[^\\s\\\"';,}]+",
+      "flags": ["IGNORECASE"]
+    },
+    {
+      "id": "connection-string-password",
+      "category": "connection-string",
+      "type": "regex",
+      "pattern": "\\b(?:Server|Host|Data Source)\\s*=[^;\\n]+;[^\\n]*(?:Password|Pwd)\\s*=[^;\\n]+",
+      "flags": ["IGNORECASE"]
+    },
+    {
+      "id": "email-address",
+      "category": "email-address",
+      "type": "regex",
+      "pattern": "\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}\\b",
+      "flags": []
+    },
+    {
+      "id": "private-network-url",
+      "category": "internal-network",
+      "type": "regex",
+      "pattern": "https?://(?:localhost|127\\.0\\.0\\.1|10\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}|192\\.168\\.\\d{1,3}\\.\\d{1,3}|172\\.(?:1[6-9]|2\\d|3[01])\\.\\d{1,3}\\.\\d{1,3})(?::\\d+)?[^\\s]*",
+      "flags": ["IGNORECASE"]
+    }
+  ],
+  "entropy_detector": {
+    "enabled": true,
+    "category": "high-entropy-token",
+    "min_length": 28,
+    "max_length": 256,
+    "min_entropy": 4.2,
+    "candidate_pattern": "(?<![A-Za-z0-9])[A-Za-z0-9_+/=-]{28,256}(?![A-Za-z0-9])"
+  }
+}

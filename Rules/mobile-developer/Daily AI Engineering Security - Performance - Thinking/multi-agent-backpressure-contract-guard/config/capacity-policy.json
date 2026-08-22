@@ -1,0 +1,13 @@
+{
+  "max_concurrent": 4,
+  "max_queue_depth": 20,
+  "max_queue_age_ms": 15000,
+  "max_retries": 3,
+  "initial_backoff_ms": 500,
+  "max_backoff_ms": 8000,
+  "backoff_multiplier": 2.0,
+  "max_calls_per_task": 12,
+  "max_estimated_tokens_per_task": 60000,
+  "shed_when_queue_full": true,
+  "stop_on_deadline_expired": true
+}

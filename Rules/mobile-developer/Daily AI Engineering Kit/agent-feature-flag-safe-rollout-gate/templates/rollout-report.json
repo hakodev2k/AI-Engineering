@@ -1,0 +1,16 @@
+{
+  "flag": "example-flag",
+  "environment": "staging",
+  "status": "planned",
+  "current_state": {"default": false, "rollout_percent": 0, "targeting": []},
+  "planned_state": {"default": false, "rollout_percent": 5, "targeting": ["internal-users"]},
+  "previous_known_good_state": {"default": false, "rollout_percent": 0, "targeting": []},
+  "findings": [],
+  "evidence": [],
+  "success_conditions": [],
+  "rollback_conditions": [],
+  "approval_required": false,
+  "approval_reference": null,
+  "verification_status": "not_started",
+  "remaining_risks": []
+}

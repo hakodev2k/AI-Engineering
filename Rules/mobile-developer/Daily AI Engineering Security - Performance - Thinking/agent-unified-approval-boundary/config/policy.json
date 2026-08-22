@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "default_decision": "deny",
+  "approval_timeout_seconds": 120,
+  "approval_ttl_seconds": 300,
+  "max_retries": 1,
+  "risk_levels": {
+    "read_only": "allow",
+    "additive_local": "allow",
+    "destructive_local": "require_approval",
+    "external_write": "require_approval",
+    "credential_or_identity": "require_approval",
+    "production_change": "require_approval",
+    "unknown": "deny"
+  },
+  "trusted_annotation_sources": [],
+  "approval_token_binding": ["actor", "parent_task", "capability", "target", "arguments_sha256", "expires_at"],
+  "forbidden_capabilities_without_human_approval": [
+    "production.delete",
+    "production.deploy",
+    "identity.permission_grant",
+    "credential.rotate",
+    "filesystem.delete_recursive",
+    "remote.shell_destructive"
+  ]
+}

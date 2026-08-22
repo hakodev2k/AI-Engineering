@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Customer Success Account Health",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["account", "as_of", "dimensions", "risks", "actions"],
+  "properties": {
+    "account": {"type": "string", "minLength": 1},
+    "as_of": {"type": "string", "format": "date-time"},
+    "dimensions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["value", "adoption", "technical", "stakeholder", "delivery"],
+      "properties": {
+        "value": {"$ref": "#/$defs/dimension"},
+        "adoption": {"$ref": "#/$defs/dimension"},
+        "technical": {"$ref": "#/$defs/dimension"},
+        "stakeholder": {"$ref": "#/$defs/dimension"},
+        "delivery": {"$ref": "#/$defs/dimension"}
+      }
+    },
+    "risks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "statement", "impact", "owner", "status"],
+        "properties": {
+          "id": {"type": "string"},
+          "statement": {"type": "string", "minLength": 1},
+          "impact": {"enum": ["low", "medium", "high", "critical"]},
+          "owner": {"type": "string", "minLength": 1},
+          "status": {"enum": ["open", "mitigating", "accepted-by-human-owner", "closed"]}
+        }
+      }
+    },
+    "actions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["action", "owner", "status"],
+        "properties": {
+          "action": {"type": "string", "minLength": 1},
+          "owner": {"type": "string", "minLength": 1},
+          "due": {"type": ["string", "null"], "format": "date"},
+          "status": {"enum": ["planned", "in-progress", "blocked", "done"]},
+          "evidence": {"type": ["string", "null"]}
+        }
+      }
+    }
+  },
+  "$defs": {
+    "dimension": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "confidence", "evidence"],
+      "properties": {
+        "status": {"enum": ["healthy", "watch", "at-risk", "critical", "unknown"]},
+        "confidence": {"enum": ["low", "medium", "high"]},
+        "evidence": {"type": "array", "items": {"type": "string"}, "minItems": 1}
+      }
+    }
+  }
+}

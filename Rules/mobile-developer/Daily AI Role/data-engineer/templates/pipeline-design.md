@@ -1,0 +1,19 @@
+# Pipeline Design
+- Goal / consumers:
+- Source of truth / owner:
+- Contract:
+- Volume / frequency / SLA:
+- Ingestion mode / cursor / watermark:
+- Raw landing / retention:
+- Transform stages / target grain:
+- Partitioning / incremental strategy:
+- Idempotency / deduplication:
+- Late-data behavior:
+- Quality and reconciliation gates:
+- Lineage / affected consumers:
+- Retry / timeout / dead-letter policy:
+- Monitoring / alerts:
+- Replay / rollback / compensation:
+- Cost envelope:
+- Approval gates:
+- Verification evidence:

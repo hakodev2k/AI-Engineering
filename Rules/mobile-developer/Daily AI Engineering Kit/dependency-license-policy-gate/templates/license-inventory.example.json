@@ -1,0 +1,23 @@
+{
+  "inventory_version": "1.0.0",
+  "generated_at": "2026-08-17T10:30:00Z",
+  "distribution_context": "commercial-backend-service",
+  "dependencies": [
+    {
+      "package_key": "nuget:Example.Json",
+      "ecosystem": "nuget",
+      "name": "Example.Json",
+      "version": "4.2.0",
+      "change_type": "upgraded",
+      "source_fingerprint": "nuget.org:Example.Json@4.2.0",
+      "license_expression": "MIT",
+      "raw_license": "MIT",
+      "evidence_confidence": "verified",
+      "evidence_references": [
+        "registry-metadata:nuget.org/Example.Json/4.2.0",
+        "source-tag:v4.2.0/LICENSE"
+      ],
+      "direct": true
+    }
+  ]
+}

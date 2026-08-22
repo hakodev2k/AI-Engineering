@@ -1,0 +1,21 @@
+{
+  "sample_interval_seconds": 15,
+  "graceful_cleanup_seconds": 10,
+  "max_cleanup_cycles": 2,
+  "task": {
+    "max_owned_processes_soft": 12,
+    "max_owned_processes_hard": 24,
+    "max_rss_bytes_soft": 4294967296,
+    "max_rss_bytes_hard": 8589934592,
+    "max_browser_pages_soft": 8,
+    "max_browser_pages_hard": 16,
+    "max_mcp_clients_soft": 4,
+    "max_mcp_clients_hard": 8
+  },
+  "post_task": {
+    "allowed_task_scoped_orphans": 0,
+    "cleanup_sla_seconds": 30,
+    "memory_tolerance_over_baseline_bytes": 536870912
+  },
+  "notes": "Example values only. Calibrate from measured workload and host capacity; do not weaken security controls to meet them."
+}

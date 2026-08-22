@@ -1,0 +1,13 @@
+[
+  {
+    "operation_key": "messaging:send-order-confirmation:order-123:v1",
+    "payload_fingerprint": "9d0691ba83febc1e694fda98d3a753e97fc4a180c96d2147dd3586810126edf8",
+    "attempt": 1,
+    "state": "succeeded",
+    "executor_id": "agent-runner",
+    "provider_request_id": "req-example-001",
+    "result_ref": "message:msg-example-001",
+    "verification": "provider accepted message and returned stable message id",
+    "timestamp": "2026-08-17T17:20:00+07:00"
+  }
+]

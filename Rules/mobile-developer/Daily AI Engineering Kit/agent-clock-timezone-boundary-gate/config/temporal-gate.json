@@ -1,0 +1,19 @@
+{
+  "business_timezone": "UTC",
+  "fail_fast": true,
+  "report_path": ".ai-temporal/verification.json",
+  "verification_commands": [
+    "python scripts/temporal_scan.py --root . --output .ai-temporal/scan.json",
+    "python -m unittest discover -s tests -p 'test_temporal_*.py'"
+  ],
+  "approval_required_for": [
+    "database-schema-change",
+    "persisted-timestamp-representation-change",
+    "public-api-contract-change",
+    "production-scheduler-change",
+    "production-configuration-change",
+    "data-migration",
+    "infrastructure-change",
+    "security-control-change"
+  ]
+}

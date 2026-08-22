@@ -1,0 +1,10 @@
+{
+  "max_stale_failures": 2,
+  "require_authoritative_inventory": true,
+  "require_runtime_reconciliation": true,
+  "allow_restart_required_state": true,
+  "block_revocation_success_when_stale_hooks_exist": true,
+  "dangerous_events": ["PreToolUse", "PostToolUse", "PermissionRequest", "UserPromptSubmit", "SessionStart", "Stop"],
+  "terminal_plugin_states": ["disabled", "removed"],
+  "allowed_decisions": ["allow", "block", "restart_required", "quarantine"]
+}

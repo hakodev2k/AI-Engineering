@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "minimum_confidence_for_targeted": 0.8,
+  "minimum_confidence_for_module": 0.6,
+  "high_risk_requires_independent_review": true,
+  "unknown_impact_fallback": "full",
+  "max_broaden_cycles": 1,
+  "path_classes": [
+    {"name": "public-contract", "patterns": ["**/openapi.*", "**/*.proto", "**/Contracts/**", "**/Dtos/**"]},
+    {"name": "dependency", "patterns": ["**/*.csproj", "**/*.sln", "package.json", "package-lock.json", "Directory.Packages.props"]},
+    {"name": "migration", "patterns": ["**/Migrations/**", "**/migrations/**"]},
+    {"name": "shared", "patterns": ["**/Shared/**", "**/Common/**", "**/Infrastructure/**"]},
+    {"name": "security", "patterns": ["**/Auth/**", "**/Security/**", "**/*Authorization*", "**/*Authentication*"]},
+    {"name": "test-config", "patterns": ["**/runsettings", "**/*.runsettings", "pytest.ini", "playwright.config.*", "jest.config.*"]}
+  ],
+  "mandatory_suites": {
+    "public-contract": ["contract"],
+    "dependency": ["build", "unit", "integration"],
+    "migration": ["migration", "integration"],
+    "shared": ["unit", "integration"],
+    "security": ["security", "integration"],
+    "test-config": ["full"]
+  },
+  "fallback_order": ["targeted", "module", "integration", "full"],
+  "exit_codes": {"verified": 0, "broaden-required": 10, "blocked": 20}
+}

@@ -1,0 +1,30 @@
+{
+  "version": "1.0.0",
+  "workflow_id": "provision-customer-access-v1",
+  "plan_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "repository_revision": "replace-with-immutable-revision",
+  "status": "failed",
+  "recovery_attempts": 0,
+  "steps": [
+    {
+      "id": "create-account",
+      "operation_key": "customer:123:create-account:v1",
+      "outcome": "succeeded",
+      "attempts": 1,
+      "precondition_evidence": "identity-read:account-absent:customer-123",
+      "postcondition_evidence": "identity-read:account-id:acct-456",
+      "compensation_status": "pending",
+      "error": null
+    },
+    {
+      "id": "grant-production-role",
+      "operation_key": "customer:123:grant-prod-role:v1",
+      "outcome": "failed",
+      "attempts": 1,
+      "precondition_evidence": "role-read:not-member:acct-456",
+      "postcondition_evidence": null,
+      "compensation_status": "not-needed",
+      "error": "provider rejected request before mutation"
+    }
+  ]
+}

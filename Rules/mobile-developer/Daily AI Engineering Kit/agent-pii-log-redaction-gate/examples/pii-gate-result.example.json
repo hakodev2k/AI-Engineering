@@ -1,0 +1,13 @@
+{
+  "status": "passed",
+  "finding_count": 1,
+  "findings": [
+    {
+      "file": "artifacts/example.json",
+      "line": 1,
+      "type": "email",
+      "severity": "low",
+      "sample": "[REDACTED]"
+    }
+  ]
+}

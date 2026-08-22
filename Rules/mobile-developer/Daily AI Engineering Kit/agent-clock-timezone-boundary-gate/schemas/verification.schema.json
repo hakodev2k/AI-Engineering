@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["topic", "status", "generated_at_utc", "checks", "remaining_risks"],
+  "properties": {
+    "topic": {"const": "agent-clock-timezone-boundary-gate"},
+    "status": {"enum": ["verified", "failed", "blocked"]},
+    "generated_at_utc": {"type": "string", "format": "date-time"},
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["command", "exit_code", "stdout", "stderr"],
+        "properties": {
+          "command": {"type": "string"}, "exit_code": {"type": "integer"},
+          "stdout": {"type": "string"}, "stderr": {"type": "string"}
+        }, "additionalProperties": false
+      }
+    },
+    "remaining_risks": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": false
+}

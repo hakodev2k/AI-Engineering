@@ -1,0 +1,9 @@
+{
+  "attempt": 1,
+  "idempotent": true,
+  "status": 503,
+  "error_kind": "upstream-5xx",
+  "retry_after": null,
+  "circuit_state": "closed",
+  "expected_decision": "retry"
+}

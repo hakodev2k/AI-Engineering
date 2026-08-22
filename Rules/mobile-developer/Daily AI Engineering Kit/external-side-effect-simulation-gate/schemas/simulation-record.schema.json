@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "simulation-record.schema.json",
+  "title": "External Side-Effect Simulation Record",
+  "type": "object",
+  "required": ["action_id","plan_revision","simulation_mode","simulation_target","request_fingerprint","status","observed_effects","unexpected_effects","executor_id"],
+  "properties": {
+    "action_id": {"type":"string","minLength":1},
+    "plan_revision": {"type":"integer","minimum":1},
+    "simulation_mode": {"type":"string","minLength":1},
+    "simulation_target": {"type":"string","minLength":1},
+    "request_fingerprint": {"type":"string","pattern":"^[a-fA-F0-9]{64}$"},
+    "status": {"enum":["passed","failed","incomplete"]},
+    "observed_effects": {"type":"array","items":{"type":"object"}},
+    "unexpected_effects": {"type":"array","items":{"type":"object"}},
+    "executor_id": {"type":"string","minLength":1},
+    "evidence": {"type":"array","items":{"type":"string"}}
+  },
+  "additionalProperties": true
+}

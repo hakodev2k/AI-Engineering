@@ -1,0 +1,18 @@
+{
+  "status": "pass",
+  "scope": "Daily report cutoff and API date-range filtering",
+  "findings": [
+    {
+      "finding": "Business-day boundaries are derived in the requested timezone before conversion to UTC instants.",
+      "evidence": ["Asia/Ho_Chi_Minh day-boundary test passed", "America/New_York DST transition test passed", "UTC round-trip preserved the same instant"],
+      "risk": "low",
+      "recommendation": "Keep explicit zone IDs and half-open instant ranges in regression tests."
+    }
+  ],
+  "verification": {
+    "multi_zone_tested": true,
+    "boundary_cases_tested": true,
+    "round_trip_verified": true
+  },
+  "remaining_risks": ["Future API contract changes must preserve the distinction between local dates and instants."]
+}

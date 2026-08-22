@@ -1,0 +1,24 @@
+{
+  "name": "ai-engineering-repository",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20",
+    "npm": ">=10"
+  },
+  "scripts": {
+    "audit": "node scripts/audit-repository.mjs",
+    "audit:strict": "node scripts/audit-repository.mjs --strict-collections",
+    "audit:standalone": "node scripts/audit-standalone.mjs",
+    "audit:standalone:strict": "node scripts/audit-standalone.mjs --strict",
+    "check:mcp": "npm --prefix MCP-API run check",
+    "check": "npm run audit && npm run check:mcp",
+    "check:strict": "npm run audit:strict && npm run audit:standalone:strict && npm run check:mcp"
+  },
+  "devDependencies": {
+    "@lezer/python": "^1.1.0",
+    "ajv": "^8.20.0",
+    "yaml": "^2.0.0"
+  }
+}

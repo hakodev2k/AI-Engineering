@@ -1,0 +1,11 @@
+{
+  "claim_requirements": {
+    "implemented": ["change_recorded"],
+    "tests_passed": ["test_executed", "test_passed", "evidence_fresh"],
+    "build_passed": ["canonical_build_executed", "canonical_build_passed", "evidence_fresh"],
+    "verified": ["acceptance_criteria_covered", "canonical_verification_passed", "evidence_fresh"],
+    "pushed": ["push_observed"]
+  },
+  "block_unsupported_high_confidence_claims": true,
+  "require_independent_verifier_for_high_impact": true
+}

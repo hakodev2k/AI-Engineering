@@ -1,0 +1,25 @@
+version: 1
+protected_environments:
+  - production
+  - prod
+max_unapproved_percentage: 10
+require_approval_for:
+  global_enable: true
+  flag_delete: true
+  rollback_removal: true
+  security_weakening: true
+flag_file_globs:
+  - "**/*feature*flag*.json"
+  - "**/*feature*flag*.yaml"
+  - "**/*feature*flag*.yml"
+  - "**/appsettings*.json"
+ignored_paths:
+  - ".git/**"
+  - "**/bin/**"
+  - "**/obj/**"
+allowed_statuses:
+  - proposed
+  - approved
+  - implemented
+  - verified
+  - blocked

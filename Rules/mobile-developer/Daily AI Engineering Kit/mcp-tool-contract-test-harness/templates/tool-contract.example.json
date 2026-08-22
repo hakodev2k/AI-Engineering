@@ -1,0 +1,55 @@
+{
+  "tool_name": "issue_lookup",
+  "version": "1.0",
+  "source": "example-adapter",
+  "side_effect_level": "read",
+  "approval_required": false,
+  "input_schema": {
+    "type": "object",
+    "required": ["repository", "issue_number"],
+    "properties": {
+      "repository": {"type": "string"},
+      "issue_number": {"type": "integer", "minimum": 1}
+    }
+  },
+  "success_required_fields": ["title", "state"],
+  "error_required_fields": ["code", "message"],
+  "open_questions": [],
+  "fixtures": [
+    {
+      "id": "valid-issue",
+      "class": "positive",
+      "input": {"repository": "owner/repo", "issue_number": 42},
+      "expected_status": "success",
+      "required_result_fields": ["title", "state"],
+      "live": false
+    },
+    {
+      "id": "missing-number",
+      "class": "malformed-input",
+      "input": {"repository": "owner/repo"},
+      "expected_status": "error",
+      "expected_error_code": "INVALID_ARGUMENT",
+      "required_result_fields": [],
+      "live": false
+    },
+    {
+      "id": "unauthorized-repository",
+      "class": "permission",
+      "input": {"repository": "private/denied", "issue_number": 1},
+      "expected_status": "error",
+      "expected_error_code": "FORBIDDEN",
+      "required_result_fields": [],
+      "live": false
+    },
+    {
+      "id": "issue-not-found",
+      "class": "application-error",
+      "input": {"repository": "owner/repo", "issue_number": 999999},
+      "expected_status": "error",
+      "expected_error_code": "NOT_FOUND",
+      "required_result_fields": [],
+      "live": false
+    }
+  ]
+}

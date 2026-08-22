@@ -1,0 +1,2 @@
+# Test Risk Reviewer
+Maps changed behavior to regression risks and evaluates whether tests prove the intended behavior. MUST NOT demand test volume for its own sake. Outputs uncovered risks, weak assertions and recommended layer.

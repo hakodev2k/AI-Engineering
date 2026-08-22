@@ -1,0 +1,74 @@
+[
+  {
+    "name": "all required children completed and accepted",
+    "input": {
+      "parent_status": "success",
+      "children": [
+        {"id":"a","required":true,"status":"completed","started":true,"terminal_receipt":true,"acceptance_passed":true,"commit_state":"none"}
+      ],
+      "reconcile_attempt": 0
+    },
+    "expected_decision": "verified_success",
+    "expected_exit": 0
+  },
+  {
+    "name": "parent success but required child never started",
+    "input": {
+      "parent_status": "success",
+      "children": [
+        {"id":"a","required":true,"status":"queued","started":false,"terminal_receipt":false,"acceptance_passed":null,"commit_state":"none"}
+      ],
+      "reconcile_attempt": 0
+    },
+    "expected_decision": "reconcile",
+    "expected_exit": 20
+  },
+  {
+    "name": "interrupted accepted work is preserved",
+    "input": {
+      "parent_status": "interrupted",
+      "children": [
+        {"id":"a","required":true,"status":"interrupted","started":true,"terminal_receipt":true,"acceptance_passed":true,"commit_state":"committed"}
+      ],
+      "reconcile_attempt": 0
+    },
+    "expected_decision": "verified_success",
+    "expected_exit": 0
+  },
+  {
+    "name": "interrupted unknown commit state blocks blind retry",
+    "input": {
+      "parent_status": "interrupted",
+      "children": [
+        {"id":"a","required":true,"status":"interrupted","started":true,"terminal_receipt":false,"acceptance_passed":null,"commit_state":"unknown"}
+      ],
+      "reconcile_attempt": 0
+    },
+    "expected_decision": "reconcile",
+    "expected_exit": 20
+  },
+  {
+    "name": "explicit required child failure fails task",
+    "input": {
+      "parent_status": "success",
+      "children": [
+        {"id":"a","required":true,"status":"failed","started":true,"terminal_receipt":true,"acceptance_passed":false,"commit_state":"none"}
+      ],
+      "reconcile_attempt": 0
+    },
+    "expected_decision": "failed",
+    "expected_exit": 30
+  },
+  {
+    "name": "reconciliation budget exhaustion blocks unresolved state",
+    "input": {
+      "parent_status": "success",
+      "children": [
+        {"id":"a","required":true,"status":"running","started":true,"terminal_receipt":false,"acceptance_passed":null,"commit_state":"none"}
+      ],
+      "reconcile_attempt": 2
+    },
+    "expected_decision": "blocked",
+    "expected_exit": 30
+  }
+]

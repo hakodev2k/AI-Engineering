@@ -1,0 +1,14 @@
+{
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.5",
+  "version": 1,
+  "components": [
+    {
+      "type": "library",
+      "name": "example-safe-lib",
+      "version": "1.2.3",
+      "purl": "pkg:generic/example-safe-lib@1.2.3",
+      "licenses": [{"license": {"id": "MIT"}}]
+    }
+  ]
+}

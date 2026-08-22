@@ -1,0 +1,14 @@
+# Developer Feedback Handoff
+- Signal summary:
+- Developer segment:
+- Expected vs actual:
+- Reproduction/evidence:
+- Frequency/reach:
+- Severity/user impact:
+- Classification:
+- Workaround, if verified:
+- Proposed owner:
+- Recommended action:
+- Deadline/cost of delay:
+- Confidence:
+- Follow-up state:

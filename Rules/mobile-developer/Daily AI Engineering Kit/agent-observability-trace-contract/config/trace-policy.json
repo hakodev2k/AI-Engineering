@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "trace_required": true,
+  "independent_review_for_risk": ["high", "critical"],
+  "max_telemetry_retry": 1,
+  "required_terminal_event_suffixes": ["completed", "failed", "unknown", "abandoned"],
+  "required_verification_events": ["verification.started", "verification.completed"],
+  "approval_required_side_effects": [
+    "production-deploy",
+    "destructive-sql",
+    "database-schema-change",
+    "file-or-data-delete",
+    "force-push",
+    "infrastructure-change",
+    "secret-change",
+    "production-config-change",
+    "breaking-contract",
+    "security-weakening",
+    "irreversible-migration",
+    "large-dependency-upgrade"
+  ],
+  "sensitive_key_patterns": [
+    "password",
+    "passwd",
+    "secret",
+    "token",
+    "authorization",
+    "cookie",
+    "private_key",
+    "connection_string",
+    "api_key",
+    "apikey"
+  ],
+  "max_attribute_string_length": 512,
+  "allowed_final_statuses": ["verified", "blocked", "observability-incomplete"]
+}

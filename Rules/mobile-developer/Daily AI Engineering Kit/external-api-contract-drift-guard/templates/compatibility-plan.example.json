@@ -1,0 +1,24 @@
+{
+  "topic": "external-api-contract-drift-guard",
+  "provider": "example-provider",
+  "supported_versions": ["current", "candidate"],
+  "change_groups": [
+    {
+      "id": "group-1",
+      "drift_paths": ["$.paths./orders.get.responses.200"],
+      "risk": "potentially-breaking",
+      "consumers": [
+        {"file": "src/integrations/orders-client", "symbol": "GetOrders", "evidence": "deserializes provider response"}
+      ],
+      "strategy": "adapter-translation",
+      "expected_files": ["src/integrations/orders-client"],
+      "tests": ["candidate response fixture deserializes", "current response remains supported", "unknown enum value handled safely"],
+      "rollout": "staged",
+      "rollback": "restore previous provider version while retaining compatible adapter",
+      "approval_required": false,
+      "residual_risks": []
+    }
+  ],
+  "global_approvals": [],
+  "unresolved_assumptions": []
+}

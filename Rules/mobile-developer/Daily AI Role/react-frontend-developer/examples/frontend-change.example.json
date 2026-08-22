@@ -1,0 +1,12 @@
+{
+  "id": "FE-142",
+  "goal": "Allow users to update notification preferences",
+  "user_impact": "high",
+  "deadline": "2026-08-20",
+  "routes": ["/settings/notifications"],
+  "api_dependencies": ["PATCH /api/preferences"],
+  "states": ["loading", "ready", "saving", "success", "validation-error", "server-error"],
+  "accessibility_risk": "medium",
+  "performance_risk": "low",
+  "review_required": true
+}

@@ -1,0 +1,16 @@
+{
+  "approved_roots": [
+    "/absolute/path/to/workspace"
+  ],
+  "default_symlink_policy": "deny",
+  "exceptions": [
+    {
+      "requested_prefix": "/absolute/path/to/workspace/shared-skills",
+      "resolved_root": "/absolute/path/to/workspace-internal/shared-skills",
+      "operations": ["read"],
+      "human_approved": true
+    }
+  ],
+  "high_risk_operations": ["write", "replace", "rename", "execute"],
+  "require_descriptor_relative_or_identity_recheck": true
+}

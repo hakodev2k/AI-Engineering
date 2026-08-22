@@ -1,0 +1,8 @@
+{
+  "require_measurement_source": true,
+  "allowed_measurement_sources": ["provider_measured", "tokenizer_measured", "estimated", "reconstructed"],
+  "max_estimator_relative_error": 0.15,
+  "block_automation_on_ambiguous_semantics": true,
+  "block_when_current_context_exceeds_window": true,
+  "require_monotonic_session_cumulative": true
+}

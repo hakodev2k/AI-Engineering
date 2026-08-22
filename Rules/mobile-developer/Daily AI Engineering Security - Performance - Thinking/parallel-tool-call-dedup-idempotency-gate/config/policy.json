@@ -1,0 +1,10 @@
+{
+  "default_scope": "turn",
+  "max_parallel_calls": 16,
+  "tool_policies": {},
+  "side_effect_classes": ["read", "idempotent-write", "non-idempotent-write"],
+  "require_idempotency_key_for_replayed_writes": true,
+  "allow_read_deduplication": true,
+  "allow_write_result_replay": false,
+  "fingerprint_include": ["tool", "canonical_args", "scope_id"]
+}

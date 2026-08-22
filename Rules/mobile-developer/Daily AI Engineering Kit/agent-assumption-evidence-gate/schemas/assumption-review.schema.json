@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["reviewer", "decision", "assumption_fingerprint", "policy_fingerprint", "reviewed_ids", "evidence"],
+  "properties": {
+    "reviewer": {"type": "string", "minLength": 1},
+    "decision": {"enum": ["approve", "reject"]},
+    "assumption_fingerprint": {"type": "string", "minLength": 1},
+    "policy_fingerprint": {"type": "string", "minLength": 1},
+    "reviewed_ids": {"type": "array", "items": {"type": "string"}},
+    "evidence": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+    "notes": {"type": "string"}
+  }
+}

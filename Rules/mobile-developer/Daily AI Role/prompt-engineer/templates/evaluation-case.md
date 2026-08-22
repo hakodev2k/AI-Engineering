@@ -1,0 +1,12 @@
+# Evaluation Case
+- Case ID:
+- Risk class: normal | edge | critical | adversarial | regression
+- Input/context:
+- Expected behavior:
+- Forbidden behavior:
+- Required evidence/fields:
+- Scoring rubric:
+- Pass condition:
+- Observed result:
+- Failure category:
+- Notes:

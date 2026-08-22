@@ -1,0 +1,21 @@
+version: 1
+max_delivery_attempts: 5
+retry:
+  max_transient_retries: 3
+  base_delay_seconds: 2
+  max_delay_seconds: 30
+quarantine:
+  require_reason: true
+  preserve_payload_hash: true
+  preserve_error_fingerprint: true
+  allow_payload_storage: false
+replay:
+  default_enabled: false
+  require_human_approval: true
+  max_batch_size: 25
+redaction:
+  keys: [authorization, password, secret, token, api_key, cookie]
+verification:
+  require_handler_tests: true
+  require_idempotency_evidence: true
+  require_quarantine_test: true

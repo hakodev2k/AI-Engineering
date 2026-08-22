@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "estimatedCharsPerToken": 4.0,
+  "budgets": {
+    "maxToolSchemaTokens": 6000,
+    "maxSingleToolTokens": 1200,
+    "maxSelectedTools": 12,
+    "minEssentialTools": 1
+  },
+  "selection": {
+    "essentialTags": ["essential"],
+    "defaultCandidateLimit": 24,
+    "minimumKeywordScore": 1,
+    "fallbackMode": "essential-plus-smallest",
+    "fallbackAdditionalTools": 3
+  },
+  "validation": {
+    "requireObjectInputSchema": true,
+    "requireUniqueNames": true,
+    "rejectEmptyName": true,
+    "preserveOriginalSchema": true
+  },
+  "regression": {
+    "minimumTokenReductionRatio": 0.50,
+    "minimumSelectionRecall": 0.95,
+    "minimumToolCallSuccessRate": 0.98,
+    "maximumFallbackRate": 0.05
+  }
+}

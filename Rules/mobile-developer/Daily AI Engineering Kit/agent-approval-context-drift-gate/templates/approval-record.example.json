@@ -1,0 +1,10 @@
+{
+  "version": "1.0",
+  "approval_id": "approval-001",
+  "task_id": "release-2026-08-17",
+  "context_fingerprint": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+  "approver_id": "human-release-owner",
+  "approved": true,
+  "approved_at_utc": "2026-08-17T14:30:00Z",
+  "reason": "Approved exact production deployment context after review"
+}

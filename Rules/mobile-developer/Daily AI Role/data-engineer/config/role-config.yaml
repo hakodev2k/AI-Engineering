@@ -1,0 +1,27 @@
+role: data-engineer
+priority_order:
+  - production-severity-security-privacy
+  - business-user-impact
+  - dependency-blocking
+  - deadline-cost-of-delay
+  - data-correctness-risk
+  - reversibility
+  - confidence
+  - effort-cost
+max_retries: 2
+approval_gates:
+  - destructive-production-write
+  - breaking-data-contract
+  - retention-or-deletion-change
+  - sensitive-data-policy-exception
+  - large-cost-increase
+  - irreversible-migration
+quality_dimensions:
+  - correctness
+  - completeness
+  - freshness
+  - uniqueness
+  - reconciliation
+  - lineage
+  - recoverability
+  - observability

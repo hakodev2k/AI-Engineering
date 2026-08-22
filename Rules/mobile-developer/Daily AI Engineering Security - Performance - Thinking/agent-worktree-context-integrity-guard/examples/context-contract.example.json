@@ -1,0 +1,14 @@
+{
+  "contract_version": "1.0",
+  "captured_at": "2026-08-20T09:30:00+00:00",
+  "operation": "write",
+  "expected": {
+    "repo_top": "/workspace/app",
+    "worktree_path": "/workspace/app",
+    "common_git_dir": "/workspace/app/.git",
+    "head_oid": "0123456789abcdef0123456789abcdef01234567",
+    "branch": "agent/example-task",
+    "detached": false,
+    "upstream": "origin/agent/example-task"
+  }
+}

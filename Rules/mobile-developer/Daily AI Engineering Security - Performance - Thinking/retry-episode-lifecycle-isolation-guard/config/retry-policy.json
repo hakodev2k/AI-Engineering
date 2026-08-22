@@ -1,0 +1,9 @@
+{
+  "max_attempts_per_episode": 3,
+  "max_episodes_per_turn": 6,
+  "require_strategy_change_after_identical_failures": 2,
+  "reset_on_verified_recovery": true,
+  "episode_key_fields": ["failure_class", "operation", "state_fingerprint"],
+  "terminal_failure_classes": ["authorization_denied", "invalid_request", "unsafe_action"],
+  "retryable_failure_classes": ["truncation", "transient_provider", "tool_transient", "schema_repair"]
+}

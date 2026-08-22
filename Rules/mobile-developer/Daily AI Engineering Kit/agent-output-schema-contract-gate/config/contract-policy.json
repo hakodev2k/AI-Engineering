@@ -1,0 +1,23 @@
+{
+  "policy_version": "1.0",
+  "unknown_fields": "allow",
+  "breaking_changes_require_human_approval": true,
+  "migration_required_changes_block_release": true,
+  "independent_review_for": ["migration-required", "breaking"],
+  "mandatory_replay_for_risk": ["high", "critical"],
+  "breaking_rules": {
+    "removed_property": true,
+    "new_required_property": true,
+    "type_change": true,
+    "enum_narrowing": true,
+    "nullable_to_nonnullable": true,
+    "additional_properties_restriction": true
+  },
+  "migration_rules": {
+    "format_change": true,
+    "enum_expansion": false,
+    "optional_property_addition": false
+  },
+  "max_transient_retries": 1,
+  "fail_closed_on_missing_evidence": true
+}

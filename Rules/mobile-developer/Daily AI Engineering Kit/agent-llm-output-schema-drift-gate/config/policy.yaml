@@ -1,0 +1,13 @@
+version: 1
+status_values: [pass, warn, block]
+max_retries: 2
+strict_unknown_fields: true
+require_all_required_fields: true
+allow_additive_optional_fields: true
+allow_type_widening: false
+allow_enum_expansion: false
+allow_required_field_addition: false
+allow_field_removal: false
+allow_type_change: false
+approval_required_for_breaking_change: true
+sample_limit: 100

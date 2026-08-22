@@ -1,0 +1,15 @@
+{
+  "name": "orders-api",
+  "owner": "commerce-platform",
+  "environment": "production",
+  "business_purpose": "Serve order-management APIs",
+  "region": "southeastasia",
+  "data_classification": "internal-sensitive",
+  "rto": "60 minutes",
+  "rpo": "15 minutes",
+  "internet_exposure_required": false,
+  "dependencies": ["postgresql", "service-bus"],
+  "estimated_monthly_budget": 1500,
+  "expected_peak_rps": 800,
+  "approvals_required": []
+}

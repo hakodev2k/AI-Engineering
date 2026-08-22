@@ -1,0 +1,12 @@
+{
+  "exception_id": "lic-ex-2026-001",
+  "package_key": "nuget:Example.Restricted",
+  "version": "2.1.0",
+  "source_fingerprint": "nuget.org:Example.Restricted@2.1.0",
+  "license_expression": "MPL-2.0",
+  "policy_version": "1.0.0",
+  "approved_by": "engineering-manager",
+  "approved_at": "2026-08-17T10:45:00Z",
+  "expires_at": "2026-08-20T10:45:00Z",
+  "reason": "Time-bounded exception after obligation review for this exact package version and source."
+}

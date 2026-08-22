@@ -1,0 +1,13 @@
+{
+  "expected_resource": "https://mcp.example.internal",
+  "allowed_issuers": ["https://issuer.example.internal"],
+  "required_scopes_by_operation": {
+    "read": ["mcp.read"],
+    "write": ["mcp.write"]
+  },
+  "require_active": true,
+  "require_audience": true,
+  "require_issuer": true,
+  "forbid_token_passthrough": true,
+  "forbidden_secret_fields": ["access_token", "refresh_token", "authorization", "bearer_token", "client_secret"]
+}

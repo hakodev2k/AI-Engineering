@@ -1,0 +1,9 @@
+{
+  "max_repair_attempts": 3,
+  "max_duplicate_attempts": 1,
+  "require_all_acceptance_predicates": true,
+  "require_all_required_calls": true,
+  "require_new_evidence_per_retry": true,
+  "block_on_unverified_success": true,
+  "high_risk_requires_independent_verifier": true
+}

@@ -1,0 +1,10 @@
+{
+  "max_attempts": 3,
+  "base_delay_ms": 500,
+  "max_delay_ms": 5000,
+  "jitter_ratio": 0.2,
+  "retryable_status_codes": [408, 425, 429, 500, 502, 503, 504],
+  "non_retryable_status_codes": [400, 401, 403, 404, 409, 422],
+  "circuit_breaker": {"failure_threshold": 5, "open_seconds": 60},
+  "approval_required_for": ["production-write", "permission-increase", "secret-change", "destructive-operation"]
+}

@@ -1,0 +1,22 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "type":"object",
+  "required":["version","phase","session_id","status","branch","worktree_path","head_revision","changed_paths","collisions","blockers","session_fingerprint","policy_fingerprint","fingerprint"],
+  "properties":{
+    "version":{"const":"1.0"},
+    "phase":{"enum":["working","final"]},
+    "session_id":{"type":"string"},
+    "status":{"enum":["pass","review-required","blocked"]},
+    "branch":{"type":"string"},
+    "worktree_path":{"type":"string"},
+    "head_revision":{"type":"string"},
+    "changed_paths":{"type":"array","items":{"type":"string"}},
+    "collisions":{"type":"array","items":{"type":"string"}},
+    "blockers":{"type":"array","items":{"type":"string"}},
+    "warnings":{"type":"array","items":{"type":"string"}},
+    "session_fingerprint":{"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "policy_fingerprint":{"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "fingerprint":{"type":"string","pattern":"^[0-9a-f]{64}$"}
+  },
+  "additionalProperties":false
+}

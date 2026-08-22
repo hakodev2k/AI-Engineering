@@ -1,0 +1,10 @@
+version: 1
+default_request_budget_ms: 5000
+minimum_downstream_budget_ms: 250
+network_reserve_ms: 100
+max_retries: 1
+propagation_header: X-Request-Deadline-Utc
+require_cancellation_propagation: true
+block_unbounded_timeout: true
+allow_infinite_timeout_in_tests: false
+approval_required_for_budget_increase_percent: 100

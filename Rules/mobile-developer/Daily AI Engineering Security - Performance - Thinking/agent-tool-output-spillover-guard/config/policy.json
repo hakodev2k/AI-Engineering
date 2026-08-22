@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "model_visible_token_budget": 6000,
+  "hard_raw_bytes_limit": 52428800,
+  "head_lines": 40,
+  "tail_lines": 40,
+  "priority_match_limit": 120,
+  "priority_patterns": [
+    "error",
+    "exception",
+    "failed",
+    "failure",
+    "fatal",
+    "panic",
+    "warning",
+    "traceback",
+    "assert",
+    "timeout",
+    "denied",
+    "unauthorized"
+  ],
+  "spill_directory": ".agent-tool-output-spill",
+  "rehydrate_max_lines": 500,
+  "rehydrate_max_bytes": 262144,
+  "fail_closed_on_integrity_error": true,
+  "include_line_numbers": true
+}

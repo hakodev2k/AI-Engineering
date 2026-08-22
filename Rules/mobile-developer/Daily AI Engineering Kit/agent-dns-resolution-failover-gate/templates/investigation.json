@@ -1,0 +1,13 @@
+{
+  "status": "investigating",
+  "environment": "test",
+  "hosts": [],
+  "facts": [],
+  "hypotheses": [],
+  "evidence": [],
+  "failure_layer": "unknown",
+  "recommended_action": "",
+  "approval_required": false,
+  "verification_status": "pending",
+  "remaining_risks": []
+}

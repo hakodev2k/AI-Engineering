@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "entries": [
+    {
+      "path": "tests/fixtures/example.txt",
+      "detector": "generic-high-entropy-secret",
+      "fingerprint": "replace-with-16-char-fingerprint",
+      "reason": "Verified synthetic fixture; value is not accepted by any provider",
+      "owner": "security-reviewer",
+      "expires_on": "2099-12-31"
+    }
+  ]
+}

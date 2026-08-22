@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Generated Test Evidence",
+  "type": "object",
+  "required": ["status", "changed_behavior", "tests", "commands", "risks"],
+  "properties": {
+    "status": {"enum": ["planned", "implemented", "verified", "blocked", "needs-approval"]},
+    "changed_behavior": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+    "tests": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["path", "behavior", "assertion", "evidence"],
+        "properties": {
+          "path": {"type": "string"},
+          "behavior": {"type": "string"},
+          "assertion": {"type": "string"},
+          "evidence": {"type": "string"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "commands": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["command", "exit_code"],
+        "properties": {
+          "command": {"type": "string"},
+          "exit_code": {"type": "integer"},
+          "summary": {"type": "string"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "risks": {"type": "array", "items": {"type": "string"}},
+    "approval": {"type": ["string", "null"]}
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,10 @@
+{
+  "actor": "agent-a",
+  "parent_task": "deploy-task-42",
+  "transport": "mcp",
+  "tool": "docker_compose_down",
+  "capability": "remote.shell_destructive",
+  "target": "host-a:/srv/app",
+  "arguments": {"command": "docker compose down -v"},
+  "annotations": {"readOnlyHint": false,"destructiveHint": true,"openWorldHint": true}
+}

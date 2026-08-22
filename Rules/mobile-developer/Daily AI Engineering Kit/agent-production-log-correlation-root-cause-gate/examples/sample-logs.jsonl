@@ -1,0 +1,4 @@
+{"timestamp":"2026-08-21T08:00:00Z","service":"api","level":"info","trace_id":"trace-123","message":"Request started","authorization":"[REDACTED]"}
+{"timestamp":"2026-08-21T08:00:01Z","service":"orders","level":"info","trace_id":"trace-123","message":"Loading order"}
+{"timestamp":"2026-08-21T08:00:02Z","service":"payments","level":"error","trace_id":"trace-123","message":"Timeout calling payment provider"}
+{"timestamp":"2026-08-21T08:00:03Z","service":"api","level":"error","trace_id":"trace-123","message":"Request failed"}

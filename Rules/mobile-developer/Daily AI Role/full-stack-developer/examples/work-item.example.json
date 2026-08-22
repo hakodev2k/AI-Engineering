@@ -1,0 +1,19 @@
+{
+  "id": "FS-142",
+  "objective": "Allow an authenticated customer to update a shipping address before fulfillment starts.",
+  "acceptanceCriteria": [
+    "Eligible orders expose Edit address in the UI",
+    "Unauthorized users receive no order address data",
+    "Update is rejected after fulfillment begins",
+    "Successful update is visible after refresh and emits an audit event"
+  ],
+  "affectedLayers": ["frontend", "api", "domain", "data", "observability"],
+  "risk": "medium",
+  "owner": "full-stack-developer",
+  "dependencies": ["order-status contract", "audit-event sink"],
+  "breakingChange": false,
+  "destructiveChange": false,
+  "requiresHumanApproval": false,
+  "rollback": "Disable feature flag and keep additive API field ignored by older clients.",
+  "verification": ["component tests", "API authorization tests", "integration test", "staged release metrics"]
+}

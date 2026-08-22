@@ -1,0 +1,9 @@
+{
+  "issuer": "https://issuer.example.internal",
+  "audiences": ["https://mcp.example.internal"],
+  "active": true,
+  "scopes": ["mcp.read"],
+  "operation": "read",
+  "passthrough_requested": false,
+  "downstream_target": null
+}

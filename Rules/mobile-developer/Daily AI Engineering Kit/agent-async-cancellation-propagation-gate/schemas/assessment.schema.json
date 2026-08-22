@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Async Cancellation Assessment",
+  "type": "object",
+  "required": ["status", "scope", "findings", "tests", "verification"],
+  "properties": {
+    "status": {"enum": ["pass", "fail", "needs-approval", "blocked"]},
+    "scope": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["file", "line", "kind", "evidence", "risk", "recommended_action"],
+        "properties": {
+          "file": {"type": "string"},
+          "line": {"type": "integer", "minimum": 1},
+          "kind": {"type": "string"},
+          "evidence": {"type": "string"},
+          "risk": {"enum": ["low", "medium", "high", "critical"]},
+          "recommended_action": {"type": "string"}
+        },
+        "additionalProperties": true
+      }
+    },
+    "tests": {"type": "array", "items": {"type": "string"}},
+    "verification": {
+      "type": "object",
+      "required": ["static_scan", "targeted_tests", "diff_review", "independent_review"],
+      "properties": {
+        "static_scan": {"type": "boolean"},
+        "targeted_tests": {"type": "boolean"},
+        "diff_review": {"type": "boolean"},
+        "independent_review": {"type": "boolean"}
+      }
+    },
+    "remaining_risks": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": true
+}

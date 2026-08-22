@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Software Architect Design Brief",
+  "type": "object",
+  "required": ["title", "owner", "status", "objective", "requirements", "nfrs", "risks", "verification"],
+  "properties": {
+    "title": {"type": "string", "minLength": 1},
+    "owner": {"type": "string", "minLength": 1},
+    "status": {"enum": ["intake", "clarifying", "designing", "reviewing", "blocked", "awaiting_approval", "verified", "done"]},
+    "objective": {"type": "string", "minLength": 1},
+    "requirements": {"type": "array", "items": {"type": "object", "required": ["id", "text", "status"], "properties": {"id": {"type": "string"}, "text": {"type": "string"}, "status": {"enum": ["confirmed", "assumed", "open"]}}}},
+    "nfrs": {"type": "array", "items": {"type": "object", "required": ["id", "dimension", "target"], "properties": {"id": {"type": "string"}, "dimension": {"type": "string"}, "target": {"type": "string"}}}},
+    "risks": {"type": "array", "items": {"type": "object", "required": ["risk", "impact", "owner"], "properties": {"risk": {"type": "string"}, "impact": {"enum": ["low", "medium", "high", "critical"]}, "owner": {"type": "string"}}}},
+    "verification": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+    "required_approvals": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": true
+}

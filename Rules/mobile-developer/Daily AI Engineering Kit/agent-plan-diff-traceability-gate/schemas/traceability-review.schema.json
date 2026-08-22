@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "traceability-review.schema.json",
+  "type": "object",
+  "required": ["version", "reviewer", "actor", "plan_fingerprint", "manifest_fingerprint", "verdict", "findings"],
+  "properties": {
+    "version": {"const": "1.0"},
+    "reviewer": {"type": "string", "minLength": 1},
+    "actor": {"type": "string", "minLength": 1},
+    "plan_fingerprint": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "manifest_fingerprint": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "verdict": {"type": "string", "enum": ["approve", "reject"]},
+    "findings": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": false
+}

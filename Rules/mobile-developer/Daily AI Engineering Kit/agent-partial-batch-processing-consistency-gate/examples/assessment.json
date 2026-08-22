@@ -1,0 +1,22 @@
+{
+  "status": "pass",
+  "batch": "ImportCustomers",
+  "findings": [
+    {
+      "finding": "A failed middle item remains recorded and the checkpoint does not skip it during restart.",
+      "evidence": [
+        "partial-failure test failed item customer:42 while customer:41 completed",
+        "restart resumed from the durable checkpoint and did not duplicate customer:41"
+      ],
+      "risk": "low",
+      "recommendation": "Keep the per-item result record and restart regression test."
+    }
+  ],
+  "verification": {
+    "partial_failure_tested": true,
+    "retry_scope_tested": true,
+    "completion_count_verified": true,
+    "checkpoint_verified": true
+  },
+  "remaining_risks": ["Source paging semantics must be re-verified if ordering guarantees change."]
+}

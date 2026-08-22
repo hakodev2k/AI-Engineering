@@ -1,0 +1,11 @@
+# Release Handoff
+- Release ID / version:
+- Current environment and status:
+- Completed steps:
+- Remaining steps:
+- Active risks / exceptions:
+- Monitoring links/signals:
+- Rollback trigger and owner:
+- Dependencies awaiting action:
+- Next decision owner:
+- Time-sensitive constraints:

@@ -1,0 +1,50 @@
+name: Feature request
+description: Propose a focused addition or improvement to the repository.
+title: "[Feature]: "
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem to solve
+      description: Describe the user or engineering problem, not only the proposed implementation.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed outcome
+      description: Explain the intended behavior, scope, and success criteria.
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Repository documentation
+        - AI role
+        - Rules or skills
+        - Engineering gate or guard
+        - MCP/API connector
+        - Repository tooling
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: List existing packages, workarounds, or smaller approaches considered.
+  - type: textarea
+    id: risks
+    attributes:
+      label: Risks and compatibility
+      description: Note security, permissions, external side effects, migration, or breaking-change concerns.
+  - type: checkboxes
+    id: confirmations
+    attributes:
+      label: Confirmation
+      options:
+        - label: I searched the repository and existing issues for similar functionality.
+          required: true
+        - label: The proposal does not include credentials or sensitive data.
+          required: true

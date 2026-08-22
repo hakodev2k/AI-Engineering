@@ -1,0 +1,24 @@
+{
+  "parent_status": "success",
+  "children": [
+    {
+      "id": "research",
+      "required": true,
+      "status": "completed",
+      "started": true,
+      "terminal_receipt": true,
+      "acceptance_passed": true,
+      "commit_state": "none"
+    },
+    {
+      "id": "verification",
+      "required": true,
+      "status": "completed",
+      "started": true,
+      "terminal_receipt": true,
+      "acceptance_passed": true,
+      "commit_state": "none"
+    }
+  ],
+  "reconcile_attempt": 0
+}

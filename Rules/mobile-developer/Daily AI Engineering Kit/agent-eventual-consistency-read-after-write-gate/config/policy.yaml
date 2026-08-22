@@ -1,0 +1,16 @@
+version: 1
+max_attempts: 4
+initial_delay_ms: 150
+backoff_multiplier: 2.0
+max_delay_ms: 1200
+acceptable_statuses: [200, 201, 204]
+not_found_is_retryable: true
+conflict_is_retryable: true
+stale_value_is_retryable: true
+require_write_version_when_available: true
+require_correlation_id: true
+allow_production_writes: false
+approval_required_for:
+  - production-write
+  - destructive-compensation
+  - consistency-model-change

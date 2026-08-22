@@ -1,0 +1,14 @@
+# Definition of Done
+- Objective, users, scope, non-goals, constraints, and source-of-truth are explicit.
+- Input contract and output contract are unambiguous.
+- Instruction hierarchy and conflict behavior are documented.
+- Required context is separated from optional context.
+- Happy path, edge cases, missing-input, conflicting-input, and adversarial cases are tested.
+- Hallucination/unsupported-claim handling is tested where relevant.
+- Structured output validates when required.
+- Quality threshold is met on representative evaluation cases.
+- Token/latency/cost impact is acceptable or explicitly approved.
+- Safety/privacy/permission gates are satisfied.
+- Reviewer findings are resolved or accepted by accountable owner.
+- Version/change rationale and rollback target exist.
+- Handoff contains usage, known limitations, evidence, and monitoring signals.

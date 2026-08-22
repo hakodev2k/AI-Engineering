@@ -1,0 +1,7 @@
+{
+  "version": 1,
+  "max_retries": 2,
+  "required_properties": ["failure_threshold", "open_duration", "half_open_probe_limit", "fallback_behavior", "observability"],
+  "approval_required_for": ["production-config-change", "dependency-upgrade", "breaking-api-contract", "production-deployment", "security-control-change"],
+  "risk_patterns": ["retry_inside_breaker_without_budget", "breaker_without_timeout", "fallback_masks_failure", "half_open_unbounded", "shared_breaker_wrong_scope", "no_recovery_signal"]
+}

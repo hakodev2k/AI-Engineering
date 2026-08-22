@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "production_environment_names": ["production", "prod", "live"],
+  "destructive_operations": ["drop_table", "drop_column", "truncate", "delete_without_filter", "rewrite_primary_key"],
+  "approval_required_operations": ["alter_column", "create_index", "drop_index", "rename_column", "rename_table", "data_backfill", "constraint_change"],
+  "max_unbatched_backfill_rows": 10000,
+  "require_rollback_for_production": true,
+  "require_backup_reference_for_destructive": true,
+  "require_lock_timeout_seconds_max": 30,
+  "require_statement_timeout_seconds_max": 300,
+  "block_destructive_in_production": true,
+  "require_post_verification": true,
+  "require_expand_contract_for_breaking_changes": true
+}

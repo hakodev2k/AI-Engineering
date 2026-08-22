@@ -1,0 +1,42 @@
+{
+  "policy_version": "1.0",
+  "protected_globs": [
+    "tests/**",
+    "test/**",
+    "**/*Tests/**",
+    "**/*Test/**",
+    "**/*.snap",
+    "**/snapshots/**",
+    "**/fixtures/**",
+    "**/golden/**",
+    ".github/workflows/**",
+    "pytest.ini",
+    "pyproject.toml",
+    "jest.config.*",
+    "vitest.config.*",
+    "Directory.Build.props",
+    "Directory.Build.targets",
+    "global.json"
+  ],
+  "weakening_patterns": [
+    "@unittest.skip",
+    "pytest.mark.skip",
+    "pytest.skip(",
+    ".skip(",
+    "describe.skip",
+    "it.skip",
+    "test.skip",
+    "[Fact(Skip",
+    "[Theory(Skip",
+    "Assert.Ignore",
+    "Ignore(\"",
+    "--no-verify",
+    "continue-on-error: true"
+  ],
+  "approval_required_for_protected_changes": true,
+  "require_independent_verifier_for_high_risk": true,
+  "high_risk_change_count": 5,
+  "fail_on_deleted_tests": true,
+  "fail_on_unexplained_oracle_drift": true,
+  "max_remediation_attempts": 2
+}

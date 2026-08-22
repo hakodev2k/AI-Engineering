@@ -1,0 +1,8 @@
+{
+  "version": 1,
+  "max_retries": 2,
+  "scan": {"extensions": [".cs", ".ts", ".js", ".py", ".java", ".go"], "exclude": ["node_modules", "bin", "obj", ".git", "dist", "vendor"]},
+  "required_controls": ["bounded-retry", "timeout", "failure-classification", "open-state", "half-open-probe", "fallback-or-fail-fast", "telemetry"],
+  "approval_required_for": ["production-config-change", "security-control-weakening", "deployment", "infrastructure-change", "breaking-api-contract"],
+  "severity": {"retry-without-bound": "high", "external-call-without-timeout": "high", "retry-inside-retry": "critical", "catch-and-immediate-retry": "high", "circuit-breaker-present": "info"}
+}

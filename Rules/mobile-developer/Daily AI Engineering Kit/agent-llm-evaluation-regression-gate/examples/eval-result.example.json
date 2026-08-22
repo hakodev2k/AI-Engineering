@@ -1,0 +1,7 @@
+{
+  "case_id": "example-case-id",
+  "status": "pass",
+  "dimensions": {
+    "example": 1
+  }
+}

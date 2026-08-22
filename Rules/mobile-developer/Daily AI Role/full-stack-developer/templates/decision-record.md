@@ -1,0 +1,14 @@
+# Decision Record
+- Decision ID:
+- Date / owner:
+- Context and constraint:
+- Options considered:
+- Selected option:
+- Why this option:
+- Evidence / assumptions:
+- Trade-offs:
+- Security/reliability/data impact:
+- Reversibility:
+- Required approval:
+- Validation plan:
+- Revisit trigger:

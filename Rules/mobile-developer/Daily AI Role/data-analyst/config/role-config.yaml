@@ -1,0 +1,20 @@
+role: data-analyst
+max_transient_retries: 2
+priority_order:
+  - production_security_compliance
+  - decision_impact
+  - deadline_dependency
+  - data_quality_freshness
+  - reversibility_uncertainty
+  - effort_cost
+human_approval_required:
+  - canonical_metric_change
+  - restricted_data_scope_change
+  - external_or_material_executive_claim
+  - legal_or_compliance_interpretation
+  - irreversible_action
+quality:
+  require_source_lineage: true
+  require_metric_definition: true
+  require_surprise_verification: true
+  require_caveat_log: true

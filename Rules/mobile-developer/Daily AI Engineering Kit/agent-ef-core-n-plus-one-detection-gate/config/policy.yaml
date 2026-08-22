@@ -1,0 +1,18 @@
+version: 1
+minimum_repeated_query_count: 5
+minimum_distinct_parameter_sets: 3
+maximum_allowed_suspect_groups: 0
+request_marker_pattern: '^REQUEST (?P<request_id>\S+)$'
+command_marker: 'Executed DbCommand'
+parameter_line_prefix: 'Parameters='
+normalize_literals: true
+normalize_parameter_values: true
+ignore_sql_patterns:
+  - '^SELECT 1$'
+  - '__EFMigrationsHistory'
+max_retries: 2
+require_human_approval_for:
+  - production_query_changes
+  - database_schema_changes
+  - index_creation
+  - disabling_lazy_loading_globally

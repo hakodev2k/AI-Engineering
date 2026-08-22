@@ -1,0 +1,24 @@
+{
+  "allowed_kinds": [
+    "project-fact",
+    "architecture-fact",
+    "tooling-fact",
+    "workflow-preference",
+    "user-preference",
+    "operational-constraint"
+  ],
+  "minimum_confidence": 0.7,
+  "maximum_ttl_days": 180,
+  "forbidden_sensitive_categories": [
+    "secret",
+    "credential",
+    "api-key",
+    "token",
+    "private-key",
+    "authentication-cookie",
+    "raw-customer-data"
+  ],
+  "high_impact_kinds_requiring_human_approval_for_operational_use": [
+    "operational-constraint"
+  ]
+}

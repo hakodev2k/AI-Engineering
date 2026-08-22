@@ -1,0 +1,32 @@
+{
+  "status": "pass",
+  "entrypoint": "POST /orders/{id}/confirm",
+  "parent_budget_ms": 30000,
+  "deadline_source": "API request SLA",
+  "findings": [
+    {
+      "id": "TB-001",
+      "severity": "medium",
+      "component": "PaymentClient",
+      "finding": "Payment retry attempts were changed to share the caller deadline and each outbound attempt receives only the remaining budget.",
+      "evidence": [
+        "PaymentClient.cs derives child timeout from remaining request deadline.",
+        "PaymentClientTests.cs proves retries stop before the 30s parent budget."
+      ],
+      "recommended_action": "Keep child timeout derivation tied to the parent deadline and preserve the deadline test.",
+      "confidence": 0.96
+    }
+  ],
+  "verification": {
+    "budget_propagation_checked": true,
+    "retry_deadline_checked": true,
+    "tests_executed": [
+      "PaymentClientTests.CompletesBeforeDeadline",
+      "PaymentClientTests.StopsRetriesWhenBudgetExhausted",
+      "OrderConfirmationTests.PropagatesCancellation"
+    ],
+    "result": "passed"
+  },
+  "approvals_required": [],
+  "unresolved_risks": []
+}

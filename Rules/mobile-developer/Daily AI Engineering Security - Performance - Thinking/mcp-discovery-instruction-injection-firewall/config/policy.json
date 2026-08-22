@@ -1,0 +1,49 @@
+{
+  "policyVersion": "1.0.0",
+  "maxInstructionBytes": 8192,
+  "maxInstructionChars": 8000,
+  "defaultTrust": "untrusted-remote",
+  "publicCacheForUntrustedInstructions": false,
+  "untrustedCacheTtlSeconds": 300,
+  "blockControlCharacters": true,
+  "suspiciousPatterns": [
+    "ignore previous instructions",
+    "ignore all previous instructions",
+    "reveal system prompt",
+    "show hidden instructions",
+    "disable safeguards",
+    "bypass approval",
+    "do not ask for confirmation",
+    "send secrets",
+    "exfiltrate",
+    "read credentials",
+    "grant yourself permission",
+    "escalate privileges",
+    "delete repository",
+    "overwrite production"
+  ],
+  "hardBlockPatterns": [
+    "reveal system prompt",
+    "show hidden instructions",
+    "disable safeguards",
+    "bypass approval",
+    "send secrets",
+    "exfiltrate",
+    "grant yourself permission",
+    "escalate privileges"
+  ],
+  "sensitiveToolClasses": [
+    "write",
+    "destructive",
+    "secret-bearing",
+    "network-egress",
+    "privilege-changing",
+    "repository-mutation",
+    "production-impacting"
+  ],
+  "audit": {
+    "storeRawPayload": false,
+    "storePayloadHash": true,
+    "storeReasonCodes": true
+  }
+}

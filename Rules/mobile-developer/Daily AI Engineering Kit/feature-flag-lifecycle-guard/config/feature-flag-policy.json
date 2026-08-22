@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "allowed_types": ["release", "experiment", "operational", "kill-switch"],
+  "allowed_states": ["planned", "rolling-out", "stable", "retirement-ready", "retired", "blocked"],
+  "temporary_types": ["release", "experiment"],
+  "protected_types": ["kill-switch"],
+  "max_temporary_lifetime_days": 90,
+  "require_owner_for_active": true,
+  "require_expiry_for_temporary": true,
+  "require_cleanup_trigger_for_temporary": true,
+  "retired_reference_allowlist_categories": ["historical-doc"],
+  "scan_extensions": [".cs", ".fs", ".vb", ".js", ".jsx", ".ts", ".tsx", ".py", ".java", ".kt", ".go", ".rs", ".json", ".yaml", ".yml", ".toml", ".xml", ".config", ".md"],
+  "ignored_paths": [".git", "bin", "obj", "node_modules", "dist", "build", ".feature-flags/reference-report.json"],
+  "lookup_patterns": [
+    "{key}",
+    "IsEnabledAsync\\s*\\(\\s*[\"']{key}[\"']",
+    "IsEnabled\\s*\\(\\s*[\"']{key}[\"']",
+    "variation\\s*\\(\\s*[\"']{key}[\"']",
+    "getValue\\s*\\(\\s*[\"']{key}[\"']"
+  ]
+}

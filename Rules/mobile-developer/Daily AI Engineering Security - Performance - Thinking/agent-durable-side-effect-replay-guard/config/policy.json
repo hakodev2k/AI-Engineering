@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "ledger_path": ".agent-state/side-effect-ledger.sqlite3",
+  "claim_ttl_seconds": 300,
+  "completed_retention_days": 30,
+  "operation_key_fields": ["workflow_id", "effect_type", "semantic_input_hash"],
+  "high_risk_effect_types": ["payment", "delete", "provision", "publish", "send_external_message"],
+  "uncertain_action": "reconcile_or_require_human_approval",
+  "allow_blind_retry_from_uncertain": false,
+  "store_raw_payload": false,
+  "store_result_body": false,
+  "max_reconcile_attempts": 2,
+  "max_execution_attempts_per_key": 1
+}

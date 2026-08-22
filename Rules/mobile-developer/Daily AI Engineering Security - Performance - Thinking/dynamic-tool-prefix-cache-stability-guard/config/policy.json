@@ -1,0 +1,9 @@
+{
+  "max_prefix_mutations_per_session": 3,
+  "min_cache_hit_ratio": 0.7,
+  "max_cold_input_token_regression_pct": 10,
+  "canonicalize_tool_order": true,
+  "canonicalize_json_keys": true,
+  "fail_on_semantic_equivalence_byte_drift": true,
+  "quality_regression_tolerance_pct": 2
+}

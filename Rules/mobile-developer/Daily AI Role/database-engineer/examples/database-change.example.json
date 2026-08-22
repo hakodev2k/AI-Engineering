@@ -1,0 +1,17 @@
+{
+  "id": "dbchg-2026-001",
+  "owner": "orders-team",
+  "environment": "production",
+  "engine": "PostgreSQL 17",
+  "change_type": "index",
+  "affected_objects": ["public.orders"],
+  "goal": "Reduce p95 lookup latency for active customer orders",
+  "risk": "medium",
+  "reversible": true,
+  "verification": ["Compare p95 and logical reads for representative query", "Confirm replication lag remains below guardrail", "Check insert/update latency for regression"],
+  "recovery": "Drop the new index concurrently if verified write or storage regression exceeds guardrail",
+  "approval_required": false,
+  "deadline": "2026-08-20T12:00:00+07:00",
+  "dependencies": ["Representative workload sample available"],
+  "notes": "Use online/concurrent index build supported by the selected engine/version."
+}

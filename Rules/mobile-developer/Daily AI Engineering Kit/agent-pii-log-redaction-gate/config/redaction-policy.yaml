@@ -1,0 +1,32 @@
+version: 1
+mode: block-on-unredacted
+replacement: "[REDACTED:{type}]"
+scan:
+  changed_files_only: true
+  include_extensions: [".log", ".txt", ".json", ".ndjson", ".csv", ".md"]
+  exclude_globs:
+    - "**/bin/**"
+    - "**/obj/**"
+    - "**/node_modules/**"
+    - "**/.git/**"
+patterns:
+  email: true
+  phone: true
+  ipv4: true
+  jwt: true
+  bearer_token: true
+  credit_card_like: true
+  connection_string_secret: true
+  api_key_like: true
+allowlist:
+  literals: []
+  regexes: []
+severity:
+  jwt: critical
+  bearer_token: critical
+  connection_string_secret: critical
+  api_key_like: critical
+  credit_card_like: high
+  email: medium
+  phone: medium
+  ipv4: low

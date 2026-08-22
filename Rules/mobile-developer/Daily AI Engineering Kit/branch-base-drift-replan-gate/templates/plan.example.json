@@ -1,0 +1,27 @@
+{
+  "plan_id": "feature-order-status-v1",
+  "plan_revision": 1,
+  "planned_scope": {
+    "paths": ["src/orders/**", "tests/orders/**"],
+    "components": ["orders-api"]
+  },
+  "assumptions": [
+    {
+      "id": "a1",
+      "statement": "Order status endpoint contract is unchanged on target branch.",
+      "status": "current",
+      "evidence": ["src/orders/order-controller.cs", "tests/orders/order-controller-tests.cs"]
+    }
+  ],
+  "steps": [
+    {
+      "id": "s1",
+      "summary": "Implement status transition validation.",
+      "disposition": "unchanged",
+      "affected_by": [],
+      "evidence": ["src/orders/order-service.cs"]
+    }
+  ],
+  "tests": ["tests/orders/**"],
+  "risk": "medium"
+}

@@ -1,0 +1,9 @@
+{
+  "max_consecutive_meta_actions": 3,
+  "max_plan_regenerations_without_requirement_change": 1,
+  "max_recovery_attempts": 2,
+  "require_deliverable_delta_after_plan_approval": true,
+  "completion_requires_all_acceptance_gates": true,
+  "progress_event_types": ["source_change", "requested_artifact", "test_result", "acceptance_evidence"],
+  "meta_event_types": ["plan", "review", "replan", "freeze", "status", "delegation"]
+}

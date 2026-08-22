@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "tier_rank": {
+    "default": 0,
+    "standard": 0,
+    "priority": 1,
+    "fast": 1
+  },
+  "tier_credit_multiplier": {
+    "default": 1.0,
+    "standard": 1.0,
+    "priority": 2.5,
+    "fast": 2.5
+  },
+  "default_expected_tier": "default",
+  "unknown_tier_action": "fail",
+  "unapproved_escalation_action": "fail",
+  "max_descendants": 32,
+  "max_lineage_depth": 2,
+  "approval": {
+    "require_reason": true,
+    "require_actor": true,
+    "max_ttl_minutes": 120
+  },
+  "input": {
+    "event_type_fields": ["type", "event_type"],
+    "payload_fields": ["payload"],
+    "thread_id_fields": ["thread_id", "threadId", "agent_thread_id"],
+    "parent_thread_id_fields": ["parent_thread_id", "parentThreadId", "parent_id"],
+    "service_tier_fields": ["service_tier", "serviceTier"],
+    "token_container_names": ["usage", "token_usage", "total_token_usage", "last_token_usage"]
+  }
+}

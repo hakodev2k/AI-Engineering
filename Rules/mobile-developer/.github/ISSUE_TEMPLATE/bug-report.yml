@@ -1,0 +1,67 @@
+name: Bug report
+description: Report reproducible incorrect behavior in repository content or tooling.
+title: "[Bug]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for reporting a problem. Remove secrets, personal data, and private repository details before submitting.
+  - type: input
+    id: affected_path
+    attributes:
+      label: Affected path
+      description: Identify the smallest relevant file, package, or collection.
+      placeholder: Daily AI Engineering Kit/example-package/
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Problem
+      description: Explain what is incorrect and its practical impact.
+    validations:
+      required: true
+  - type: input
+    id: revision
+    attributes:
+      label: Source revision
+      description: Provide the upstream commit or release and note whether the selected package was locally modified.
+      placeholder: commit SHA; copied unchanged
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: Provide minimal, deterministic steps using sanitized inputs.
+      placeholder: |
+        1. Run ...
+        2. Observe ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: Describe the expected result and supporting contract or documentation.
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: Include relevant OS, runtime, tool, and dependency versions.
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Sanitized evidence
+      description: Add safe logs, output, or screenshots. Do not include credentials or private data.
+  - type: checkboxes
+    id: confirmations
+    attributes:
+      label: Confirmation
+      options:
+        - label: I searched existing issues for a duplicate.
+          required: true
+        - label: This report contains no secrets or sensitive data.
+          required: true
+        - label: This is not a privately reportable security vulnerability.
+          required: true

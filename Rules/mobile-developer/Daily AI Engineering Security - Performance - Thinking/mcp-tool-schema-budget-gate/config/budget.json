@@ -1,0 +1,16 @@
+{
+  "policy_version": 1,
+  "max_total_tokens": 12000,
+  "max_hot_tokens": 6000,
+  "max_tool_tokens": 1200,
+  "warn_tool_tokens": 700,
+  "max_hot_tools": 24,
+  "min_reduction_percent": 20,
+  "tokenizer": "estimate",
+  "bytes_per_token_estimate": 4.0,
+  "default_mode": "deferred",
+  "hot_tools": [],
+  "disabled_tools": [],
+  "required_tools": [],
+  "fail_on_budget_exceeded": true
+}

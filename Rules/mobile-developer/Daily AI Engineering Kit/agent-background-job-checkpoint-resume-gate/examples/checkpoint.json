@@ -1,0 +1,12 @@
+{
+  "job_id": "customer-sync-2026-08-21",
+  "job_type": "customer-sync",
+  "input_fingerprint": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+  "status": "running",
+  "cursor": {"last_customer_id": 4200},
+  "processed_count": 4200,
+  "updated_at_utc": "2026-08-21T08:00:00+00:00",
+  "last_error": null,
+  "side_effects_committed": true,
+  "metadata": {"chunk_size": 100}
+}

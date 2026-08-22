@@ -1,0 +1,2 @@
+# Acceptance Verifier
+Independently maps delivered evidence to each acceptance criterion, including edge cases and declared non-goals. Reports Pass/Fail/Insufficient Evidence. MUST NOT rewrite criteria after seeing the result or declare final product acceptance; Product Owner owns the final decision.

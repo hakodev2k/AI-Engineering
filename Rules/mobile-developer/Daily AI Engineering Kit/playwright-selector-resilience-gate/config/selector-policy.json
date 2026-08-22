@@ -1,0 +1,50 @@
+{
+  "version": "1.0.0",
+  "scan": {
+    "include_globs": ["**/*.spec.ts", "**/*.spec.js", "**/*.test.ts", "**/*.test.js", "**/*.e2e.ts", "**/*.e2e.js"],
+    "exclude_dirs": ["node_modules", "dist", "build", "coverage", ".git"],
+    "max_file_bytes": 1048576
+  },
+  "risk": {
+    "preferred_kinds": ["getByRole", "getByLabel", "getByPlaceholder", "getByTestId"],
+    "review_kinds": ["getByText", "locator-css", "locator-xpath"],
+    "blocked_patterns": [
+      "nth-child",
+      "nth-of-type",
+      ">\\s*[^>]+>\\s*[^>]+>\\s*[^>]+",
+      "xpath=.*\\[[0-9]+\\]"
+    ],
+    "dynamic_probe_required_for": ["high", "critical"],
+    "max_duplicate_matches": 1,
+    "require_visible_match": true
+  },
+  "weights": {
+    "preferred_kind": 0,
+    "text_selector": 2,
+    "css_selector": 3,
+    "xpath_selector": 4,
+    "positional_selector": 5,
+    "missing_runtime_probe": 5,
+    "duplicate_runtime_match": 6,
+    "zero_runtime_match": 6
+  },
+  "thresholds": {
+    "review_required_score": 4,
+    "blocked_score": 8
+  },
+  "review": {
+    "independent_review_for": ["high", "critical"],
+    "allow_self_review": false
+  },
+  "retry": {
+    "transient_probe_retry_max": 1,
+    "validation_retry_max": 0
+  },
+  "approval_required_actions": [
+    "production-deployment",
+    "breaking-public-contract",
+    "security-control-weakening",
+    "force-push",
+    "production-config-change"
+  ]
+}

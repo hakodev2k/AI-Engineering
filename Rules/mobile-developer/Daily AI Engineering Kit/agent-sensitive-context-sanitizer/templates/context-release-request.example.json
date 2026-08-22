@@ -1,0 +1,21 @@
+{
+  "request_id": "ctx-release-2026-08-17-example",
+  "purpose": "Provide the minimum application error context needed for an external AI model to explain a parsing failure.",
+  "destination": "external-model",
+  "trust_level": "external",
+  "source_description": "Selected lines from a local application error log; unrelated request headers and user payload fields removed.",
+  "candidate_path": ".agent-context/candidate.txt",
+  "candidate_sha256": "replace-after-candidate-is-created",
+  "requested_action": "analyze-error",
+  "minimization_notes": [
+    "Removed unrelated stack traces.",
+    "Removed request body fields not needed to reproduce the parser error.",
+    "Kept only the failing endpoint, exception type, and five surrounding log lines."
+  ],
+  "approval": {
+    "required": false,
+    "reference": null,
+    "scope": null
+  },
+  "release_status": "prepared"
+}

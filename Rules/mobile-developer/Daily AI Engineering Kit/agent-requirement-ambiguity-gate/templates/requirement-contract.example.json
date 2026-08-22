@@ -1,0 +1,12 @@
+{
+  "task": "Add idempotency protection to POST /payments",
+  "trigger": "Feature request before implementation",
+  "scope": {"in": ["payment create endpoint", "duplicate request behavior", "tests"], "out": ["refund flow", "provider migration"]},
+  "acceptance_criteria": ["Repeated requests with the same idempotency key do not create a second payment", "Existing clients without a key retain documented behavior"],
+  "assumptions": [{"statement": "The endpoint currently has no durable idempotency store", "risk": "medium", "evidence": ["src/Payments/CreatePayment.cs inspected"]}],
+  "open_questions": [],
+  "evidence": [{"source": "tests/Payments/CreatePaymentTests.cs", "finding": "Current tests cover successful creation but not duplicate requests"}],
+  "risk": "medium",
+  "approval_reasons": [],
+  "status": "ready"
+}

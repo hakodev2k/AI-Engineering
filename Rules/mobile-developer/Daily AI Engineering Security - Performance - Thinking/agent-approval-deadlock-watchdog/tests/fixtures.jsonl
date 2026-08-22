@@ -1,0 +1,5 @@
+{"ts":"2026-08-21T09:00:00+07:00","type":"requested","request_id":"ok-1","agent_id":"main","approval_route":"desktop"}
+{"ts":"2026-08-21T09:00:02+07:00","type":"surfaced","request_id":"ok-1"}
+{"ts":"2026-08-21T09:00:05+07:00","type":"acknowledged","request_id":"ok-1"}
+{"ts":"2026-08-21T09:00:08+07:00","type":"approved","request_id":"ok-1"}
+{"ts":"2026-08-21T09:01:00+07:00","type":"requested","request_id":"hidden-1","agent_id":"child-1","parent_agent_id":"main","approval_route":"parent-proxy"}

@@ -1,0 +1,61 @@
+{
+  "version": 1,
+  "effect_categories": [
+    "read-only",
+    "internal-local",
+    "simulated",
+    "external-reversible",
+    "external-communicative",
+    "external-publishing",
+    "financial",
+    "security-sensitive",
+    "irreversible"
+  ],
+  "simulation_modes": [
+    "provider-dry-run",
+    "provider-validate-only",
+    "sandbox",
+    "test-tenant",
+    "fixture",
+    "mock",
+    "simulation-unavailable"
+  ],
+  "approval_required_categories": [
+    "external-communicative",
+    "external-publishing",
+    "financial",
+    "security-sensitive",
+    "irreversible"
+  ],
+  "approval_required_risk_tags": [
+    "production-mutation",
+    "production-deployment",
+    "destructive",
+    "secret-change",
+    "security-control-change",
+    "billing",
+    "public-audience",
+    "real-recipient"
+  ],
+  "independent_review_required_categories": [
+    "external-communicative",
+    "external-publishing",
+    "financial",
+    "security-sensitive",
+    "irreversible"
+  ],
+  "independent_review_required_risk_tags": [
+    "production-mutation",
+    "production-deployment",
+    "destructive",
+    "billing",
+    "public-audience",
+    "real-recipient"
+  ],
+  "simulation_unavailable_requires_approval": true,
+  "unknown_fields_block": true,
+  "max_simulation_transient_retries": 1,
+  "live_retry_default": 0,
+  "require_request_fingerprint": true,
+  "require_post_live_verification": true
+}

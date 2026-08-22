@@ -1,0 +1,10 @@
+{
+  "trace_id": "trace-demo-001",
+  "reviewer_id": "observability-reviewer",
+  "status": "verified",
+  "findings": [],
+  "evidence_refs": [
+    "artifacts/trace-validation.json",
+    "artifacts/test-report.xml"
+  ]
+}

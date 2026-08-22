@@ -1,0 +1,35 @@
+{
+  "policy_version": "1.0",
+  "require_plan_fingerprint": true,
+  "require_all_changed_files_mapped": true,
+  "require_all_plan_items_accounted_for": true,
+  "allow_unmapped_generated_files": false,
+  "max_changed_files_per_plan_item": 20,
+  "high_risk_categories": [
+    "breaking-api",
+    "database-schema",
+    "production-config",
+    "security-control",
+    "infrastructure",
+    "secret-change",
+    "data-deletion",
+    "force-push",
+    "irreversible-migration",
+    "large-dependency-upgrade"
+  ],
+  "approval_required_categories": [
+    "breaking-api",
+    "database-schema",
+    "production-config",
+    "security-control",
+    "infrastructure",
+    "secret-change",
+    "data-deletion",
+    "force-push",
+    "irreversible-migration",
+    "large-dependency-upgrade"
+  ],
+  "require_independent_review_for_high_risk": true,
+  "max_transient_retries": 1,
+  "final_statuses": ["verified", "blocked", "approval-required", "review-required"]
+}

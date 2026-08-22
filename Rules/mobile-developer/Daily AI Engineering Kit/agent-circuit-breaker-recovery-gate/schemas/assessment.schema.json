@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["status", "target", "findings", "verification", "remaining_risks"],
+  "properties": {
+    "status": {"enum": ["pass", "fail", "blocked", "needs-approval"]},
+    "target": {"type": "string", "minLength": 1},
+    "findings": {"type": "array", "items": {"type": "object", "required": ["finding", "evidence", "risk", "recommendation"], "properties": {"finding": {"type": "string"}, "evidence": {"type": "array", "items": {"type": "string"}}, "risk": {"enum": ["low", "medium", "high", "critical"]}, "recommendation": {"type": "string"}}}},
+    "verification": {"type": "object", "required": ["open_state_tested", "half_open_tested", "recovery_tested", "fallback_verified"], "properties": {"open_state_tested": {"type": "boolean"}, "half_open_tested": {"type": "boolean"}, "recovery_tested": {"type": "boolean"}, "fallback_verified": {"type": "boolean"}}},
+    "remaining_risks": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": false
+}

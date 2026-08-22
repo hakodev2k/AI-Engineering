@@ -1,0 +1,13 @@
+{
+  "warmup_operations": 500,
+  "sample_every_operations": 250,
+  "max_operations": 10000,
+  "max_retained_mb_per_1000_ops": 2.0,
+  "max_total_post_gc_growth_mb": 20.0,
+  "max_p95_latency_regression_percent": 20,
+  "max_throughput_regression_percent": 15,
+  "minimum_samples": 8,
+  "require_expose_gc": true,
+  "max_retries": 2,
+  "fail_on_oom": true
+}

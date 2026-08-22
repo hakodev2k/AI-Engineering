@@ -1,0 +1,25 @@
+version: 1
+trusted_instruction_paths:
+  - AGENTS.md
+  - .ai/instructions.md
+trusted_roots:
+  - .
+untrusted_patterns:
+  - '**/node_modules/**'
+  - '**/vendor/**'
+  - '**/dist/**'
+  - '**/build/**'
+  - '**/*.log'
+  - '**/fixtures/**'
+  - '**/snapshots/**'
+  - '**/generated/**'
+  - '**/.cache/**'
+suspicious_instruction_patterns:
+  - '(?i)ignore (all|any|the) previous instructions'
+  - '(?i)reveal|print|dump.*(secret|token|password|credential)'
+  - '(?i)disable|bypass.*(security|approval|validation|guard)'
+  - '(?i)run|execute.*(curl|wget|powershell|bash|sh).*(http|https)'
+  - '(?i)force push|git reset --hard|delete.*production'
+max_file_bytes: 1048576
+fail_on_suspicious_untrusted_content: true
+require_approval_for_new_instruction_source: true

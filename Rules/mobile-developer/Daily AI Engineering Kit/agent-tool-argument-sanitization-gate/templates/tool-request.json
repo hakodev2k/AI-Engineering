@@ -1,0 +1,8 @@
+{
+  "tool": "shell",
+  "arguments": {
+    "command": "git status --short"
+  },
+  "intent": "Inspect repository working tree without mutation",
+  "environment": "development"
+}

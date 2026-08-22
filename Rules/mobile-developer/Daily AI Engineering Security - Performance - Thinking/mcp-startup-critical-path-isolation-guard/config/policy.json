@@ -1,0 +1,44 @@
+{
+  "version": 1,
+  "core_ready_slo_ms": 2000,
+  "core_ready_regression_percent": 10,
+  "max_parallel_initializers": 4,
+  "default_required_timeout_ms": 5000,
+  "default_background_timeout_ms": 8000,
+  "default_on_demand_timeout_ms": 10000,
+  "max_retries_per_server": 1,
+  "retry_backoff_ms": 1000,
+  "failure_cooldown_ms": 60000,
+  "fail_core_when_required_server_fails": true,
+  "allow_degraded_ready": true,
+  "optional_servers_may_block_core_ready": false,
+  "startup_classes": ["required", "background", "on_demand", "disabled"],
+  "metrics": [
+    "process_start_ms",
+    "initialize_ms",
+    "auth_ms",
+    "discover_ms",
+    "core_ready_ms",
+    "first_prompt_accepted_ms",
+    "first_useful_turn_ms",
+    "retry_count",
+    "timeout_count"
+  ],
+  "servers": {
+    "example-required": {
+      "class": "required",
+      "timeout_ms": 5000,
+      "capabilities": ["required-example-tool"]
+    },
+    "example-background": {
+      "class": "background",
+      "timeout_ms": 8000,
+      "capabilities": ["optional-example-tool"]
+    },
+    "example-on-demand": {
+      "class": "on_demand",
+      "timeout_ms": 10000,
+      "capabilities": ["rare-example-tool"]
+    }
+  }
+}

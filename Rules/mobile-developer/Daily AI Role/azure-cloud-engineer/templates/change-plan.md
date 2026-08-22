@@ -1,0 +1,15 @@
+# Azure Change Plan
+- Change / owner:
+- Environment / subscription:
+- Objective:
+- Resources affected:
+- Dependencies:
+- Expected IaC plan/what-if:
+- Blast radius:
+- Baseline health:
+- Steps:
+- Rollback trigger and steps:
+- Human approvals:
+- Validation:
+- Monitoring window:
+- Residual risk / follow-up:

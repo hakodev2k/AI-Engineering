@@ -1,0 +1,11 @@
+{
+  "enabled": true,
+  "min_payload_bytes": 512,
+  "eligible_read_only_tools": [],
+  "require_explicit_read_only_annotation": true,
+  "never_elide_errors": true,
+  "never_elide_side_effecting_tools": true,
+  "invalidate_visibility_on_epoch_change": true,
+  "marker_template": "[tool-result-reuse] Fresh execution returned byte-identical output previously shown in this active context epoch. sha256={sha256} bytes={bytes}.",
+  "max_marker_ratio": 0.5
+}

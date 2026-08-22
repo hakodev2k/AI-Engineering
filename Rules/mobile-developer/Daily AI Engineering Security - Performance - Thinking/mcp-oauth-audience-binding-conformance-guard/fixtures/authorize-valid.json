@@ -1,0 +1,7 @@
+{
+  "response_type": "code",
+  "client_id": "test-client",
+  "redirect_uri": "https://client.example.test/callback",
+  "resource": "https://mcp.example.test/mcp",
+  "scope": "mcp.tools.invoke"
+}

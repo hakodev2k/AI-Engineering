@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rollout-contract.schema.json",
+  "title": "Feature Flag Rollout Contract",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["flag_key", "environment", "risk_level", "status", "requested_percent", "stages", "checks", "guardrails", "rollback"],
+  "properties": {
+    "flag_key": {"type": "string", "minLength": 1},
+    "provider": {"type": "string"},
+    "environment": {"type": "string", "minLength": 1},
+    "risk_level": {"enum": ["low", "medium", "high"]},
+    "status": {"enum": ["planned", "ready", "blocked", "needs-approval", "canary", "expanding", "rolled-back", "verified"]},
+    "requested_percent": {"type": "number", "exclusiveMinimum": 0, "maximum": 100},
+    "stages": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["percent", "observation_minutes"],
+        "properties": {
+          "percent": {"type": "number", "exclusiveMinimum": 0, "maximum": 100},
+          "observation_minutes": {"type": "integer", "minimum": 1}
+        }
+      }
+    },
+    "checks": {"type": "object"},
+    "guardrails": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["name", "operator", "threshold", "evidence"],
+        "properties": {
+          "name": {"type": "string", "minLength": 1},
+          "operator": {"enum": ["<", "<=", ">", ">=", "==", "!="]},
+          "threshold": {},
+          "evidence": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "rollback": {
+      "type": "object",
+      "required": ["trigger", "action", "verification"],
+      "properties": {
+        "trigger": {"type": "string", "minLength": 1},
+        "action": {"type": "string", "minLength": 1},
+        "verification": {"type": "string", "minLength": 1}
+      }
+    },
+    "approval_reasons": {"type": "array", "items": {"type": "string"}},
+    "approval": {
+      "type": "object",
+      "properties": {
+        "approved": {"type": "boolean"},
+        "approved_by": {"type": "string"},
+        "approved_at": {"type": "string"}
+      }
+    },
+    "open_questions": {"type": "array", "items": {"type": "string"}}
+  }
+}

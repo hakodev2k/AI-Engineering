@@ -1,0 +1,12 @@
+# Failure Learning Record
+- Failure:
+- Impact:
+- Evidence:
+- Root cause:
+- Why controls did not prevent/detect it:
+- Immediate correction:
+- Lesson:
+- Process improvement:
+- Future prevention:
+- Owner / due date:
+- Verification of prevention:

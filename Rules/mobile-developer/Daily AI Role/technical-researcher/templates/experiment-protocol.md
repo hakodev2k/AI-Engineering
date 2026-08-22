@@ -1,0 +1,16 @@
+# Experiment Protocol
+- Hypothesis:
+- Decision metric:
+- Baseline:
+- Environment:
+- Dataset/workload:
+- Controlled variables:
+- Run count:
+- Tolerance:
+- Commands/config:
+- Safety constraints:
+- Approval:
+- Stop condition:
+- Raw output location:
+- Analysis method:
+- Known confounders:

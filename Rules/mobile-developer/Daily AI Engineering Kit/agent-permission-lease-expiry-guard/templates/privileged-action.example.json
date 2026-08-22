@@ -1,0 +1,8 @@
+{
+  "operation_id":"deploy-api-v42",
+  "actor_id":"release-agent",
+  "capability":"deployment.write",
+  "resource":"service:orders-api:production",
+  "risk_category":"production-write",
+  "action_fingerprint":"0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+}

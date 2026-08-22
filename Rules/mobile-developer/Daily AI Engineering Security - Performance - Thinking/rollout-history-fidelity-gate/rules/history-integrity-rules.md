@@ -1,0 +1,14 @@
+# History Integrity Rules
+- Transformations MUST define one canonical source of truth.
+- Every canonical source item MUST map to exactly the permitted target multiplicity.
+- Migration MUST NOT report success when any canonical item is skipped, truncated, unparsed, or unexplained.
+- Dry-run SHOULD execute the same scan/classification path as apply.
+- Oversized records MUST be surfaced explicitly; they MUST NOT be silently discarded.
+- Compatibility aliases MUST NOT become extra canonical user/model items unless explicitly required.
+- Projection cursors MUST be validated against both byte boundary and source ordinal before incremental resume.
+- A cursor mismatch MUST trigger BLOCK or deterministic rebuild from canonical source.
+- Destructive replacement MUST require a recoverable backup and verified target first.
+- Fidelity verification MUST compare fingerprints/multiplicity/order, not only record counts.
+- The implementing component MUST NOT be the only verifier.
+- Retries MUST be bounded to one transient I/O retry; deterministic mismatch MUST stop.
+- Success evidence MUST distinguish Implemented, Measured, and Verified.

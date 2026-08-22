@@ -1,0 +1,28 @@
+{
+  "status": "pass",
+  "provider": "example-provider",
+  "findings": [
+    {
+      "finding": "Webhook verification uses raw request bytes, signed timestamp, constant-time comparison, replay deduplication, and a bounded dual-secret rotation window.",
+      "evidence": [
+        "valid signed fixture accepted",
+        "modified body and invalid signature rejected",
+        "timestamp older than freshness window rejected",
+        "second delivery of the same authenticated event produced no duplicate protected effect",
+        "current and previous signing secrets accepted during bounded rotation overlap"
+      ],
+      "risk": "low",
+      "recommendation": "Keep negative, replay, and rotation tests in the release gate."
+    }
+  ],
+  "verification": {
+    "valid_signature_accepted": true,
+    "invalid_signature_rejected": true,
+    "stale_timestamp_rejected": true,
+    "replay_rejected": true,
+    "rotation_tested": true
+  },
+  "remaining_risks": [
+    "Re-verify the signing contract when the provider changes signature versions, canonicalization, or header semantics."
+  ]
+}

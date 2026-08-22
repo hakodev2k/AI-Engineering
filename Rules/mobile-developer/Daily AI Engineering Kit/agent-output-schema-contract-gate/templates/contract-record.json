@@ -1,0 +1,30 @@
+{
+  "contract_name": "example-agent-result",
+  "risk": "high",
+  "producer": "example-producer-agent",
+  "candidate_author": "implementation-agent",
+  "baseline": {
+    "schema_path": "contracts/example-agent-result.v1.schema.json",
+    "schema_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+    "revision": "baseline-revision",
+    "contract_version": "1.0"
+  },
+  "candidate": {
+    "schema_path": "contracts/example-agent-result.v1.schema.json",
+    "schema_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+    "revision": "candidate-revision",
+    "contract_version": "1.1"
+  },
+  "consumers": [
+    {"name": "example-consumer", "mandatory_replay": true}
+  ],
+  "replay_checks": [
+    {
+      "consumer": "example-consumer",
+      "status": "not-run",
+      "evidence": "artifacts/example-consumer-replay.txt",
+      "candidate_schema_sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  ],
+  "approval": null
+}

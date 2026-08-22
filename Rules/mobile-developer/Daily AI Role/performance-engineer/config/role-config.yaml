@@ -1,0 +1,20 @@
+role: performance-engineer
+priority:
+  p0: active production performance degradation causing material user/business impact
+  p1: release blocker or high-risk regression
+  p2: capacity, scalability, or important optimization work
+  p3: routine tuning and research
+retries:
+  max_failed_experiment_cycles: 2
+approval_required:
+  - production_stress_test
+  - sensitive_traffic_replay
+  - disable_safety_control
+  - accept_material_regression
+  - correctness_security_reliability_tradeoff
+verification:
+  independent_for_high_impact: true
+benchmark:
+  preserve_raw_evidence: true
+  require_baseline: true
+  require_workload_contract: true

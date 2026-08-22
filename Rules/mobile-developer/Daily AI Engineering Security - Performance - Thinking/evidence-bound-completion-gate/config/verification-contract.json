@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "max_fix_attempts": 3,
+  "evidence_max_age_seconds": 1800,
+  "risk_levels": {
+    "low": ["focused-tests"],
+    "medium": ["focused-tests", "typecheck"],
+    "high": ["focused-tests", "typecheck", "canonical-build"]
+  },
+  "checks": {
+    "focused-tests": {"command": "dotnet test --no-restore", "required_exit_code": 0},
+    "typecheck": {"command": "dotnet build --no-restore", "required_exit_code": 0},
+    "canonical-build": {"command": "dotnet test", "required_exit_code": 0}
+  }
+}

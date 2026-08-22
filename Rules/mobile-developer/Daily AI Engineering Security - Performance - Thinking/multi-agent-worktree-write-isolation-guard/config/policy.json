@@ -1,0 +1,48 @@
+{
+  "version": 1,
+  "writeIsolation": {
+    "requireDedicatedWorktree": true,
+    "requireDedicatedBranch": true,
+    "requireCleanStart": true,
+    "requirePreWriteCheck": true,
+    "allowSharedWritePaths": false,
+    "allowPromptOnlyCwdBinding": false
+  },
+  "ownership": {
+    "mode": "exclusive-path-prefix",
+    "requireExplicitOwnedPaths": true,
+    "maxConcurrentWritersPerPath": 1
+  },
+  "git": {
+    "requireExpectedRepoRoot": true,
+    "requireExpectedBranch": true,
+    "requireBaseAncestor": true,
+    "allowDetachedHead": false
+  },
+  "retry": {
+    "concurrentModificationRetries": 1,
+    "preWriteCheckRetries": 0,
+    "handoffVerificationRetries": 1
+  },
+  "handoff": {
+    "requiredFields": [
+      "task_id",
+      "agent_id",
+      "repo_root",
+      "worktree",
+      "branch",
+      "base_sha",
+      "head_sha",
+      "changed_paths",
+      "tests",
+      "ownership_status",
+      "verification_status"
+    ]
+  },
+  "merge": {
+    "requireIndependentVerifier": true,
+    "requireOwnershipPass": true,
+    "requireAncestryPass": true,
+    "requireTestsPassOrExplicitWaiver": true
+  }
+}

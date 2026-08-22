@@ -1,0 +1,6 @@
+[
+  {"name":"productive","expect":"continue","events":[{"step":1,"tool":"search","args":{"q":"a"},"status":"ok","progress":true},{"step":2,"tool":"fetch","args":{"id":1},"status":"ok","progress":true}]},
+  {"name":"repeat-action","expect":"terminate","events":[{"step":1,"tool":"lookup","args":{"id":1},"status":"ok","progress":false},{"step":2,"tool":"lookup","args":{"id":1},"status":"ok","progress":false},{"step":3,"tool":"lookup","args":{"id":1},"status":"ok","progress":false}]},
+  {"name":"repeat-error","expect":"recover","events":[{"step":1,"tool":"write","args":{"x":1},"status":"error","progress":false,"error_class":"validation"},{"step":2,"tool":"write","args":{"x":1},"status":"error","progress":false,"error_class":"validation"}]},
+  {"name":"transient-bounded","expect":"recover","events":[{"step":1,"tool":"api","args":{"x":1},"status":"error","progress":false,"error_class":"timeout"},{"step":2,"tool":"api","args":{"x":1},"status":"error","progress":false,"error_class":"timeout"},{"step":3,"tool":"api","args":{"x":1},"status":"error","progress":false,"error_class":"timeout"}]}
+]

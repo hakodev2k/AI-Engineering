@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "OracleClaims",
+  "type": "array",
+  "minItems": 1,
+  "items": {
+    "type": "object",
+    "required": ["id", "behavior", "expected", "risk", "source", "source_type", "independent", "evidence"],
+    "properties": {
+      "id": {"type": "string", "minLength": 1},
+      "behavior": {"type": "string", "minLength": 1},
+      "expected": {},
+      "risk": {"enum": ["low", "medium", "high", "critical"]},
+      "source": {"type": "string", "minLength": 1},
+      "source_type": {"type": "string", "minLength": 1},
+      "independent": {"type": "boolean"},
+      "evidence": {"type": "array", "items": {"type": "string", "minLength": 1}, "minItems": 1},
+      "implementation_symbols": {"type": "array", "items": {"type": "string"}, "default": []},
+      "tags": {"type": "array", "items": {"type": "string"}, "default": []}
+    },
+    "additionalProperties": false
+  }
+}

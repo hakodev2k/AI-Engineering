@@ -1,0 +1,14 @@
+{
+  "tool": "shell",
+  "action": "git push --force-with-lease origin feature-x",
+  "target": "origin/feature-x",
+  "reason": "Rewrite feature branch after an approved rebase",
+  "environment": "development",
+  "writes_data": true,
+  "touches_secrets": false,
+  "touches_production": false,
+  "changes_permissions": false,
+  "changes_infrastructure": false,
+  "mutates_database": false,
+  "rewrites_git_history": true
+}

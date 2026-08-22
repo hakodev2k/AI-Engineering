@@ -1,0 +1,2 @@
+# Workflow: Prompt Change Review
+**Trigger:** material modification to shared prompt. Classify behavioral surface and affected consumers; identify dependencies and compatibility risk; run targeted regression plus critical suite; obtain domain/safety review when scope requires; document change record and rollback; release only after owner approval. Breaking output-contract changes require migration plan and explicit consumer acknowledgement. DoD: compatibility disposition and evidence complete.

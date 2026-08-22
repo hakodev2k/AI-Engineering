@@ -1,0 +1,9 @@
+role: release-engineer
+retry_limit: 2
+risk_levels: [low, medium, high, critical]
+environments: [dev, test, staging, production]
+require_immutable_artifacts: true
+require_production_approval: true
+require_rollback_plan_for_high_risk: true
+release_statuses: [intake, assessing, blocked, ready, approved, deploying, verifying, completed, rolled-back, failed]
+default_parallel_reviews: [evidence, provenance, dependencies, rollback]

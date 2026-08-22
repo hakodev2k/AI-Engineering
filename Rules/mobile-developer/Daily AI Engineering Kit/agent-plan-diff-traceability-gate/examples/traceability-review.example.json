@@ -1,0 +1,12 @@
+{
+  "version": "1.0",
+  "reviewer": "verification-agent",
+  "actor": "implementation-agent",
+  "plan_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "manifest_fingerprint": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+  "verdict": "approve",
+  "findings": [
+    "Every changed path is mapped to an authorized plan item.",
+    "Acceptance evidence is current and no orphan diff remains."
+  ]
+}

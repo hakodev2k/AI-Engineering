@@ -1,0 +1,18 @@
+{
+  "action_id": "action-001",
+  "plan_revision": 1,
+  "simulation_mode": "sandbox",
+  "simulation_target": "sandbox-recipient@example.invalid",
+  "request_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "status": "passed",
+  "observed_effects": [
+    {
+      "kind": "message-created",
+      "target": "sandbox-recipient@example.invalid",
+      "count": 1
+    }
+  ],
+  "unexpected_effects": [],
+  "executor_id": "implementation-agent",
+  "evidence": ["sandbox request accepted", "real-recipient counter unchanged"]
+}

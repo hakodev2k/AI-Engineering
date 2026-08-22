@@ -1,0 +1,13 @@
+{
+  "tenant": "tenant-a",
+  "tenant_source": "header",
+  "tenant_source_trusted": false,
+  "operation": "orders:update",
+  "kind": "update",
+  "read_tenant_scoped": true,
+  "write_tenant_match_verified": false,
+  "cross_tenant": true,
+  "exception_approved": false,
+  "uses_query_filter_bypass": true,
+  "tenant_from_request_body": true
+}

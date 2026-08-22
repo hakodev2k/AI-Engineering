@@ -1,0 +1,39 @@
+{
+  "version": 1,
+  "identity": {
+    "hash": "sha256",
+    "include_schema_digest": true,
+    "include_connection_generation": true,
+    "normalize_remote_origin": true,
+    "stdio_fingerprint_fields": ["command", "args", "cwd"]
+  },
+  "registration": {
+    "reject_duplicate_canonical_id": true,
+    "reject_ambiguous_display_alias": true,
+    "reject_missing_instance_id": true,
+    "reject_schema_change_without_generation_change": true
+  },
+  "approval": {
+    "bind_to_canonical_id": true,
+    "bind_to_schema_digest": true,
+    "bind_to_connection_generation": true,
+    "invalidate_on_origin_change": true,
+    "invalidate_on_schema_change": true
+  },
+  "dispatch": {
+    "require_live_generation_match": true,
+    "require_registry_origin_match": true,
+    "fail_closed_on_ambiguity": true
+  },
+  "audit": {
+    "include_display_alias": true,
+    "include_canonical_id": true,
+    "include_origin_fingerprint": true,
+    "include_generation": true,
+    "include_schema_digest": true
+  },
+  "limits": {
+    "max_registry_entries": 4096,
+    "max_alias_candidates": 1
+  }
+}

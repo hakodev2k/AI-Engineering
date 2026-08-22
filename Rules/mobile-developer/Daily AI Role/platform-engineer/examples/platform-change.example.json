@@ -1,0 +1,14 @@
+{
+  "id": "PLAT-20260817-001",
+  "title": "Self-service preview environment provisioning",
+  "user": "application-developer",
+  "problem": "Teams wait on manual tickets to create short-lived preview environments.",
+  "impact": "high",
+  "contract_change": "Add create/delete preview-environment operations with TTL and ownership metadata.",
+  "dependencies": ["cloud-account", "dns", "secrets-policy"],
+  "risk": "medium",
+  "rollback": "Disable entry point and remove only environments created by the new contract.",
+  "success_metric": "p90 preview environment ready time under 10 minutes",
+  "owner": "platform-team",
+  "state": "design"
+}

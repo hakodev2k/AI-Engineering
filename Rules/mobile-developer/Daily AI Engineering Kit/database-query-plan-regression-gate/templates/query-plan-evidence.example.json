@@ -1,0 +1,25 @@
+{
+  "query_id": "orders-by-customer",
+  "engine": "sqlserver",
+  "captured_at": "2026-08-17T12:00:00+00:00",
+  "dataset_profile": "staging-10m-orders-customer-p95",
+  "source_revision": "0123456789abcdef",
+  "environment": "staging",
+  "metrics": {
+    "duration_ms": 120,
+    "cpu_ms": 80,
+    "logical_reads": 1500,
+    "estimated_rows": 1000,
+    "actual_rows": 950
+  },
+  "operators": {
+    "full_scan_count": 0,
+    "sort_count": 1,
+    "hash_count": 0,
+    "key_lookup_count": 1,
+    "spill_count": 0
+  },
+  "notes": [
+    "Capture original plan artifact separately for review."
+  ]
+}

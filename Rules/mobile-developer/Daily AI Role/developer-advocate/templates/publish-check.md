@@ -1,0 +1,11 @@
+# Publication Check
+- [ ] Technical claims verified
+- [ ] Versions/prerequisites explicit
+- [ ] Sample/demo executed
+- [ ] No secrets/confidential data
+- [ ] Permissions are least-privilege or trade-off explained
+- [ ] Links checked
+- [ ] Known limitations stated
+- [ ] Independent reviewer passed
+- [ ] Required approvals captured
+- [ ] Correction/rollback communication owner identified for high-visibility assets

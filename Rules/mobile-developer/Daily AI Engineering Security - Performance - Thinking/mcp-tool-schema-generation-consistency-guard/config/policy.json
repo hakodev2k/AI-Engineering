@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "refresh": {
+    "compile_before_publish": true,
+    "publish_atomically": true,
+    "max_retry_count": 2,
+    "preserve_last_good_generation_on_failure": true
+  },
+  "dispatch": {
+    "pin_generation": true,
+    "pin_output_validator": true,
+    "pin_task_metadata": true
+  },
+  "validation": {
+    "fail_closed_when_schema_expected_but_validator_missing": true,
+    "reject_generation_mismatch": true,
+    "validate_structured_content": true
+  },
+  "retention": {
+    "keep_generation_until_inflight_zero": true,
+    "max_retained_generations": 8
+  },
+  "telemetry": {
+    "record_generation_id": true,
+    "record_refresh_outcome": true,
+    "record_validation_outcome": true
+  }
+}

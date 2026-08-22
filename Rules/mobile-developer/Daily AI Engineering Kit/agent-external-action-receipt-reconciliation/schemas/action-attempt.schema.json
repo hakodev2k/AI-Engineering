@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "External Action Attempt",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version","attempt_id","task_id","action_name","risk","target_system","target_resource","idempotency_key","request_fingerprint","planned_at_utc","dangerous_action"],
+  "properties": {
+    "version": {"const": "1.0"},
+    "attempt_id": {"type": "string", "minLength": 1},
+    "task_id": {"type": "string", "minLength": 1},
+    "action_name": {"type": "string", "minLength": 1},
+    "risk": {"enum": ["low","medium","high","critical"]},
+    "target_system": {"type": "string", "minLength": 1},
+    "target_resource": {"type": "string", "minLength": 1},
+    "idempotency_key": {"type": "string", "minLength": 8},
+    "request_fingerprint": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "planned_at_utc": {"type": "string", "format": "date-time"},
+    "dangerous_action": {"type": "boolean"},
+    "approval_fingerprint": {"type": ["string","null"], "pattern": "^[a-f0-9]{64}$"}
+  }
+}

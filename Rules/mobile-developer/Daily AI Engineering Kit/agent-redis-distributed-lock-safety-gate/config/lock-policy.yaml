@@ -1,0 +1,17 @@
+version: 1
+backend: redis
+lock_prefix: ai-lock
+acquire_timeout_ms: 5000
+lease_ms: 30000
+renew_interval_ms: 10000
+max_renewals: 6
+max_retries: 3
+retry_backoff_ms: [100, 300, 900]
+require_owner_token: true
+require_fencing_token: true
+allow_force_unlock: false
+approval_required_for:
+  - changing_lock_scope
+  - increasing_lease_above_120000_ms
+  - disabling_fencing
+  - production_force_unlock

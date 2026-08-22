@@ -1,0 +1,8 @@
+{
+  "query_id": "orders-by-customer",
+  "cases": [
+    {"name": "small-customer", "params": {"customer": "small"}, "expected_rows": 10},
+    {"name": "typical-customer", "params": {"customer": "medium"}, "expected_rows": 1000},
+    {"name": "large-customer", "params": {"customer": "large"}, "expected_rows": 100000}
+  ]
+}

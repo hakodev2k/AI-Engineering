@@ -1,0 +1,16 @@
+[
+  {
+    "session_id": "feature-orders-20260817-01",
+    "actor_id": "agent-implementation-01",
+    "branch": "agent/feature-orders-20260817-01",
+    "worktree_path": "/workspace/service-wt-feature-orders-20260817-01",
+    "changed_paths": ["src/orders/OrderService.cs"]
+  },
+  {
+    "session_id": "feature-billing-20260817-02",
+    "actor_id": "agent-implementation-02",
+    "branch": "agent/feature-billing-20260817-02",
+    "worktree_path": "/workspace/service-wt-feature-billing-20260817-02",
+    "changed_paths": ["src/billing/BillingService.cs"]
+  }
+]

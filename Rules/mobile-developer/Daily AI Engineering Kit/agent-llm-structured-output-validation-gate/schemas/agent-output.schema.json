@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["status", "findings", "evidence", "verification"],
+  "properties": {
+    "status": {"enum": ["verified", "failed", "needs_approval", "inconclusive"]},
+    "findings": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["id", "claim", "confidence"], "properties": {"id": {"type": "string", "minLength": 1}, "claim": {"type": "string", "minLength": 1}, "confidence": {"type": "number", "minimum": 0, "maximum": 1}}}},
+    "evidence": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["findingId", "source", "detail"], "properties": {"findingId": {"type": "string"}, "source": {"type": "string"}, "detail": {"type": "string"}}}},
+    "verification": {"type": "object", "additionalProperties": false, "required": ["schemaValid", "semanticChecksPassed"], "properties": {"schemaValid": {"type": "boolean"}, "semanticChecksPassed": {"type": "boolean"}}},
+    "errors": {"type": "array", "items": {"type": "string"}}
+  }
+}

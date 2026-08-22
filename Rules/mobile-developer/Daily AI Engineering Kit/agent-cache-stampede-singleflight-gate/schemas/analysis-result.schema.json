@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Cache Stampede Analysis Result",
+  "type": "object",
+  "required": ["status", "findings", "verification"],
+  "properties": {
+    "status": {"enum": ["pass", "fail", "needs-approval"]},
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["key", "risk", "evidence", "recommended_action"],
+        "properties": {
+          "key": {"type": "string"},
+          "risk": {"enum": ["low", "medium", "high", "critical"]},
+          "evidence": {"type": "array", "items": {"type": "string"}},
+          "recommended_action": {"type": "string"}
+        }
+      }
+    },
+    "verification": {
+      "type": "object",
+      "required": ["singleflight", "bounded_wait", "failure_fallback"],
+      "properties": {
+        "singleflight": {"type": "boolean"},
+        "bounded_wait": {"type": "boolean"},
+        "failure_fallback": {"type": "boolean"}
+      }
+    }
+  }
+}

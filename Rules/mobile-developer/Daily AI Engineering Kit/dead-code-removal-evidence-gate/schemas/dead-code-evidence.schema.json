@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "dead-code-evidence.schema.json",
+  "title": "Dead Code Evidence Record",
+  "type": "object",
+  "required": [
+    "candidate",
+    "repository",
+    "status",
+    "verification_status",
+    "channels",
+    "review",
+    "approvals",
+    "artifacts",
+    "remaining_risks"
+  ],
+  "properties": {
+    "candidate": {
+      "type": "object",
+      "required": ["identifier", "kind", "path", "visibility", "exposure"],
+      "properties": {
+        "identifier": {"type": "string", "minLength": 1},
+        "kind": {"type": "string", "minLength": 1},
+        "path": {"type": "string", "minLength": 1},
+        "visibility": {"type": "string", "enum": ["private", "internal", "public", "unknown"]},
+        "exposure": {"type": "string", "enum": ["private", "internal", "public", "external-contract", "runtime-discovered"]}
+      },
+      "additionalProperties": true
+    },
+    "repository": {
+      "type": "object",
+      "required": ["root", "revision"],
+      "properties": {
+        "root": {"type": "string", "minLength": 1},
+        "revision": {"type": "string", "minLength": 1}
+      }
+    },
+    "status": {"type": "string"},
+    "verification_status": {"type": "string"},
+    "channels": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["status", "evidence"],
+        "properties": {
+          "status": {"type": "string", "enum": ["clear", "reference-found", "unknown", "not-applicable"]},
+          "evidence": {"type": "array", "items": {"type": "string"}},
+          "limitations": {"type": "array", "items": {"type": "string"}}
+        }
+      }
+    },
+    "review": {
+      "type": "object",
+      "required": ["decision", "reviewer", "independent"],
+      "properties": {
+        "decision": {"type": "string", "enum": ["pending", "accepted", "revise", "blocked"]},
+        "reviewer": {"type": "string"},
+        "independent": {"type": "boolean"},
+        "notes": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "approvals": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["action", "required", "approved"],
+        "properties": {
+          "action": {"type": "string"},
+          "required": {"type": "boolean"},
+          "approved": {"type": "boolean"},
+          "approved_by": {"type": "string"},
+          "evidence": {"type": "string"}
+        }
+      }
+    },
+    "artifacts": {
+      "type": "object",
+      "properties": {
+        "pre_removal_scan": {"type": "string"},
+        "post_removal_scan": {"type": "string"},
+        "build_test_evidence": {"type": "array", "items": {"type": "string"}}
+      },
+      "additionalProperties": true
+    },
+    "remaining_risks": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": true
+}

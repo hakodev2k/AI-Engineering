@@ -1,0 +1,14 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "title":"TimeSafetyReview",
+  "type":"object",
+  "required":["reviewer_id","decision_fingerprint","status","findings","human_approval_confirmed"],
+  "properties":{
+    "reviewer_id":{"type":"string","minLength":1},
+    "decision_fingerprint":{"type":"string","pattern":"^[a-f0-9]{64}$"},
+    "status":{"enum":["approved","revalidation-required","blocked"]},
+    "findings":{"type":"array","items":{"type":"string"}},
+    "human_approval_confirmed":{"type":"boolean"}
+  },
+  "additionalProperties":false
+}

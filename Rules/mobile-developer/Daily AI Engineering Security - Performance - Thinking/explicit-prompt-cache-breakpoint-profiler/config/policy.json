@@ -1,0 +1,10 @@
+{
+  "minimum_cache_hit_ratio": 0.70,
+  "minimum_comparable_requests": 3,
+  "max_breakpoint_candidates": 4,
+  "require_quality_regression_check": true,
+  "max_quality_regression_rate": 0.02,
+  "max_output_growth_ratio": 1.10,
+  "block_labels": ["static-required", "dynamic-required", "optional", "volatile"],
+  "sensitive_fields": ["authorization", "api_key", "token", "secret", "password"]
+}

@@ -1,0 +1,19 @@
+{
+  "request_id": "change-123",
+  "revision": 1,
+  "action_type": "production-deploy",
+  "risk_category": "production",
+  "target": "service-name",
+  "environment": "production",
+  "scope": ["service-name"],
+  "payload": {"artifact_digest": "sha256:replace-with-real-digest"},
+  "payload_fingerprint": "replace-with-64-char-sha256",
+  "action_fingerprint": "replace-with-64-char-sha256",
+  "policy_version": "1.0.0",
+  "reuse_mode": "single-use",
+  "requested_at": "2026-08-17T10:00:00Z",
+  "expires_at": "2026-08-17T10:30:00Z",
+  "required_approver_role": "release-manager",
+  "rollback_plan": "Rollback to the previously verified artifact.",
+  "evidence": ["ci://build/123", "tests://run/456"]
+}

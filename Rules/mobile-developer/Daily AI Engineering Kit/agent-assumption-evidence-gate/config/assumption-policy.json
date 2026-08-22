@@ -1,0 +1,18 @@
+{
+  "policy_version": "1.0",
+  "materiality_levels": ["low", "medium", "high", "critical"],
+  "allowed_statuses": ["proposed", "supported", "contradicted", "expired", "waived"],
+  "evidence_kinds": ["repository", "test", "build", "runtime", "log", "database", "api", "official-doc", "human-decision"],
+  "high_risk_levels": ["high", "critical"],
+  "require_independent_review_for_high_risk": true,
+  "max_revalidation_attempts": 1,
+  "default_ttl_minutes": 120,
+  "max_ttl_minutes": 1440,
+  "allow_silent_fact_promotion": false,
+  "allow_contradicted_assumption_usage": false,
+  "allow_expired_assumption_usage": false,
+  "allow_waiver_for_critical": false,
+  "require_evidence_for_supported": true,
+  "require_decision_evidence_for_waiver": true,
+  "dangerous_action_materiality_floor": "high"
+}

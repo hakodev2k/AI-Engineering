@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Lease Bound Mutation Intent",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["resource_key", "owner_id", "lease_id", "fencing_token", "scope_fingerprint", "action", "intent_fingerprint"],
+  "properties": {
+    "resource_key": {"type": "string", "minLength": 1},
+    "owner_id": {"type": "string", "minLength": 1},
+    "lease_id": {"type": "string", "minLength": 8},
+    "fencing_token": {"type": "integer", "minimum": 1},
+    "scope_fingerprint": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "action": {"type": "string", "minLength": 1},
+    "intent_fingerprint": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "approval_required": {"type": "boolean"},
+    "approval_reference": {"type": ["string", "null"]}
+  }
+}

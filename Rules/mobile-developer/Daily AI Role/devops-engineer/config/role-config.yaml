@@ -1,0 +1,31 @@
+role: devops-engineer
+version: 1
+prioritization:
+  order:
+    - production_severity
+    - security_risk
+    - user_business_impact
+    - dependency_blocking
+    - deadline_change_window
+    - cost_of_delay
+    - reversibility
+    - effort
+limits:
+  max_review_fix_cycles: 2
+  max_transient_retries: 2
+  max_recovery_branches_before_escalation: 2
+  default_poll_timeout_seconds: 600
+approvals:
+  required_for:
+    - destructive_production_change
+    - irreversible_migration
+    - broad_permission_increase
+    - security_gate_bypass
+    - critical_gate_disable
+    - production_data_delete
+    - high_or_critical_residual_risk
+quality_gates:
+  require_artifact_identity: true
+  require_fresh_verification: true
+  require_recovery_plan_for_high_risk: true
+  require_secret_hygiene: true

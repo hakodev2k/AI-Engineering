@@ -1,0 +1,2 @@
+# Alert Actionability Reviewer
+Reviews alert rules for user/SLO relevance, actionable ownership, severity, duplicate symptoms, recovery behavior, runbook clarity and historical noise. Recommends page, ticket or informational treatment. Final operational ownership remains with the service owner.

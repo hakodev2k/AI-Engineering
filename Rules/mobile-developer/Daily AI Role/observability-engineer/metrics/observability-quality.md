@@ -1,0 +1,2 @@
+# Observability Quality Metrics
+Track: critical-journey coverage; telemetry contract compliance; percentage of alerts with owner/runbook/action; false-positive and false-negative alert reviews; mean time to evidence during incidents; trace/log correlation success; dropped telemetry rate; ingestion delay; cardinality violations; telemetry cost per service or business unit; stale dashboard rate; instrumentation adoption; percentage of production changes with deployment/version context. Metrics are diagnostic and must not incentivize signal volume for its own sake.

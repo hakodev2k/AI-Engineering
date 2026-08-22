@@ -1,0 +1,14 @@
+name: incident-triage
+trigger: production-incident
+stages:
+  - collect-context
+  - analyze-evidence
+  - validate-hypotheses
+  - recommend-action
+  - verify
+retry:
+  max: 3
+  preserve_evidence: true
+approval_required:
+  - production-change
+  - data-modification

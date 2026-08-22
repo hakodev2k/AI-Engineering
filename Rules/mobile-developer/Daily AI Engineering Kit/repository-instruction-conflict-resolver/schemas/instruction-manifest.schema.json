@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Repository Instruction Manifest",
+  "type": "object",
+  "required": ["task", "targets", "sources", "statements"],
+  "properties": {
+    "task": {"type": "string", "minLength": 1},
+    "targets": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "path", "source_type", "authority", "scope", "sha256"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "path": {"type": "string", "minLength": 1},
+          "source_type": {"type": "string", "minLength": 1},
+          "authority": {"type": "integer", "minimum": 0, "maximum": 1000},
+          "scope": {"type": "string", "minLength": 1},
+          "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+        },
+        "additionalProperties": true
+      }
+    },
+    "statements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "source_id", "subject", "action", "modality", "scope", "text"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "source_id": {"type": "string", "minLength": 1},
+          "subject": {"type": "string", "minLength": 1},
+          "action": {"type": "string", "minLength": 1},
+          "modality": {"enum": ["must", "must-not", "should"]},
+          "scope": {"type": "string", "minLength": 1},
+          "text": {"type": "string", "minLength": 1},
+          "override_of": {"type": "array", "items": {"type": "string"}}
+        },
+        "additionalProperties": true
+      }
+    },
+    "human_decisions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["conflict_id", "decision", "approved_by"],
+        "properties": {
+          "conflict_id": {"type": "string"},
+          "decision": {"type": "string"},
+          "approved_by": {"type": "string"}
+        }
+      }
+    }
+  },
+  "additionalProperties": true
+}

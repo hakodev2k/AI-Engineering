@@ -1,0 +1,17 @@
+{
+  "version": "1.0.0",
+  "task_id": "task-example",
+  "implementation_owner": "implementation-agent",
+  "baseline_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "baseline_head": "0123456789abcdef0123456789abcdef01234567",
+  "allowed_paths": [
+    "src/payments/**",
+    "tests/payments/**"
+  ],
+  "forbidden_paths": [
+    ".github/**",
+    "infra/**",
+    "secrets/**"
+  ],
+  "approval_actions": []
+}
