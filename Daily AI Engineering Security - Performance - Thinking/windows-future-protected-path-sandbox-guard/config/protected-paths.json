@@ -1,0 +1,9 @@
+{
+  "protected_paths": [
+    ".git",
+    ".codex",
+    ".agents",
+    ".github/workflows"
+  ],
+  "notes": "Trusted host configuration. Paths are workspace-relative logical prefixes and apply whether or not the object exists."
+}
