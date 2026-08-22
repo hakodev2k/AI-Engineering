@@ -3,7 +3,6 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)](CONTRIBUTING.md)
 [![Repository status](https://img.shields.io/badge/status-active-2ea44f.svg)](CHANGELOG.md)
-[![Repository quality](https://github.com/hakodev2k/AI-Engineering/actions/workflows/repository-quality.yml/badge.svg)](https://github.com/hakodev2k/AI-Engineering/actions/workflows/repository-quality.yml)
 
 A practical, reusable library for building and operating AI-assisted engineering workflows. The repository brings together role definitions, engineering rules, focused skills, safety gates, and MCP/API connectors that developers select and copy into their own repositories.
 
