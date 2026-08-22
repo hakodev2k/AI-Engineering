@@ -1,0 +1,54 @@
+id: monday
+name: monday.com
+upstream:
+  - official-mcp
+  - graphql
+mcp:
+  official_url: https://mcp.monday.com/mcp
+  transport: streamable-http
+  auth:
+    - oauth2
+    - bearer-personal-api-token
+api:
+  graphql_url: https://api.monday.com/v2
+  version: 2026-07
+auth:
+  type: bearer_token
+  required_env:
+    - MONDAY_API_TOKEN
+  note: Personal tokens inherit the user's monday.com permissions; OAuth app tokens may be used by external MCP clients with explicit scopes.
+capabilities:
+  - board.read
+  - board.items.list
+  - account.search
+  - item.create
+  - item.columns.update
+  - update.list
+  - update.create
+  - workspace.list
+  - user.context.read
+  - webhook.list
+  - webhook.create
+  - webhook.delete
+risk:
+  default: READ
+  writes_require_operator_approval: true
+  destructive_disabled_by_default: true
+required_mcp_tools:
+  - get_board_info
+  - get_board_items_page
+  - search
+  - create_item
+  - change_item_column_values
+  - get_updates
+  - create_update
+  - list_workspaces
+  - get_user_context
+optional_env:
+  - MONDAY_MCP_URL
+  - MONDAY_API_URL
+  - MONDAY_API_VERSION
+  - MONDAY_TIMEOUT_MS
+  - MONDAY_APPROVAL_MODE
+  - MONDAY_APPROVED_ACTIONS
+  - MONDAY_ALLOW_DESTRUCTIVE
