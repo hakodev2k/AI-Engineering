@@ -1,0 +1,42 @@
+id: uptimerobot
+name: UptimeRobot
+upstream:
+  - rest
+mcp:
+  official_server: false
+  note: "No official UptimeRobot MCP server was found in current official documentation as of 2026-08-22."
+api:
+  base_url: https://api.uptimerobot.com/v3
+  version: v3
+auth:
+  type: bearer_api_key
+  required_env:
+    - UPTIMEROBOT_API_KEY
+  key_modes:
+    - account-specific
+    - read-only
+capabilities:
+  - monitor.list
+  - monitor.get
+  - monitor.create
+  - monitor.update
+  - monitor.delete
+  - maintenance_window.list
+  - maintenance_window.get
+  - status_page.list
+  - status_page.get
+  - integration.list
+  - integration.get
+risk:
+  default: READ
+  writes_require_operator_approval: true
+  destructive_disabled_by_default: true
+rate_limits:
+  free: 10 requests/minute
+  pro: "monitor limit * 2 requests/minute, max 5000 requests/minute"
+optional_env:
+  - UPTIMEROBOT_API_BASE_URL
+  - UPTIMEROBOT_TIMEOUT_MS
+  - UPTIMEROBOT_APPROVAL_MODE
+  - UPTIMEROBOT_APPROVED_ACTIONS
+  - UPTIMEROBOT_ALLOW_DESTRUCTIVE
