@@ -1,0 +1,40 @@
+id: elevenlabs
+name: ElevenLabs
+upstream:
+  - official-mcp
+mcp:
+  hosted_endpoint: https://api.elevenlabs.io/v1/mcp
+  local_package: elevenlabs-mcp
+  transport: stdio
+  strategy: "Use the official ElevenLabs MCP server as the only upstream transport. This connector exposes a fixed reviewed subset instead of dynamic tool discovery."
+auth:
+  type: api_key
+  required_env:
+    - ELEVENLABS_API_KEY
+  header_managed_by_upstream: xi-api-key
+capabilities:
+  - voice.search
+  - voice.get
+  - model.list
+  - subscription.get
+  - agent.list
+  - agent.get
+  - conversation.list
+  - conversation.get
+  - speech.generate
+  - speech.transcribe
+  - sound_effect.generate
+risk:
+  default: READ
+  billable_generation_requires_approval: true
+  destructive_tools_exposed: false
+optional_env:
+  - ELEVENLABS_MCP_COMMAND
+  - ELEVENLABS_MCP_ARGS
+  - ELEVENLABS_MCP_BASE_PATH
+  - ELEVENLABS_API_RESIDENCY
+  - ELEVENLABS_MCP_OUTPUT_MODE
+  - ELEVENLABS_APPROVAL_MODE
+  - ELEVENLABS_APPROVED_ACTIONS
+  - ELEVENLABS_ALLOWED_INPUT_ROOT
+  - ELEVENLABS_TIMEOUT_MS
