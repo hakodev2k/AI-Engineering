@@ -1,0 +1,42 @@
+id: trello
+name: Trello
+upstream:
+  - official-mcp
+  - rest
+mcp:
+  official_url: https://mcp.trello.com/v1
+  auth: oauth2
+  scope: workspace-scoped
+  destructive_delete_supported: false
+api:
+  base_url: https://api.trello.com/1
+auth:
+  type: api_key_plus_user_token
+  required_env:
+    - TRELLO_API_KEY
+    - TRELLO_TOKEN
+capabilities:
+  - member.get
+  - board.list
+  - board.get
+  - board.create
+  - list.list
+  - list.create
+  - card.search
+  - card.get
+  - card.create
+  - card.update
+  - card.move
+  - card.comment
+  - card.archive
+  - webhook.create
+risk:
+  default: READ
+  writes_require_operator_approval: true
+  archive_disabled_by_default: true
+optional_env:
+  - TRELLO_API_BASE_URL
+  - TRELLO_TIMEOUT_MS
+  - TRELLO_APPROVAL_MODE
+  - TRELLO_APPROVED_ACTIONS
+  - TRELLO_ALLOW_ARCHIVE
