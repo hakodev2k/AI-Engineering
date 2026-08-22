@@ -53,6 +53,10 @@ describe("approval policy", () => {
     expect(() => assertApproved(cfg, "paypal.order.create", operationTarget({ currency: "USD" }))).toThrow(/Approval required/i);
   });
 
+  it("canonicalizes object key order for stable operation binding", () => {
+    expect(operationTarget({ currency: "USD", amount: 25 })).toBe(operationTarget({ amount: 25, currency: "USD" }));
+  });
+
   it("accepts a resource-bound unexpired approval token", () => {
     const cfg = loadConfig(sandboxEnv);
     const target = operationTarget({ order_id: "ORDER123" });
@@ -66,6 +70,14 @@ describe("approval policy", () => {
     const expiresAt = Date.now() + 60_000;
     const token = createApprovalToken(cfg.approvalSecret!, "paypal.refund.create", operationTarget({ capture_id: "A" }), expiresAt);
     expect(() => assertApproved(cfg, "paypal.refund.create", operationTarget({ capture_id: "B" }), token, expiresAt)).toThrow(/Invalid approval/i);
+  });
+
+  it("rejects expired approvals", () => {
+    const cfg = loadConfig(sandboxEnv);
+    const target = operationTarget({ dispute_id: "PP-R-1" });
+    const expiresAt = Date.now() - 1;
+    const token = createApprovalToken(cfg.approvalSecret!, "paypal.dispute.accept", target, expiresAt);
+    expect(() => assertApproved(cfg, "paypal.dispute.accept", target, token, expiresAt)).toThrow(/expired/i);
   });
 });
 
