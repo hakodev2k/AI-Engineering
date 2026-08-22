@@ -1,0 +1,12 @@
+{
+  "expected_bind_scope": "loopback",
+  "allowed_hosts": ["localhost", "127.0.0.1", "[::1]"],
+  "allowed_origins": [],
+  "require_authentication": true,
+  "sensitive_capabilities": ["shell", "filesystem-write", "browser-control", "ci-cd-write", "secrets", "cloud-admin"],
+  "block_wildcard_bind": true,
+  "foreign_host_probes": ["attacker.invalid", "example.com"],
+  "foreign_origin_probes": ["https://attacker.invalid", "https://example.com"],
+  "request_timeout_seconds": 3,
+  "maximum_probe_failures": 0
+}
