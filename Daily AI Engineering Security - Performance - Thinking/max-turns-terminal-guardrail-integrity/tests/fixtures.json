@@ -1,0 +1,44 @@
+{
+  "normal_allowed": {
+    "terminal_reason": "normal",
+    "delivery_intended": true,
+    "guardrail_verdict": "allow",
+    "candidate_output_persisted_as_accepted": true,
+    "session_items": [
+      {"type": "function_call", "call_id": "c1"},
+      {"type": "function_call_output", "call_id": "c1"},
+      {"type": "assistant", "accepted": true}
+    ],
+    "expected": "allow"
+  },
+  "max_turns_without_verdict": {
+    "terminal_reason": "max_turns",
+    "delivery_intended": true,
+    "guardrail_verdict": null,
+    "candidate_output_persisted_as_accepted": true,
+    "session_items": [
+      {"type": "assistant", "accepted": true}
+    ],
+    "expected": "block"
+  },
+  "blocked_fallback_persisted": {
+    "terminal_reason": "max_turns",
+    "delivery_intended": true,
+    "guardrail_verdict": "block",
+    "candidate_output_persisted_as_accepted": true,
+    "session_items": [
+      {"type": "assistant", "accepted": true}
+    ],
+    "expected": "block"
+  },
+  "orphaned_stream_call": {
+    "terminal_reason": "output_guardrail_tripwire",
+    "delivery_intended": false,
+    "guardrail_verdict": "block",
+    "candidate_output_persisted_as_accepted": false,
+    "session_items": [
+      {"type": "function_call", "call_id": "c2"}
+    ],
+    "expected": "block"
+  }
+}
