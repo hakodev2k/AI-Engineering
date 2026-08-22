@@ -1,0 +1,28 @@
+version: 1
+name: agent-transaction-boundary-side-effect-gate
+max_fix_retries: 2
+require_human_approval_for:
+  - database-schema-change
+  - destructive-sql
+  - production-write
+  - breaking-api-change
+  - infrastructure-change
+transaction_markers:
+  - BeginTransaction
+  - TransactionScope
+  - SaveChanges
+  - Commit
+side_effect_markers:
+  - HttpClient
+  - SendAsync
+  - Publish
+  - SendEmail
+  - Blob
+  - Queue
+  - File.Write
+  - Delete
+  - ExecuteSql
+allowed_patterns:
+  - transactional-outbox
+  - post-commit-dispatch
+  - idempotent-compensatable-effect
