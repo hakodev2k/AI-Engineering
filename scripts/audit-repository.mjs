@@ -156,21 +156,38 @@ function validatePython(path) {
 
 function validateMcpConnectors() {
   const connectorRoot = join(root, "MCP-API");
-  const required = [".env.example", "README.md", "manifest.yaml", "package.json", "tsconfig.json", "src/server.ts"];
+  const required = [".env.example", "README.md", "manifest.yaml", "package.json"];
+  const serverEntrypoints = ["src/server.ts", "src/server.mts", "src/server.js", "src/server.mjs"];
+
   for (const directory of childDirectories(connectorRoot)) {
     for (const item of required) {
       if (!existsSync(join(directory, item))) errors.push(`incomplete MCP connector ${display(directory)}: missing ${item}`);
     }
+
+    const serverEntrypoint = serverEntrypoints.find((item) => existsSync(join(directory, item)));
+    if (!serverEntrypoint) {
+      errors.push(`incomplete MCP connector ${display(directory)}: missing supported src/server entrypoint`);
+    }
+
+    const isTypeScriptConnector = serverEntrypoint === "src/server.ts" || serverEntrypoint === "src/server.mts";
+    if (isTypeScriptConnector && !existsSync(join(directory, "tsconfig.json"))) {
+      errors.push(`incomplete MCP connector ${display(directory)}: missing tsconfig.json`);
+    }
+
     const tests = join(directory, "tests");
     if (!existsSync(tests) || !statSync(tests).isDirectory()) {
       errors.push(`incomplete MCP connector ${display(directory)}: missing tests/`);
     }
+
     const packagePath = join(directory, "package.json");
     if (!existsSync(packagePath)) continue;
     try {
       const packageJson = JSON.parse(readFileSync(packagePath, "utf8"));
-      for (const script of ["build", "start", "test"]) {
+      for (const script of ["start", "test"]) {
         if (!packageJson.scripts?.[script]) errors.push(`${display(packagePath)}: missing ${script} script`);
+      }
+      if (isTypeScriptConnector && !packageJson.scripts?.build) {
+        errors.push(`${display(packagePath)}: missing build script for TypeScript connector`);
       }
       if (packageJson.engines?.node && !packageJson.engines.node.includes("20")) {
         warnings.push(`${display(packagePath)}: verify Node.js engine remains compatible with the workspace baseline`);
