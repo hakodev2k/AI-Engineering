@@ -1,0 +1,9 @@
+{
+  "gap_buckets_ms": [60000, 300000, 1800000, 3600000],
+  "min_input_tokens": 1024,
+  "warn_weighted_hit_rate_below": 0.90,
+  "warn_fingerprint_churn_rate_above": 0.05,
+  "max_uncached_token_regression_pct": 5.0,
+  "max_ttft_regression_pct": 5.0,
+  "require_quality_regression_pass": true
+}
