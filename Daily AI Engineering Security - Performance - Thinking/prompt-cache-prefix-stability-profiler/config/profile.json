@@ -1,0 +1,10 @@
+{
+  "stable_segments": ["tools", "system", "static_context"],
+  "sort_tool_definitions_by": "name",
+  "strip_fields": ["request_id", "timestamp", "trace_id"],
+  "max_prefix_change_rate": 0.05,
+  "min_cached_input_ratio": 0.70,
+  "max_uncached_token_regression_pct": 5.0,
+  "max_quality_regression_pct": 0.0,
+  "comparison_window_requests": 20
+}
