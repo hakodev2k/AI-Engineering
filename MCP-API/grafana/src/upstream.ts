@@ -8,6 +8,10 @@ const ALLOWED = new Set([
   'update_dashboard', 'create_folder', 'search_folders'
 ]);
 
+function cleanEnv(env: NodeJS.ProcessEnv): Record<string, string> {
+  return Object.fromEntries(Object.entries(env).filter((entry): entry is [string, string] => typeof entry[1] === 'string'));
+}
+
 export class GrafanaUpstream {
   private client?: Client;
   private transport?: StdioClientTransport;
@@ -19,7 +23,7 @@ export class GrafanaUpstream {
       command: this.config.mcpCommand,
       args: this.config.mcpArgs,
       env: {
-        ...process.env,
+        ...cleanEnv(process.env),
         GRAFANA_URL: this.config.url,
         GRAFANA_SERVICE_ACCOUNT_TOKEN: this.config.token,
         ...(this.config.orgId ? { GRAFANA_ORG_ID: this.config.orgId } : {})
@@ -64,7 +68,10 @@ export async function grafanaHealth(config: Config, fetchImpl: typeof fetch = fe
       }
     });
     const text = await response.text();
-    const data = text ? JSON.parse(text) : {};
+    let data: unknown = {};
+    if (text) {
+      try { data = JSON.parse(text); } catch { data = { raw: text }; }
+    }
     if (!response.ok) throw new Error(`GRAFANA_HTTP_${response.status}: ${JSON.stringify(data)}`);
     return data;
   } finally {
