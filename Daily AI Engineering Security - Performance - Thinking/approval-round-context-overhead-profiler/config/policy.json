@@ -1,0 +1,8 @@
+{
+  "max_repeated_provider_invocations_per_turn": 1,
+  "max_p95_regression_percent": 5,
+  "min_reuse_savings_percent": 20,
+  "reuse_only_if": ["read_only", "deterministic", "stable_input_fingerprint"],
+  "never_bypass_required_approval": true,
+  "max_optimization_retries": 2
+}
