@@ -21,11 +21,11 @@ server.tool('newrelic.entity.search', 'Search New Relic entities with the offici
   cursor: z.string().min(1).max(2000).optional()
 }, async ({ query, cursor }) => {
   const resultsArgs = cursor ? `(cursor: ${gqlString(cursor)})` : '';
-  return json(await client.query(`query { actor { entitySearch(query: ${gqlString(query)}) { count query results${resultsArgs} { nextCursor entities { guid name entityType domain type reporting accountId tags { key values } } } } } }`));
+  return json(await client.query(`query { actor { entitySearch(query: ${gqlString(query)}) { count query results${resultsArgs} { nextCursor entities { guid name entityType reporting tags { key values } } } } } }`));
 });
 
 server.tool('newrelic.entity.get', 'Fetch one entity by GUID. READ.', { guid: Guid }, async ({ guid }) =>
-  json(await client.query(`query { actor { entity(guid: ${gqlString(guid)}) { guid name entityType domain type reporting accountId tags { key values } } } }`)));
+  json(await client.query(`query { actor { entity(guid: ${gqlString(guid)}) { guid name entityType reporting tags { key values } } } }`)));
 
 server.tool('newrelic.entity.related.list', 'List one-hop relationships for an entity. READ.', { guid: Guid }, async ({ guid }) =>
   json(await client.query(`query { actor { entity(guid: ${gqlString(guid)}) { guid name relatedEntities { results { source { entity { guid name } } target { entity { guid name } } type } } } } }`)));
@@ -37,24 +37,21 @@ server.tool('newrelic.entity.tag.search', 'Search entities by an exact tag key/v
 }, async ({ tag_key, tag_value, cursor }) => {
   const search = `tags.${tag_key} = ${gqlString(tag_value)}`;
   const resultsArgs = cursor ? `(cursor: ${gqlString(cursor)})` : '';
-  return json(await client.query(`query { actor { entitySearch(query: ${gqlString(search)}) { count results${resultsArgs} { nextCursor entities { guid name entityType domain type reporting accountId } } } } }`));
+  return json(await client.query(`query { actor { entitySearch(query: ${gqlString(search)}) { count results${resultsArgs} { nextCursor entities { guid name entityType reporting } } } } }`));
 });
 
 server.tool('newrelic.entity.non_reporting.list', 'Find entities that stopped reporting after a supplied epoch-millisecond timestamp. READ.', {
   changed_after_ms: z.number().int().nonnegative()
 }, async ({ changed_after_ms }) => {
   const search = `reporting is false and lastReportingChangeAt > ${changed_after_ms}`;
-  return json(await client.query(`query { actor { entitySearch(query: ${gqlString(search)}) { count results { nextCursor entities { guid name entityType domain type reporting accountId } } } } }`));
+  return json(await client.query(`query { actor { entitySearch(query: ${gqlString(search)}) { count results { nextCursor entities { guid name entityType reporting } } } } }`));
 });
 
 server.tool('newrelic.nrql.query', 'Execute a read-only NRQL query against one New Relic account. READ.', {
   account_id: AccountId,
-  nrql: z.string().min(1).max(10000),
-  timeout_ms: z.number().int().min(1000).max(60000).optional()
-}, async ({ account_id, nrql, timeout_ms }) => {
-  const timeout = timeout_ms ? `, timeout: ${Math.ceil(timeout_ms / 1000)}` : '';
-  return json(await client.query(`query { actor { account(id: ${account_id}) { nrql(query: ${gqlString(nrql)}${timeout}) { results metadata { facets } } } } }`));
-});
+  nrql: z.string().min(1).max(10000)
+}, async ({ account_id, nrql }) =>
+  json(await client.query(`query { actor { account(id: ${account_id}) { nrql(query: ${gqlString(nrql)}) { results } } } }`)));
 
 server.tool('newrelic.alert.policy.list', 'List alert policies for an account, optionally filtered by partial name. READ.', {
   account_id: AccountId,
