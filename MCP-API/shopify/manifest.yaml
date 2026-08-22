@@ -1,0 +1,53 @@
+id: shopify
+name: Shopify
+upstream:
+  - official-mcp
+  - graphql
+mcp:
+  developer_server:
+    command: npx -y @shopify/dev-mcp@latest
+    purpose: developer documentation, API schema exploration, code assistance
+  storefront_endpoint: https://{shop}.myshopify.com/api/mcp
+  storefront_purpose: shopper-facing catalog, cart, and policy workflows
+  admin_strategy: "Merchant administration uses the official GraphQL Admin API because Shopify's Dev MCP is development-focused and Storefront MCP is shopper-facing."
+api:
+  graphql_admin: https://{shop}.myshopify.com/admin/api/2026-07/graphql.json
+auth:
+  type: admin_access_token
+  header: X-Shopify-Access-Token
+  required_env:
+    - SHOPIFY_SHOP_DOMAIN
+    - SHOPIFY_ADMIN_ACCESS_TOKEN
+  least_privilege_scopes:
+    - read_products
+    - write_products
+    - read_orders
+    - read_inventory
+    - read_locations
+    - read_webhooks
+    - write_webhooks
+capabilities:
+  - access_scope.list
+  - shop.get
+  - product.list
+  - product.get
+  - product.create
+  - product.update
+  - product.delete
+  - order.list
+  - order.get
+  - inventory_level.list
+  - location.list
+  - webhook.list
+  - webhook.create
+  - webhook.delete
+risk:
+  default: READ
+  writes_require_operator_approval: true
+  destructive_disabled_by_default: true
+optional_env:
+  - SHOPIFY_API_VERSION
+  - SHOPIFY_TIMEOUT_MS
+  - SHOPIFY_APPROVAL_MODE
+  - SHOPIFY_APPROVED_ACTIONS
+  - SHOPIFY_ALLOW_DESTRUCTIVE
