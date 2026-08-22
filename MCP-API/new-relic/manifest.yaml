@@ -1,0 +1,45 @@
+id: new-relic
+name: New Relic
+upstream:
+  - official-mcp-preview
+  - nerdgraph
+mcp:
+  status: preview
+  endpoints:
+    US: https://mcp.newrelic.com/mcp/
+    EU: https://mcp.eu.newrelic.com/mcp/
+    JP: https://mcp.jp.newrelic.com/mcp/
+  auth: oauth_or_user_api_key
+  strategy: "Official MCP is available but preview. This connector uses the stable NerdGraph API for a deterministic reviewed tool surface and does not auto-proxy newly discovered MCP tools."
+api:
+  type: graphql
+  endpoints:
+    US: https://api.newrelic.com/graphql
+    EU: https://api.eu.newrelic.com/graphql
+    JP: https://api.jp.newrelic.com/graphql
+auth:
+  type: user_api_key
+  required_env:
+    - NEW_RELIC_USER_API_KEY
+capabilities:
+  - account.list
+  - entity.search
+  - entity.get
+  - dashboard.list
+  - dashboard.get
+  - nrql.query
+  - alert.policy.list
+  - alert.policy.get
+  - alert.policy.create
+  - alert.policy.update
+  - alert.policy.delete
+risk:
+  default: READ
+  writes_require_operator_approval: true
+  destructive_disabled_by_default: true
+optional_env:
+  - NEW_RELIC_REGION
+  - NEW_RELIC_TIMEOUT_MS
+  - NEW_RELIC_APPROVAL_MODE
+  - NEW_RELIC_APPROVED_ACTIONS
+  - NEW_RELIC_ALLOW_DESTRUCTIVE
