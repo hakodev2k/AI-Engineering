@@ -10,22 +10,30 @@ Provider-scoped Model Context Protocol servers. Each connector exposes a deliber
 | Connector | Upstream service | Copy unit |
 | --- | --- | --- |
 | Asana | Asana API | [`asana/`](asana/) |
+| Better Stack | Better Stack API | [`better-stack/`](better-stack/) |
+| ClickUp | ClickUp API | [`clickup/`](clickup/) |
 | Cloudflare | Cloudflare API | [`cloudflare/`](cloudflare/) |
 | Confluence | Atlassian Confluence API | [`confluence/`](confluence/) |
 | Datadog | Datadog API | [`datadog/`](datadog/) |
+| Deepgram | Deepgram MCP and REST API | [`deepgram/`](deepgram/) |
 | Discord | Discord REST API | [`discord/`](discord/) |
+| ElevenLabs | ElevenLabs API | [`elevenlabs/`](elevenlabs/) |
 | GitHub | GitHub MCP server | [`github/`](github/) |
 | GitLab | GitLab API | [`gitlab/`](gitlab/) |
 | Grafana | Grafana API | [`grafana/`](grafana/) |
+| Hugging Face | Hugging Face API | [`hugging-face/`](hugging-face/) |
 | Jira | Atlassian MCP and Jira REST API | [`jira/`](jira/) |
 | Linear | Linear MCP server | [`linear/`](linear/) |
+| New Relic | New Relic API | [`new-relic/`](new-relic/) |
 | Notion | Notion API | [`notion/`](notion/) |
 | OpenAI | OpenAI Responses API | [`openai/`](openai/) |
 | PagerDuty | PagerDuty API | [`pagerduty/`](pagerduty/) |
 | PayPal | PayPal API | [`paypal/`](paypal/) |
 | Sentry | Sentry API | [`sentry/`](sentry/) |
+| Shopify | Shopify API | [`shopify/`](shopify/) |
 | Slack | Slack Web API | [`slack/`](slack/) |
 | Stripe | Stripe Node SDK/API | [`stripe/`](stripe/) |
+| Supabase | Supabase API | [`supabase/`](supabase/) |
 | Telegram | Telegram Bot API | [`telegram/`](telegram/) |
 | Trello | Trello REST API | [`trello/`](trello/) |
 | Twilio | Twilio API | [`twilio/`](twilio/) |
