@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Replay Safety Investigation Result",
+  "type": "object",
+  "required": ["status", "operation", "findings", "verification"],
+  "properties": {
+    "status": {"enum": ["safe", "unsafe", "needs-approval", "blocked"]},
+    "operation": {"type": "string", "minLength": 1},
+    "findings": {"type": "array", "items": {"type": "object", "required": ["finding", "evidence", "risk", "confidence"], "properties": {"finding": {"type": "string"}, "evidence": {"type": "array", "items": {"type": "string"}, "minItems": 1}, "risk": {"enum": ["low", "medium", "high", "critical"]}, "confidence": {"type": "number", "minimum": 0, "maximum": 1}, "recommended_action": {"type": "string"}}, "additionalProperties": false}},
+    "verification": {"type": "object", "required": ["replay_test", "build", "tests"], "properties": {"replay_test": {"enum": ["passed", "failed", "not-run"]}, "build": {"enum": ["passed", "failed", "not-run"]}, "tests": {"enum": ["passed", "failed", "not-run"]}}, "additionalProperties": false}
+  },
+  "additionalProperties": false
+}
