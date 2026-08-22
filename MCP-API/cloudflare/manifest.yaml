@@ -1,0 +1,41 @@
+id: cloudflare
+name: Cloudflare
+upstream:
+  - rest
+  - official-mcp-available-not-directly-exposed
+mcp:
+  official_url: https://mcp.cloudflare.com/mcp
+  strategy: "Official MCP exists for broad API access, but this connector uses scoped REST tools to avoid generic code execution and unrestricted endpoint access."
+api:
+  base_url: https://api.cloudflare.com/client/v4
+auth:
+  type: api_token
+  env: CLOUDFLARE_API_TOKEN
+  least_privilege_permissions:
+    - "Zone:Zone Read"
+    - "Zone:DNS Read"
+    - "Zone:DNS Write (only for DNS mutations)"
+    - "Zone:Cache Purge (only for cache purge tools)"
+capabilities:
+  - zone.list
+  - zone.get
+  - dns.record.list
+  - dns.record.get
+  - dns.record.create
+  - dns.record.update
+  - dns.record.delete
+  - cache.purge.urls
+  - cache.purge.everything
+risk:
+  default: READ
+  writes_require_operator_approval: true
+  destructive_disabled_by_default: true
+required_env:
+  - CLOUDFLARE_API_TOKEN
+optional_env:
+  - CLOUDFLARE_API_BASE_URL
+  - CLOUDFLARE_TIMEOUT_MS
+  - CLOUDFLARE_ALLOWED_WRITE_ZONE_IDS
+  - CLOUDFLARE_APPROVAL_MODE
+  - CLOUDFLARE_APPROVED_ACTIONS
+  - CLOUDFLARE_ALLOW_DESTRUCTIVE
