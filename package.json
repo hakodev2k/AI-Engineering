@@ -13,7 +13,8 @@
     "audit:standalone": "node scripts/audit-standalone.mjs",
     "audit:standalone:strict": "node scripts/audit-standalone.mjs --strict",
     "check:mcp": "npm --prefix MCP-API run check",
-    "check": "npm run audit:strict && npm run audit:standalone:strict && npm run check:mcp"
+    "check": "npm run audit && npm run audit:standalone && npm run check:mcp",
+    "check:strict": "npm run audit:strict && npm run audit:standalone:strict && npm run check:mcp"
   },
   "devDependencies": {
     "@lezer/python": "^1.1.0",
