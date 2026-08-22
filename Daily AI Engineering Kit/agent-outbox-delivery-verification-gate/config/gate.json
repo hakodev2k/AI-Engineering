@@ -1,0 +1,7 @@
+{
+  "topic": "agent-outbox-delivery-verification-gate",
+  "max_retries": 2,
+  "required_evidence": ["outbox-row", "dispatch-attempt", "consumer-observation"],
+  "approval_required_for": ["production-replay", "message-delete", "schema-change"],
+  "status_values": ["pending", "dispatched", "observed", "verified", "blocked"]
+}
