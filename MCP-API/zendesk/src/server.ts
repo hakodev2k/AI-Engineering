@@ -25,9 +25,9 @@ server.tool('zendesk.ticket.create','Create a support ticket. WRITE; approval re
   group_id:Id.optional(),
   tags:z.array(z.string().min(1).max(100)).max(100).optional()
 }, async a=>{ assertWriteAllowed(config,'zendesk.ticket.create'); const {comment,...ticket}=a; return json(await client.request('/tickets.json',{method:'POST',body:{ticket:{...ticket,comment:{body:comment,public:true}}}})); });
-server.tool('zendesk.ticket.update','Update selected ticket fields. WRITE; approval required by default.',{
+server.tool('zendesk.ticket.update','Update selected ticket fields. WRITE; approval required by default. Closing is intentionally unsupported because closed tickets cannot be reopened.',{
   ticket_id:Id,
-  status:z.enum(['new','open','pending','hold','solved','closed']).optional(),
+  status:z.enum(['new','open','pending','hold','solved']).optional(),
   priority:z.enum(['low','normal','high','urgent']).optional(),
   assignee_id:Id.optional(),
   group_id:Id.optional(),
