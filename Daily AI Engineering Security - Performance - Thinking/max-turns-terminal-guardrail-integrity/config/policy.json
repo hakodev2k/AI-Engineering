@@ -1,0 +1,9 @@
+{
+  "require_guardrail_verdict_for_all_terminal_outputs": true,
+  "allowed_guardrail_verdicts": ["allow", "block"],
+  "block_on_missing_guardrail_verdict": true,
+  "require_terminal_session_integrity": true,
+  "require_streaming_nonstreaming_parity_tests": true,
+  "max_verification_retries": 1,
+  "terminal_reasons": ["normal", "max_turns", "model_refusal", "invalid_final_output", "output_guardrail_tripwire", "cancelled", "error"]
+}
