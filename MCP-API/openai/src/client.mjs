@@ -57,10 +57,11 @@ export class OpenAIClient {
     if (typeof this.fetchImpl !== 'function') throw new Error('A fetch implementation is required');
   }
 
-  headers(hasBody) {
+  headers(hasBody, extraHeaders = {}) {
     const headers = {
       Authorization: `Bearer ${this.config.apiKey}`,
-      Accept: 'application/json'
+      Accept: 'application/json',
+      ...extraHeaders
     };
     if (hasBody) headers['Content-Type'] = 'application/json';
     if (this.config.project) headers['OpenAI-Project'] = this.config.project;
@@ -68,7 +69,7 @@ export class OpenAIClient {
     return headers;
   }
 
-  async requestJson({ method, path, query, body, retrySafe = false, signal }) {
+  async requestJson({ method, path, query, body, retrySafe = false, signal, extraHeaders = {} }) {
     if (!path.startsWith('/') || path.includes('://')) throw new Error('Only relative OpenAI API paths are allowed');
     const url = new URL(`${this.config.apiBase}${path}`);
     if (query) {
@@ -88,7 +89,7 @@ export class OpenAIClient {
       try {
         response = await this.fetchImpl(url, {
           method,
-          headers: this.headers(body !== undefined),
+          headers: this.headers(body !== undefined, extraHeaders),
           body: body === undefined ? undefined : JSON.stringify(body),
           signal: combinedSignal
         });
@@ -150,10 +151,15 @@ export class OpenAIClient {
   cancelResponse(id, signal) { return this.requestJson({ method: 'POST', path: `/responses/${encodeURIComponent(id)}/cancel`, retrySafe: false, signal }); }
   createModeration(body, signal) { return this.requestJson({ method: 'POST', path: '/moderations', body, retrySafe: false, signal }); }
   createEmbedding(body, signal) { return this.requestJson({ method: 'POST', path: '/embeddings', body, retrySafe: false, signal }); }
-  listVectorStores(query, signal) { return this.requestJson({ method: 'GET', path: '/vector_stores', query, retrySafe: true, signal }); }
-  getVectorStore(id, signal) { return this.requestJson({ method: 'GET', path: `/vector_stores/${encodeURIComponent(id)}`, retrySafe: true, signal }); }
-  createVectorStore(body, signal) { return this.requestJson({ method: 'POST', path: '/vector_stores', body, retrySafe: false, signal }); }
-  searchVectorStore(id, body, signal) { return this.requestJson({ method: 'POST', path: `/vector_stores/${encodeURIComponent(id)}/search`, body, retrySafe: true, signal }); }
+
+  vectorStoreRequest(options) {
+    return this.requestJson({ ...options, extraHeaders: { 'OpenAI-Beta': 'assistants=v2' } });
+  }
+
+  listVectorStores(query, signal) { return this.vectorStoreRequest({ method: 'GET', path: '/vector_stores', query, retrySafe: true, signal }); }
+  getVectorStore(id, signal) { return this.vectorStoreRequest({ method: 'GET', path: `/vector_stores/${encodeURIComponent(id)}`, retrySafe: true, signal }); }
+  createVectorStore(body, signal) { return this.vectorStoreRequest({ method: 'POST', path: '/vector_stores', body, retrySafe: false, signal }); }
+  searchVectorStore(id, body, signal) { return this.vectorStoreRequest({ method: 'POST', path: `/vector_stores/${encodeURIComponent(id)}/search`, body, retrySafe: true, signal }); }
   listFiles(query, signal) { return this.requestJson({ method: 'GET', path: '/files', query, retrySafe: true, signal }); }
   getFile(id, signal) { return this.requestJson({ method: 'GET', path: `/files/${encodeURIComponent(id)}`, retrySafe: true, signal }); }
 }
