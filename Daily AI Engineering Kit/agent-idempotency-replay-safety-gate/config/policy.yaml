@@ -1,0 +1,24 @@
+version: 1
+max_retries: 2
+idempotency:
+  required_for_methods: [POST, PATCH]
+  key_headers: [Idempotency-Key, X-Request-Id]
+  persistence_required_for_side_effects: true
+  replay_statuses: [200, 201, 202, 204, 409]
+side_effect_markers:
+  - SaveChangesAsync
+  - SaveChanges
+  - SendAsync
+  - PublishAsync
+  - Enqueue
+  - ExecuteSql
+  - HttpClient
+approval_required:
+  - destructive_database_change
+  - production_configuration_change
+  - breaking_api_contract
+  - data_deletion
+verification:
+  require_clean_diff_review: true
+  require_tests: true
+  require_replay_test: true
