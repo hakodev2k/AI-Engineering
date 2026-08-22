@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "max_retry_attempts": 3,
+  "default_delay_seconds": 2,
+  "max_delay_seconds": 120,
+  "honor_retry_after": true,
+  "allow_retry_statuses": [429, 503],
+  "forbid_retry_methods": ["POST", "PATCH"]
+}
