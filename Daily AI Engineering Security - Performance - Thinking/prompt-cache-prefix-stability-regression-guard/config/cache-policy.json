@@ -1,0 +1,9 @@
+{
+  "policy_version": "2026-08-22.1",
+  "max_tool_schema_growth_percent": 10.0,
+  "max_stable_prefix_shrink_percent": 5.0,
+  "require_stable_prefix_match": true,
+  "volatile_name_patterns": ["timestamp", "request_id", "trace_id", "session_nonce", "random", "uuid", "current_time"],
+  "required_component_names": ["system_policy", "tools"],
+  "token_estimate_chars_per_token": 4.0
+}
