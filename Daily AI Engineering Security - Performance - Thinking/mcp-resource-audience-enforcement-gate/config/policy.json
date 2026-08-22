@@ -1,0 +1,12 @@
+{
+  "canonical_resource": "https://mcp.example.com/mcp",
+  "allowed_issuers": ["https://issuer.example.com"],
+  "allowed_audiences": ["https://mcp.example.com/mcp"],
+  "required_scopes_by_operation": {
+    "tools/list": ["tools:read"],
+    "tools/call": ["tools:execute"]
+  },
+  "require_verified_claims": true,
+  "require_exact_resource_match": true,
+  "log_claim_values": false
+}
