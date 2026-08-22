@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "require_terminal_reason": true,
+  "require_call_output_pairing": true,
+  "allow_orphan_calls": false,
+  "allow_orphan_outputs": false,
+  "require_redaction_marker_for_blocked_terminal_tool_output": true,
+  "blocked_output_marker": "Output withheld by an output guardrail.",
+  "require_side_effect_commit_evidence": true,
+  "forbid_automatic_side_effect_replay": true,
+  "require_streaming_parity_when_comparison_supplied": true
+}
