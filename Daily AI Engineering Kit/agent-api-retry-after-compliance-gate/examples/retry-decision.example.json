@@ -1,0 +1,5 @@
+{
+  "decision": "retry",
+  "reason": "bounded-retry-allowed",
+  "delay_seconds": 30
+}
