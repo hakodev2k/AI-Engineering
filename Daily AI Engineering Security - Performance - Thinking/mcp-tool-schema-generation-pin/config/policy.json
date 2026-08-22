@@ -1,0 +1,8 @@
+{
+  "pin_schema_before_dispatch": true,
+  "atomic_generation_publish": true,
+  "rollback_on_compile_failure": true,
+  "max_refresh_retries": 2,
+  "allow_stale_known_good_generation": true,
+  "require_schema_hash_on_call_record": true
+}
