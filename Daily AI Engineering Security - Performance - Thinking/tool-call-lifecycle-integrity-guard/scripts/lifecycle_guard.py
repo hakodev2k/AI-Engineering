@@ -22,8 +22,10 @@ def decide(r:dict[str,Any], p:dict[str,Any], phase:str)->tuple[dict[str,Any],int
     if not isinstance(tool,str) or not tool: raise ValueError('tool required')
     if not isinstance(caps,list) or not all(isinstance(x,str) for x in caps): raise ValueError('capabilities must be strings')
     h=arg_hash(args); violations=[]
-    if r.get('duplicate_call_id') is True or r.get('already_executed') is True:
-        violations.append('duplicate_or_already_executed_call')
+    if r.get('duplicate_call_id') is True:
+        violations.append('duplicate_call_id')
+    if phase=='preinvoke' and r.get('already_executed') is True:
+        violations.append('already_executed_call')
     if r.get('tool_enabled') is not True:
         violations.append('tool_not_currently_enabled')
     if phase=='preinvoke' and r.get('resumed') is True and p.get('require_preinvoke_guardrail_after_resume',True) and r.get('preinvoke_guardrail_passed') is not True:
@@ -31,7 +33,7 @@ def decide(r:dict[str,Any], p:dict[str,Any], phase:str)->tuple[dict[str,Any],int
     approval=r.get('approval',{})
     if not isinstance(approval,dict): raise ValueError('approval must be object')
     high=bool(set(caps).intersection(set(p.get('high_impact_capabilities',[]))))
-    if high:
+    if phase=='preinvoke' and high:
         approved = approval.get('granted') is True and approval.get('call_id')==call_id and approval.get('tool')==tool and approval.get('argument_sha256')==h
         if not approved and not violations:
             return {'decision':'approval_required','call_id':call_id,'argument_sha256':h,'violations':[]}, APPROVAL
