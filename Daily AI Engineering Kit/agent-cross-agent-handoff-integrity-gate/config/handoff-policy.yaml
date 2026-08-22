@@ -1,0 +1,22 @@
+version: 1
+required_statuses: [ready, blocked, failed, verified]
+required_fields:
+  - handoff_id
+  - producer
+  - consumer
+  - task
+  - status
+  - facts
+  - hypotheses
+  - decisions
+  - evidence
+  - open_questions
+  - artifacts
+  - verification
+max_hypotheses_without_evidence: 3
+max_retries: 2
+require_artifact_hashes: true
+require_evidence_for_ready: true
+require_independent_verifier_for_high_risk: true
+high_risk_tags: [production, security, database, infrastructure, secrets, breaking-api]
+allowed_artifact_schemes: [repo, file, http, https]
