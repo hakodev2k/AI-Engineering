@@ -1,0 +1,8 @@
+{
+  "max_instruction_bytes": 4096,
+  "require_provenance": true,
+  "require_unique_normalized_tool_names": true,
+  "high_impact_capabilities": ["write","delete","code_execution","credential","external_send","permission_change"],
+  "fail_closed_on_validation_error": true,
+  "max_transient_fetch_retries": 2
+}
