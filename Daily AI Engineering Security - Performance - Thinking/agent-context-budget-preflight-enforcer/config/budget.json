@@ -1,0 +1,8 @@
+{
+  "context_window_tokens": 32768,
+  "reserved_output_tokens": 4096,
+  "safety_margin_tokens": 1024,
+  "max_reduction_cycles": 2,
+  "reducible_priorities": ["low", "medium"],
+  "protected_kinds": ["system", "security", "current_user", "authorization", "required_evidence"]
+}
