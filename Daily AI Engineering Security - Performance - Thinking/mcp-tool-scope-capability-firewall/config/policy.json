@@ -1,0 +1,10 @@
+{
+  "default": "deny",
+  "tools": {
+    "github.push_files": {"operations": ["write"], "repos": ["acme/app"], "branches": ["feature/*", "fix/*"], "require_approval": true},
+    "github.read_file": {"operations": ["read"], "repos": ["acme/app", "acme/docs"], "branches": ["main", "feature/*", "fix/*"], "require_approval": false},
+    "filesystem.read": {"operations": ["read"], "roots": ["./workspace"], "require_approval": false},
+    "filesystem.write": {"operations": ["write"], "roots": ["./workspace"], "require_approval": true},
+    "http.fetch": {"operations": ["read"], "hosts": ["api.example.com", "docs.example.com"], "require_approval": false}
+  }
+}
