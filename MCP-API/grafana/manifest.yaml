@@ -1,0 +1,51 @@
+id: grafana
+name: Grafana
+upstream:
+  - official-mcp
+  - rest
+mcp:
+  implementation: grafana/mcp-grafana
+  transport: stdio
+  auth: service_account_token
+  enabled_categories:
+    - search
+    - datasource
+    - dashboard
+    - folder
+api:
+  base_url: configurable GRAFANA_URL
+  fallback:
+    - health.read
+auth:
+  type: service_account_token
+  required_env:
+    - GRAFANA_URL
+    - GRAFANA_SERVICE_ACCOUNT_TOKEN
+  optional_env:
+    - GRAFANA_ORG_ID
+capabilities:
+  - mcp.status
+  - health.read
+  - dashboard.search
+  - folder.search
+  - dashboard.read
+  - dashboard.summary
+  - dashboard.panel_queries
+  - datasource.list
+  - datasource.read
+  - dashboard.upsert
+  - folder.create
+risk:
+  default: READ
+  writes_require_operator_approval: true
+required_permissions:
+  - dashboards:read
+  - folders:read
+  - datasources:read
+  - dashboards:create
+  - dashboards:write
+  - folders:create
+security:
+  upstream_tool_allowlist: true
+  credentials_hidden_from_tool_inputs: true
+  provider_content_untrusted: true
