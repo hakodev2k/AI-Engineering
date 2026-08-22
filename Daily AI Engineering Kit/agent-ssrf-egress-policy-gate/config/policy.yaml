@@ -1,0 +1,29 @@
+version: 1
+mode: enforce
+allowed_schemes: [https]
+allowed_hosts:
+  - api.github.com
+  - api.openai.com
+blocked_host_suffixes:
+  - .local
+  - .internal
+blocked_cidrs:
+  - 0.0.0.0/8
+  - 10.0.0.0/8
+  - 100.64.0.0/10
+  - 127.0.0.0/8
+  - 169.254.0.0/16
+  - 172.16.0.0/12
+  - 192.0.0.0/24
+  - 192.168.0.0/16
+  - 198.18.0.0/15
+  - 224.0.0.0/4
+  - 240.0.0.0/4
+  - ::/128
+  - ::1/128
+  - fc00::/7
+  - fe80::/10
+max_redirects: 0
+require_dns_resolution_check: true
+require_all_resolved_ips_public: true
+approval_required_for_new_hosts: true
