@@ -1,0 +1,6 @@
+[
+  {"name":"run-pass","expected_persist_candidate":true,"actual_persist_candidate":true,"tool_calls":["c1"],"tool_results":["c1"],"duplicate_terminal_records":0},
+  {"name":"streamed-tripwire","expected_persist_candidate":false,"actual_persist_candidate":false,"tool_calls":["c2"],"tool_results":["c2"],"duplicate_terminal_records":0},
+  {"name":"max-turns-pass","expected_persist_candidate":true,"actual_persist_candidate":true,"tool_calls":[],"tool_results":[],"duplicate_terminal_records":0},
+  {"name":"resumed-tool-turn-tripwire","expected_persist_candidate":false,"actual_persist_candidate":false,"tool_calls":["c3"],"tool_results":["c3"],"duplicate_terminal_records":0}
+]
