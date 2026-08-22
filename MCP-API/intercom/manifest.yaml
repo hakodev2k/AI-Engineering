@@ -1,0 +1,56 @@
+id: intercom
+name: Intercom
+upstream:
+  - official-mcp
+  - rest
+mcp:
+  official_url: https://mcp.intercom.com/mcp
+  transport: streamable-http
+  availability: us-hosted-workspaces-only
+  auth:
+    - oauth
+    - bearer-token
+  implemented_via: documented-reference-only
+  note: "The official Intercom MCP server currently exposes read/search tools for conversations and contacts. This reusable connector uses the official REST API for the implemented stable contract because REST supports US, EU, and AU workspaces plus the required write operations."
+api:
+  version: "2.16"
+  default_base_url: https://api.intercom.io
+  regional_base_urls:
+    eu: https://api.eu.intercom.io
+    au: https://api.au.intercom.io
+auth:
+  type: bearer-token
+  required_env:
+    - INTERCOM_ACCESS_TOKEN
+  least_privilege_permissions:
+    - read_admins
+    - read_contacts
+    - read_conversations
+    - write_contacts
+    - write_conversations
+capabilities:
+  - admin.me
+  - contact.search
+  - contact.get
+  - contact.update
+  - conversation.list
+  - conversation.get
+  - conversation.reply
+  - conversation.note.add
+  - conversation.assign
+  - conversation.close
+  - conversation.reopen
+  - help_center.list
+  - article.search
+risk:
+  default: READ
+  writes_require_operator_approval: true
+  external_messages_require_explicit_approval: true
+  destructive_disabled_by_default: true
+optional_env:
+  - INTERCOM_API_BASE_URL
+  - INTERCOM_API_VERSION
+  - INTERCOM_TIMEOUT_MS
+  - INTERCOM_APPROVAL_MODE
+  - INTERCOM_APPROVED_ACTIONS
+  - INTERCOM_ALLOW_DESTRUCTIVE

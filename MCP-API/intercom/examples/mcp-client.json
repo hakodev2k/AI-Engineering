@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "intercom": {
+      "command": "node",
+      "args": ["/absolute/path/to/MCP-API/intercom/dist/src/server.js"],
+      "env": {
+        "INTERCOM_ACCESS_TOKEN": "provided-by-secret-manager",
+        "INTERCOM_API_BASE_URL": "https://api.intercom.io"
+      }
+    }
+  }
+}
