@@ -1,0 +1,22 @@
+version: 1
+resources:
+  default:
+    max_concurrency: 8
+    max_queue: 16
+    queue_timeout_ms: 2000
+    execution_timeout_ms: 10000
+    retry_limit: 1
+    failure_rate_open_threshold: 0.5
+    minimum_samples: 20
+    recovery_cooldown_seconds: 30
+approval_required_for:
+  - production-capacity-change
+  - disabling-isolation
+  - increasing-permission-scope
+status_values:
+  - accepted
+  - queued
+  - rejected
+  - timed-out
+  - failed
+  - completed
