@@ -1,0 +1,45 @@
+id: deepgram
+name: Deepgram
+upstream:
+  - official-mcp
+  - rest
+mcp:
+  built_in_cli: "dg mcp"
+  transport:
+    - stdio
+    - sse
+  docs_endpoint: https://api.dx.deepgram.com/kapa/mcp
+  strategy: "Deepgram provides an official CLI MCP server and docs MCP server. This connector uses a fixed REST-backed tool allowlist for deterministic permissions, cost controls, and stable agent contracts."
+api:
+  base_url: https://api.deepgram.com
+auth:
+  type: api_key
+  header: "Authorization: Token <DEEPGRAM_API_KEY>"
+  required_env:
+    - DEEPGRAM_API_KEY
+capabilities:
+  - auth.validate
+  - model.list
+  - model.get
+  - project.list
+  - project.get
+  - project.model.list
+  - project.member.list
+  - project.key.list
+  - project.key.get
+  - project.request.list
+  - project.usage.fields
+  - project.usage.breakdown
+  - speech.transcribe_url
+  - speech.transcribe_base64
+risk:
+  default: READ
+  inference: HIGH_RISK
+  inference_requires_approval: true
+  credential_mutations_exposed: false
+optional_env:
+  - DEEPGRAM_API_BASE_URL
+  - DEEPGRAM_TIMEOUT_MS
+  - DEEPGRAM_APPROVAL_MODE
+  - DEEPGRAM_APPROVED_ACTIONS
+  - DEEPGRAM_MAX_AUDIO_BYTES
