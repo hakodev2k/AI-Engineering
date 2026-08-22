@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "require_phase_timestamps_for_approval_calls": true,
+  "max_clock_skew_ms": 50,
+  "regression_threshold_percent": 20.0,
+  "minimum_samples": 5,
+  "diagnosis_metric": "tool_execution_ms",
+  "approval_metric": "approval_wait_ms",
+  "block_on_invalid_order": true,
+  "block_on_missing_execution_bounds": true
+}
