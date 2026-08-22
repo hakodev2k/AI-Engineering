@@ -1,0 +1,9 @@
+{
+  "max_cache_write_share": 0.20,
+  "max_sibling_write_amplification": 2.0,
+  "max_creation_tokens_per_sibling": 50000,
+  "min_group_size_for_amplification": 2,
+  "require_request_id_deduplication": true,
+  "block_on_missing_usage_fields": true,
+  "quality_regression_tolerance": 0.0
+}
