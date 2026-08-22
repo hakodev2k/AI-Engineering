@@ -1,0 +1,80 @@
+name: Content proposal
+description: Propose a new reusable Rule, Skill, Role, engineering control, or connector.
+title: "[Content]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Propose the smallest reusable asset that solves a distinct problem. Search existing collections first and explain overlap explicitly.
+  - type: dropdown
+    id: content_type
+    attributes:
+      label: Content type
+      options:
+        - Rule
+        - Skill
+        - Role
+        - Engineering kit or guard
+        - MCP/API connector
+        - Repository guide
+    validations:
+      required: true
+  - type: input
+    id: proposed_path
+    attributes:
+      label: Proposed path or name
+      description: Use the closest existing naming convention.
+      placeholder: Skills/example-discipline/example-procedure.md
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem and intended adopter
+      description: Describe the concrete problem, who selects this content, and when they use it.
+    validations:
+      required: true
+  - type: textarea
+    id: existing_content
+    attributes:
+      label: Existing content reviewed
+      description: List similar paths and explain why extending or linking them is insufficient.
+      placeholder: |
+        - Existing path: ...
+        - Difference in trigger, owner, output, or lifecycle: ...
+    validations:
+      required: true
+  - type: textarea
+    id: contract
+    attributes:
+      label: Proposed standalone contract
+      description: Define the copy unit, inputs, outputs, dependencies, side effects, verification, stop conditions, and limitations.
+    validations:
+      required: true
+  - type: textarea
+    id: safety
+    attributes:
+      label: Safety and authority boundaries
+      description: Identify credentials, permissions, untrusted input, production impact, destructive actions, approvals, and rollback needs.
+    validations:
+      required: true
+  - type: textarea
+    id: validation
+    attributes:
+      label: Validation plan
+      description: Explain how examples, links, schemas, scripts, provider claims, and target integration will be checked.
+    validations:
+      required: true
+  - type: checkboxes
+    id: confirmations
+    attributes:
+      label: Confirmation
+      options:
+        - label: I searched the repository and existing issues for overlapping content.
+          required: true
+        - label: The proposal is independently selectable and does not require copying an entire collection.
+          required: true
+        - label: The proposal contains no credentials, private data, or proprietary material.
+          required: true
+        - label: I reviewed the content quality standard and contribution guide.
+          required: true

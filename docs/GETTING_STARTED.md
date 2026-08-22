@@ -19,6 +19,7 @@ Copy a single `.md` file when adopting a rule or skill. Copy the entire child di
 
 The complete selective-download and integration procedure is in [ADOPTION_GUIDE.md](ADOPTION_GUIDE.md).
 Use the [composition guide](COMPOSITION_GUIDE.md) when choosing a compatible role, rule, skill, control, or connector for a specific outcome.
+For a faster start, choose one of the small, outcome-based recipes in [STARTER_PACKS.md](STARTER_PACKS.md).
 
 ## Safe adoption checklist
 

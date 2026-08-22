@@ -18,8 +18,10 @@ Describe the problem and the outcome of this change.
 List the exact commands or checks run and summarize their results.
 
 ```text
-npm run audit
+npm run check
 ```
+
+For an executable package or connector, also list the package-local commands that were run. Do not report a repository audit as proof that provider or runtime behavior was tested.
 
 ## Risk and compatibility
 
@@ -29,6 +31,8 @@ Describe security, privacy, permission, external-side-effect, dependency, and co
 
 - [ ] The change is focused and contains no unrelated generated artifacts.
 - [ ] Documentation, examples, commands, and links match the behavior.
+- [ ] The supported copy unit contains or documents every required local dependency.
+- [ ] Similar content was reviewed; overlap and selection differences are documented.
 - [ ] Relevant schemas, scripts, builds, and tests were checked.
 - [ ] No secrets, personal data, proprietary content, or unsafe fixtures are included.
 - [ ] Approval boundaries and destructive or externally visible actions are explicit.

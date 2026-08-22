@@ -32,15 +32,16 @@ Run the repository structure check before opening a pull request:
 
 ```bash
 npm ci
-npm run audit
-npm run audit:standalone:strict
+npm run check
 ```
 
-Changes affecting MCP connectors must also pass:
+For an MCP connector change, validate only the changed provider package from its own directory. Its README remains authoritative when its scripts differ:
 
 ```bash
-npm --prefix MCP-API ci
-npm run check
+cd MCP-API/<connector>
+npm install
+npm run build --if-present
+npm test
 ```
 
 ## Content standards
@@ -58,7 +59,15 @@ All contributions should:
 
 Use English for repository content so additions remain consistent with the existing collections. Prefer UTF-8 text, fenced code blocks with a language identifier, and tables only when they improve comparison or scanning.
 
-Follow the repository [documentation style guide](docs/STYLE_GUIDE.md) for structure, links, examples, and security-sensitive content. Repository-wide decisions follow [GOVERNANCE.md](GOVERNANCE.md).
+Follow the repository [documentation style guide](docs/STYLE_GUIDE.md) for structure, links, examples, and security-sensitive content. Use the [content quality standard](docs/CONTENT_QUALITY.md) to review standalone readiness, semantic overlap, verification, lifecycle, and deprecation. Repository-wide decisions follow [GOVERNANCE.md](GOVERNANCE.md).
+
+For repository direction and explicit non-goals, review [ROADMAP.md](ROADMAP.md). Do not propose a monolithic installation flow, mandatory collection-wide runtime, forced consolidation of independently useful Skills, or release cadence as a prerequisite for adoption.
+
+## Proposing new content
+
+Use the content proposal issue template before adding a substantial Rule, Skill, Role, engineering control, or connector. The proposal should identify similar existing paths and explain whether the change should extend, accompany, or remain separate from them.
+
+New content must have a distinct trigger, responsibility, evidence contract, or lifecycle. Do not create a second asset merely to use a different title. When two choices remain close, add explicit selection guidance to their nearest index.
 
 ## Package expectations
 
@@ -78,6 +87,8 @@ Connector changes require additional care. Document capabilities, authentication
 
 - [ ] The change has a clear purpose and bounded scope.
 - [ ] Documentation and examples match the implemented behavior.
+- [ ] Similar content was reviewed and overlap or selection differences are documented.
+- [ ] The supported copy unit works without undocumented parent or sibling files.
 - [ ] Relevant scripts, schemas, links, and tests have been checked.
 - [ ] Security, privacy, permission, and approval implications are documented.
 - [ ] No secrets, sensitive data, or unrelated generated artifacts are included.

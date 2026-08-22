@@ -19,6 +19,7 @@ body:
         - Unclear instructions
         - Broken navigation or link
         - Standalone adoption or missing dependency
+        - Duplicate or overlapping content
         - Inconsistent terminology
         - Accessibility or formatting
     validations:

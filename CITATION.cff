@@ -1,0 +1,16 @@
+cff-version: 1.2.0
+message: "If this library supports your work, cite the repository and the exact commit SHA containing the selected content."
+title: "AI Engineering"
+type: software
+authors:
+  - name: "hakodev2k"
+repository-code: "https://github.com/hakodev2k/AI-Engineering"
+url: "https://github.com/hakodev2k/AI-Engineering"
+abstract: "A pick-and-copy library of AI engineering roles, rules, skills, safety controls, workflows, and provider-scoped MCP/API connectors."
+license: MIT
+keywords:
+  - ai-engineering
+  - ai-agents
+  - software-engineering
+  - model-context-protocol
+  - developer-tools

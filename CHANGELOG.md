@@ -25,6 +25,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - JSON Schema meta-validation for repository-wide structured contracts.
 - A composition guide that maps every role to the smallest appropriate Rules, Skills, kit, and MCP starting point.
 - Standalone accessibility, observability, release-engineering, product-owner, and data-analysis guidance for common one-off adoption.
+- A content quality standard, contributor proposal form, and FAQ for reviewing standalone readiness and semantic overlap.
+- Outcome-based starter packs, trust/provenance guidance, roadmap, maintainer record, citation metadata, and GitHub discovery recommendations.
 
 ### Changed
 
@@ -33,6 +35,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Role and engineering-package documentation now treats package-local setup and verification as the consumer contract.
 - Repository automation now runs content and standalone-package audits only; provider connector builds remain a changed-connector responsibility.
 - MCP adoption now starts with one selected provider directory instead of a collection-wide installation flow.
+- Contribution and pull-request guidance now validates repository documentation centrally and executable connectors package by package.
 
 ### Fixed
 

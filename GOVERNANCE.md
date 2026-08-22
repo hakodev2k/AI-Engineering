@@ -21,6 +21,8 @@ Repository maintainers are responsible for:
 
 Maintainers may delegate review of a specialized change without transferring final stewardship of the repository.
 
+Current stewardship and continuity expectations are listed in [MAINTAINERS.md](MAINTAINERS.md).
+
 ## Decision model
 
 Routine, reversible changes are accepted through normal pull-request review. Maintainers seek technical consensus when practical, but the designated maintainer makes the final decision when consensus cannot be reached.
@@ -55,6 +57,8 @@ Security vulnerabilities follow [SECURITY.md](SECURITY.md), not the public issue
 ## Documentation lifecycle
 
 Documentation is maintained alongside the behavior or package it describes. Material user-facing changes should update the relevant guide and [CHANGELOG.md](CHANGELOG.md). Outdated or unverifiable content may be corrected, deprecated, or removed after compatibility and migration impact are considered.
+
+The [content quality standard](docs/CONTENT_QUALITY.md) defines repository-wide expectations for standalone readiness, overlap review, evidence, status, and deprecation. Automated audits support these decisions but do not replace subject-matter or safety review.
 
 ## Changes to governance
 

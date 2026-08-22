@@ -51,6 +51,21 @@ See the [adoption guide](docs/ADOPTION_GUIDE.md) for selection boundaries, spars
 
 For recommended Role, Rule, Skill, gate, and MCP combinations by outcome, use the [composition guide](docs/COMPOSITION_GUIDE.md). It calls out where a role package is intentionally the only authoritative starting point.
 
+## Popular starting points
+
+Use the [starter packs](docs/STARTER_PACKS.md) when you want a small reviewed selection instead of browsing every collection:
+
+- ASP.NET Core API change
+- React user-facing feature
+- Tool-using AI agent
+- Application security review
+- Reliability and incident readiness
+- Data pipeline change
+- Product discovery to acceptance
+- Documentation change
+
+Starter packs are navigation recipes, not installable bundles. Remove anything that does not apply to the target task.
+
 ## Design principles
 
 - **Composable:** packages can be adopted independently.
@@ -72,10 +87,16 @@ Please report suspected vulnerabilities through the private process described in
 - [Getting started](docs/GETTING_STARTED.md)
 - [Adoption guide](docs/ADOPTION_GUIDE.md)
 - [Composition guide](docs/COMPOSITION_GUIDE.md)
+- [Starter packs](docs/STARTER_PACKS.md)
+- [Content quality standard](docs/CONTENT_QUALITY.md)
+- [Trust and provenance](docs/TRUST_AND_PROVENANCE.md)
+- [Frequently asked questions](docs/FAQ.md)
 - [Repository structure](docs/REPOSITORY_STRUCTURE.md)
 - [Documentation style guide](docs/STYLE_GUIDE.md)
 - [Maintenance guide](docs/MAINTENANCE.md)
 - [Governance](GOVERNANCE.md)
+- [Roadmap](ROADMAP.md)
+- [Maintainers](MAINTAINERS.md)
 - [Changelog](CHANGELOG.md)
 - [Contributing guide](CONTRIBUTING.md)
 - [Code of Conduct](CODE_OF_CONDUCT.md)

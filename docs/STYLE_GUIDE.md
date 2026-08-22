@@ -2,6 +2,8 @@
 
 This guide keeps repository documentation consistent, reviewable, and useful to both people and AI-assisted workflows.
 
+Use this guide for writing conventions and the [content quality standard](CONTENT_QUALITY.md) for readiness, overlap, verification, lifecycle, and deprecation decisions.
+
 ## Language and tone
 
 - Write repository content in English for consistency with existing packages.

@@ -12,7 +12,7 @@ Do not use public support channels for credentials, personal data, proprietary p
 
 ## Before opening an issue
 
-1. Search existing issues and the relevant collection for an answer.
+1. Check the [FAQ](docs/FAQ.md), search existing issues, and inspect the relevant collection for an answer.
 2. Confirm the problem still exists on the latest `main` branch.
 3. Reduce the report to the smallest reproducible example.
 4. Remove secrets and sensitive data from logs, screenshots, and sample configuration.
@@ -30,6 +30,8 @@ Do not use public support channels for credentials, personal data, proprietary p
 - any workaround already attempted.
 
 Clear, reproducible reports are easier to triage. Maintainers may close requests that are out of scope, cannot be reproduced, or do not include enough information after follow-up.
+
+For a proposed new Rule, Skill, Role, engineering control, or connector, use the content proposal issue form. It asks for existing-content comparison, standalone boundaries, safety considerations, and a validation plan before implementation begins.
 
 ## Support boundaries
 

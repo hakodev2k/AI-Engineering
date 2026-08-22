@@ -9,9 +9,14 @@ Use this directory for repository-wide guidance. Package-specific behavior remai
 | [Getting started](GETTING_STARTED.md) | Choose and copy the smallest useful unit into a target repository. |
 | [Adoption guide](ADOPTION_GUIDE.md) | Apply the standalone package contract, selective checkout, integration, and update workflow. |
 | [Composition guide](COMPOSITION_GUIDE.md) | Select and combine a role, rules, skills, gates, and MCP connector without importing the whole library. |
+| [Starter packs](STARTER_PACKS.md) | Begin with small, verified selections for common engineering outcomes. |
+| [Content quality standard](CONTENT_QUALITY.md) | Review standalone readiness, correctness, overlap, safety, verification, and lifecycle. |
+| [Trust and provenance](TRUST_AND_PROVENANCE.md) | Understand assurance limits, trust boundaries, source revision, and adoption evidence. |
+| [Frequently asked questions](FAQ.md) | Resolve common selection, copying, permissions, update, and contribution questions. |
 | [Repository structure](REPOSITORY_STRUCTURE.md) | Understand the six main collections and how they compose. |
 | [Documentation style guide](STYLE_GUIDE.md) | Write consistent, navigable, and testable documentation. |
 | [Maintenance guide](MAINTENANCE.md) | Keep navigation, dependencies, checks, and release notes healthy. |
+| [Repository discovery metadata](REPOSITORY_DISCOVERY.md) | Configure the GitHub description, topics, About section, and social preview consistently. |
 
 ## Project policies
 
@@ -21,6 +26,9 @@ Use this directory for repository-wide guidance. Package-specific behavior remai
 - [Support](../SUPPORT.md)
 - [Code of Conduct](../CODE_OF_CONDUCT.md)
 - [Changelog](../CHANGELOG.md)
+- [Roadmap](../ROADMAP.md)
+- [Maintainers](../MAINTAINERS.md)
+- [Citation metadata](../CITATION.cff)
 
 ## Documentation boundaries
 

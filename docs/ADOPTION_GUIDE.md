@@ -98,6 +98,8 @@ If no executable component exists, review the document for complete purpose, inp
 
 Keep a short adoption record in the target repository so future maintainers can compare upstream changes:
 
+See [TRUST_AND_PROVENANCE.md](TRUST_AND_PROVENANCE.md) for the repository assurance model, trust boundaries, and a more detailed provenance record.
+
 ```yaml
 source: https://github.com/hakodev2k/AI-Engineering
 revision: <commit-or-release>
