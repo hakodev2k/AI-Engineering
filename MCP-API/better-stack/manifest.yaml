@@ -1,0 +1,48 @@
+id: better-stack
+name: Better Stack
+upstream:
+  - official-mcp
+  - rest
+mcp:
+  endpoint: https://mcp.betterstack.com
+  auth: oauth_or_bearer_token
+  allowlisted_tools:
+    - monitors
+    - monitor
+    - incidents
+api:
+  base_url: https://uptime.betterstack.com
+auth:
+  type: bearer_token
+  required_env:
+    - BETTERSTACK_API_TOKEN
+  least_privilege: team_scoped_uptime_token_preferred
+capabilities:
+  - monitor.list
+  - monitor.get
+  - monitor.create
+  - heartbeat.list
+  - heartbeat.get
+  - heartbeat.create
+  - incident.list
+  - incident.get
+  - on_call.list
+  - on_call.events
+  - status_page.list
+  - status_page.get
+risk:
+  default: READ
+  writes_require_operator_approval: true
+  destructive_disabled_by_default: true
+transport:
+  preferred_read: official_mcp
+  fallback_read: rest
+  writes: rest
+optional_env:
+  - BETTERSTACK_API_BASE_URL
+  - BETTERSTACK_MCP_URL
+  - BETTERSTACK_USE_MCP
+  - BETTERSTACK_TIMEOUT_MS
+  - BETTERSTACK_APPROVAL_MODE
+  - BETTERSTACK_APPROVED_ACTIONS
+  - BETTERSTACK_ALLOW_DESTRUCTIVE
