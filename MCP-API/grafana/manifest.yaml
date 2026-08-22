@@ -27,6 +27,7 @@ capabilities:
   - mcp.status
   - health.read
   - dashboard.search
+  - folder.search
   - dashboard.read
   - dashboard.summary
   - dashboard.panel_queries
@@ -39,6 +40,7 @@ risk:
   writes_require_operator_approval: true
 required_permissions:
   - dashboards:read
+  - folders:read
   - datasources:read
   - dashboards:create
   - dashboards:write
