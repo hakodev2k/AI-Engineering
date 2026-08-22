@@ -1,0 +1,12 @@
+{
+  "allowed_authorization_schemes": ["https"],
+  "allow_http_loopback": true,
+  "transaction_ttl_seconds": 600,
+  "require_pkce_s256": true,
+  "require_resource_binding": true,
+  "require_live_loopback_listener": true,
+  "require_exact_redirect_match": true,
+  "single_use_state": true,
+  "max_clock_skew_seconds": 30,
+  "dangerous_schemes": ["javascript", "data", "file", "vbscript"]
+}
