@@ -1,0 +1,18 @@
+{
+  "status": "blocked",
+  "operation": "replace-with-operation-name",
+  "findings": [
+    {
+      "finding": "Replace with an evidence-backed finding",
+      "evidence": ["path/to/file:line-or-test-log-reference"],
+      "risk": "medium",
+      "confidence": 0.5,
+      "recommended_action": "Replace with a concrete next action"
+    }
+  ],
+  "verification": {
+    "replay_test": "not-run",
+    "build": "not-run",
+    "tests": "not-run"
+  }
+}
