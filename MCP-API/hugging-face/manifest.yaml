@@ -1,0 +1,45 @@
+id: hugging-face
+name: Hugging Face
+upstream:
+  - official-mcp
+  - rest
+  - inference-api
+mcp:
+  official_url: https://huggingface.co/mcp
+  auth: oauth_or_bearer_token
+  strategy: "Use the official remote MCP server for broad interactive Hub discovery and community Gradio tools. This reusable connector keeps a reviewed, deterministic REST/Inference API surface for stable schemas, permission boundaries, and destructive-action controls."
+api:
+  hub_base_url: https://huggingface.co
+  inference_base_url: https://router.huggingface.co/v1
+auth:
+  type: fine_grained_user_access_token
+  required_env:
+    - HF_TOKEN
+  least_privilege_permissions:
+    - read access to selected Hub repositories/resources
+    - make calls to Inference Providers when inference tool is enabled
+    - create/delete repository permission only when repository mutation tools are enabled
+capabilities:
+  - model.search
+  - model.get
+  - dataset.search
+  - dataset.get
+  - space.search
+  - space.get
+  - repo.file.list
+  - user.whoami
+  - inference.chat
+  - repo.create
+  - repo.delete
+risk:
+  default: READ
+  writes_require_operator_approval: true
+  inference_credit_usage_requires_approval: true
+  destructive_disabled_by_default: true
+optional_env:
+  - HF_API_BASE_URL
+  - HF_INFERENCE_BASE_URL
+  - HF_TIMEOUT_MS
+  - HF_APPROVAL_MODE
+  - HF_APPROVED_ACTIONS
+  - HF_ALLOW_DESTRUCTIVE
