@@ -25,8 +25,21 @@ def load(path: Path):
     return v
 
 
+def glob_variants(pattern: str) -> list[str]:
+    """Allow **/ to match zero or more directories, unlike plain fnmatch."""
+    variants={pattern}
+    while "**/" in pattern:
+        pattern=pattern.replace("**/","",1)
+        variants.add(pattern)
+    return list(variants)
+
+
 def matches(path: str, patterns: list[str]) -> bool:
-    return any(fnmatch.fnmatch(path,p) or Path(path).match(p) for p in patterns)
+    for pattern in patterns:
+        for candidate in glob_variants(pattern):
+            if fnmatch.fnmatch(path,candidate) or Path(path).match(candidate):
+                return True
+    return False
 
 
 def main():
