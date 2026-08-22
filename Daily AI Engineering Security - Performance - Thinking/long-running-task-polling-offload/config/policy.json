@@ -1,0 +1,13 @@
+{
+  "initial_interval_seconds": 10,
+  "max_interval_seconds": 120,
+  "backoff_multiplier": 1.7,
+  "jitter_ratio": 0.15,
+  "max_wait_seconds": 7200,
+  "max_polls": 120,
+  "max_result_bytes": 65536,
+  "require_durable_handle": true,
+  "wake_on": ["completed", "failed", "cancelled", "timeout"],
+  "terminal_states": ["completed", "failed", "cancelled"],
+  "pending_states": ["queued", "running", "pending"]
+}
