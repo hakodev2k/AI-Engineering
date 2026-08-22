@@ -1,9 +1,0 @@
-{
-  "warmup_requests": 1000,
-  "minimum_measured_requests": 5000,
-  "max_heap_growth_mb_per_1000_requests": 1.0,
-  "max_p95_latency_regression_percent": 15.0,
-  "max_error_rate_percent": 0.1,
-  "require_unique_server_instance_per_request": true,
-  "require_clean_teardown": true
-}

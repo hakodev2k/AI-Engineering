@@ -1,2 +1,0 @@
-# Rollback Risk Reviewer
-Owns independent review of rollback feasibility, state/data implications, point-of-no-return risks, recovery timing, and post-rollback checks. Does not authorize destructive rollback. Returns residual rollback risk and required approval gates.

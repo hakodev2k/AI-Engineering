@@ -1,5 +1,0 @@
-# Shared runtime dependencies used by executable packages in this collection.
-jsonschema>=4.18,<5
-PyYAML>=6,<7
-redis>=5,<7
-requests>=2.31,<3

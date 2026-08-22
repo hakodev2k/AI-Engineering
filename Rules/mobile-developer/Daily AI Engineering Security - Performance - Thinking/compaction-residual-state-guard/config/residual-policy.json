@@ -1,8 +1,0 @@
-{
-  "max_inline_bytes": 65536,
-  "require_hash_for_referenced_state": true,
-  "require_reference_for_omitted_required_state": true,
-  "block_unrecoverable_required_state": true,
-  "max_recovery_attempts": 2,
-  "required_fields": ["id", "tool", "status", "required", "recoverable", "sha256", "reference", "retained_bytes", "omitted_bytes", "reason"]
-}

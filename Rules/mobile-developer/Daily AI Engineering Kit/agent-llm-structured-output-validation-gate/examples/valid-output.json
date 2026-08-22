@@ -1,7 +1,0 @@
-{
-  "status": "verified",
-  "findings": [{"id": "F-001", "claim": "The requested behavior is covered by an automated test.", "confidence": 0.98}],
-  "evidence": [{"findingId": "F-001", "source": "tests/example_test.py", "detail": "Targeted test completed successfully."}],
-  "verification": {"schemaValid": true, "semanticChecksPassed": true},
-  "errors": []
-}

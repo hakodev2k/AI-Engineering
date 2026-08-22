@@ -1,2 +1,0 @@
-# Skill: Prompt Regression Analysis
-**Trigger:** previously passing behavior degrades or candidate changes common behavior. **Procedure:** reproduce on pinned case; compare prompt/model/context/tool changes; minimize failing example; classify root cause; add regression case; fix smallest responsible layer; rerun affected and critical suites. **Output:** root-cause record, fix, evidence, prevention. **Stop:** if failure is model/tool/platform behavior outside prompt control, escalate with reproducible evidence.

@@ -1,9 +1,0 @@
-{
-  "require_issuer_binding": true,
-  "require_resource_binding": true,
-  "require_audience_check": true,
-  "invalidate_on_issuer_change": true,
-  "legacy_credentials_without_provenance": "reauthorize",
-  "max_callback_age_seconds": 600,
-  "allow_http_localhost_redirects_only": true
-}

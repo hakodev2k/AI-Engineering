@@ -1,4 +1,0 @@
-{"task_id":"baseline-1","variant":"baseline","prefix_sections":{"system":{"text":"fixed policy"},"tools":[{"name":"read"}]},"input_tokens":2000,"cached_tokens":1200,"cache_write_tokens":0,"latency_ms":100}
-{"task_id":"baseline-2","variant":"baseline","prefix_sections":{"system":{"text":"fixed policy"},"tools":[{"name":"read"}]},"input_tokens":2000,"cached_tokens":1200,"cache_write_tokens":0,"latency_ms":105}
-{"task_id":"candidate-1","variant":"candidate","prefix_sections":{"system":{"text":"fixed policy"},"tools":[{"name":"read"}]},"input_tokens":2000,"cached_tokens":1500,"cache_write_tokens":100,"latency_ms":90}
-{"task_id":"candidate-2","variant":"candidate","prefix_sections":{"system":{"text":"fixed policy"},"tools":[{"name":"read"}]},"input_tokens":2000,"cached_tokens":1500,"cache_write_tokens":0,"latency_ms":95}

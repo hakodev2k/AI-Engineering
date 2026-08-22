@@ -1,9 +1,0 @@
-{
-  "max_occupancy_ratio_without_serialized_recheck": 1.0,
-  "max_estimator_error_ratio": 0.20,
-  "require_transcript_revision_binding": true,
-  "allow_cumulative_usage_as_occupancy": false,
-  "require_post_compaction_remeasurement": true,
-  "block_automatic_compaction_on_integrity_failure": true,
-  "recognized_sources": ["provider_input_tokens", "serialized_prompt_tokenizer", "calibrated_estimator"]
-}

@@ -1,7 +1,0 @@
-{
-  "status": "acquired",
-  "key": "ai-lock:invoice:4815",
-  "owner": "2c034b5bcb772e48e7b98f78765d4515",
-  "fencing_token": 42,
-  "lease_ms": 30000
-}

@@ -1,6 +1,0 @@
-{
-  "max_clone_bytes_per_event": 4096,
-  "max_redundant_wakeup_ratio": 0.05,
-  "max_p95_duration_ms": 25.0,
-  "max_amplification_ratio": 1.25
-}

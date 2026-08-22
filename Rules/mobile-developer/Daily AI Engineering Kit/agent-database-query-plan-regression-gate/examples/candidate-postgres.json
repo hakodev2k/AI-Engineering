@@ -1,1 +1,0 @@
-[{"Plan":{"Node Type":"Index Scan","Relation Name":"orders","Total Cost":110.0,"Plan Rows":105,"Actual Rows":98,"Actual Total Time":9.1}}]

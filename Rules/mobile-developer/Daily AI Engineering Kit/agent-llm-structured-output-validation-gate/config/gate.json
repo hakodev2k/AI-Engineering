@@ -1,7 +1,0 @@
-{
-  "schema": "schemas/agent-output.schema.json",
-  "maxRepairAttempts": 2,
-  "rejectUnknownFields": true,
-  "requireEvidenceForClaims": true,
-  "approvalRequiredFor": ["schema_change", "validation_weakening", "production_config_change"]
-}

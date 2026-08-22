@@ -1,8 +1,0 @@
-{
-  "repeat_signature_limit": 3,
-  "repeat_error_limit": 2,
-  "max_no_progress_steps": 4,
-  "max_total_steps": 20,
-  "transient_error_classes": ["timeout", "rate_limit", "temporarily_unavailable"],
-  "transient_retry_limit": 2
-}

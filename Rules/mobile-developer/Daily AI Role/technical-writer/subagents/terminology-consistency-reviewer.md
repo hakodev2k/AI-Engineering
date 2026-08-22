@@ -1,2 +1,0 @@
-# Terminology Consistency Reviewer
-Owns comparison of names, UI labels, API identifiers, glossary terms, capitalization, and version labels across the draft and canonical sources. Proposes conflicts for resolution. MUST NOT rename product concepts without owner decision.

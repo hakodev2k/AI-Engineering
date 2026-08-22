@@ -1,2 +1,0 @@
-2026-08-20T12:00:00Z INFO request completed request_id=req_01hxyz user_id=u_1042 status=200 duration_ms=37
-2026-08-20T12:00:01Z WARN downstream timeout request_id=req_01hxza service=payments attempt=1

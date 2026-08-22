@@ -1,4 +1,0 @@
-{"request_id":"h1","timestamp":"2026-08-21T01:00:00Z","version":"2.1.230","model":"example-model","cache_read_input_tokens":80000,"cache_creation_input_tokens":2000,"input_tokens":1000}
-{"request_id":"h2","timestamp":"2026-08-21T01:01:00Z","version":"2.1.230","model":"example-model","cache_read_input_tokens":90000,"cache_creation_input_tokens":2500,"input_tokens":1200}
-{"request_id":"h3","timestamp":"2026-08-21T01:02:00Z","version":"2.1.230","model":"example-model","cache_read_input_tokens":100000,"cache_creation_input_tokens":2200,"input_tokens":1000}
-{"request_id":"h4","timestamp":"2026-08-21T01:03:00Z","version":"2.1.230","model":"example-model","cache_read_input_tokens":110000,"cache_creation_input_tokens":3000,"input_tokens":1200}

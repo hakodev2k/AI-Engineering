@@ -1,9 +1,0 @@
-{
-  "max_context_bytes": 120000,
-  "max_duplicate_ratio": 0.15,
-  "min_required_fact_coverage": 1.0,
-  "max_refresh_retries": 2,
-  "require_fresh_hash_for_required_files": true,
-  "block_on_missing_required_fact": true,
-  "quality_regression_tolerance": 0.0
-}

@@ -1,2 +1,0 @@
-# Audience Reviewer
-Owns independent review of audience fit, prerequisites, task sequence, cognitive load, and reader language. Returns issues with severity and evidence. MUST NOT override technical source truth or approve product behavior. Technical Writer integrates findings.

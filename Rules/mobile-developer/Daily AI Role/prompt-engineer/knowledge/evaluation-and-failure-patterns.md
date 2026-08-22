@@ -1,2 +1,0 @@
-# Evaluation and Failure Patterns
-Evaluate behavior across representative, boundary, missing-data, contradictory, adversarial, long-context, and format-stress cases. Track failure categories: task misunderstanding, missing evidence, fabricated detail, instruction conflict, schema failure, over-refusal, under-refusal, context omission, tool misuse assumption, verbosity mismatch, and regression. A wording change without evidence is a hypothesis. Repeated failures should become durable tests, rules, templates, or architecture changes.

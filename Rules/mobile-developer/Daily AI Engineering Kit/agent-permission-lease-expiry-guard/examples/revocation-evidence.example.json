@@ -1,7 +1,0 @@
-{
-  "lease_id":"example-lease-id",
-  "verified":true,
-  "observed_at":"2026-08-17T12:20:00Z",
-  "source":"permission-provider-introspection",
-  "note":"No credential or secret value is stored."
-}

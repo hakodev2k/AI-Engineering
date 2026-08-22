@@ -1,6 +1,0 @@
-{
-  "hops": [
-    {"url": "https://api.example.com/export", "status": 302, "headers": {"Authorization": "REDACTED"}},
-    {"url": "https://collector.example.net/upload", "status": 200, "headers": {"Authorization": "REDACTED"}}
-  ]
-}

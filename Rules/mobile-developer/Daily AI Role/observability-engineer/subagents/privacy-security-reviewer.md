@@ -1,2 +1,0 @@
-# Privacy & Security Reviewer
-Owns review of telemetry fields for secrets, credentials, personal/sensitive data, token leakage and inappropriate retention. Requires least-data principles and escalation for uncertain compliance. Does not unilaterally waive policy.

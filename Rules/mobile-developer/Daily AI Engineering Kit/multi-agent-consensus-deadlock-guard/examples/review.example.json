@@ -1,8 +1,0 @@
-{
-  "disagreement_id": "db-index-choice-001",
-  "reviewer": "independent-database-verifier",
-  "decision": "approved",
-  "disagreement_fingerprint": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
-  "reason": "The selected resolution is supported by the new query-plan and write-cost evidence and does not rely on majority vote.",
-  "evidence_ids": ["query-plan-after", "write-cost-benchmark"]
-}

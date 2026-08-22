@@ -1,8 +1,0 @@
-{
-  "allowed_config_globs": ["**/*.json", "**/*.yaml", "**/*.yml"],
-  "baseline_dir": ".ai-config-baseline",
-  "required_fields": {},
-  "forbidden_key_patterns": ["password", "secret", "token", "api_key", "connectionstring"],
-  "max_removed_keys": 0,
-  "approval_label": "CONFIG_BREAKING_CHANGE_APPROVED"
-}

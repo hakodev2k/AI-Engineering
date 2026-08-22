@@ -1,2 +1,0 @@
-# Accessibility Reviewer
-Owns semantic, keyboard, focus, naming and critical-task accessibility review. Outputs reproducible findings and severity. MUST NOT waive critical accessibility failures; Product/Accessibility owner handles accepted exceptions.

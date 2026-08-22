@@ -1,2 +1,0 @@
-# Prompt Quality Metrics
-Track task success rate, critical-case pass rate, schema-valid rate, unsupported-claim rate, human correction rate, retry rate, latency, input/output tokens, cost per successful task, refusal accuracy where relevant, and regression count. Segment by use case and difficulty. Do not optimize aggregate pass rate while hiding critical-case failures. Every target needs owner, window, and measurement method.

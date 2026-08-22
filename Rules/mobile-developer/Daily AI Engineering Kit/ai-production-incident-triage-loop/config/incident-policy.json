@@ -1,1 +1,0 @@
-{"max_retries":3,"require_approval":["production_change","data_delete","security_change"],"status":["detected","investigating","mitigated","verified","closed"]}

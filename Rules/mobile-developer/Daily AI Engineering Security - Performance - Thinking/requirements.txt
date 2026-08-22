@@ -1,2 +1,0 @@
-# Shared runtime dependencies used by executable packages in this collection.
-tiktoken>=0.7,<1

@@ -1,9 +1,0 @@
-{
-  "adapters": [
-    {"name":"terminal-read","transport":"terminal","capability":"filesystem.read","side_effecting":false,"mediated":true},
-    {"name":"terminal-delete","transport":"terminal","capability":"filesystem.delete_recursive","side_effecting":true,"mediated":true},
-    {"name":"mcp-docker","transport":"mcp","capability":"remote.shell_destructive","side_effecting":true,"mediated":true},
-    {"name":"delegated-repo-write","transport":"subagent","capability":"repository.write","side_effecting":true,"mediated":true},
-    {"name":"prod-deploy","transport":"deployment","capability":"production.deploy","side_effecting":true,"mediated":true}
-  ]
-}

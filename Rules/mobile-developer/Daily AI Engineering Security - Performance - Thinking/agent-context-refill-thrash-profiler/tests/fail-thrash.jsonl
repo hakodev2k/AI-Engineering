@@ -1,8 +1,0 @@
-{"turn":10,"event":"compact"}
-{"turn":11,"event":"context","source":"history_summary","tokens":150000,"artifact_id":"summary-10"}
-{"turn":11,"event":"context","source":"project_instruction","tokens":125000,"fingerprint":"rules-v1","artifact_id":"rules-v1"}
-{"turn":12,"event":"context","source":"project_instruction","tokens":125000,"fingerprint":"rules-v1","artifact_id":"rules-v1"}
-{"turn":13,"event":"context","source":"tool_result","tokens":10000,"required":true}
-{"turn":14,"event":"compact"}
-{"turn":17,"event":"compact"}
-{"turn":20,"event":"compact"}

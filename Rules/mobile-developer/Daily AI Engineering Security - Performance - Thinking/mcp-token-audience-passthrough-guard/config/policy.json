@@ -1,9 +1,0 @@
-{
-  "mcp_resource": "https://mcp.example.com/",
-  "trusted_issuers": ["https://auth.example.com/"],
-  "required_scopes": [],
-  "require_audience": true,
-  "forbid_inbound_token_passthrough": true,
-  "allow_outbound_hosts": ["api.example.com"],
-  "fingerprint_algorithm": "sha256"
-}

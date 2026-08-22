@@ -1,2 +1,0 @@
-# Instruction and Context Design
-Treat prompts as contracts, not prose tricks. Separate stable behavior from per-request data. State objective, authority, constraints, evidence rules, output contract, and stop/escalation behavior. Prefer the smallest context that preserves correctness. Resolve instruction conflicts by explicit hierarchy rather than duplicated wording. Examples should demonstrate boundaries, not merely happy paths. When a requirement can be machine-validated, use a schema or deterministic check instead of relying on another natural-language instruction.

@@ -1,1 +1,0 @@
-{"maxRetries":2,"approvalRequired":["major_upgrade","breaking_api_change","production_release"]}

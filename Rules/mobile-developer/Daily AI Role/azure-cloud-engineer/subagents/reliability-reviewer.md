@@ -1,2 +1,0 @@
-# Reliability Reviewer
-Advisory owner for failure modes, zones/regions, backup, restore, RTO/RPO, observability, and rollback readiness. Does not redefine business RTO/RPO. Escalates requirement/service capability mismatch.

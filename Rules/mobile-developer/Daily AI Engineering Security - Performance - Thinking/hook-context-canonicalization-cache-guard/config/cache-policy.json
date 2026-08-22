@@ -1,9 +1,0 @@
-{
-  "max_rewrite_ratio": 0.05,
-  "min_previous_prefix_tokens": 10000,
-  "max_cache_creation_tokens_per_request": 50000,
-  "require_stable_digest_for_reusable_hook_context": true,
-  "allowed_dynamic_fields": ["request_id", "timestamp", "latency_ms"],
-  "max_consecutive_regressions": 1,
-  "quality_regression_tolerance": 0.0
-}

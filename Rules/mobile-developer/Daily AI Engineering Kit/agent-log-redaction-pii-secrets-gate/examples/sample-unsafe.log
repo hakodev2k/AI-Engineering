@@ -1,4 +1,0 @@
-2026-08-20T01:20:00Z INFO request completed user=test.person@example.invalid ip=203.0.113.42
-2026-08-20T01:20:01Z WARN Authorization: Bearer syntheticTokenValue1234567890
-2026-08-20T01:20:02Z ERROR api_key=synthetic_api_key_1234567890
-2026-08-20T01:20:03Z INFO correlation_id=abc-123 status=500

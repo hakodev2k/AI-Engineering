@@ -1,2 +1,0 @@
-# Release Risk Reviewer
-Reviews blast radius, dependencies, rollout controls, rollback/disable path, guardrail metrics and operational readiness. MUST NOT authorize legal/contractual/irreversible commitments. Produces release risks, missing controls and stop conditions for Product Owner review.

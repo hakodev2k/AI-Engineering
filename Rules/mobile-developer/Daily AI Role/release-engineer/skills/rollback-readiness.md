@@ -1,2 +1,0 @@
-# Skill: Rollback readiness
-Validate previous known-good artifact, deployment command/path, configuration compatibility, database/state compatibility, feature-flag behavior, queued/event side effects, cache implications, restoration permissions, expected recovery time, and post-rollback verification. Identify point of no return. If rollback is impossible, require an alternative recovery plan and explicit human risk acceptance before high-impact release.

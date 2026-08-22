@@ -1,8 +1,0 @@
-blank_issues_enabled: false
-contact_links:
-  - name: Security vulnerability
-    url: https://github.com/hakodev2k/AI-Engineering/security/advisories/new
-    about: Report vulnerabilities privately. Do not disclose sensitive details in a public issue.
-  - name: Usage questions and discussion
-    url: https://github.com/hakodev2k/AI-Engineering/discussions
-    about: Ask usage questions or discuss broader ideas when Discussions is enabled.

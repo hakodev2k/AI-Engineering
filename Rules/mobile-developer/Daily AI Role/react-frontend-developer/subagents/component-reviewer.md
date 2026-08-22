@@ -1,2 +1,0 @@
-# Component Reviewer
-Owns independent review of component boundaries, state ownership, effects and shared-component impact. Inputs: plan/diff. Outputs: findings with severity and evidence. MUST NOT approve product scope or API changes. Does not edit concurrently with the primary implementer unless explicitly assigned.

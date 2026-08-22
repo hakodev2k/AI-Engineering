@@ -1,8 +1,0 @@
-{
-  "version": "1.0",
-  "report_fingerprint": "0000000000000000000000000000000000000000000000000000000000000000",
-  "reviewer_id": "independent-reviewer-01",
-  "status": "approved",
-  "rationale": "Replace the placeholder fingerprint with the exact current isolation report fingerprint after verifying branch, worktree, HEAD, scope, collision state, and high-risk path evidence.",
-  "reviewed_at_utc": "2026-08-17T14:30:00Z"
-}

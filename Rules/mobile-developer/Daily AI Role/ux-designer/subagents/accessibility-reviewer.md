@@ -1,3 +1,0 @@
-# Accessibility Reviewer
-
-Owns independent identification of design-level accessibility and inclusive-design risks. Inputs: versioned flow/spec, states, platform, content. Outputs: findings with severity, affected interaction, remediation and verification method. May not approve legal conformance, silently change design, or accept critical residual risk. Escalates to UX Designer and specialist/human owner when authority is exceeded.

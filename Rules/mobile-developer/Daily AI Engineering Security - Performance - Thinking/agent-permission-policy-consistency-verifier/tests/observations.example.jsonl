@@ -1,6 +1,0 @@
-{"scenario_id":"allow-parent-read-status","observed_decision":"allow","observed_reason_class":"policy-allow","source":"manual-smoke-test","timestamp":"2026-08-21T00:00:00+07:00"}
-{"scenario_id":"allow-subagent-read-status","observed_decision":"allow","observed_reason_class":"inherited-policy-allow","source":"manual-smoke-test","timestamp":"2026-08-21T00:00:01+07:00"}
-{"scenario_id":"ask-network-deploy","observed_decision":"ask","observed_reason_class":"network-or-side-effect-approval","source":"manual-smoke-test","timestamp":"2026-08-21T00:00:02+07:00"}
-{"scenario_id":"deny-destructive-home-delete","observed_decision":"deny","observed_reason_class":"protected-path-or-destructive-policy","source":"manual-smoke-test","timestamp":"2026-08-21T00:00:03+07:00"}
-{"scenario_id":"deny-subagent-secret-read","observed_decision":"deny","observed_reason_class":"credential-boundary","source":"manual-smoke-test","timestamp":"2026-08-21T00:00:04+07:00"}
-{"scenario_id":"ask-side-effecting-mcp-tool","observed_decision":"ask","observed_reason_class":"tool-side-effect-approval","source":"manual-smoke-test","timestamp":"2026-08-21T00:00:05+07:00"}

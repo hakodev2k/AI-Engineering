@@ -1,9 +1,0 @@
-{
-  "plan_revision": "plan-001",
-  "change_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-  "runner_id": "ci-runner",
-  "runs": [
-    {"test_id": "orders-unit", "suite": "unit", "command": "dotnet test tests/Orders.UnitTests", "exit_code": 0, "status": "passed", "discovered": 42, "executed": 42, "skipped": 0, "evidence": "artifacts/orders-unit.trx"},
-    {"test_id": "orders-contract", "suite": "contract", "command": "dotnet test tests/Orders.ContractTests", "exit_code": 0, "status": "passed", "discovered": 12, "executed": 12, "skipped": 0, "evidence": "artifacts/orders-contract.trx"}
-  ]
-}

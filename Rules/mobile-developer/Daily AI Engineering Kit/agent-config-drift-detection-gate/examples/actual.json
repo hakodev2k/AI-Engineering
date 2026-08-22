@@ -1,8 +1,0 @@
-{
-  "service": {
-    "region": "southeast-asia",
-    "logLevel": "Debug",
-    "features": {"newCheckout": true},
-    "credentials": {"apiToken": "different-secret-value"}
-  }
-}

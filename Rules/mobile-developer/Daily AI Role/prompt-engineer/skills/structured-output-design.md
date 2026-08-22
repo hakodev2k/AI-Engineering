@@ -1,2 +1,0 @@
-# Skill: Structured Output Design
-**Trigger:** output is consumed by code, automation, or strict downstream process. **Procedure:** define minimal fields and types; distinguish required vs optional; constrain enums/ranges where useful; define null/unknown behavior; provide valid/invalid examples; validate deterministically. **Constraints:** avoid schema complexity without risk reduction. **Output:** schema/template and prompt instructions. **Verification:** representative outputs parse and invalid outputs fail clearly.

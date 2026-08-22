@@ -1,2 +1,0 @@
-# Release risk and rollback
-Risk grows with blast radius, irreversibility, state mutation, dependency coupling, novelty, weak observability, low confidence, and constrained rollback windows. A rollback plan is not merely 'deploy previous version': it must address data/schema compatibility, queues/events, caches, external contracts, feature flags, partial execution, and recovery validation. Prefer staged rollout, backward-compatible migrations, expand/contract data changes, and explicit stop conditions.

@@ -1,8 +1,0 @@
-{
-  "request_id": "req-read-001",
-  "tool": "repository.read_file",
-  "action": "read",
-  "risk": "low",
-  "resources": ["src/Orders/OrderService.cs"],
-  "reason": "Inspect implementation before proposing a code change"
-}

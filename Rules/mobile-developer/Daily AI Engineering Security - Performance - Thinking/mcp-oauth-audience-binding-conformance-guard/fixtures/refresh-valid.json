@@ -1,5 +1,0 @@
-{
-  "grant_type": "refresh_token",
-  "refresh_token": "REDACTED_TEST_VALUE",
-  "resource": "https://mcp.example.test/mcp"
-}

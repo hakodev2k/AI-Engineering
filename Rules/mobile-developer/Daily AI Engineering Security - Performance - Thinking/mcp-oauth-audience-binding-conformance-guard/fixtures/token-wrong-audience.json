@@ -1,6 +1,0 @@
-{
-  "iss": "https://issuer.example.test",
-  "aud": "https://sibling.example.test/api",
-  "exp": 2000000000,
-  "scope": "mcp.tools.invoke"
-}

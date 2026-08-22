@@ -1,9 +1,0 @@
-{
-  "roots": ["docs", "src", "tests"],
-  "evidence_classes": [
-    {"name": "source", "patterns": ["src/**/*.cs", "src/**/*.ts", "src/**/*.py"], "required": true},
-    {"name": "tests", "patterns": ["tests/**/*test*", "tests/**/*spec*", "tests/**/*.cs"], "required": true},
-    {"name": "project-docs", "patterns": ["docs/**/*.md"], "required": true}
-  ],
-  "exclude": ["**/.git/**", "**/node_modules/**", "**/bin/**", "**/obj/**", "**/dist/**"]
-}

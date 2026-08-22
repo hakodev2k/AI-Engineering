@@ -1,8 +1,0 @@
-{
-  "require_unique_call_id": true,
-  "require_argument_hash_binding": true,
-  "require_preinvoke_guardrail_after_resume": true,
-  "require_terminal_output_for_executed_call": true,
-  "high_impact_capabilities": ["write", "delete", "deploy", "publish", "secret_read", "network_egress", "exec"],
-  "fail_closed_on_integrity_error": true
-}

@@ -1,8 +1,0 @@
-{
-  "tool": "shell",
-  "arguments": {
-    "command": "git status --short"
-  },
-  "intent": "Inspect working tree",
-  "environment": "development"
-}

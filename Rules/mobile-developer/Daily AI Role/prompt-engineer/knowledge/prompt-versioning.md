@@ -1,2 +1,0 @@
-# Prompt Versioning
-Version prompts when behavior contracts, examples, schemas, model assumptions, or material constraints change. Record reason, affected workflows, expected improvement, evaluation evidence, compatibility notes, rollout scope, and rollback target. Avoid combining unrelated changes in one version because attribution becomes weak. Treat evaluation data and prompt version as a pair.

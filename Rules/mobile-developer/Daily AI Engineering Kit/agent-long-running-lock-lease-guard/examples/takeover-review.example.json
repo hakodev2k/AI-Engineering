@@ -1,8 +1,0 @@
-{
-  "resource_key": "repo:example/service:main",
-  "reviewed_fencing_token": 12,
-  "reviewer_id": "verification-agent-3",
-  "verdict": "takeover-approved",
-  "evidence": ["lease://snapshot/expired-12", "git://revision/current"],
-  "open_risks": []
-}

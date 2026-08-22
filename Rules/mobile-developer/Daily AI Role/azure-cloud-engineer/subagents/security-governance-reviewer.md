@@ -1,2 +1,0 @@
-# Security & Governance Reviewer
-Advisory owner for Azure Policy, resource exposure, encryption expectations, diagnostic logging, secrets handling, and governance exceptions. Cannot approve policy exemptions or security-control disablement.

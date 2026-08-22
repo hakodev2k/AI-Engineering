@@ -1,5 +1,0 @@
-{"turn":10,"event":"compact"}
-{"turn":11,"event":"context","source":"history_summary","tokens":30000,"artifact_id":"summary-10"}
-{"turn":11,"event":"context","source":"project_instruction","tokens":12000,"fingerprint":"rules-v1","artifact_id":"rules-v1"}
-{"turn":12,"event":"context","source":"tool_result","tokens":8000,"artifact_id":"tool-42","required":true}
-{"turn":13,"event":"context","source":"file_read","tokens":6000,"artifact_id":"file-7","required":true}

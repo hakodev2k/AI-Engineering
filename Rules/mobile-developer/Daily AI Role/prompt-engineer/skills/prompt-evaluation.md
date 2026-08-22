@@ -1,2 +1,0 @@
-# Skill: Prompt Evaluation
-**Trigger:** candidate prompt or regression fix. **Inputs:** frozen candidate, evaluation set, rubric, thresholds. **Procedure:** run representative cases; score task correctness, evidence, format, safety, and usability separately; run critical/adversarial cases; record failures by category; compare baseline; allow at most two revision cycles before architectural reassessment. **Output:** scorecard, failures, release recommendation. **Quality:** reproducible inputs and attributable prompt version.

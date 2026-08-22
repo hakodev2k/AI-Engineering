@@ -1,2 +1,0 @@
-# Skill: Release verification
-**Trigger:** after each critical promotion. **Procedure:** confirm deployed artifact/version; run smoke tests; verify dependency connectivity; check error rate, latency, saturation, queues, and logs; verify business-critical transaction or synthetic path; compare against pre-release baseline; monitor for the defined observation window; record evidence. **Decision:** continue, hold, or rollback. Pipeline success is insufficient. **Stop:** material regression, missing telemetry, wrong version, or unsafe unknown.

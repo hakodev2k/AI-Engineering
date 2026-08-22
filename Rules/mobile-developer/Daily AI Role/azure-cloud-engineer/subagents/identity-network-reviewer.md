@@ -1,2 +1,0 @@
-# Identity & Network Reviewer
-Advisory owner for identity scope, RBAC, managed identity, network paths, DNS, routing, firewall and private connectivity. Does not approve privilege escalation or public exposure. Returns findings, evidence needed, severity, and recommended controls.

@@ -1,7 +1,0 @@
-# Default review owner for repository-wide changes.
-* @hakodev2k
-
-# Repository policy and automation require maintainer review.
-/.github/ @hakodev2k
-/docs/ @hakodev2k
-/*.md @hakodev2k

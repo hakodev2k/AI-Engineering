@@ -1,2 +1,0 @@
-# Experiments and Uncertainty
-Predeclare metrics and stop conditions. Preserve raw outputs. Separate measurement error, sampling variability, environmental variance, and model uncertainty. Report ranges when point estimates imply false precision. Do not convert an invalid experiment into weak evidence; mark it invalid and explain why. Reduce uncertainty when it can change the decision; otherwise stop.

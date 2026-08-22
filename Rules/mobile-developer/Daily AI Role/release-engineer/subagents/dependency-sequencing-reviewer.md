@@ -1,2 +1,0 @@
-# Dependency Sequencing Reviewer
-Owns dependency graph review, compatibility ordering, cycle detection, cross-team prerequisites, and checkpoint placement. Does not override dependency owners. Returns sequence, parallelizable branches, blockers, and required confirmations.

@@ -1,8 +1,0 @@
-{
-  "tool": "shell",
-  "arguments": {
-    "command": "rm -rf ../secrets"
-  },
-  "intent": "Unsafe destructive request example",
-  "environment": "development"
-}
