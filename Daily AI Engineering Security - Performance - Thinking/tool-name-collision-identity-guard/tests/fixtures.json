@@ -1,0 +1,4 @@
+[
+  {"server_instance":"weather-a","namespace":"","name":"search","callable_id":"a.search","approval_key":"weather-a::::search"},
+  {"server_instance":"weather-b","namespace":"","name":"search","callable_id":"b.search","approval_key":"weather-b::::search"}
+]
