@@ -12,6 +12,10 @@ const baseEnv = {
 
 describe('configuration and approval policy', () => {
   it('rejects missing credentials', () => expect(() => loadConfig({})).toThrow());
+  it('keeps personal tokens raw and wraps OAuth access tokens with Bearer', () => {
+    expect(loadConfig(baseEnv).authorizationHeader).toBe('pk_test_token');
+    expect(loadConfig({ ...baseEnv, CLICKUP_ACCESS_TOKEN: 'oauth_access_token' }).authorizationHeader).toBe('Bearer oauth_access_token');
+  });
   it('allows an explicitly approved write', () => {
     const config = loadConfig(baseEnv);
     expect(() => assertWriteAllowed(config, 'clickup.task.create')).not.toThrow();
