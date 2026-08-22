@@ -1,0 +1,40 @@
+id: clickup
+name: ClickUp
+upstream:
+  - official-mcp
+  - rest
+mcp:
+  official_url: https://mcp.clickup.com/mcp
+  status: public_beta
+  auth: oauth
+  strategy: "ClickUp's official remote MCP server is documented and preferred for broad interactive workflows. This reusable connector exposes a reviewed REST-backed allowlist for deterministic permissions, validation, and approval boundaries."
+api:
+  base_url: https://api.clickup.com/api/v2
+auth:
+  type: personal_token_or_oauth2_access_token
+  required_env:
+    - CLICKUP_ACCESS_TOKEN
+capabilities:
+  - user.read
+  - workspace.list
+  - space.list
+  - folder.list
+  - list.folderless.list
+  - list.folder.list
+  - task.list
+  - task.read
+  - task.create
+  - task.update
+  - task.delete
+  - comment.list
+  - comment.create
+risk:
+  default: READ
+  writes_require_operator_approval: true
+  destructive_disabled_by_default: true
+optional_env:
+  - CLICKUP_API_BASE_URL
+  - CLICKUP_TIMEOUT_MS
+  - CLICKUP_APPROVAL_MODE
+  - CLICKUP_APPROVED_ACTIONS
+  - CLICKUP_ALLOW_DESTRUCTIVE
