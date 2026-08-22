@@ -1,0 +1,12 @@
+{
+  "ack_deadline_ms": 500,
+  "cancel_effective_deadline_ms": 2000,
+  "descendant_drain_deadline_ms": 5000,
+  "maximum_post_cancel_side_effects": 0,
+  "maximum_orphans_after_grace": 0,
+  "require_monotonic_interrupt_epoch": true,
+  "require_pre_side_effect_cancel_fence": true,
+  "require_transcript_repair": true,
+  "require_resume_reconciliation": true,
+  "maximum_recovery_attempts": 2
+}
