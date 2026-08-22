@@ -1,0 +1,23 @@
+version: 1
+mode: adaptive
+max_attempts: 4
+base_delay_ms: 500
+max_delay_ms: 30000
+jitter_ratio: 0.25
+respect_retry_after: true
+retry_statuses: [429, 503]
+non_retry_statuses: [400, 401, 403, 404, 409, 422]
+concurrency:
+  initial: 4
+  min: 1
+  max: 16
+  decrease_factor: 0.5
+  increase_step: 1
+  success_window: 20
+budget:
+  requests_per_minute: 120
+  tokens_per_minute: 0
+  max_total_wait_seconds: 90
+approval_required_for:
+  - increasing_provider_quota
+  - bypassing_rate_limit_gate
