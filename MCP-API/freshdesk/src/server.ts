@@ -9,7 +9,7 @@ const client = new FreshdeskClient(config);
 const server = new McpServer({ name: 'freshdesk-connector', version: '1.0.0' });
 const json = (value: unknown) => ({ content: [{ type: 'text' as const, text: JSON.stringify(value, null, 2) }] });
 const Id = z.number().int().positive();
-const Page = z.number().int().min(1).max(10000).default(1);
+const Page = z.number().int().min(1).max(500).default(1);
 const PerPage = z.number().int().min(1).max(100).default(30);
 const Status = z.number().int().refine(v => [2, 3, 4, 5].includes(v), 'status must be 2, 3, 4, or 5');
 const Priority = z.number().int().refine(v => [1, 2, 3, 4].includes(v), 'priority must be 1, 2, 3, or 4');
