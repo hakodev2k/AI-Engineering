@@ -1,0 +1,9 @@
+{
+  "saga": "order-fulfillment",
+  "evidence": ["orders/CreateOrder.cs", "payments/PaymentClient.cs", "tests/OrderSagaTests.cs"],
+  "steps": [
+    {"name":"reserve-inventory","side_effect":true,"idempotent":true,"compensation":"release-inventory","non_compensable_reason":null},
+    {"name":"capture-payment","side_effect":true,"idempotent":true,"compensation":"refund-payment","non_compensable_reason":null},
+    {"name":"publish-confirmation","side_effect":true,"idempotent":true,"compensation":null,"non_compensable_reason":"notification is append-only; duplicate suppression and reconciliation are used"}
+  ]
+}
