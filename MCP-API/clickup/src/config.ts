@@ -13,8 +13,10 @@ export type Config = ReturnType<typeof loadConfig>;
 
 export function loadConfig(env: NodeJS.ProcessEnv = process.env) {
   const parsed = EnvSchema.parse(env);
+  const token = parsed.CLICKUP_ACCESS_TOKEN.trim();
+  const authorizationHeader = token.startsWith('pk_') || token.startsWith('Bearer ') ? token : `Bearer ${token}`;
   return {
-    accessToken: parsed.CLICKUP_ACCESS_TOKEN,
+    authorizationHeader,
     baseUrl: parsed.CLICKUP_API_BASE_URL.replace(/\/$/, ''),
     timeoutMs: parsed.CLICKUP_TIMEOUT_MS,
     approvalMode: parsed.CLICKUP_APPROVAL_MODE,
