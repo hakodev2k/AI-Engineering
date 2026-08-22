@@ -1,0 +1,9 @@
+{
+  "minimum_progress_ratio": 0.05,
+  "max_consecutive_failures": 3,
+  "max_reactive_retries_per_error": 2,
+  "max_total_compression_events_per_turn": 20,
+  "require_post_compression_model_success": true,
+  "allow_failure_streak_reset_after_verified_success": true,
+  "handoff_on_absolute_cap": true
+}
