@@ -1,0 +1,9 @@
+{
+  "mode": "fail-closed",
+  "require_unique_model_visible_names": true,
+  "require_canonical_approval_identity": true,
+  "include_server_instance_in_identity": true,
+  "revalidate_on_refresh": true,
+  "allow_warning_only": false,
+  "max_name_length": 128
+}
