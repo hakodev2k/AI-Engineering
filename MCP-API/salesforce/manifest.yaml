@@ -1,0 +1,41 @@
+id: salesforce
+name: Salesforce
+upstream:
+  - official-hosted-mcp
+mcp:
+  read_server:
+    production: https://api.salesforce.com/platform/mcp/v1/platform/sobject-reads
+    sandbox: https://api.salesforce.com/platform/mcp/v1/sandbox/platform/sobject-reads
+  mutation_server:
+    production: https://api.salesforce.com/platform/mcp/v1/platform/sobject-mutations
+    sandbox: https://api.salesforce.com/platform/mcp/v1/sandbox/platform/sobject-mutations
+  delete_server:
+    production: https://api.salesforce.com/platform/mcp/v1/platform/sobject-deletes
+    sandbox: https://api.salesforce.com/platform/mcp/v1/sandbox/platform/sobject-deletes
+auth:
+  type: oauth2_bearer
+  recommended_flow: authorization_code_pkce
+  required_env:
+    - SALESFORCE_MCP_ACCESS_TOKEN
+capabilities:
+  - schema.get
+  - record.query
+  - record.search
+  - user.get
+  - record.recent
+  - record.related.list
+  - record.create
+  - record.update
+  - record.related.update
+  - record.delete
+  - record.related.delete
+risk:
+  default: READ
+  writes_require_operator_approval: true
+  destructive_disabled_by_default: true
+optional_env:
+  - SALESFORCE_ENVIRONMENT
+  - SALESFORCE_APPROVAL_MODE
+  - SALESFORCE_APPROVED_ACTIONS
+  - SALESFORCE_ALLOW_DESTRUCTIVE
+  - SALESFORCE_TIMEOUT_MS
