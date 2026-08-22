@@ -1,0 +1,20 @@
+{
+  "untrusted_source_classes": ["log", "trace", "alert", "incident", "ticket", "webhook", "external_telemetry"],
+  "high_impact_capabilities": [
+    "shell_exec",
+    "host_write",
+    "external_network",
+    "infra_mutation",
+    "dns_mutation",
+    "secret_read",
+    "credential_export",
+    "agent_config_write",
+    "memory_persist",
+    "tool_config_write"
+  ],
+  "allow_read_only_from_untrusted": true,
+  "require_provenance": true,
+  "require_exact_approval_binding": true,
+  "approval_ttl_seconds": 900,
+  "fail_closed_on_unknown_source": true
+}
