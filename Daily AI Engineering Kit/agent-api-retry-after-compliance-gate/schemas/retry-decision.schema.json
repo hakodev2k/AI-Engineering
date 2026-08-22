@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Retry Decision",
+  "type": "object",
+  "required": ["decision", "reason", "delay_seconds"],
+  "properties": {
+    "decision": {"enum": ["retry", "do-not-retry", "approval-required", "block"]},
+    "reason": {"type": "string", "minLength": 1},
+    "delay_seconds": {"type": "integer", "minimum": 0}
+  },
+  "additionalProperties": false
+}
