@@ -1,0 +1,13 @@
+{
+  "security_fields": ["name", "description", "inputSchema", "annotations"],
+  "block_on_drift": true,
+  "require_reapproval_on_drift": true,
+  "high_impact_annotation_values": {
+    "destructiveHint": true,
+    "openWorldHint": true
+  },
+  "ignore_annotation_title": true,
+  "allow_missing_annotations": true,
+  "require_server_identity": true,
+  "max_manifest_bytes": 1048576
+}
