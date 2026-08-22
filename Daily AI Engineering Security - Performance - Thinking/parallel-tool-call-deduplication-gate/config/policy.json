@@ -1,0 +1,13 @@
+{
+  "default_policy": "review",
+  "tools": {
+    "search": {"policy": "collapse"},
+    "lookup": {"policy": "collapse"},
+    "calculator": {"policy": "collapse"},
+    "create_ticket": {"policy": "review"},
+    "update_record": {"policy": "review"},
+    "send_message": {"policy": "review"}
+  },
+  "max_calls_per_turn": 32,
+  "max_duplicate_group": 8
+}
