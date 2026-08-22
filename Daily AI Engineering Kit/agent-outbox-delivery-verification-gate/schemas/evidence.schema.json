@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["message_id", "status", "evidence", "verification"],
+  "properties": {
+    "message_id": {"type": "string", "minLength": 1},
+    "status": {"enum": ["pending", "dispatched", "observed", "verified", "blocked"]},
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["kind", "source", "value"],
+        "properties": {
+          "kind": {"enum": ["outbox-row", "dispatch-attempt", "consumer-observation"]},
+          "source": {"type": "string"},
+          "value": {"type": "string"}
+        }
+      }
+    },
+    "verification": {
+      "type": "object",
+      "required": ["duplicate_risk", "ordering_risk", "result"],
+      "properties": {
+        "duplicate_risk": {"type": "string"},
+        "ordering_risk": {"type": "string"},
+        "result": {"enum": ["pass", "fail", "inconclusive"]}
+      }
+    }
+  }
+}
