@@ -1,0 +1,7 @@
+{
+  "max_disconnect_grace_ms": 1500,
+  "max_drain_ms": 5000,
+  "require_cancellation_parameter": true,
+  "forbidden_patterns": ["CancellationToken.None", "new CancellationToken()"],
+  "approval_required_for": ["production_config_change", "public_api_breaking_change"]
+}
