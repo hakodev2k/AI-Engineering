@@ -1,0 +1,13 @@
+{
+  "canonical_resource": "https://mcp.example.internal",
+  "allowed_issuers": ["https://idp.example.internal"],
+  "required_scopes_by_tool": {
+    "read_profile": ["profile.read"],
+    "update_profile": ["profile.write"]
+  },
+  "require_expiry": true,
+  "clock_skew_seconds": 60,
+  "block_identical_inbound_outbound_bearer": true,
+  "require_outbound_credential_provenance": true,
+  "allowed_outbound_provenance": ["service_client", "token_exchange", "managed_identity"]
+}
