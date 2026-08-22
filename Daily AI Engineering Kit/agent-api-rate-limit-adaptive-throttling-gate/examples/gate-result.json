@@ -1,0 +1,1 @@
+{"status":"pass","events":[{"attempt":1,"status":429,"action":"retry","concurrency_before":4,"concurrency_after":2,"delay_seconds":1.0,"waited_seconds":1.0},{"attempt":2,"status":200,"action":"success","concurrency_before":2,"concurrency_after":2}]}
