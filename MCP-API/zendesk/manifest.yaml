@@ -1,0 +1,40 @@
+id: zendesk
+name: Zendesk
+upstream:
+  - rest
+mcp:
+  official: none_confirmed
+api:
+  base_url: https://{subdomain}.zendesk.com/api/v2
+auth:
+  type: oauth2_bearer
+  required_env:
+    - ZENDESK_SUBDOMAIN
+    - ZENDESK_OAUTH_ACCESS_TOKEN
+  least_privilege_scopes:
+    - tickets:read
+    - tickets:write
+    - users:read
+capabilities:
+  - ticket.list
+  - ticket.search
+  - ticket.get
+  - ticket.create
+  - ticket.update
+  - ticket.comment.add
+  - ticket.delete
+  - user.list
+  - user.search
+  - user.get
+  - organization.list
+  - organization.get
+  - group.list
+risk:
+  default: READ
+  writes_require_operator_approval: true
+  destructive_disabled_by_default: true
+optional_env:
+  - ZENDESK_TIMEOUT_MS
+  - ZENDESK_APPROVAL_MODE
+  - ZENDESK_APPROVED_ACTIONS
+  - ZENDESK_ALLOW_DESTRUCTIVE
