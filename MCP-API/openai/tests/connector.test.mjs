@@ -122,6 +122,20 @@ test('write and spend-producing POST operations are never blindly retried', asyn
   assert.equal(calls, 1);
 });
 
+test('vector-store calls send the documented assistants v2 beta header', async () => {
+  let seenHeader;
+  const fetchImpl = async (_url, init) => {
+    seenHeader = new Headers(init.headers).get('OpenAI-Beta');
+    return new Response(JSON.stringify({ object: 'list', data: [] }), {
+      status: 200,
+      headers: { 'content-type': 'application/json' }
+    });
+  };
+  const client = new OpenAIClient(config(), { fetchImpl });
+  await client.listVectorStores({ limit: 20 });
+  assert.equal(seenHeader, 'assistants=v2');
+});
+
 test('connector exposes a fixed provider-scoped tool set and no arbitrary request escape hatch', () => {
   assert.equal(TOOL_NAMES.length, 13);
   assert.equal(new Set(TOOL_NAMES).size, TOOL_NAMES.length);
