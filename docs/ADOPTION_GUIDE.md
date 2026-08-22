@@ -24,6 +24,8 @@ The package `README.md` is the entry point for a role, kit, guard, or connector.
 
 Similar package names can represent different failure modes. Select by contract and evidence, not by name alone.
 
+For common Role, Rule, Skill, gate, and MCP combinations, see the [composition guide](COMPOSITION_GUIDE.md). Its map identifies when a full role package is the appropriate source instead of a similarly named but differently scoped document.
+
 ## Obtain selected content
 
 For an individual rule or skill, copy the raw Markdown file through the repository browser or from an existing checkout.

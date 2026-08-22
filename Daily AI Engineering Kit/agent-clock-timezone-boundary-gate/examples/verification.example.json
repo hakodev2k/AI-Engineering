@@ -1,0 +1,14 @@
+{
+  "topic": "agent-clock-timezone-boundary-gate",
+  "status": "verified",
+  "generated_at_utc": "2026-08-22T00:00:00Z",
+  "checks": [
+    {
+      "command": "python -m unittest tests/test_temporal_scan.py",
+      "exit_code": 0,
+      "stdout": "OK",
+      "stderr": ""
+    }
+  ],
+  "remaining_risks": []
+}

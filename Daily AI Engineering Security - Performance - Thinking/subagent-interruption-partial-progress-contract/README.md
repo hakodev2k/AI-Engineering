@@ -31,6 +31,7 @@ Require a structured partial-progress envelope for every non-clean child termina
 subagent-interruption-partial-progress-contract/
 ├── README.md
 ├── config/policy.json
+├── examples/partial-progress.example.json
 ├── evidence/research.md
 ├── hooks/post-interruption-gate.md
 ├── rules/interruption-handoff.md
@@ -54,6 +55,8 @@ python scripts/validate_partial_progress.py envelope.json --policy config/policy
 python -m unittest discover tests -v
 ```
 Exit 0 means the envelope meets policy; 4 means unsafe/incomplete recovery state; 2 means malformed evidence/config.
+
+Start with `examples/partial-progress.example.json` only as a synthetic shape. It validates against `schemas/partial-progress.schema.json`; replace all identifiers, timestamps, evidence pointers, and recovery decisions with facts from the interrupted run.
 
 ## Workflow
 Follow `workflows/interrupt-reconcile-recover.md`: Observe → Validate → Reconcile → Choose recovery → Recover → Verify. Recovery retries are bounded to two by default.

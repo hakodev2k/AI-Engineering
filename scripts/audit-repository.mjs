@@ -9,6 +9,7 @@ import { parseDocument } from "yaml";
 
 const root = resolve(import.meta.dirname, "..");
 const strictCollections = process.argv.includes("--strict-collections");
+const workspaceMinimumNodeMajor = 22;
 const collections = [
   "Daily AI Engineering Kit",
   "Daily AI Engineering Security - Performance - Thinking",
@@ -156,10 +157,19 @@ function validatePython(path) {
 
 function validateMcpConnectors() {
   const connectorRoot = join(root, "MCP-API");
+  const connectorIndexPath = join(connectorRoot, "README.md");
   const required = [".env.example", "README.md", "manifest.yaml", "package.json"];
   const serverEntrypoints = ["src/server.ts", "src/server.mts", "src/server.js", "src/server.mjs"];
+  const connectorIndex = existsSync(connectorIndexPath) ? readFileSync(connectorIndexPath, "utf8") : "";
 
   for (const directory of childDirectories(connectorRoot)) {
+    const connectorName = directory.split(sep).at(-1);
+    const escapedConnectorName = connectorName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const connectorLinkPattern = new RegExp(`\\]\\((?:\\./)?${escapedConnectorName}/?\\)`, "u");
+    if (!connectorLinkPattern.test(connectorIndex)) {
+      errors.push(`MCP connector index does not link ${display(directory)}`);
+    }
+
     for (const item of required) {
       if (!existsSync(join(directory, item))) errors.push(`incomplete MCP connector ${display(directory)}: missing ${item}`);
     }
@@ -189,8 +199,14 @@ function validateMcpConnectors() {
       if (isTypeScriptConnector && !packageJson.scripts?.build) {
         errors.push(`${display(packagePath)}: missing build script for TypeScript connector`);
       }
-      if (packageJson.engines?.node && !packageJson.engines.node.includes("20")) {
-        warnings.push(`${display(packagePath)}: verify Node.js engine remains compatible with the workspace baseline`);
+      const minimumNodeMajor = Number(packageJson.engines?.node?.match(/>=\s*(\d+)/)?.[1]);
+      if (!Number.isFinite(minimumNodeMajor)) {
+        errors.push(`${display(packagePath)}: missing explicit minimum Node.js engine`);
+      }
+      if (Number.isFinite(minimumNodeMajor) && minimumNodeMajor > workspaceMinimumNodeMajor) {
+        warnings.push(
+          `${display(packagePath)}: requires Node.js ${minimumNodeMajor}+ but the workspace baseline is ${workspaceMinimumNodeMajor}+`,
+        );
       }
     } catch {
       // The general JSON validator reports the parse failure.

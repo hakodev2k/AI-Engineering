@@ -10,7 +10,7 @@ Every individual skill file is self-contained and can be copied without its disc
 
 1. Select a discipline and the smallest skill that matches the task.
 2. Read its inputs, applicable constraints, decision points, and stop conditions before acting.
-3. Combine it with the matching [Rules](../Rules/) discipline.
+3. Optionally pair it with matching Rules where they add relevant constraints.
 4. Supply repository-specific commands, paths, versions, and acceptance criteria.
 5. Preserve verification evidence and report residual uncertainty explicitly.
 
@@ -18,15 +18,30 @@ Do not concatenate every skill into one prompt. Loading unrelated procedures inc
 
 ## Disciplines
 
+- [`accessibility-engineer/`](accessibility-engineer/)
+- [`agent-engineer/`](agent-engineer/)
 - [`ai-engineer/`](ai-engineer/)
+- [`angular-developer/`](angular-developer/)
+- [`business-analyst/`](business-analyst/)
+- [`cloud-engineer/`](cloud-engineer/)
+- [`data-analyst/`](data-analyst/)
+- [`data-engineer/`](data-engineer/)
+- [`database-engineer/`](database-engineer/)
 - [`devops-engineer/`](devops-engineer/)
 - [`dotnet-backend-developer/`](dotnet-backend-developer/)
+- [`machine-learning-engineer/`](machine-learning-engineer/)
+- [`observability-engineer/`](observability-engineer/)
+- [`performance-engineer/`](performance-engineer/)
+- [`product-manager/`](product-manager/)
+- [`product-owner/`](product-owner/)
 - [`qa-automation-engineer/`](qa-automation-engineer/)
 - [`react-developer/`](react-developer/)
+- [`release-engineer/`](release-engineer/)
 - [`security-engineer/`](security-engineer/)
 - [`site-reliability-engineer/`](site-reliability-engineer/)
 - [`software-architect/`](software-architect/)
 - [`solution-architect/`](solution-architect/)
 - [`technical-lead/`](technical-lead/)
+- [`vue-developer/`](vue-developer/)
 
-Each discipline contains its own index with direct links to every skill file.
+Each discipline contains its own standalone index with direct links to every file in that copied folder.

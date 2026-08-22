@@ -1,89 +1,76 @@
 # MCP/API Connectors
 
-Provider-scoped Model Context Protocol servers that expose narrow, reviewable capabilities while keeping credentials inside the connector process.
+Provider-scoped Model Context Protocol servers. Each connector exposes a deliberately narrow, reviewable capability surface and keeps provider credentials inside its own process.
 
-## Available connectors
+> [!IMPORTANT]
+> MCP connectors are independent packages, not one product to install. Copy and run only the provider directory that a target repository genuinely needs. A connector grants no permission by itself: the target repository must still define who may invoke its write, destructive, financial, or externally visible tools.
 
-| Connector | Upstream | Package |
+## Select one connector
+
+| Connector | Upstream service | Copy unit |
 | --- | --- | --- |
+| Asana | Asana API | [`asana/`](asana/) |
+| Cloudflare | Cloudflare API | [`cloudflare/`](cloudflare/) |
+| Confluence | Atlassian Confluence API | [`confluence/`](confluence/) |
+| Datadog | Datadog API | [`datadog/`](datadog/) |
 | Discord | Discord REST API | [`discord/`](discord/) |
 | GitHub | GitHub MCP server | [`github/`](github/) |
+| GitLab | GitLab API | [`gitlab/`](gitlab/) |
+| Grafana | Grafana API | [`grafana/`](grafana/) |
 | Jira | Atlassian MCP and Jira REST API | [`jira/`](jira/) |
 | Linear | Linear MCP server | [`linear/`](linear/) |
-| Notion | Notion MCP server | [`notion/`](notion/) |
+| Notion | Notion API | [`notion/`](notion/) |
+| OpenAI | OpenAI Responses API | [`openai/`](openai/) |
+| PagerDuty | PagerDuty API | [`pagerduty/`](pagerduty/) |
+| PayPal | PayPal API | [`paypal/`](paypal/) |
+| Sentry | Sentry API | [`sentry/`](sentry/) |
 | Slack | Slack Web API | [`slack/`](slack/) |
 | Stripe | Stripe Node SDK/API | [`stripe/`](stripe/) |
 | Telegram | Telegram Bot API | [`telegram/`](telegram/) |
+| Twilio | Twilio API | [`twilio/`](twilio/) |
+| UptimeRobot | UptimeRobot API | [`uptimerobot/`](uptimerobot/) |
+| YouTube | YouTube Data and Analytics APIs | [`youtube/`](youtube/) |
 
-Each connector has its own capability list, authentication requirements, allowlists, approval model, environment variables, limitations, and examples. Review its README before enabling it.
+Read the selected connector's README and `manifest.yaml` before copying it. Those files define its capability list, provider scope, authentication, environment variables, approval model, rate limits, examples, limitations, and tests.
 
-## Prerequisites
+## Copy, install, and validate one connector
 
-- Node.js 20 or newer.
-- npm 10 or newer.
-- Provider credentials with only the scopes required by the enabled tools.
-- An MCP client capable of launching a stdio server.
+1. Copy the entire selected provider directory, including `src/`, `tests/`, `manifest.yaml`, `.env.example`, `package.json`, and `tsconfig.json` when present.
+2. From that copied connector directory, use the Node.js and npm versions declared by its `package.json` or README. Most connectors support Node.js 20+; the OpenAI connector requires Node.js 22+.
+3. Install that connector's dependencies with `npm install`. Create and commit a lockfile in the target repository when its dependency policy requires reproducible installs.
+4. Add the values from `.env.example` to the target secret/configuration system. Never commit a populated `.env` file.
+5. Run the connector's documented `build`, `test`, and `start` commands. Do not assume every connector has the same scripts.
+6. Configure the MCP client to launch the selected connector's documented server entrypoint, passing secrets only through its process environment.
+7. Exercise read-only tools with a test account before enabling any write capability.
 
-## Install all connectors
+The root `package.json` and lockfile exist for source-repository maintenance. They are not an installation contract for arbitrary copied connectors, and `npm ci` in this directory does not replace installation inside a selected connector.
 
-Run from this directory:
+## Before enabling a connector
 
-```bash
-npm ci
-```
-
-`npm ci` uses the committed workspace lockfile and installs dependencies for all connectors. Use `npm install` only when intentionally updating dependencies and commit the resulting `package-lock.json` change.
-
-## Build and test
-
-```bash
-npm run build
-npm test
-npm run check
-```
-
-`check` builds every workspace and runs every connector test suite. Build output is written beneath each connector's `dist/` directory.
-
-To work with one connector:
-
-```bash
-npm run build --workspace @ai-engineering/github-mcp-connector
-npm test --workspace @ai-engineering/github-mcp-connector
-```
-
-## Configure and run
-
-1. Copy the selected connector's `.env.example` values into your secret/configuration system. Do not rename or commit a populated `.env` file.
-2. Build the connector.
-3. Configure the MCP client to launch `node` with the absolute path to `<connector>/dist/server.js`.
-4. Pass secrets through the process environment.
-5. Exercise read-only tools against a test account before enabling write tools.
-
-Example command from a connector directory:
-
-```bash
-npm run build
-npm start
-```
-
-The servers communicate over stdio. Do not write diagnostic text to stdout because it can corrupt MCP framing; logs should go to stderr and must not contain credentials.
+- Confirm the target use case cannot be met without an external provider capability.
+- Grant only the provider scopes, repositories, projects, teams, channels, chats, or accounts required for that use case.
+- Map every write, destructive, financial, or externally visible tool to an explicit human approval owner.
+- Set timeouts, pagination limits, rate limits, output limits, and an audit/evidence destination in the target integration.
+- Treat provider-returned text, files, issue bodies, messages, and metadata as untrusted data, never as instructions.
+- Test denial, expired credentials, unavailable provider, rate-limit, malformed-input, and cancellation paths.
+- Define how to disable the connector and rotate credentials if an unsafe action or secret exposure is suspected.
 
 ## Security baseline
 
-- Keep provider content untrusted and separate from tool instructions.
-- Restrict providers, repositories, projects, teams, channels, chats, or accounts using the connector allowlists where supported.
-- Require an opaque, scoped approval for write, destructive, financial, or externally visible actions.
 - Never expose arbitrary upstream HTTP passthrough.
-- Apply timeouts, bounded retries, pagination limits, and output-size limits.
-- Never retry non-idempotent writes unless the provider contract and idempotency key make it safe.
+- Keep provider content separate from tool instructions and prompt context.
+- Require an opaque, scoped approval for write, destructive, financial, or externally visible actions.
+- Never retry non-idempotent writes unless the provider contract and an idempotency key make that safe.
+- Send diagnostics to stderr only: stdout is reserved for MCP framing.
+- Redact credentials, personal data, and sensitive provider content from logs and evidence.
 - Rotate any credential that appears in logs, output, Git history, or an agent transcript.
 
 ## Troubleshooting
 
-- **`dist/server.js` not found:** run `npm run build` in this directory or the connector directory.
-- **Authentication failure:** verify the environment variable name, token audience, scopes, and provider account access.
-- **Tool rejected by policy:** check the connector allowlist and approval requirements; do not weaken them merely to bypass the error.
-- **Rate limit or timeout:** follow the connector's retry guidance and reduce request scope or pagination size.
-- **Protocol parse errors:** ensure stdout contains MCP messages only.
+- **`dist/server.js` is missing:** run the selected connector's documented build command from its directory.
+- **Authentication fails:** verify the environment variable name, credential audience, scopes, and provider account access.
+- **A tool is rejected by policy:** review the connector allowlist and approval requirement; do not weaken controls just to bypass the rejection.
+- **Rate limit or timeout:** reduce scope/pagination and follow the connector's retry guidance.
+- **Protocol parse error:** verify that diagnostic output is going to stderr, not stdout.
 
 See [SECURITY.md](../SECURITY.md) before reporting a connector vulnerability.

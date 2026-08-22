@@ -53,6 +53,21 @@ Fill `templates/change-request.json`, then run:
 
 Run tests with `python -m unittest tests/test_feature_flag_gate.py`.
 
+## Package self-check and rollout-plan validator
+
+This package also includes a stricter, YAML-based rollout-plan reference flow. Use it when the plan needs staged exposure, expiry, kill-switch, rollback, observability, and approval evidence:
+
+```bash
+python scripts/validate_rollout.py \
+  --plan examples/safe-rollout.yaml \
+  --policy config/policy.yaml \
+  --output rollout-result.json
+python scripts/verify_package.py
+python -m unittest tests/test_validate_rollout.py
+```
+
+`validate_rollout.py` is read-only: it returns `0` for a passing plan, `2` for a blocked plan, `4` when an explicit approval is required, and `3` for invalid input or missing PyYAML. Its output conforms to `schemas/rollout-result.schema.json`; `examples/rollout-result.example.json` is a safe result fixture. `verify_package.py` checks that the package-local files needed by this rollout-plan flow are present and non-empty. Keep the two reference flows separate: use `feature_flag_gate.py` with `templates/change-request.json` for the original change-request workflow, or `validate_rollout.py` with `templates/rollout-plan.yaml` for staged rollout planning.
+
 ## Permissions
 The gate needs read access to the repository and Git metadata. Editing source requires normal workspace write access. Production flag changes, rollout increases in protected environments, destructive flag deletion, security-control weakening, and rollback removal require explicit human approval outside this package.
 

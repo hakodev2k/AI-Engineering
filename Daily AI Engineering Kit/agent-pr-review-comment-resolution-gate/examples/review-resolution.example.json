@@ -1,0 +1,15 @@
+{
+  "pull_request": 123,
+  "comments": [
+    {
+      "comment_id": 456,
+      "status": "resolved",
+      "finding": "Validate the request before persistence.",
+      "evidence": ["tests/request-validation.test.ts", "npm test"],
+      "action": "Added request validation and a regression test.",
+      "files": ["src/requests.ts", "tests/request-validation.test.ts"]
+    }
+  ],
+  "verification": ["Relevant tests passed", "Changed-file scope reviewed"],
+  "status": "verified"
+}

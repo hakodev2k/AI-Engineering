@@ -45,6 +45,7 @@ agent-pr-review-comment-resolution-gate/
 ├── README.md
 ├── config/
 │   └── policy.yaml
+├── examples/review-resolution.example.json
 ├── hooks/
 │   └── lifecycle.md
 ├── rules/
@@ -94,6 +95,7 @@ The triage and verification agents need read access to the repository and pull-r
 2. Retrieve unresolved review threads and the current diff.
 3. Run the triage procedure in `skills/review-comment-triage.md`.
 4. Create a resolution record based on `templates/resolution.json`.
+   `examples/review-resolution.example.json` is a synthetic, schema-valid completed record for `schemas/review-resolution.schema.json`.
 5. Apply accepted changes with `skills/review-fix-verify.md`.
 6. Run repository tests/build/formatters.
 7. Validate comment evidence:

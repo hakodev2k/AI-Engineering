@@ -12,12 +12,7 @@ npm run audit
 npm run audit:standalone
 ```
 
-For MCP changes or a complete verification run:
-
-```bash
-npm --prefix MCP-API ci
-npm run check
-```
+Run a connector's build and tests only when that connector changes, from the selected connector directory and with the commands in its package README. The MCP collection is intentionally a set of independent provider packages, so a repository-wide build is not a substitute for the changed connector's validation.
 
 Use `npm run audit:strict` and `npm run audit:standalone:strict` when enforcing collection and standalone-package completeness. Default audit modes report non-structural maturity gaps as warnings so maintainers can inspect them before making the strict gate blocking.
 

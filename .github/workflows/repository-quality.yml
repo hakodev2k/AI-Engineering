@@ -16,7 +16,7 @@ concurrency:
 
 jobs:
   validate:
-    name: Audit, build, and test
+    name: Content and structure audit
     runs-on: ubuntu-latest
     timeout-minutes: 20
 
@@ -35,12 +35,5 @@ jobs:
       - name: Install repository audit dependencies
         run: npm ci
 
-      - name: Install MCP workspace dependencies
-        run: npm --prefix MCP-API ci
-
-      - name: Run repository quality gate
+      - name: Run strict content audit
         run: npm run check
-
-      - name: Run standalone completeness audit
-        continue-on-error: true
-        run: npm run audit:standalone

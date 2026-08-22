@@ -1,0 +1,14 @@
+{
+  "child_id": "review-agent-17",
+  "cause": "watchdog_timeout",
+  "human_initiated": false,
+  "started_at": "2026-08-22T00:00:00Z",
+  "ended_at": "2026-08-22T00:02:00Z",
+  "tool_call_count": 3,
+  "last_action": "Collected test output; no write operation was attempted.",
+  "durable_checkpoints": ["artifacts/review-progress.json"],
+  "known_side_effects": [],
+  "incomplete_step": "Compare the remaining test output with the acceptance criteria.",
+  "evidence_pointer": "artifacts/review-progress.json",
+  "recovery_recommendation": "verify_first"
+}

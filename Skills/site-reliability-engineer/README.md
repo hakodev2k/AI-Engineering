@@ -14,6 +14,8 @@ Each skill file is self-contained and may be copied independently; this README, 
 ## Catalogue
 
 - [Burn-Rate Alerting](burn-rate-alerting.md)
+- [Alert Engineering](alert-engineering.md)
+- [Availability Engineering](availability-engineering.md)
 - [Capacity Planning](capacity-planning.md)
 - [Change Risk Management](change-risk-management.md)
 - [Chaos and Failure Testing](chaos-failure-testing.md)
@@ -22,9 +24,11 @@ Each skill file is self-contained and may be copied independently; this README, 
 - [Disaster Recovery and Failover](disaster-recovery-failover.md)
 - [Distributed Systems Failure Analysis](distributed-systems-failure-analysis.md)
 - [Incident Command and Response](incident-command-response.md)
+- [Incident Command](incident-command.md)
 - [Load Shedding and Backpressure](load-shedding-backpressure.md)
 - [Observability Design](observability-design.md)
 - [On-Call Operations](on-call-operations.md)
+- [On-Call Readiness](on-call-readiness.md)
 - [Operational Readiness Review](operational-readiness-review.md)
 - [Performance Bottleneck Analysis](performance-bottleneck-analysis.md)
 - [Post-Incident Review](post-incident-review.md)
@@ -34,6 +38,7 @@ Each skill file is self-contained and may be copied independently; this README, 
 - [Security and Reliability Boundaries](security-reliability-boundaries.md)
 - [Service Ownership and Reliability Accountability](service-ownership-reliability.md)
 - [SLO, SLI, and Error Budget Engineering](slo-sli-error-budgets.md)
+- [SLO Error Budget Engineering](slo-error-budget-engineering.md)
 - [Toil Reduction and Automation](toil-reduction-automation.md)
 
 ## Maintenance

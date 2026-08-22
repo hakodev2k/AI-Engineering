@@ -32,6 +32,7 @@ flowchart LR
 agent-dns-resolution-failover-gate/
 ├── README.md
 ├── config/policy.json
+├── examples/evidence.example.json
 ├── hooks/final-verification.md
 ├── hooks/preflight.md
 ├── rules/safety.md
@@ -61,6 +62,8 @@ python -m unittest tests/test_dns_gate.py
 ```
 
 Exit codes: `0` verified baseline; `1` resolution/policy verification failed; `2` invalid input or policy. `dns-evidence.json` is evidence, not a secret store.
+
+`examples/evidence.example.json` is synthetic output that validates against `schemas/evidence.schema.json`; replace it with evidence from a controlled, authorized diagnostic run rather than copying its addresses into production configuration.
 
 For an agent, provide the environment, authoritative hostname/config location, sanitized error, expected failover behavior, and recovery window; then instruct it to follow `workflows/dns-failure-to-verification.md` and `rules/safety.md`.
 

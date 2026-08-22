@@ -8,6 +8,7 @@ Use this directory for repository-wide guidance. Package-specific behavior remai
 | --- | --- |
 | [Getting started](GETTING_STARTED.md) | Choose and copy the smallest useful unit into a target repository. |
 | [Adoption guide](ADOPTION_GUIDE.md) | Apply the standalone package contract, selective checkout, integration, and update workflow. |
+| [Composition guide](COMPOSITION_GUIDE.md) | Select and combine a role, rules, skills, gates, and MCP connector without importing the whole library. |
 | [Repository structure](REPOSITORY_STRUCTURE.md) | Understand the six main collections and how they compose. |
 | [Documentation style guide](STYLE_GUIDE.md) | Write consistent, navigable, and testable documentation. |
 | [Maintenance guide](MAINTENANCE.md) | Keep navigation, dependencies, checks, and release notes healthy. |

@@ -25,6 +25,7 @@ flowchart LR
 agent-clock-timezone-boundary-gate/
 ├── README.md
 ├── config/temporal-gate.json
+├── examples/verification.example.json
 ├── hooks/final-verification.md
 ├── hooks/pre-task-temporal-scan.md
 ├── rules/temporal-safety.md
@@ -64,6 +65,8 @@ python scripts/verify_temporal_gate.py --config config/temporal-gate.json
 ```
 
 The verifier writes `.ai-temporal/verification.json`. The scan is heuristic: a finding is a candidate for investigation, not proof of a bug.
+
+`examples/verification.example.json` is a synthetic, schema-valid shape for the final evidence record. It demonstrates the contract in `schemas/verification.schema.json` without implying that the listed command or result applies to the target repository.
 
 ## Component responsibilities
 `skills/clock-timezone-boundary-analysis.md` defines evidence gathering and correction. `skills/temporal-boundary-test-design.md` defines boundary coverage. The investigator cannot edit; the implementation agent cannot be the sole verifier; the independent verifier cannot edit while verifying. Hooks connect deterministic scripts to lifecycle checkpoints.

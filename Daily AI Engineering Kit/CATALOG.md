@@ -2,7 +2,7 @@
 
 Pick-and-copy index of engineering gates, guards, investigators, and workflows.
 
-This catalog indexes all 183 standalone packages exactly once. Copy the selected package directory in full, then follow its README; collection-root tooling and dependencies are not required by the consumer.
+This catalog indexes all 193 standalone packages exactly once. Copy the selected package directory in full, then follow its README; collection-root tooling and dependencies are not required by the consumer.
 
 `Executable` means the package includes a reference script or shell hook. `Reference-only` means the host must implement the Markdown contract before claiming enforcement.
 
@@ -191,3 +191,20 @@ This catalog indexes all 183 standalone packages exactly once. Copy the selected
 | [test-fixture-data-safety-guard](test-fixture-data-safety-guard/) | Executable | Provide a reusable preflight and post-run safety gate for integration, API, Playwright, E2E, migration, and other stateful tests. The kit classifies environment and fixture... |
 | [test-selection-impact-planner](test-selection-impact-planner/) | Executable | Map change impact to the smallest defensible test set while exposing coverage gaps and escalation conditions. |
 | [tool-result-freshness-gate](tool-result-freshness-gate/) | Executable | - Prevent stale tool/API/log/query evidence from silently driving current decisions. |
+
+## Recently added packages
+
+The following packages were added after the initial catalogue table. They follow the same standalone copy contract and are listed here for immediate discovery.
+
+| Package | Runtime | Purpose |
+| --- | --- | --- |
+| [agent-cache-stampede-singleflight-gate](agent-cache-stampede-singleflight-gate/) | Executable | A reusable AI-engineering kit for detecting and remediating cache stampedes: many concurrent requests miss the same key and duplicate an expensive database/API/origin operation. |
+| [agent-clock-timezone-boundary-gate](agent-clock-timezone-boundary-gate/) | Executable | A reusable implementation kit for finding, fixing, and independently verifying date/time defects caused by implicit clocks, UTC/local conversion, DST transitions, calendar boundaries, recurring schedules, and range se... |
+| [agent-dns-resolution-failover-gate](agent-dns-resolution-failover-gate/) | Executable | A reusable evidence-first kit for AI coding/operations agents investigating dependency DNS failures and proving failover recovery without unsafe endpoint pinning or automatic production network changes. |
+| [agent-eventual-consistency-read-after-write-gate](agent-eventual-consistency-read-after-write-gate/) | Executable | A standalone, bounded verifier for proving that an acknowledged write becomes observable through the read contract that users or downstream systems actually consume. |
+| [agent-http-redirect-credential-leak-gate](agent-http-redirect-credential-leak-gate/) | Executable | A reusable AI-engineering package for investigating and preventing credentials, cookies, or API keys from being forwarded to unsafe destinations when authenticated HTTP clients follow redirects. |
+| [agent-outbox-delivery-verification-gate](agent-outbox-delivery-verification-gate/) | Executable | A reusable evidence-first workflow for AI coding/operations agents investigating transactional-outbox messages that appear missing, delayed, duplicated, or uncertain. It prevents the common mistake of treating an outb... |
+| [agent-pr-review-comment-resolution-gate](agent-pr-review-comment-resolution-gate/) | Executable | A reusable AI-engineering package for turning pull-request review comments into evidence-backed code changes, bounded retries, independent verification, and safe reviewer handoff. |
+| [agent-queue-visibility-timeout-lease-renewal-gate](agent-queue-visibility-timeout-lease-renewal-gate/) | Executable | Long-running queue handlers can outlive a message visibility timeout or broker lock. If ownership is not renewed correctly, another worker may receive the same message while the first worker is still running. Late set... |
+| [agent-repository-instruction-trust-gate](agent-repository-instruction-trust-gate/) | Executable | A reusable safety kit for coding agents that must work inside repositories containing a mix of legitimate agent instructions and untrusted instruction-like text in logs, fixtures, generated artifacts, dependencies, co... |
+| [agent-saga-compensation-consistency-gate](agent-saga-compensation-consistency-gate/) | Executable | Reusable AI engineering kit for distributed workflows where one business operation spans multiple transactional boundaries and partial failure can leave systems inconsistent. |

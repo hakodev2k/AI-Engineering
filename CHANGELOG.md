@@ -23,14 +23,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Alphabetical role and engineering-package catalogs for selecting content without loading entire collections.
 - A strict standalone-package audit for copy boundaries, catalog coverage, local paths, script documentation, dependency declarations, rule/skill contracts, schemas, and examples.
 - JSON Schema meta-validation for repository-wide structured contracts.
+- A composition guide that maps every role to the smallest appropriate Rules, Skills, kit, and MCP starting point.
+- Standalone accessibility, observability, release-engineering, product-owner, and data-analysis guidance for common one-off adoption.
 
 ### Changed
 
 - Collection documentation gaps are reported as audit warnings by default and can be enforced with `npm run audit:strict`.
 - Root installation and audit commands are now explicitly documented as maintainer tooling rather than consumer prerequisites.
 - Role and engineering-package documentation now treats package-local setup and verification as the consumer contract.
+- Repository automation now runs content and standalone-package audits only; provider connector builds remain a changed-connector responsibility.
+- MCP adoption now starts with one selected provider directory instead of a collection-wide installation flow.
 
 ### Fixed
 
 - MCP TypeScript build output now matches each connector's documented `dist/server.js` start command.
 - MCP test tooling no longer resolves Vitest/Vite versions affected by known high- and critical-severity advisories.
+- The MCP index now lists all supported connectors and Notion and Telegram declare their minimum Node.js runtime.

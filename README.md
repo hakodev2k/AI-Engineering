@@ -49,6 +49,8 @@ For example, a .NET backend workflow can combine the [.NET Backend Developer rol
 
 See the [adoption guide](docs/ADOPTION_GUIDE.md) for selection boundaries, sparse checkout, suggested destinations, dependency rules, and an update checklist. Consumers do not need the root Node.js dependencies or repository-wide audit commands.
 
+For recommended Role, Rule, Skill, gate, and MCP combinations by outcome, use the [composition guide](docs/COMPOSITION_GUIDE.md). It calls out where a role package is intentionally the only authoritative starting point.
+
 ## Design principles
 
 - **Composable:** packages can be adopted independently.
@@ -69,6 +71,7 @@ Please report suspected vulnerabilities through the private process described in
 - [Documentation hub](docs/README.md)
 - [Getting started](docs/GETTING_STARTED.md)
 - [Adoption guide](docs/ADOPTION_GUIDE.md)
+- [Composition guide](docs/COMPOSITION_GUIDE.md)
 - [Repository structure](docs/REPOSITORY_STRUCTURE.md)
 - [Documentation style guide](docs/STYLE_GUIDE.md)
 - [Maintenance guide](docs/MAINTENANCE.md)
@@ -81,7 +84,7 @@ Please report suspected vulnerabilities through the private process described in
 
 ## Maintainer-only repository audit
 
-The following commands maintain this source library; they are not installation steps for copied content. With Node.js 20+, maintainers can install the locked audit dependencies and run the structural audit from the repository root:
+The following commands maintain this source library; they are not installation steps for copied content. With Node.js 22+, maintainers can install the locked audit dependencies and run the structural audit from the repository root:
 
 ```bash
 npm ci
@@ -91,13 +94,7 @@ npm run audit:standalone
 
 The repository audit checks collection and package READMEs, Rules/Skills indexes, relative Markdown links, JSON/YAML syntax, Python syntax, and required MCP connector files. The standalone audit additionally checks supported copy boundaries, package-local references and dependency declarations, script discoverability, rule/skill contracts, and schema examples. Use `npm run audit:strict` and `npm run audit:standalone:strict` to treat documentation maturity findings as blocking. Executable package tests must still be run with their documented runtime.
 
-For the complete repository check, including all MCP builds and tests:
-
-```bash
-npm ci
-npm --prefix MCP-API ci
-npm run check
-```
+When changing an MCP connector itself, work inside that connector directory and run only the build and test commands documented in its package README. Do not use a repository-wide build as a substitute for provider-specific validation.
 
 ## License
 
