@@ -1,0 +1,7 @@
+{
+  "resource": "https://mcp.example.invalid/mcp",
+  "trusted_issuers": ["https://issuer.example.invalid"],
+  "required_scopes": [],
+  "allow_token_passthrough": false,
+  "require_subject": true
+}
