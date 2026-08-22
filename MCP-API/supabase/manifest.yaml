@@ -1,0 +1,50 @@
+id: supabase
+name: Supabase
+upstream:
+  - official-mcp
+  - rest
+mcp:
+  official_url: https://mcp.supabase.com/mcp
+  transport: streamable-http
+  auth: oauth
+  strategy: "Official remote MCP exists and is appropriate for interactive developer workflows. This reusable connector exposes a reviewed, stable allowlist through the official Management API so permissions, approvals, retries, and mutation semantics remain deterministic."
+api:
+  base_url: https://api.supabase.com
+auth:
+  type: bearer_access_token
+  supported:
+    - personal_access_token
+    - oauth2_access_token
+  required_env:
+    - SUPABASE_ACCESS_TOKEN
+  oauth_scopes:
+    - organizations:read
+    - projects:read
+    - edge_functions:read
+    - environment:read
+    - environment:write
+    - analytics:read
+capabilities:
+  - organization.list
+  - organization.get
+  - organization.member.list
+  - project.list
+  - organization.project.list
+  - function.list
+  - branch.list
+  - branch.get
+  - branch.create
+  - branch.merge
+  - branch.delete
+  - log.query
+risk:
+  default: READ
+  writes_require_approval: true
+  high_risk_requires_approval: true
+  destructive_disabled_by_default: true
+optional_env:
+  - SUPABASE_API_BASE_URL
+  - SUPABASE_TIMEOUT_MS
+  - SUPABASE_APPROVAL_MODE
+  - SUPABASE_APPROVED_ACTIONS
+  - SUPABASE_ALLOW_DESTRUCTIVE
