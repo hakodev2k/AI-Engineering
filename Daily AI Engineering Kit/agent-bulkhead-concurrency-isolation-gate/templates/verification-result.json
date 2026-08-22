@@ -1,0 +1,15 @@
+{
+  "status": "blocked",
+  "resource": "default",
+  "evidence": [
+    {
+      "kind": "policy-validation",
+      "detail": "Record validator/test output here."
+    }
+  ],
+  "risks": [
+    "Replace this template risk with observed residual risk before use."
+  ],
+  "approval_required": false,
+  "approval_reference": null
+}
