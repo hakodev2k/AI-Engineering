@@ -1,0 +1,9 @@
+{
+  "idempotency_key": "provider:operation:stable-business-id",
+  "operation": "create-resource",
+  "target": "provider/resource-type",
+  "arguments": {"external_id":"stable-business-id","payload_ref":"artifact://validated-input.json"},
+  "max_retries": 2,
+  "requires_approval": false,
+  "reconciliation": {"method":"read-by-external-id","lookup_field":"external_id"}
+}

@@ -1,0 +1,16 @@
+{
+  "idempotency_key": "support:create-ticket:INC-2026-0042",
+  "operation": "create-ticket",
+  "target": "support/tickets",
+  "arguments": {
+    "external_id": "INC-2026-0042",
+    "title": "Checkout API returns 503",
+    "severity": "high"
+  },
+  "max_retries": 2,
+  "requires_approval": false,
+  "reconciliation": {
+    "method": "search-ticket-by-external-id",
+    "lookup_field": "external_id"
+  }
+}

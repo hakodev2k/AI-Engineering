@@ -1,0 +1,22 @@
+version: 1
+ledger:
+  backend: sqlite
+  path_env: IDEMPOTENCY_DB
+  default_path: .agent/idempotency.sqlite3
+retry:
+  max_execution_retries: 2
+  max_reconciliation_read_retries: 2
+safety:
+  reject_secret_fields: true
+  block_ambiguous_retry: true
+  require_external_verification: true
+approval_required:
+  - production-deployment
+  - destructive-operation
+  - database-schema-change
+  - irreversible-migration
+  - infrastructure-change
+  - secret-or-production-config-change
+  - breaking-api-contract
+  - security-control-weakening
+  - force-push-or-history-rewrite
