@@ -1,0 +1,18 @@
+{
+  "handoff_id": "handoff-0001",
+  "producer": "producer-agent",
+  "consumer": "consumer-agent",
+  "task": "Describe the task being transferred",
+  "status": "blocked",
+  "risk": [],
+  "facts": [],
+  "hypotheses": [],
+  "decisions": [],
+  "evidence": [],
+  "open_questions": ["Replace this editable template value with the actual blocking question or remove it."],
+  "artifacts": [],
+  "verification": {
+    "status": "not-run",
+    "checks": []
+  }
+}
