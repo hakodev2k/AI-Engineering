@@ -1,0 +1,9 @@
+{
+  "default_unknown_high_impact": "deny",
+  "require_approval_for": ["process_control", "filesystem_sensitive_write", "credential_access", "network_admin", "infrastructure_mutation", "external_write"],
+  "allow_without_approval": ["filesystem_read_public", "metadata_read"],
+  "require_delegation_provenance": true,
+  "bind_approval_to_argument_hash": true,
+  "audit_all_high_impact": true,
+  "max_recovery_retries": 1
+}
