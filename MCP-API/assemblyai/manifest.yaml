@@ -1,0 +1,35 @@
+id: assemblyai
+name: AssemblyAI
+upstream:
+  - rest
+mcp:
+  official_server: none_found
+  checked_on: 2026-08-22
+  strategy: "No official AssemblyAI MCP server was identified in current official documentation. This connector exposes a local MCP server backed by AssemblyAI's official REST API."
+api:
+  base_url: https://api.assemblyai.com
+  eu_base_url: https://api.eu.assemblyai.com
+auth:
+  type: api_key
+  required_env:
+    - ASSEMBLYAI_API_KEY
+capabilities:
+  - transcript.create
+  - transcript.get
+  - transcript.list
+  - transcript.sentences
+  - transcript.paragraphs
+  - transcript.word_search
+  - subtitle.srt
+  - subtitle.vtt
+  - transcript.delete
+risk:
+  default: READ
+  writes_require_operator_approval: true
+  destructive_disabled_by_default: true
+optional_env:
+  - ASSEMBLYAI_API_BASE_URL
+  - ASSEMBLYAI_TIMEOUT_MS
+  - ASSEMBLYAI_APPROVAL_MODE
+  - ASSEMBLYAI_APPROVED_ACTIONS
+  - ASSEMBLYAI_ALLOW_DESTRUCTIVE
