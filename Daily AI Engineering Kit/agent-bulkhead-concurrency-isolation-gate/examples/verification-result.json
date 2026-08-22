@@ -1,0 +1,19 @@
+{
+  "status": "verified",
+  "resource": "payments-api",
+  "evidence": [
+    {
+      "kind": "policy-validation",
+      "detail": "Policy validator returned VALID."
+    },
+    {
+      "kind": "saturation-test",
+      "detail": "payments-api was saturated above queue capacity while profile-api control traffic retained capacity and stayed within the agreed test budget."
+    }
+  ],
+  "risks": [
+    "Limits are based on staging traffic and should be re-evaluated after production observation."
+  ],
+  "approval_required": false,
+  "approval_reference": null
+}
