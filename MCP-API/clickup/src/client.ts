@@ -30,7 +30,7 @@ export class ClickUpClient {
           method,
           signal: controller.signal,
           headers: {
-            Authorization: this.config.accessToken,
+            Authorization: this.config.authorizationHeader,
             Accept: 'application/json',
             'Content-Type': 'application/json',
             'User-Agent': 'ai-engineering-clickup-mcp/1.0'
