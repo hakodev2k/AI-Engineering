@@ -1,0 +1,9 @@
+{
+  "message_id": "order-123",
+  "source": "orders-created",
+  "failure_category": "deserialization",
+  "attempt": 1,
+  "payload": "{\"orderId\":123,\"currency\":42}",
+  "error_type": "JsonException",
+  "error_message": "currency must be a string"
+}

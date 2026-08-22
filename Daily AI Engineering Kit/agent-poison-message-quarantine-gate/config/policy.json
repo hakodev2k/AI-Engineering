@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "max_transient_retries": 3,
+  "retryable_categories": ["timeout", "rate-limit", "temporary-unavailable"],
+  "immediate_quarantine_categories": ["validation", "deserialization", "business-rule", "unknown-contract"],
+  "store_raw_body": false,
+  "max_body_bytes": 262144,
+  "require_replay_approval": true,
+  "require_independent_verifier": true,
+  "allowed_replay_environments": ["local", "dev", "test", "staging", "production"]
+}
