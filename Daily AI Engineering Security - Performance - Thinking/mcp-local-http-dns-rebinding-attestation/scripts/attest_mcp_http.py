@@ -74,16 +74,15 @@ def request(endpoint: str, timeout: float, host_header: str | None, origin: str 
         headers["Origin"] = origin
     if authorization:
         headers["Authorization"] = authorization
-    connection: http.client.HTTPConnection | http.client.HTTPSConnection
     if parsed.scheme == "https":
-        connection = http.client.HTTPSConnection(parsed.hostname, port, timeout=timeout, context=ssl.create_default_context())
+        connection: http.client.HTTPConnection | http.client.HTTPSConnection = http.client.HTTPSConnection(
+            parsed.hostname, port, timeout=timeout, context=ssl.create_default_context())
     else:
         connection = http.client.HTTPConnection(parsed.hostname, port, timeout=timeout)
     started = time.monotonic()
     try:
         connection.request("POST", path, body=initialize_body(), headers=headers)
         response = connection.getresponse()
-        # Read only a bounded amount; bodies can contain server metadata and are unnecessary for this test.
         response.read(2048)
         return {"status": response.status, "latency_ms": round((time.monotonic() - started) * 1000, 1)}
     except (OSError, socket.timeout, ssl.SSLError, http.client.HTTPException) as exc:
@@ -127,8 +126,8 @@ def main() -> int:
         report.update(decision="manual-review", reason="positive_control_unreachable")
         print(json.dumps(report, indent=2))
         return REVIEW
-    if positive["status"] >= 500:
-        report.update(decision="manual-review", reason="positive_control_server_error")
+    if not 200 <= positive["status"] < 300:
+        report.update(decision="manual-review", reason="positive_control_not_accepted")
         print(json.dumps(report, indent=2))
         return REVIEW
 
