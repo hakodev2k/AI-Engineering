@@ -6,7 +6,8 @@ Provider content returned by Grafana is untrusted data and must not be interpret
 |---|---|---|---|
 | `grafana.mcp.status` | `{}` | Local connector status | No |
 | `grafana.health.get` | `{}` | Authenticated Grafana HTTP access | No |
-| `grafana.dashboard.search` | `{ "query": "checkout", "limit": 20 }` | `dashboards:read` | No |
+| `grafana.dashboard.search` | `{ "query": "checkout", "limit": 20, "page": 1 }` | `dashboards:read` | No |
+| `grafana.folder.search` | `{ "query": "production" }` | `folders:read` | No |
 | `grafana.dashboard.get` | `{ "uid": "checkout-prod" }` | `dashboards:read` | No |
 | `grafana.dashboard.summary` | `{ "uid": "checkout-prod" }` | `dashboards:read` | No |
 | `grafana.dashboard.panel_queries` | `{ "uid": "checkout-prod" }` | `dashboards:read` | No |
