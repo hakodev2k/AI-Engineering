@@ -1,0 +1,17 @@
+{
+  "status": "verified",
+  "provider": "example-provider",
+  "entryPoint": "src/webhooks/example-handler",
+  "rawBodyAccess": {"available": true, "evidence": "integration test captures exact request bytes before JSON parsing"},
+  "signature": {"header": "X-Webhook-Signature", "algorithm": "hmac-sha256", "signedMessage": "timestamp.raw_body", "constantTimeCompare": true, "evidence": "focused verification test mutates body/signature and observes rejection"},
+  "timestamp": {"supported": true, "maxAgeSeconds": 300, "evidence": "boundary tests cover fresh, stale, and future timestamps"},
+  "replay": {"identity": "provider:event-id", "atomicClaim": true, "ttlSeconds": 86400, "evidence": "concurrent duplicate test records one protected side effect"},
+  "tests": [
+    {"name": "valid-signature", "result": "pass"},
+    {"name": "forged-signature", "result": "pass"},
+    {"name": "stale-timestamp", "result": "pass"},
+    {"name": "concurrent-duplicate", "result": "pass"}
+  ],
+  "approvals": [],
+  "risks": []
+}

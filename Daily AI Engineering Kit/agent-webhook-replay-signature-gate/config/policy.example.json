@@ -1,0 +1,14 @@
+{
+  "signatureHeader": "X-Webhook-Signature",
+  "timestampHeader": "X-Webhook-Timestamp",
+  "eventIdHeader": "X-Webhook-Id",
+  "algorithm": "hmac-sha256",
+  "signedMessage": "timestamp-dot-raw-body",
+  "maxAgeSeconds": 300,
+  "futureSkewSeconds": 30,
+  "replayTtlSeconds": 86400,
+  "requireRawBody": true,
+  "requireConstantTimeCompare": true,
+  "requireAtomicReplayClaim": true,
+  "maxTransientRetries": 2
+}
