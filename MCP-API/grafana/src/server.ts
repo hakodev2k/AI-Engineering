@@ -17,10 +17,14 @@ server.tool('grafana.health.get', 'Read Grafana instance health through the offi
   async () => json(await grafanaHealth(config)));
 
 server.tool('grafana.dashboard.search', 'Search dashboards through official Grafana MCP. READ. Requires dashboards:read.', {
-  query: z.string().max(300).optional(),
-  tag: z.array(z.string().min(1).max(100)).max(20).optional(),
-  limit: z.number().int().min(1).max(100).default(25)
+  query: z.string().max(300).default(''),
+  limit: z.number().int().min(1).max(100).default(50),
+  page: z.number().int().min(1).max(10000).default(1)
 }, async (args) => json(await upstream.call('search_dashboards', args)));
+
+server.tool('grafana.folder.search', 'Search folders through official Grafana MCP. READ. Requires folders:read.', {
+  query: z.string().max(300).default('')
+}, async (args) => json(await upstream.call('search_folders', args)));
 
 server.tool('grafana.dashboard.get', 'Get a dashboard by UID through official Grafana MCP. READ. Requires dashboards:read.', { uid: Uid },
   async (args) => json(await upstream.call('get_dashboard_by_uid', args)));
