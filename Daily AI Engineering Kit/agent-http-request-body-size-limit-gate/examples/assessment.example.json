@@ -1,0 +1,29 @@
+{
+  "status": "pass",
+  "entry_points": ["POST /api/import"],
+  "findings": [
+    {
+      "finding": "Import endpoint is bounded at 10485760 bytes and streams accepted content to bounded storage.",
+      "evidence": [
+        "Endpoint-specific application limit is 10485760 bytes.",
+        "Oversized integration test receives HTTP 413 before import side effects.",
+        "Near-limit integration test succeeds.",
+        "Proxy and application limits were reviewed and application limit is not higher than the edge limit."
+      ],
+      "confidence": "high",
+      "affected_component": "import endpoint",
+      "risk": "low",
+      "recommended_action": "Keep endpoint-specific limit and regression tests.",
+      "verification_status": "verified"
+    }
+  ],
+  "verification": {
+    "limit_enforced": true,
+    "oversized_request_rejected": true,
+    "streaming_path_reviewed": true,
+    "proxy_app_limits_aligned": true,
+    "normal_request_still_passes": true,
+    "independent_verification": true
+  },
+  "remaining_risks": []
+}
