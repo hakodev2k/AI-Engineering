@@ -1,0 +1,4 @@
+{"call_id":"c1","tool":"search","call_complete_ms":1000,"safety_ready_ms":1010,"tool_start_ms":1160,"tool_end_ms":1360}
+{"call_id":"c2","tool":"search","call_complete_ms":2000,"safety_ready_ms":2010,"tool_start_ms":2110,"tool_end_ms":2290}
+{"call_id":"c3","tool":"database","call_complete_ms":3000,"safety_ready_ms":3020,"tool_start_ms":3070,"tool_end_ms":3420}
+{"call_id":"c4","tool":"database","call_complete_ms":4000,"safety_ready_ms":4010,"tool_start_ms":4200,"tool_end_ms":4510}
