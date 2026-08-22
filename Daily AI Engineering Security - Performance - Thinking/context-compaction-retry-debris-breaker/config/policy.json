@@ -1,0 +1,9 @@
+{
+  "max_compaction_input_chars": 120000,
+  "max_retries": 2,
+  "min_payload_reduction_ratio": 0.10,
+  "exclude_kinds": ["retry_diagnostic", "transport_error", "compaction_failure", "debug_trace"],
+  "require_previous_summary_continuity": true,
+  "fail_closed_on_unbounded_input": true,
+  "preserve_recent_tail_messages": 12
+}
