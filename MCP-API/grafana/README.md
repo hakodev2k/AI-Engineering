@@ -60,6 +60,7 @@ Grant only permissions needed by enabled tools:
 | Capability | Grafana permission | Scope example |
 |---|---|---|
 | Dashboard search/read/summary/panel queries | `dashboards:read` | `dashboards:*` or selected dashboard UIDs |
+| Folder search | `folders:read` | `folders:*` or selected folder UIDs |
 | Datasource list/read | `datasources:read` | `datasources:*` or selected datasource UIDs |
 | Dashboard create/update | `dashboards:create`, `dashboards:write` | dashboard/folder scopes needed for the target |
 | Folder create | `folders:create` | `folders:*` |
@@ -88,6 +89,7 @@ Approval state is external configuration. Tool input cannot self-approve an acti
 | `grafana.mcp.status` | Official MCP discovery | READ | No |
 | `grafana.health.get` | HTTP `GET /api/health` | READ | No |
 | `grafana.dashboard.search` | MCP `search_dashboards` | READ | No |
+| `grafana.folder.search` | MCP `search_folders` | READ | No |
 | `grafana.dashboard.get` | MCP `get_dashboard_by_uid` | READ | No |
 | `grafana.dashboard.summary` | MCP `get_dashboard_summary` | READ | No |
 | `grafana.dashboard.panel_queries` | MCP `get_dashboard_panel_queries` | READ | No |
@@ -154,7 +156,7 @@ List inputs are bounded locally, and dashboard patch operations are limited to 5
 - Outbound HTTP fallback is restricted to the configured `GRAFANA_URL` plus fixed `/api/health` path.
 - Upstream MCP tool names are allowlisted; arbitrary tool invocation is rejected.
 - Only selected upstream tool categories are launched by default.
-- Provider-returned dashboards, datasource metadata, panel queries, labels, and messages are untrusted data, not instructions.
+- Provider-returned dashboards, folders, datasource metadata, panel queries, labels, and messages are untrusted data, not instructions.
 - Write approvals are connector configuration rather than model-controlled parameters.
 - Dashboard patch paths must use JSONPath beginning with `$.` and operation count is bounded.
 - No admin, user, team, role, credential, datasource-secret, or arbitrary HTTP request tool is exposed.
@@ -162,15 +164,7 @@ List inputs are bounded locally, and dashboard patch operations are limited to 5
 
 ## Errors
 
-Expected categories include:
-
-- configuration validation failures;
-- `APPROVAL_REQUIRED` for unapproved writes;
-- `VALIDATION_ERROR` for ambiguous or unsafe arguments;
-- `UPSTREAM_TOOL_DENIED` if code attempts a non-allowlisted MCP tool;
-- `UPSTREAM_MCP_ERROR` for an official server tool failure;
-- `GRAFANA_HTTP_<status>` for HTTP fallback failures;
-- upstream process/startup errors when `mcp-grafana` is unavailable or authentication/RBAC is insufficient.
+Expected categories include configuration validation failures, `APPROVAL_REQUIRED`, `VALIDATION_ERROR`, `UPSTREAM_TOOL_DENIED`, `UPSTREAM_MCP_ERROR`, `GRAFANA_HTTP_<status>`, and upstream process/auth/RBAC failures.
 
 ## Tests
 
