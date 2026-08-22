@@ -1,0 +1,45 @@
+id: assemblyai
+name: AssemblyAI
+upstream:
+  - official-docs-mcp
+  - rest
+  - llm-gateway
+mcp:
+  official_docs_endpoint: https://mcp.assemblyai.com/docs
+  transport: streamable-http
+  tools:
+    - search_docs
+    - get_pages
+    - list_sections
+    - get_api_reference
+  strategy: "Use AssemblyAI's official MCP server for live documentation only. Operational transcription and LLM capabilities use official APIs for a narrow, auditable contract."
+api:
+  base_url: https://api.assemblyai.com
+  llm_gateway_base_url: https://llm-gateway.assemblyai.com
+auth:
+  type: api_key
+  header: authorization
+  required_env:
+    - ASSEMBLYAI_API_KEY
+capabilities:
+  - transcript.list
+  - transcript.get
+  - transcript.create
+  - transcript.wait
+  - transcript.paragraphs
+  - transcript.sentences
+  - transcript.subtitles
+  - transcript.redacted_audio
+  - transcript.delete
+  - llm.analyze_transcript
+risk:
+  default: READ
+  writes_require_operator_approval: true
+  destructive_disabled_by_default: true
+optional_env:
+  - ASSEMBLYAI_API_BASE_URL
+  - ASSEMBLYAI_LLM_BASE_URL
+  - ASSEMBLYAI_TIMEOUT_MS
+  - ASSEMBLYAI_APPROVAL_MODE
+  - ASSEMBLYAI_APPROVED_ACTIONS
+  - ASSEMBLYAI_ALLOW_DESTRUCTIVE
