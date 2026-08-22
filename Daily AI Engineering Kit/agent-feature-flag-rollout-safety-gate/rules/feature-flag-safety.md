@@ -1,30 +1,26 @@
 # Feature Flag Safety Rules
 
 ## MUST
-- Identify the exact flag key, environment, owner, affected cohort, and expiry before rollout.
-- Preserve a working off/default path until rollout verification is complete.
-- Validate every rollout plan with `scripts/validate_rollout.py` before changing flag state.
-- Revalidate after any material change to stages, targets, thresholds, rollback instructions, environment, or expiry.
-- Require explicit human approval for production rollout and 100% exposure when configured by policy.
-- Record the actual provider state after each authorized change and compare it with the plan.
-- Observe each stage for at least its configured duration before progression.
-- Roll back or hold when abort thresholds are breached; do not average away a blocking metric.
-- Keep production mutation credentials separate from planning and verification agents.
+- Identify the exact flag key, environment, current state, requested state, targeting rules, exposure percentage, owner, rollback mechanism, and affected call sites before editing.
+- Treat production/protected-environment exposure increases as approval-bound when policy thresholds are exceeded.
+- Preserve a working rollback or fallback until rollout verification is complete.
+- Keep facts, hypotheses, decisions, and telemetry evidence distinct.
+- Run the deterministic gate before and after edits and preserve its output.
+- Verify that unrelated flag keys and targeting rules did not change.
+- Re-request approval when flag, environment, exposure, targeting cohort, rollback behavior, or security impact materially differs from the approved request.
 
 ## MUST NOT
-- Enable a production flag because tests pass without staged runtime verification.
-- Start at 100% when canary rollout is required.
-- Modify policy or environment labels to bypass a validator finding.
-- Increase feature-flag provider permissions automatically.
-- Disable or remove the fallback path during an active rollout.
-- Continue when telemetry is unavailable or the active cohort cannot be determined.
-- Treat `approval_required` as authorization to execute.
-- Reuse approval after the rollout plan materially changes.
-- Delete a flag, remove fallback code, or perform irreversible cleanup without explicit human approval.
+- Globally enable a protected-environment flag without explicit approval.
+- Delete a flag, fallback, or kill switch while active code paths still reference it.
+- Infer production health from successful build/tests alone.
+- Modify policy thresholds during a rollout task merely to make a failing gate pass.
+- Put secrets, tokens, customer identifiers, or raw sensitive cohort data into the request/evidence files.
+- Retry validation or approval failures as if they were transient.
+- Force push, deploy, change infrastructure, or mutate a production flag provider as part of this package.
 
 ## SHOULD
-- Prefer internal users or the smallest representative cohort before percentage rollout.
-- Use metrics that isolate the flag cohort when technically possible.
-- Include technical and business health signals when the feature can affect both.
-- Keep stages few enough to operate reliably while still limiting blast radius.
-- Expire temporary flags promptly and create a separate cleanup task after stable verification.
+- Prefer small canary increments with measurable success criteria.
+- Use stable cohort identifiers rather than ad-hoc targeting expressions.
+- Add tests for both enabled and disabled paths while both paths remain supported.
+- Record expiry/cleanup intent for temporary flags.
+- Prefer provider-neutral flag semantics in application code.
