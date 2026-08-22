@@ -1,0 +1,41 @@
+id: freshdesk
+name: Freshdesk
+upstream:
+  - rest
+  - official-developer-mcp-reference
+mcp:
+  official_status: developer_portal_only
+  note: "Freshworks Developer MCP manages app-development and publishing workflows; it is not used for helpdesk ticket execution."
+api:
+  base_url_template: https://{domain}.freshdesk.com/api/v2
+auth:
+  type: api_key_basic_auth
+  required_env:
+    - FRESHDESK_DOMAIN
+    - FRESHDESK_API_KEY
+  permission_model: "API key inherits the Freshdesk agent's permissions; use a dedicated least-privileged agent."
+capabilities:
+  - account.get
+  - ticket.list
+  - ticket.get
+  - ticket.search
+  - ticket.create
+  - ticket.update
+  - conversation.list
+  - ticket.reply
+  - ticket.note.create
+  - contact.list
+  - contact.get
+  - contact.search
+  - contact.create
+  - contact.update
+  - agent.list
+  - group.list
+risk:
+  default: READ
+  writes_require_approval: true
+  destructive_tools_exposed: false
+optional_env:
+  - FRESHDESK_TIMEOUT_MS
+  - FRESHDESK_APPROVAL_MODE
+  - FRESHDESK_APPROVED_ACTIONS
