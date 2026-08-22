@@ -1,0 +1,6 @@
+{
+  "max_redirect_hops": 5,
+  "block_private_destinations": true,
+  "allowed_redirect_hosts": [],
+  "allowed_redirect_suffixes": []
+}
