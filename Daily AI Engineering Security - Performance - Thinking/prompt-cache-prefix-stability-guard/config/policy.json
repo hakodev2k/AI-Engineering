@@ -1,0 +1,4 @@
+{
+  "stable_segments": ["tools", "system"],
+  "unordered_array_keys": ["tools", "agents", "skills"]
+}
