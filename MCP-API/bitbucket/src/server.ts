@@ -4,9 +4,11 @@ import { z } from 'zod';
 import { BitbucketClient } from './client.js';
 import { assertTargetAllowed, loadConfig } from './config.js';
 import { assertApproval } from './policy.js';
+import { RovoBitbucketClient } from './rovo.js';
 
 const config = loadConfig();
 const client = new BitbucketClient(config);
+const rovo = new RovoBitbucketClient(config);
 const server = new McpServer({ name: 'bitbucket-mcp-connector', version: '1.0.0' });
 const workspace = z.string().min(1).max(100).regex(/^[A-Za-z0-9._-]+$/);
 const repo = z.string().min(1).max(100).regex(/^[A-Za-z0-9._-]+$/);
@@ -15,26 +17,33 @@ const pageLen = z.number().int().min(1).max(100).optional();
 const enc = encodeURIComponent;
 const out = (value: unknown) => ({ content: [{ type: 'text' as const, text: JSON.stringify(value) }] });
 
+async function routed(mcpTool: string, action: string, args: Record<string, unknown>, rest: () => Promise<unknown>) {
+  const mcp = await rovo.call(mcpTool, action, args);
+  return mcp ?? await rest();
+}
+
 server.tool('bitbucket.repository.list', 'List repositories in an allowed Bitbucket Cloud workspace.', {
   workspace, pagelen: pageLen, q: z.string().max(500).optional()
 }, async a => {
   assertTargetAllowed(config, a.workspace);
-  return out(await client.get(`/repositories/${enc(a.workspace)}`, { pagelen: a.pagelen, q: a.q }));
+  return out(await routed('bitbucketRepository', 'list', a,
+    () => client.get(`/repositories/${enc(a.workspace)}`, { pagelen: a.pagelen, q: a.q })));
 });
 
 server.tool('bitbucket.repository.get', 'Get repository metadata.', { workspace, repo }, async a => {
   assertTargetAllowed(config, a.workspace, a.repo);
-  return out(await client.get(`/repositories/${enc(a.workspace)}/${enc(a.repo)}`));
+  return out(await routed('bitbucketRepository', 'get', a,
+    () => client.get(`/repositories/${enc(a.workspace)}/${enc(a.repo)}`)));
 });
 
-server.tool('bitbucket.branch.list', 'List repository branches.', {
+server.tool('bitbucket.branch.list', 'List repository branches. Uses REST because the official Rovo MCP documents branch.get, not branch.list.', {
   workspace, repo, pagelen: pageLen, q: z.string().max(500).optional()
 }, async a => {
   assertTargetAllowed(config, a.workspace, a.repo);
   return out(await client.get(`/repositories/${enc(a.workspace)}/${enc(a.repo)}/refs/branches`, { pagelen: a.pagelen, q: a.q }));
 });
 
-server.tool('bitbucket.commit.list', 'List commits from a repository or revision.', {
+server.tool('bitbucket.commit.list', 'List commits. Uses REST because the official Rovo MCP documents commit.get, not commit.list.', {
   workspace, repo, revision: z.string().max(200).optional(), pagelen: pageLen
 }, async a => {
   assertTargetAllowed(config, a.workspace, a.repo);
@@ -46,6 +55,11 @@ server.tool('bitbucket.source.read', 'Read a text file at a branch, tag, or comm
   workspace, repo, revision: z.string().min(1).max(200), path: z.string().min(1).max(2000).refine(v => !v.includes('..'), 'path traversal is not allowed')
 }, async a => {
   assertTargetAllowed(config, a.workspace, a.repo);
+  const mcp = await rovo.call('bitbucketRepoContent', 'files.get', a);
+  if (mcp !== null) {
+    if (Buffer.byteLength(JSON.stringify(mcp), 'utf8') > 204800) throw new Error('MCP source response exceeds 200 KiB safety limit');
+    return out(mcp);
+  }
   const safePath = a.path.split('/').map(enc).join('/');
   const text = await client.getText(`/repositories/${enc(a.workspace)}/${enc(a.repo)}/src/${enc(a.revision)}/${safePath}`);
   if (Buffer.byteLength(text, 'utf8') > 204800) throw new Error('Source file exceeds 200 KiB safety limit');
@@ -56,14 +70,16 @@ server.tool('bitbucket.pull_request.list', 'List pull requests.', {
   workspace, repo, state: z.enum(['OPEN', 'MERGED', 'DECLINED', 'SUPERSEDED']).optional(), pagelen: pageLen
 }, async a => {
   assertTargetAllowed(config, a.workspace, a.repo);
-  return out(await client.get(`/repositories/${enc(a.workspace)}/${enc(a.repo)}/pullrequests`, { state: a.state, pagelen: a.pagelen }));
+  return out(await routed('bitbucketPullRequest', 'list', a,
+    () => client.get(`/repositories/${enc(a.workspace)}/${enc(a.repo)}/pullrequests`, { state: a.state, pagelen: a.pagelen })));
 });
 
 server.tool('bitbucket.pull_request.get', 'Get one pull request.', {
   workspace, repo, id: z.number().int().positive()
 }, async a => {
   assertTargetAllowed(config, a.workspace, a.repo);
-  return out(await client.get(`/repositories/${enc(a.workspace)}/${enc(a.repo)}/pullrequests/${a.id}`));
+  return out(await routed('bitbucketPullRequest', 'get', a,
+    () => client.get(`/repositories/${enc(a.workspace)}/${enc(a.repo)}/pullrequests/${a.id}`)));
 });
 
 server.tool('bitbucket.pull_request.create', 'Create a pull request. Requires explicit approval.', {
@@ -71,13 +87,10 @@ server.tool('bitbucket.pull_request.create', 'Create a pull request. Requires ex
 }, async a => {
   assertTargetAllowed(config, a.workspace, a.repo);
   assertApproval('bitbucket.pull_request.create', a.approvalId, config.approvalSecret);
-  return out(await client.post(`/repositories/${enc(a.workspace)}/${enc(a.repo)}/pullrequests`, {
-    title: a.title,
-    description: a.description,
-    source: { branch: { name: a.sourceBranch } },
-    destination: { branch: { name: a.destinationBranch } },
-    close_source_branch: a.closeSourceBranch ?? false
-  }));
+  const args = { workspace: a.workspace, repo: a.repo, title: a.title, sourceBranch: a.sourceBranch, destinationBranch: a.destinationBranch, description: a.description, closeSourceBranch: a.closeSourceBranch };
+  return out(await routed('bitbucketPullRequest', 'create', args, () => client.post(`/repositories/${enc(a.workspace)}/${enc(a.repo)}/pullrequests`, {
+    title: a.title, description: a.description, source: { branch: { name: a.sourceBranch } }, destination: { branch: { name: a.destinationBranch } }, close_source_branch: a.closeSourceBranch ?? false
+  })));
 });
 
 server.tool('bitbucket.pull_request.comment', 'Post a comment to a pull request. Requires explicit approval.', {
@@ -85,7 +98,8 @@ server.tool('bitbucket.pull_request.comment', 'Post a comment to a pull request.
 }, async a => {
   assertTargetAllowed(config, a.workspace, a.repo);
   assertApproval('bitbucket.pull_request.comment', a.approvalId, config.approvalSecret);
-  return out(await client.post(`/repositories/${enc(a.workspace)}/${enc(a.repo)}/pullrequests/${a.id}/comments`, { content: { raw: a.content } }));
+  return out(await routed('bitbucketPullRequest', 'comment', { workspace: a.workspace, repo: a.repo, id: a.id, content: a.content },
+    () => client.post(`/repositories/${enc(a.workspace)}/${enc(a.repo)}/pullrequests/${a.id}/comments`, { content: { raw: a.content } })));
 });
 
 server.tool('bitbucket.pull_request.approve', 'Approve a pull request as the authenticated identity. Requires explicit approval.', {
@@ -93,7 +107,8 @@ server.tool('bitbucket.pull_request.approve', 'Approve a pull request as the aut
 }, async a => {
   assertTargetAllowed(config, a.workspace, a.repo);
   assertApproval('bitbucket.pull_request.approve', a.approvalId, config.approvalSecret);
-  return out(await client.post(`/repositories/${enc(a.workspace)}/${enc(a.repo)}/pullrequests/${a.id}/approve`));
+  return out(await routed('bitbucketPullRequest', 'approve', { workspace: a.workspace, repo: a.repo, id: a.id },
+    () => client.post(`/repositories/${enc(a.workspace)}/${enc(a.repo)}/pullrequests/${a.id}/approve`)));
 });
 
 server.tool('bitbucket.pull_request.merge', 'Merge a pull request. HIGH_RISK and requires explicit approval.', {
@@ -101,14 +116,12 @@ server.tool('bitbucket.pull_request.merge', 'Merge a pull request. HIGH_RISK and
 }, async a => {
   assertTargetAllowed(config, a.workspace, a.repo);
   assertApproval('bitbucket.pull_request.merge', a.approvalId, config.approvalSecret);
-  return out(await client.post(`/repositories/${enc(a.workspace)}/${enc(a.repo)}/pullrequests/${a.id}/merge`, {
-    message: a.message,
-    merge_strategy: a.strategy,
-    close_source_branch: a.closeSourceBranch
-  }));
+  const args = { workspace: a.workspace, repo: a.repo, id: a.id, message: a.message, strategy: a.strategy, closeSourceBranch: a.closeSourceBranch };
+  return out(await routed('bitbucketPullRequest', 'merge', args,
+    () => client.post(`/repositories/${enc(a.workspace)}/${enc(a.repo)}/pullrequests/${a.id}/merge`, { message: a.message, merge_strategy: a.strategy, close_source_branch: a.closeSourceBranch })));
 });
 
-const shutdown = () => { void server.close().then(() => process.exit(0), () => process.exit(1)); };
+const shutdown = () => { void Promise.allSettled([server.close(), rovo.close()]).then(() => process.exit(0)); };
 process.once('SIGINT', shutdown);
 process.once('SIGTERM', shutdown);
 await server.connect(new StdioServerTransport());
