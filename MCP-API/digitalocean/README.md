@@ -26,6 +26,7 @@ The external tool names remain stable regardless of upstream transport.
 - Networking MCP tools: https://docs.digitalocean.com/reference/mcp/networking-mcp-tools/
 - API overview/reference: https://docs.digitalocean.com/reference/api/
 - Authentication/PAT guidance: https://docs.digitalocean.com/reference/api/create-personal-access-token/
+- Custom token scopes: https://docs.digitalocean.com/reference/api/scopes/
 - Public API rate limits: https://docs.digitalocean.com/reference/api/reference/public-apis/
 
 ## Architecture
@@ -49,21 +50,25 @@ Credentials stay inside the connector/upstream transport layer. The MCP caller n
 
 Set `DIGITALOCEAN_API_TOKEN` to a DigitalOcean personal access token or OAuth access token. DigitalOcean API tokens are bearer credentials and must be treated like passwords.
 
-Use custom scopes and least privilege. For the complete tool set in this connector, grant only the scopes needed for the enabled workflows:
-
-### Read scopes
+Use custom scopes and least privilege. DigitalOcean's granular write scopes can themselves require read scopes. For the complete connector, the practical base read set is:
 
 - `account:read`
 - `regions:read`
+- `sizes:read`
+- `actions:read`
+- `image:read`
+- `snapshot:read`
 - `droplet:read`
 - `firewall:read`
 
-### Write/action scopes
+Enable write scopes only for workflows you actually use:
 
 - `droplet:create` for Droplet creation
 - `droplet:update` for reboot, power actions, and snapshots
 - `firewall:create` for firewall creation
 - `firewall:update` for attaching Droplets to a firewall
+
+Optional features can require associated scopes. Supplying SSH keys during Droplet creation can use `ssh_key:read`; creating/applying new tags can require `tag:read`/`tag:create`; VPC-aware creation can require `vpc:read`. DigitalOcean documents the exact required and associated scopes for each granular scope, so token configuration should follow the current provider scope reference.
 
 If you only use read tools, omit the write scopes.
 
@@ -149,8 +154,6 @@ Do not commit token-bearing MCP configuration files.
 
 Write and high-risk tools require an `approvalId`. The connector validates it with HMAC-SHA256 using `DIGITALOCEAN_APPROVAL_SECRET` and the exact tool name.
 
-Conceptually:
-
 ```text
 approvalId = HMAC_SHA256(DIGITALOCEAN_APPROVAL_SECRET, toolName)
 ```
@@ -167,11 +170,11 @@ Inputs are constrained to a name, region, size slug, image slug, optional SSH ke
 
 ### Droplet actions
 
-Reboot, power on, power off, and snapshot are individually named tools. The connector does not expose a generic `action(type)` tool so an agent cannot smuggle unsupported or more dangerous action types through one unrestricted parameter.
+Reboot, power on, power off, and snapshot are individually named tools. The connector does not expose a generic `action(type)` tool, preventing callers from smuggling unsupported or more dangerous action types through an unrestricted parameter.
 
 ### Cloud Firewall creation
 
-This connector creates a firewall with one explicit inbound and one explicit outbound rule. This intentionally constrained shape is easier to review than an arbitrary deeply nested firewall document. More rules can be added in a future dedicated reviewed capability.
+This connector creates a firewall with one explicit inbound and one explicit outbound rule. This intentionally constrained shape is easier to review than an arbitrary deeply nested firewall document.
 
 ## Reliability and rate limits
 
@@ -186,7 +189,7 @@ The REST transport:
 - does not retry ordinary 4xx permission/auth/validation failures;
 - enforces a configurable request timeout.
 
-The MCP bridge fails closed to the same scoped REST operation rather than discovering or invoking arbitrary newly exposed upstream tools.
+The MCP bridge checks the current upstream tool list before invocation and falls back to the same scoped REST operation rather than invoking arbitrary newly discovered tools.
 
 ## Security considerations
 
@@ -200,6 +203,10 @@ The MCP bridge fails closed to the same scoped REST operation rather than discov
 - Destructive delete operations are deliberately not implemented.
 - The connector never accepts arbitrary URLs, preventing a generic SSRF-capable API proxy surface.
 - The official MCP bridge only enables the `droplets` or `networking` service and checks the expected tool name before invocation.
+
+## Error handling
+
+Provider error responses are mapped to connector errors with HTTP status and a bounded provider message excerpt. Authentication, permission, and validation errors are surfaced immediately. MCP startup/tool failures trigger REST fallback for the same capability. REST timeouts and network failures use bounded retry behavior where safe.
 
 ## Testing
 
@@ -227,10 +234,14 @@ npm run typecheck
 
 See `examples/workflows.json` for read-only discovery, approved reboot, and firewall creation workflows. The examples use placeholder resource IDs and approval values and contain no secrets.
 
+## Compatibility
+
+The server speaks standard MCP over stdio and is suitable for MCP clients that can launch a local executable, including ChatGPT-compatible MCP environments, Claude/Claude Code, Cursor, VS Code/Copilot-compatible environments, and custom MCP clients, subject to each client's support for local stdio servers.
+
 ## Limitations
 
 - The connector currently covers Droplets and Cloud Firewalls, not every DigitalOcean product.
 - It intentionally omits delete operations and generic API execution.
-- MCP-backed capabilities depend on the installed/current official `@digitalocean/mcp` package launched by `npx`; REST fallback keeps the external tool contract available when that upstream path is unavailable.
+- MCP-backed capabilities depend on the current official `@digitalocean/mcp` package launched by `npx`; REST fallback keeps the external tool contract available when that upstream path is unavailable.
 - Upstream MCP schemas may evolve. The bridge validates tool presence at connection time and falls back rather than calling an unknown tool.
 - An API token still controls the ultimate provider permission boundary; connector approval cannot grant privileges absent from the DigitalOcean token.
