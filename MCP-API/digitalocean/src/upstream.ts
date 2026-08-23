@@ -3,8 +3,18 @@ import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js'
 import { Config } from './config.js';
 
 export type Service = 'droplets' | 'networking';
-
 type Connected = { client: Client; tools: Set<string> };
+
+function normalizeResult<T>(result: any): T {
+  if (result?.structuredContent !== undefined) return result.structuredContent as T;
+  const text = Array.isArray(result?.content)
+    ? result.content.find((item: any) => item?.type === 'text' && typeof item.text === 'string')?.text
+    : undefined;
+  if (typeof text === 'string') {
+    try { return JSON.parse(text) as T; } catch { return text as T; }
+  }
+  return result as T;
+}
 
 export class DigitalOceanMcpBridge {
   private readonly clients = new Map<Service, Promise<Connected>>();
@@ -37,7 +47,7 @@ export class DigitalOceanMcpBridge {
       if (!tools.has(tool)) return await fallback();
       const result = await client.callTool({ name: tool, arguments: args });
       if (result.isError) return await fallback();
-      return result as T;
+      return normalizeResult<T>(result);
     } catch {
       return await fallback();
     }
