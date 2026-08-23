@@ -1,0 +1,13 @@
+{
+  "status": "verified",
+  "workload": "orders-api",
+  "environment": "staging",
+  "bootstrap_method": "workload-identity",
+  "checks": [
+    {"name": "secret-zero-scan", "status": "pass", "evidence": "secret-zero-after.json"},
+    {"name": "intended-identity-auth", "status": "pass", "evidence": "sanitized integration test run 42"},
+    {"name": "unauthorized-identity-rejected", "status": "pass", "evidence": "negative integration test run 42"}
+  ],
+  "approvals": [],
+  "remaining_risks": ["Production identity binding requires a separate approved change."]
+}
