@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "result.schema.json",
+  "title": "Structured Output Gate Result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["status", "attempts", "input_sha256", "output_path", "errors"],
+  "properties": {
+    "status": {"enum": ["valid", "repaired", "blocked"]},
+    "attempts": {"type": "integer", "minimum": 0, "maximum": 2},
+    "input_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "output_path": {"type": ["string", "null"]},
+    "errors": {"type": "array", "items": {"type": "string"}},
+    "evidence": {"type": "array", "items": {"type": "string"}}
+  }
+}
