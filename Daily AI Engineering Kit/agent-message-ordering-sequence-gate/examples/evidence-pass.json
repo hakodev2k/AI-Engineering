@@ -1,0 +1,11 @@
+{
+  "run_id":"example-001",
+  "source":"integration-test",
+  "revision":"abc123",
+  "events":[
+    {"message_id":"a1","partition_key":"order-42","sequence":1},
+    {"message_id":"a2","partition_key":"order-42","sequence":2},
+    {"message_id":"b1","partition_key":"order-99","sequence":1},
+    {"message_id":"b2","partition_key":"order-99","sequence":2}
+  ]
+}
