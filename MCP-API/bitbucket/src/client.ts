@@ -12,7 +12,7 @@ export class BitbucketClient {
     return `Basic ${Buffer.from(`${this.config.email}:${this.config.apiToken}`).toString('base64')}`;
   }
 
-  async request<T>(method: string, path: string, body?: unknown, query?: Record<string, string | number | undefined>): Promise<T> {
+  private async raw(method: string, path: string, body?: unknown, query?: Record<string, string | number | undefined>, accept = 'application/json'): Promise<Response> {
     const url = new URL(`${this.config.baseUrl}${path}`);
     for (const [k, v] of Object.entries(query ?? {})) if (v !== undefined) url.searchParams.set(k, String(v));
     for (let attempt = 0; ; attempt++) {
@@ -24,7 +24,7 @@ export class BitbucketClient {
           signal: controller.signal,
           headers: {
             Authorization: this.authHeader(),
-            Accept: 'application/json',
+            Accept: accept,
             ...(body === undefined ? {} : { 'Content-Type': 'application/json' })
           },
           body: body === undefined ? undefined : JSON.stringify(body)
@@ -39,8 +39,7 @@ export class BitbucketClient {
           const text = await res.text();
           throw new BitbucketError(res.status, `Bitbucket API ${res.status}: ${text.slice(0, 2000)}`, retryAfter || undefined);
         }
-        if (res.status === 204) return undefined as T;
-        return await res.json() as T;
+        return res;
       } catch (err) {
         if (err instanceof BitbucketError) throw err;
         if (err instanceof DOMException && err.name === 'AbortError') throw new Error(`Bitbucket API timeout after ${this.config.timeoutMs}ms`);
@@ -50,6 +49,17 @@ export class BitbucketClient {
         clearTimeout(timer);
       }
     }
+  }
+
+  async request<T>(method: string, path: string, body?: unknown, query?: Record<string, string | number | undefined>): Promise<T> {
+    const res = await this.raw(method, path, body, query);
+    if (res.status === 204) return undefined as T;
+    return await res.json() as T;
+  }
+
+  async getText(path: string): Promise<string> {
+    const res = await this.raw('GET', path, undefined, undefined, 'text/plain');
+    return await res.text();
   }
 
   get<T>(path: string, query?: Record<string, string | number | undefined>) { return this.request<T>('GET', path, undefined, query); }
