@@ -1,0 +1,1 @@
+{"service":"dependency-name/operation","state":"closed","observations":[{"timestamp":"2026-08-23T07:00:00Z","outcome":"success","status":200}],"verification_status":"pending","risks":[]}
