@@ -1,0 +1,55 @@
+id: hubspot
+name: HubSpot
+version: 1.0.0
+runtime: node>=20
+external_transport: mcp-stdio
+upstream:
+  - rest
+  - official-remote-mcp-available
+upstream_notes:
+  official_mcp_endpoint: https://mcp.hubspot.com
+  strategy: "Use HubSpot REST APIs for this connector's fixed, least-privilege tool surface; the official remote MCP server is available but is not proxied because its Beta MCP Auth App flow and provider-managed tool surface are less predictable for reusable server-side automation."
+api_base_url: https://api.hubapi.com
+auth:
+  type: oauth2-or-static-token
+  env:
+    - HUBSPOT_ACCESS_TOKEN
+    - HUBSPOT_CLIENT_ID
+    - HUBSPOT_CLIENT_SECRET
+    - HUBSPOT_REFRESH_TOKEN
+  required_scopes:
+    - crm.objects.contacts.read
+    - crm.objects.contacts.write
+    - crm.objects.companies.read
+    - crm.objects.companies.write
+    - crm.objects.deals.read
+    - crm.objects.deals.write
+    - crm.objects.owners.read
+capabilities:
+  - owner.list
+  - contact.search
+  - contact.get
+  - contact.create
+  - contact.update
+  - company.search
+  - company.get
+  - company.create
+  - company.update
+  - deal.search
+  - deal.get
+  - deal.create
+  - deal.update
+risk:
+  default: READ
+  write_requires:
+    - HUBSPOT_ALLOW_WRITES=true
+    - explicit approval token when HUBSPOT_REQUIRE_APPROVAL=true
+env:
+  HUBSPOT_ALLOW_WRITES: "false"
+  HUBSPOT_REQUIRE_APPROVAL: "true"
+  HUBSPOT_REQUEST_TIMEOUT_MS: "15000"
+  HUBSPOT_MAX_RETRIES: "3"
+security:
+  arbitrary_http_passthrough: false
+  credentials_exposed_to_tools: false
+  third_party_content_is_untrusted: true
