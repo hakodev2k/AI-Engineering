@@ -1,0 +1,32 @@
+{
+  "examples": [
+    {
+      "tool": "replicate.model.search",
+      "input": { "query": "image generation", "limit": 10 },
+      "permission": "READ",
+      "approvalRequired": false,
+      "expectedOutput": { "results": "array of public search results" }
+    },
+    {
+      "tool": "replicate.model.prediction.create",
+      "input": { "owner": "black-forest-labs", "model": "flux-schnell", "input": { "prompt": "a lighthouse in fog" }, "approvalId": "<64-hex-approval>" },
+      "permission": "WRITE",
+      "approvalRequired": true,
+      "expectedOutput": { "id": "prediction id", "status": "starting|processing|succeeded|failed|canceled" }
+    },
+    {
+      "tool": "replicate.prediction.get",
+      "input": { "id": "prediction-id" },
+      "permission": "READ",
+      "approvalRequired": false,
+      "expectedOutput": { "id": "prediction id", "output": "provider-defined output", "metrics": "timing metadata" }
+    },
+    {
+      "tool": "replicate.deployment.prediction.create",
+      "input": { "owner": "acme", "deployment": "production", "input": { "prompt": "summarize this text" }, "approvalId": "<64-hex-approval>" },
+      "permission": "WRITE",
+      "approvalRequired": true,
+      "expectedOutput": { "id": "prediction id", "status": "prediction status" }
+    }
+  ]
+}
