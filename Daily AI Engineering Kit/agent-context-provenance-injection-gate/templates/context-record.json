@@ -1,0 +1,1 @@
+{"version":1,"source":"repository","origin":"path/to/file.md","sha256":"0000000000000000000000000000000000000000000000000000000000000000","trust":"data-only","instruction_capable":false,"status":"review","findings":[],"approval":null,"notes":["Replace template values with deterministic gate output; do not hand-author a passing record."]}

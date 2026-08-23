@@ -1,0 +1,43 @@
+version: 1
+default_trust: data-only
+instruction_capable_sources:
+  - system
+  - developer
+  - approved-policy
+trusted_repository_paths:
+  - .ai/policy.md
+review_sources:
+  - web
+  - issue
+  - log
+  - dependency
+  - user-generated
+  - tool-output
+  - repository
+blocked_capabilities:
+  - secret-disclosure
+  - permission-escalation
+  - security-weakening
+  - destructive-operation
+  - production-change
+patterns:
+  - id: override-instructions
+    severity: high
+    regex: '(?i)(ignore|disregard|override).{0,40}(instruction|rule|policy|previous|above)'
+  - id: secret-request
+    severity: critical
+    regex: '(?i)(reveal|print|send|exfiltrate|show).{0,50}(secret|token|password|api[_ -]?key|credential)'
+  - id: privilege-request
+    severity: critical
+    regex: '(?i)(disable|bypass|remove).{0,40}(security|approval|permission|sandbox|guardrail)'
+  - id: tool-command
+    severity: medium
+    regex: '(?i)(run|execute|call|invoke).{0,40}(shell|terminal|tool|command|curl|powershell|bash)'
+  - id: destructive-command
+    severity: critical
+    regex: '(?i)(rm\s+-rf|drop\s+(table|database)|force\s+push|git\s+reset\s+--hard)'
+decision:
+  deny_severities: [critical]
+  review_severities: [high, medium]
+  max_input_bytes: 1048576
+  max_findings: 100
