@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "max_gap": 0,
+  "allow_duplicates": true,
+  "require_partition_key": true,
+  "require_monotonic_sequence": true,
+  "max_tool_retries": 2,
+  "approval_required_for": [
+    "discard_message",
+    "rewrite_sequence",
+    "purge_queue",
+    "production_config_change",
+    "disable_ordering_check"
+  ]
+}
