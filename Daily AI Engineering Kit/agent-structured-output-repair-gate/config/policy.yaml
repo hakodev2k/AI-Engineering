@@ -1,0 +1,21 @@
+version: 1
+max_repair_attempts: 2
+max_output_bytes: 1048576
+require_json_object: true
+reject_markdown_fences: true
+reject_trailing_text: true
+allow_unknown_fields: false
+sensitive_field_patterns:
+  - password
+  - secret
+  - token
+  - api_key
+  - authorization
+repair:
+  preserve_original: true
+  require_validation_after_each_attempt: true
+  stop_on_identical_failure: true
+approval_required_for:
+  - schema_weakening
+  - dropping_required_fields
+  - accepting_unvalidated_output
