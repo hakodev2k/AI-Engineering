@@ -30,7 +30,7 @@ describe('configuration and approval policy', () => {
 
 describe('credential isolation', () => {
   it('refreshes OAuth credentials through the v3 token endpoint', async () => {
-    const fetchMock = vi.fn(async () => response(200, { access_token: 'refreshed', expires_in: 1800 }));
+    const fetchMock = vi.fn(async (_input: RequestInfo | URL, _init?: RequestInit) => response(200, { access_token: 'refreshed', expires_in: 1800 }));
     const config = loadConfig({
       HUBSPOT_CLIENT_ID: 'client', HUBSPOT_CLIENT_SECRET: 'secret', HUBSPOT_REFRESH_TOKEN: 'refresh'
     } as NodeJS.ProcessEnv);
@@ -53,16 +53,15 @@ describe('HubSpot client reliability', () => {
   });
 
   it('honors retry-after for retryable throttled reads', async () => {
-    const fetchMock = vi.fn()
-      .mockResolvedValueOnce(response(429, { message: 'slow down' }, { 'retry-after': '0' }))
-      .mockResolvedValueOnce(response(200, { ok: true }));
+    const fetchMock = vi.fn(async (_input: RequestInfo | URL, _init?: RequestInit) => response(200, { ok: true }))
+      .mockResolvedValueOnce(response(429, { message: 'slow down' }, { 'retry-after': '0' }));
     const client = new HubSpotClient(baseConfig, fetchMock as typeof fetch);
     await expect(client.request('/crm/v3/owners/')).resolves.toEqual({ ok: true });
     expect(fetchMock).toHaveBeenCalledTimes(2);
   });
 
   it('does not blindly retry non-idempotent writes', async () => {
-    const fetchMock = vi.fn(async () => response(500, { message: 'temporary failure' }));
+    const fetchMock = vi.fn(async (_input: RequestInfo | URL, _init?: RequestInit) => response(500, { message: 'temporary failure' }));
     const client = new HubSpotClient(baseConfig, fetchMock as typeof fetch);
     await expect(client.request('/crm/v3/objects/contacts', { method: 'POST', body: { properties: { email: 'a@b.test' } } }))
       .rejects.toThrow(/UPSTREAM_ERROR/);
@@ -70,7 +69,7 @@ describe('HubSpot client reliability', () => {
   });
 
   it('maps provider permission failures', async () => {
-    const fetchMock = vi.fn(async () => response(403, { message: 'missing scope' }));
+    const fetchMock = vi.fn(async (_input: RequestInfo | URL, _init?: RequestInit) => response(403, { message: 'missing scope' }));
     const client = new HubSpotClient(baseConfig, fetchMock as typeof fetch);
     await expect(client.request('/crm/v3/owners/')).rejects.toThrow(/PERMISSION_DENIED/);
   });
