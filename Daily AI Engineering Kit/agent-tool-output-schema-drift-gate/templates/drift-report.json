@@ -1,0 +1,13 @@
+{
+  "status": "blocked",
+  "tool": "example-tool",
+  "classification": "breaking",
+  "finding": "Required control field changed shape",
+  "evidence": ["tests/fixtures/new-compatible.json"],
+  "confidence": "high",
+  "affected_components": ["tool adapter"],
+  "risk": "Agent may make an incorrect control-flow decision",
+  "recommended_action": "Update the boundary adapter and retain strict canonical validation",
+  "verification_status": "not-run",
+  "open_questions": []
+}

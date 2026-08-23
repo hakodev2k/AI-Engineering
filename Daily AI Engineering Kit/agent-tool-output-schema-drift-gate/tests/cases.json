@@ -1,0 +1,7 @@
+[
+  {"file":"tests/fixtures/known-good.json","valid":true},
+  {"file":"tests/fixtures/new-compatible.json","valid":true},
+  {"file":"tests/fixtures/missing-status.json","valid":false},
+  {"file":"tests/fixtures/unknown-status.json","valid":false},
+  {"file":"tests/fixtures/wrong-type.json","valid":false}
+]

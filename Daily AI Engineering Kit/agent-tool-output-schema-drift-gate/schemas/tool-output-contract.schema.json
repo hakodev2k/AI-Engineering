@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "tool-output-contract.schema.json",
+  "title": "Canonical Tool Output Contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["status", "request_id", "data", "errors"],
+  "properties": {
+    "status": {"type": "string", "enum": ["success", "failed", "retryable", "blocked"]},
+    "request_id": {"type": "string"},
+    "data": {"type": "object"},
+    "errors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["code", "message"],
+        "properties": {
+          "code": {"type": "string"},
+          "message": {"type": "string"}
+        }
+      }
+    }
+  }
+}
