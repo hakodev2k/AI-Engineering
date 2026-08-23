@@ -1,0 +1,23 @@
+[
+  {
+    "workflow": "inspect-deploy",
+    "steps": [
+      { "tool": "netlify.site.get", "input": { "siteId": "SITE_ID" }, "permission": "READ", "approvalRequired": false },
+      { "tool": "netlify.deploy.list", "input": { "siteId": "SITE_ID", "perPage": 20 }, "permission": "READ", "approvalRequired": false },
+      { "tool": "netlify.deploy.get", "input": { "deployId": "DEPLOY_ID" }, "permission": "READ", "approvalRequired": false }
+    ]
+  },
+  {
+    "workflow": "restore-known-good-deploy",
+    "steps": [
+      { "tool": "netlify.deploy.restore", "input": { "siteId": "SITE_ID", "deployId": "DEPLOY_ID", "approvalId": "HMAC_SHA256" }, "permission": "HIGH_RISK", "approvalRequired": true }
+    ]
+  },
+  {
+    "workflow": "configure-notification-hook",
+    "steps": [
+      { "tool": "netlify.hook.list", "input": { "siteId": "SITE_ID" }, "permission": "READ", "approvalRequired": false },
+      { "tool": "netlify.hook.create", "input": { "siteId": "SITE_ID", "type": "url", "event": "deploy_failed", "data": { "url": "https://example.invalid/webhook" }, "approvalId": "HMAC_SHA256" }, "permission": "WRITE", "approvalRequired": true }
+    ]
+  }
+]
