@@ -1,0 +1,9 @@
+{
+  "window_seconds": 60,
+  "max_calls_per_window": 10,
+  "max_poll_calls_per_window": 3,
+  "max_estimated_input_tokens_per_window": 180000,
+  "max_calls_per_turn": 24,
+  "approved_fanout_bonus": 8,
+  "recovery_cooldown_seconds": 30
+}
