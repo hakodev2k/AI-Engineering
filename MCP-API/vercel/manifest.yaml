@@ -1,0 +1,60 @@
+id: vercel
+name: Vercel
+upstream:
+  - mcp
+  - rest
+mcp:
+  endpoint: https://mcp.vercel.com
+  mode: optional-read-first
+  capabilities:
+    - project.read
+    - deployment.read
+    - deployment.logs
+    - docs.search
+api:
+  base_url: https://api.vercel.com
+auth:
+  rest: bearer-access-token
+  mcp: oauth2-bearer-or-preauthorized-token
+capabilities:
+  - project.list
+  - project.get
+  - deployment.list
+  - deployment.get
+  - deployment.logs
+  - deployment.create
+  - deployment.cancel
+  - environment.list
+  - environment.create
+  - environment.update
+  - environment.delete
+  - domain.list
+  - domain.add
+  - domain.verify
+  - domain.remove
+risk:
+  default: READ
+  write:
+    - vercel.deployment.create
+    - vercel.environment.create
+    - vercel.environment.update
+    - vercel.domain.add
+    - vercel.domain.verify
+  high_risk:
+    - vercel.deployment.cancel
+  destructive:
+    - vercel.environment.delete
+    - vercel.domain.remove
+approval:
+  required_for_all_writes: true
+environment:
+  - VERCEL_ACCESS_TOKEN
+  - VERCEL_TEAM_ID
+  - VERCEL_TEAM_SLUG
+  - VERCEL_ALLOWED_PROJECTS
+  - VERCEL_APPROVAL_SECRET
+  - VERCEL_TIMEOUT_MS
+  - VERCEL_MAX_RETRIES
+  - VERCEL_MCP_ENABLED
+  - VERCEL_MCP_URL
+  - VERCEL_MCP_ACCESS_TOKEN
