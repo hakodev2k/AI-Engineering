@@ -72,7 +72,7 @@ server.tool('replicate.model.prediction.create', 'Create a prediction using a na
   approvalId
 }, async a => {
   assertModelAllowed(config, a.owner, a.model);
-  assertApproval('replicate.prediction.create', a.approvalId, config.approvalSecret);
+  assertApproval('replicate.model.prediction.create', a.approvalId, config.approvalSecret);
   const headers: Record<string, string> = {};
   if (a.waitSeconds) headers.Prefer = `wait=${a.waitSeconds}`;
   if (a.cancelAfter) headers['Cancel-After'] = a.cancelAfter;
