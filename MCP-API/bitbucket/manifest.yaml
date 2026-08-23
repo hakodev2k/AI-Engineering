@@ -1,0 +1,58 @@
+id: bitbucket
+name: Bitbucket Cloud
+upstream:
+  - rest
+auth:
+  types:
+    - oauth2-bearer
+    - api-token-basic
+  recommended: oauth2-bearer
+api:
+  base_url: https://api.bitbucket.org/2.0
+capabilities:
+  - repository.list
+  - repository.get
+  - branch.list
+  - commit.list
+  - source.read
+  - pull_request.list
+  - pull_request.get
+  - pull_request.create
+  - pull_request.comment
+  - pull_request.approve
+  - pull_request.merge
+scopes:
+  oauth_read:
+    - repository
+    - pullrequest
+  oauth_write:
+    - pullrequest:write
+  api_token_read:
+    - read:repository:bitbucket
+    - read:pullrequest:bitbucket
+  api_token_write:
+    - write:pullrequest:bitbucket
+risk:
+  default: READ
+  write_tools:
+    - bitbucket.pull_request.create
+    - bitbucket.pull_request.comment
+    - bitbucket.pull_request.approve
+  high_risk_tools:
+    - bitbucket.pull_request.merge
+approval:
+  required_for:
+    - bitbucket.pull_request.create
+    - bitbucket.pull_request.comment
+    - bitbucket.pull_request.approve
+    - bitbucket.pull_request.merge
+environment:
+  - BITBUCKET_AUTH_MODE
+  - BITBUCKET_ACCESS_TOKEN
+  - BITBUCKET_EMAIL
+  - BITBUCKET_API_TOKEN
+  - BITBUCKET_ALLOWED_WORKSPACES
+  - BITBUCKET_ALLOWED_REPOSITORIES
+  - BITBUCKET_APPROVAL_SECRET
+  - BITBUCKET_TIMEOUT_MS
+  - BITBUCKET_MAX_RETRIES
