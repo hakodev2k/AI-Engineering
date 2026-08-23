@@ -1,0 +1,14 @@
+version: 1
+failure_window_seconds: 60
+minimum_requests: 10
+failure_rate_threshold: 0.5
+open_duration_seconds: 30
+half_open_max_probes: 3
+half_open_successes_to_close: 2
+max_retries_per_operation: 1
+retryable_statuses: [408, 429, 502, 503, 504]
+non_retryable_statuses: [400, 401, 403, 404, 409, 422]
+require_approval_for:
+  - production_policy_change
+  - disabling_circuit_breaker
+  - increasing_failure_threshold
