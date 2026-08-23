@@ -1,0 +1,17 @@
+[
+  {
+    "workflow": "inspect-and-query",
+    "steps": [
+      {"tool": "qdrant_collection_list", "input": {}, "permission": "READ", "approval": false},
+      {"tool": "qdrant_collection_get", "input": {"collection": "docs"}, "permission": "READ", "approval": false},
+      {"tool": "qdrant_query", "input": {"collection": "docs", "query": [0.1, 0.2], "limit": 5}, "permission": "READ", "approval": false}
+    ]
+  },
+  {
+    "workflow": "semantic-memory",
+    "steps": [
+      {"tool": "qdrant_memory_store", "input": {"information": "Project uses PostgreSQL", "metadata": {"source": "agent"}, "approval_id": "<HMAC>"}, "permission": "WRITE", "approval": true},
+      {"tool": "qdrant_memory_find", "input": {"query": "Which database does the project use?"}, "permission": "READ", "approval": false}
+    ]
+  }
+]
