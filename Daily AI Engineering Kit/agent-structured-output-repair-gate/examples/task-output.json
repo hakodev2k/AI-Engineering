@@ -1,0 +1,8 @@
+{
+  "status": "valid",
+  "attempts": 0,
+  "input_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "output_path": "artifacts/validated-output.json",
+  "errors": [],
+  "evidence": ["validator exit code 0", "independent verification passed"]
+}
