@@ -1,0 +1,8 @@
+{
+  "run_id":"replace-with-run-id",
+  "source":"replace-with-log-or-test-source",
+  "revision":"replace-with-commit-or-build-id",
+  "events":[
+    {"message_id":"replace-id-1","partition_key":"replace-partition","sequence":1,"observed_at":"replace-timestamp"}
+  ]
+}
