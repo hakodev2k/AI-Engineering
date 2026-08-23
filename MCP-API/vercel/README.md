@@ -1,0 +1,164 @@
+# Vercel MCP/API Connector
+
+Reusable MCP server for Vercel project and deployment operations. The connector presents stable, provider-scoped MCP tools while routing read capabilities to Vercel's official MCP server when a connector-owned pre-authorized MCP token is configured, and falling back to the official Vercel REST API when MCP is unavailable, disabled, or does not expose the requested tool.
+
+## Official sources
+
+- Vercel MCP: https://vercel.com/docs/agent-resources/vercel-mcp
+- Vercel MCP endpoint: https://mcp.vercel.com
+- REST API: https://vercel.com/docs/rest-api
+- REST SDK/reference: https://vercel.com/docs/rest-api/sdk
+- Environment variables: https://vercel.com/docs/environment-variables
+- Project-domain verification API: https://vercel.com/docs/rest-api/reference/endpoints/projects/verify-project-domain
+
+Vercel's official MCP server is read-only and covers projects, deployments, logs, and documentation. Environment-variable management is not currently exposed by Vercel MCP, so this connector uses REST for those capabilities. Write operations are deliberately routed through explicit REST endpoints and protected by local approval policy.
+
+## Transport strategy
+
+`project.list`, `project.get`, `deployment.list`, `deployment.get`, and `deployment.logs` first attempt the official remote MCP server when `VERCEL_MCP_ENABLED=true` and `VERCEL_MCP_ACCESS_TOKEN` is configured. Tool names are discovered from the upstream server and only known allowlisted capability mappings are callable. No newly discovered upstream tool is automatically trusted. If the required tool is absent or MCP fails, the connector falls back to the documented REST endpoint.
+
+All environment-variable, domain, deployment-create, and deployment-cancel operations use REST. The connector never forwards an MCP client's bearer credential to Vercel. Both `VERCEL_ACCESS_TOKEN` and the optional `VERCEL_MCP_ACCESS_TOKEN` are connector-owned credentials loaded from the process environment.
+
+## Capabilities and risk
+
+| Tool | Transport | Risk | Approval |
+|---|---|---|---|
+| `vercel.project.list` | MCP → REST | READ | No |
+| `vercel.project.get` | MCP → REST | READ | No |
+| `vercel.deployment.list` | MCP → REST | READ | No |
+| `vercel.deployment.get` | MCP → REST | READ | No |
+| `vercel.deployment.logs` | MCP → REST | READ | No |
+| `vercel.deployment.create` | REST | WRITE | Yes |
+| `vercel.deployment.cancel` | REST | HIGH_RISK | Yes |
+| `vercel.environment.list` | REST | READ | No |
+| `vercel.environment.create` | REST | WRITE | Yes |
+| `vercel.environment.update` | REST | WRITE | Yes |
+| `vercel.environment.delete` | REST | DESTRUCTIVE | Yes |
+| `vercel.domain.list` | REST | READ | No |
+| `vercel.domain.add` | REST | WRITE | Yes |
+| `vercel.domain.verify` | REST | WRITE | Yes |
+| `vercel.domain.remove` | REST | DESTRUCTIVE | Yes |
+
+## Authentication
+
+REST requests require a Vercel Access Token in `VERCEL_ACCESS_TOKEN`. The connector sends it only in the `Authorization: Bearer` header to the fixed origin `https://api.vercel.com`. Team resources can be scoped with `VERCEL_TEAM_ID` or `VERCEL_TEAM_SLUG`.
+
+The optional official MCP path uses Vercel OAuth. In non-interactive server deployments, provide a connector-owned pre-authorized bearer token via `VERCEL_MCP_ACCESS_TOKEN`. If one is unavailable, omit it and the connector safely uses REST. Do not copy an end-user MCP bearer token into the connector environment.
+
+Use the minimum Vercel account/team permissions needed for the enabled tools. Vercel Access Tokens inherit permissions of the identity and scope they were created for; constrain the connector further with `VERCEL_ALLOWED_PROJECTS`.
+
+## Environment variables
+
+Copy `.env.example` and configure only required values:
+
+```text
+VERCEL_ACCESS_TOKEN=
+VERCEL_TEAM_ID=
+VERCEL_TEAM_SLUG=
+VERCEL_ALLOWED_PROJECTS=
+VERCEL_APPROVAL_SECRET=
+VERCEL_TIMEOUT_MS=15000
+VERCEL_MAX_RETRIES=3
+VERCEL_MCP_ENABLED=true
+VERCEL_MCP_URL=https://mcp.vercel.com
+VERCEL_MCP_ACCESS_TOKEN=
+```
+
+`VERCEL_ALLOWED_PROJECTS` is a comma-separated allowlist of project IDs or names. An empty value does not impose an additional connector-level project restriction. `VERCEL_APPROVAL_SECRET` is required to execute writes. It must be managed by the surrounding trusted approval service and must never be sent to the model.
+
+## Approval model
+
+Every write, high-risk, or destructive tool requires `approvalId`. The expected approval value is HMAC-SHA256 of the exact tool name keyed by `VERCEL_APPROVAL_SECRET`. The comparison is constant-time. This design separates planning from execution: an agent may inspect projects, deployments, logs, environment-variable metadata, and domains automatically, but cannot create deployments, change configuration, cancel a deployment, or remove configuration without a trusted approval layer issuing the matching token.
+
+The reference approval token is intentionally bound to the tool class rather than generated by the connector. Production orchestrators should additionally bind approval to request parameters, actor, timestamp, and single-use nonce before exposing it externally.
+
+## API reliability
+
+The REST client applies a bounded timeout and maps non-2xx responses to `VercelApiError`. GET requests may retry `429` and `5xx` failures using `Retry-After` when supplied, otherwise bounded exponential backoff. Mutating requests are never automatically retried because duplicate creates or repeated state transitions can be unsafe. Authentication, authorization, validation, and provider errors therefore fail immediately.
+
+Pagination is exposed through bounded `limit` parameters where relevant. Deployment events are capped by the tool schema and use a finite request (`follow=0`) so an agent cannot accidentally open an unbounded log stream.
+
+## Security properties
+
+- Fixed Vercel API and MCP origins; callers cannot provide arbitrary URLs.
+- Strict Zod schemas, bounded strings and collection sizes.
+- Optional project allowlist prevents cross-project access by an over-broad token.
+- Credentials remain inside the connector and are not returned in tool output.
+- Third-party project metadata, logs, deployment output, and documentation are untrusted data. They must never be interpreted as connector instructions or permission changes.
+- Upstream MCP tool discovery is restricted to a hard-coded capability-to-tool allowlist; newly discovered tools are ignored.
+- Mutations require explicit approval and are not automatically retried.
+- Environment-variable values may be sensitive. Vercel may redact sensitive values; callers should not log returned secret material.
+- Destructive tools are separately classified in `manifest.yaml`.
+
+## Installation
+
+Requires Node.js 20 or later.
+
+```bash
+npm install
+npm run build
+```
+
+## Run
+
+```bash
+npm start
+```
+
+The server uses MCP stdio transport and can be launched by ChatGPT-compatible MCP hosts, Claude/Claude Code, Cursor, Copilot-compatible hosts that support stdio MCP, and custom MCP clients. Compatibility depends on the host implementing standard MCP stdio; the connector does not claim native product-specific extensions.
+
+Example client configuration:
+
+```json
+{
+  "mcpServers": {
+    "vercel": {
+      "command": "node",
+      "args": ["/absolute/path/to/MCP-API/vercel/dist/server.js"],
+      "env": {
+        "VERCEL_ACCESS_TOKEN": "${VERCEL_ACCESS_TOKEN}",
+        "VERCEL_TEAM_ID": "${VERCEL_TEAM_ID}",
+        "VERCEL_ALLOWED_PROJECTS": "my-app"
+      }
+    }
+  }
+}
+```
+
+## Real-world workflows
+
+A debugging workflow can list projects, find recent deployments, inspect a deployment, and pull bounded events/logs without write permission. A release workflow can inspect the current production deployment and then prepare `vercel.deployment.create`; execution requires approval. A configuration workflow can list environment variables, add or update an encrypted/sensitive variable with approval, then trigger a new deployment because Vercel environment-variable changes do not affect already-created deployments. A domain workflow can inspect project domains, add a domain, and request verification; removing a domain is destructive and requires approval.
+
+See `examples/workflows.json` for reusable call shapes.
+
+## Endpoint mapping
+
+REST operations use Vercel's documented API families:
+
+- Projects: `GET /v9/projects`, `GET /v9/projects/{idOrName}`
+- Deployments: `GET /v6/deployments`, `GET /v13/deployments/{idOrUrl}`, `POST /v13/deployments`, `PATCH /v12/deployments/{id}/cancel`
+- Deployment events: `GET /v3/deployments/{idOrUrl}/events`
+- Project environment variables: `GET /v9/projects/{idOrName}/env`, `POST /v10/projects/{idOrName}/env`, `PATCH|DELETE /v9/projects/{idOrName}/env/{id}`
+- Project domains: `GET /v9/projects/{idOrName}/domains`, `POST /v10/projects/{idOrName}/domains`, `POST /v9/projects/{idOrName}/domains/{domain}/verify`, `DELETE /v9/projects/{idOrName}/domains/{domain}`
+
+## Testing
+
+```bash
+npm test
+npm run typecheck
+```
+
+Tests use mock fetch implementations and do not require live credentials. They cover required authentication configuration, project allowlisting, approval enforcement, bearer/team scoping, provider-error mapping, write retry safety, and MCP-to-REST fallback behavior when the optional upstream MCP credential is unavailable.
+
+## Rate limits
+
+Vercel applies API rate limits by endpoint and account/team context. The connector preserves `Retry-After` when available and retries only safe GET requests. It does not attempt to bypass limits. Callers should use project filters and bounded limits rather than repeatedly scanning entire accounts.
+
+## Limitations
+
+- Vercel MCP is optional because its OAuth consent/client authorization flow may not be suitable for unattended service deployments. Without a connector-owned MCP token, the connector uses REST.
+- The upstream MCP server is evolving; the connector discovers supported tool names at connection time and falls back if a known mapping is not present.
+- `deployment.create` intentionally supports the common connected-Git workflow rather than arbitrary file uploads. Direct file-upload deployments require the separate upload flow and are not exposed.
+- Environment-variable modifications only affect future deployments.
+- This connector does not expose account billing, team membership, security policy, DNS record mutation, deployment deletion, or arbitrary API passthrough.
+- Provider responses can change as Vercel evolves its API; pin and regression-test dependencies before production rollout.
