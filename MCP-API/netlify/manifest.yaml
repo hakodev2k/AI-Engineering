@@ -1,0 +1,55 @@
+id: netlify
+name: Netlify
+upstream:
+  - official-mcp
+  - rest
+official_mcp:
+  remote_endpoint: https://netlify-mcp.netlify.app/mcp
+  local_package: '@netlify/mcp'
+  preference: connect-directly-when-client-supports-official-mcp
+api:
+  base_url: https://api.netlify.com/api/v1
+auth:
+  type: oauth2-bearer-or-personal-access-token
+  credential_env: NETLIFY_ACCESS_TOKEN
+capabilities:
+  - site.list
+  - site.get
+  - deploy.list
+  - deploy.get
+  - deploy.restore
+  - deploy.cancel
+  - form.list
+  - submission.list
+  - hook.list
+  - hook.create
+  - hook.delete
+risk:
+  default: READ
+  write:
+    - netlify.deploy.cancel
+    - netlify.hook.create
+  high_risk:
+    - netlify.deploy.restore
+  destructive:
+    - netlify.hook.delete
+approval:
+  required_for:
+    - netlify.deploy.restore
+    - netlify.deploy.cancel
+    - netlify.hook.create
+    - netlify.hook.delete
+rate_limits:
+  general_api: 500 requests/minute for most requests
+  deploy_api: up to 3 deploys/minute and 100/day per official documentation
+security:
+  credentials_forwarded_to_llm: false
+  site_allowlist_supported: true
+  arbitrary_url_tool: false
+environment:
+  - NETLIFY_ACCESS_TOKEN
+  - NETLIFY_ALLOWED_SITE_IDS
+  - NETLIFY_APPROVAL_SECRET
+  - NETLIFY_TIMEOUT_MS
+  - NETLIFY_MAX_RETRIES
+  - NETLIFY_API_BASE_URL
