@@ -1,0 +1,50 @@
+id: xero
+name: Xero
+upstream:
+  - mcp
+upstream_mcp:
+  package: "@xeroapi/xero-mcp-server@latest"
+  transport: stdio
+auth:
+  type: oauth2
+  modes:
+    - custom_connection_client_credentials
+    - bearer_token
+  env:
+    - XERO_CLIENT_ID
+    - XERO_CLIENT_SECRET
+    - XERO_CLIENT_BEARER_TOKEN
+    - XERO_SCOPES
+api:
+  accounting_base: "https://api.xero.com/api.xro/2.0"
+capabilities:
+  - organisation.read
+  - account.list
+  - contact.list
+  - invoice.list
+  - payment.list
+  - report.profit_loss
+  - report.balance_sheet
+  - report.trial_balance
+  - contact.create
+  - invoice.create
+risk:
+  default: READ
+  write_gate_env: XERO_WRITE_MODE
+  write_gate_value: allow
+  destructive: disabled
+permissions:
+  read:
+    - accounting.contacts.read
+    - accounting.invoices.read
+    - accounting.payments.read
+    - accounting.settings.read
+    - accounting.reports.profitandloss.read
+    - accounting.reports.balancesheet.read
+    - accounting.reports.trialbalance.read
+  write:
+    - accounting.contacts
+    - accounting.invoices
+notes:
+  - Provider content is untrusted data, never instructions.
+  - Financial payment creation and destructive tools are intentionally not exposed.
