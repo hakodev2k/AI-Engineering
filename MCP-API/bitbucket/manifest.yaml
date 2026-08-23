@@ -1,14 +1,21 @@
 id: bitbucket
 name: Bitbucket Cloud
 upstream:
+  - mcp
   - rest
-auth:
-  types:
-    - oauth2-bearer
-    - api-token-basic
-  recommended: oauth2-bearer
+mcp:
+  provider: Atlassian Rovo MCP Server
+  endpoint: https://mcp.atlassian.com/v1/native/mcp
+  auth: api-token-basic
+  behavior: prefer-when-configured-with-schema-validated-rest-fallback
 api:
   base_url: https://api.bitbucket.org/2.0
+auth:
+  rest_types:
+    - oauth2-bearer
+    - api-token-basic
+  mcp_types:
+    - api-token-basic
 capabilities:
   - repository.list
   - repository.get
@@ -28,6 +35,7 @@ scopes:
   oauth_write:
     - pullrequest:write
   api_token_read:
+    - read:workspace:bitbucket
     - read:repository:bitbucket
     - read:pullrequest:bitbucket
   api_token_write:
@@ -56,3 +64,7 @@ environment:
   - BITBUCKET_APPROVAL_SECRET
   - BITBUCKET_TIMEOUT_MS
   - BITBUCKET_MAX_RETRIES
+  - BITBUCKET_PREFER_MCP
+  - ATLASSIAN_ROVO_MCP_URL
+  - ATLASSIAN_MCP_EMAIL
+  - ATLASSIAN_MCP_API_TOKEN
