@@ -1,0 +1,12 @@
+{
+  "status": "investigating",
+  "database": "sql-server-2022",
+  "transactions": [
+    {"name": "transaction-a", "steps": ["replace with observed first lock/resource", "replace with observed wait"]},
+    {"name": "transaction-b", "steps": ["replace with observed first lock/resource", "replace with observed wait"]}
+  ],
+  "evidence": ["replace with sanitized diagnostic or test artifact path"],
+  "root_cause": null,
+  "fix": null,
+  "verification": {"reproduction_before": false, "reproduction_after": false}
+}
