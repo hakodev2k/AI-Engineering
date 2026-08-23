@@ -1,0 +1,11 @@
+[
+  {
+    "id": "doc-2001",
+    "source_version": "43",
+    "indexed_version": "42",
+    "source_updated_at": "2026-08-23T11:00:00Z",
+    "indexed_at": "2026-08-23T11:03:00Z",
+    "content_hash": "sha256:new",
+    "indexed_content_hash": "sha256:old"
+  }
+]
