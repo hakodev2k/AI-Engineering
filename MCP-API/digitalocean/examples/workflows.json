@@ -1,0 +1,37 @@
+[
+  {
+    "workflow": "inspect-droplet",
+    "steps": [
+      { "tool": "digitalocean.droplet.list", "input": { "page": 1, "perPage": 20 }, "permission": "READ", "approvalRequired": false },
+      { "tool": "digitalocean.droplet.get", "input": { "id": 123456789 }, "permission": "READ", "approvalRequired": false }
+    ]
+  },
+  {
+    "workflow": "safe-reboot",
+    "steps": [
+      { "tool": "digitalocean.droplet.get", "input": { "id": 123456789 }, "permission": "READ", "approvalRequired": false },
+      { "tool": "digitalocean.droplet.reboot", "input": { "id": 123456789, "approvalId": "<HMAC-SHA256>" }, "permission": "HIGH_RISK", "approvalRequired": true }
+    ]
+  },
+  {
+    "workflow": "create-firewall-and-attach",
+    "steps": [
+      {
+        "tool": "digitalocean.firewall.create",
+        "input": {
+          "name": "web-ingress",
+          "inboundProtocol": "tcp",
+          "inboundPortRange": "443",
+          "inboundSource": "0.0.0.0/0",
+          "outboundProtocol": "tcp",
+          "outboundPortRange": "1-65535",
+          "outboundDestination": "0.0.0.0/0",
+          "dropletIds": [123456789],
+          "approvalId": "<HMAC-SHA256>"
+        },
+        "permission": "HIGH_RISK",
+        "approvalRequired": true
+      }
+    ]
+  }
+]
