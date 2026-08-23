@@ -1,22 +1,23 @@
 {
-  "name": "@ai-engineering/xero-connector",
+  "name": "@ai-engineering/xero-mcp-connector",
   "version": "1.0.0",
   "private": true,
   "type": "module",
   "engines": { "node": ">=20" },
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "start": "node dist/server.js",
+    "start": "node dist/src/server.js",
     "test": "node --test --import tsx tests/*.test.ts",
-    "check": "npm run build && npm test"
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "check": "npm run typecheck && npm run build && npm test"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.17.4",
-    "zod": "^3.25.76"
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@types/node": "^22.15.30",
+    "@types/node": "^26.2.0",
     "tsx": "^4.20.3",
-    "typescript": "^5.8.3"
+    "typescript": "^7.0.2"
   }
 }
