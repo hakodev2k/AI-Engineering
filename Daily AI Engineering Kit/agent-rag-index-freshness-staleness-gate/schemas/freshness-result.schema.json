@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["status", "checked_at", "documents", "summary"],
+  "properties": {
+    "status": {"enum": ["pass", "block", "exception-required"]},
+    "checked_at": {"type": "string"},
+    "documents": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "source_version", "indexed_version", "source_updated_at", "indexed_at", "content_hash", "fresh"],
+        "properties": {
+          "id": {"type": "string"},
+          "source_version": {"type": ["string", "integer"]},
+          "indexed_version": {"type": ["string", "integer"]},
+          "source_updated_at": {"type": "string"},
+          "indexed_at": {"type": "string"},
+          "content_hash": {"type": "string"},
+          "fresh": {"type": "boolean"},
+          "reason": {"type": "string"}
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "required": ["total", "fresh", "stale", "fresh_ratio"],
+      "properties": {
+        "total": {"type": "integer"},
+        "fresh": {"type": "integer"},
+        "stale": {"type": "integer"},
+        "fresh_ratio": {"type": "number"}
+      }
+    }
+  }
+}
