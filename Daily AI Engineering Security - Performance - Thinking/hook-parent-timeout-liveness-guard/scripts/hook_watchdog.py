@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Run one hook command with a parent-enforced deadline and structured result."""
 from __future__ import annotations
-import argparse, json, os, signal, subprocess, sys, time
+import argparse, json, os, signal, subprocess, time
 from pathlib import Path
 
 MAX_CAPTURE = 65536
@@ -34,7 +34,10 @@ def main() -> int:
     if a.timeout <= 0 or a.timeout > 3600:
         print(json.dumps({"status":"invalid_input","error":"timeout must be >0 and <=3600"}))
         return 64
-    if not a.command:
+    command = list(a.command)
+    if command and command[0] == "--":
+        command = command[1:]
+    if not command:
         print(json.dumps({"status":"invalid_input","error":"command required"}))
         return 64
     cwd = Path(a.cwd).resolve()
@@ -48,7 +51,7 @@ def main() -> int:
     else:
         kwargs["start_new_session"] = True
     try:
-        proc = subprocess.Popen(a.command, **kwargs)
+        proc = subprocess.Popen(command, **kwargs)
     except OSError as e:
         print(json.dumps({"hook_id":a.hook_id,"status":"spawn_error","error":str(e)}))
         return 70
