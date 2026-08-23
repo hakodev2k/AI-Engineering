@@ -1,0 +1,16 @@
+version: 1
+accepted_issuers:
+  - https://login.microsoftonline.com/{tenant-id}/v2.0
+required_audiences:
+  - api://example-service
+required_scopes:
+  - orders.read
+allowed_clock_skew_seconds: 120
+require_exp: true
+require_nbf: true
+require_iat: true
+require_sub: true
+require_azp_or_appid: true
+allow_wildcard_audience: false
+allow_missing_scope: false
+production_requires_human_approval_for_policy_relaxation: true
