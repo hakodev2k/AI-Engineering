@@ -1,0 +1,7 @@
+{
+  "max_peak_tree_mib": 4096,
+  "max_tree_growth_mib": 1024,
+  "max_tree_slope_mib_per_min": 256,
+  "max_baseline_peak_delta_mib": 512,
+  "max_baseline_growth_delta_mib": 256
+}
