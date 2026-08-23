@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["status", "database", "transactions", "evidence", "verification"],
+  "properties": {
+    "status": {"enum": ["investigating", "reproduced", "fix-proposed", "verified", "blocked"]},
+    "database": {"type": "string", "minLength": 1},
+    "transactions": {"type": "array", "minItems": 2, "items": {"type": "object", "required": ["name", "steps"], "properties": {"name": {"type": "string"}, "steps": {"type": "array", "minItems": 1, "items": {"type": "string"}}}}},
+    "evidence": {"type": "array", "items": {"type": "string"}},
+    "root_cause": {"type": ["string", "null"]},
+    "fix": {"type": ["string", "null"]},
+    "verification": {"type": "object", "required": ["reproduction_before", "reproduction_after"], "properties": {"reproduction_before": {"type": "boolean"}, "reproduction_after": {"type": "boolean"}}}
+  },
+  "additionalProperties": false
+}
