@@ -1,0 +1,14 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"schema-snapshot.schema.json",
+  "title":"Logical Database Schema Snapshot",
+  "type":"object",
+  "required":["tables"],
+  "additionalProperties":false,
+  "properties":{"provider":{"type":"string"},"tables":{"type":"array","items":{"$ref":"#/$defs/table"}}},
+  "$defs":{
+    "table":{"type":"object","required":["name","columns"],"additionalProperties":false,"properties":{"name":{"type":"string","minLength":1},"columns":{"type":"array","items":{"$ref":"#/$defs/column"}},"indexes":{"type":"array","items":{"$ref":"#/$defs/index"}}}},
+    "column":{"type":"object","required":["name","type","nullable"],"additionalProperties":true,"properties":{"name":{"type":"string","minLength":1},"type":{"type":"string","minLength":1},"nullable":{"type":"boolean"},"default":{}}},
+    "index":{"type":"object","required":["name","columns"],"additionalProperties":true,"properties":{"name":{"type":"string","minLength":1},"columns":{"type":"array","items":{"type":"string"},"minItems":1},"unique":{"type":"boolean"}}}
+  }
+}

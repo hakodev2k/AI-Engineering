@@ -1,0 +1,15 @@
+version: 1
+policy:
+  destructive_changes_require_approval: true
+  production_execution_requires_approval: true
+  max_transient_tool_retries: 2
+  max_fix_retest_cycles: 2
+blocking_change_kinds:
+  - table_removed
+  - column_removed
+  - column_type_changed
+  - column_nullability_changed
+notes:
+  - The dependency-free gate uses CLI behavior as authoritative policy.
+  - This file is intended for adapters/orchestrators and human-readable configuration.
+  - A nullable-to-required column change is approval-bound; nullable relaxation is not automatically destructive.

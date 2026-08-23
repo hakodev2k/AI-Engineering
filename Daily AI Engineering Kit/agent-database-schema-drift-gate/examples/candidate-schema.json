@@ -1,0 +1,1 @@
+{"provider":"example","tables":[{"name":"users","columns":[{"name":"id","type":"uuid","nullable":false},{"name":"display_name","type":"varchar(200)","nullable":true},{"name":"timezone","type":"varchar(64)","nullable":true}],"indexes":[{"name":"ix_users_display_name","columns":["display_name"],"unique":false}]}]}
