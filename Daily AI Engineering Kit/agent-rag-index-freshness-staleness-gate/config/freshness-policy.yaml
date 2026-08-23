@@ -1,0 +1,13 @@
+version: 1
+max_document_age_hours: 72
+max_index_lag_minutes: 15
+max_source_clock_skew_minutes: 5
+require_source_version: true
+require_indexed_at: true
+require_content_hash: true
+stale_action: block
+unknown_action: block
+allow_manual_exception: true
+manual_exception_max_hours: 4
+retrieval_sample_size: 20
+minimum_fresh_ratio: 0.95
