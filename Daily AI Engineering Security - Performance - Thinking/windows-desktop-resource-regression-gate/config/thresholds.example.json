@@ -1,0 +1,11 @@
+{
+  "maxMeanCpuPercent": 25.0,
+  "maxPeakCpuPercent": 90.0,
+  "maxSustainedCpuSamples": 10,
+  "cpuSampleThresholdPercent": 50.0,
+  "maxMeanReadBytesPerSecond": 52428800,
+  "maxPeakReadBytesPerSecond": 262144000,
+  "maxWorkingSetMb": 4096,
+  "maxProcessCount": 40,
+  "maxPidChurn": 20
+}
