@@ -1,0 +1,38 @@
+id: pinecone
+name: Pinecone
+upstream:
+  - sdk
+auth:
+  type: api-key
+sdk:
+  package: '@pinecone-database/pinecone'
+  version: '^8.2.0'
+capabilities:
+  - index.list
+  - index.get
+  - index.stats
+  - namespace.list
+  - record.fetch
+  - record.search
+  - record.list
+  - record.upsert
+  - record.update
+  - record.delete
+risk:
+  default: READ
+  write:
+    - pinecone.record.upsert
+    - pinecone.record.update
+  destructive:
+    - pinecone.record.delete
+approval:
+  required_for:
+    - pinecone.record.upsert
+    - pinecone.record.update
+    - pinecone.record.delete
+environment:
+  - PINECONE_API_KEY
+  - PINECONE_ALLOWED_INDEXES
+  - PINECONE_ALLOWED_NAMESPACES
+  - PINECONE_APPROVAL_SECRET
+  - PINECONE_TIMEOUT_MS

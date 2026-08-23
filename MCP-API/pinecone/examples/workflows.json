@@ -1,0 +1,19 @@
+{
+  "workflows": [
+    {
+      "name": "Inspect and search a vector index",
+      "steps": [
+        { "tool": "pinecone.index.get", "input": { "index": "docs" }, "permission": "READ", "approvalRequired": false },
+        { "tool": "pinecone.index.stats", "input": { "index": "docs" }, "permission": "READ", "approvalRequired": false },
+        { "tool": "pinecone.record.search", "input": { "index": "docs", "namespace": "prod", "vector": [0.1, 0.2, 0.3], "topK": 5 }, "permission": "READ", "approvalRequired": false }
+      ]
+    },
+    {
+      "name": "Approved record maintenance",
+      "steps": [
+        { "tool": "pinecone.record.upsert", "input": { "index": "docs", "namespace": "prod", "records": [{ "id": "doc-1", "values": [0.1, 0.2, 0.3], "metadata": { "source": "example" } }], "approvalId": "<HMAC>" }, "permission": "WRITE", "approvalRequired": true },
+        { "tool": "pinecone.record.delete", "input": { "index": "docs", "namespace": "prod", "ids": ["doc-1"], "approvalId": "<HMAC>" }, "permission": "DESTRUCTIVE", "approvalRequired": true }
+      ]
+    }
+  ]
+}
