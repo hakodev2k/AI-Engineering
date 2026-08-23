@@ -1,0 +1,34 @@
+version: 1
+source_extensions:
+  - .py
+  - .cs
+  - .js
+  - .ts
+max_cleanup_seconds: 5
+blocking_severity: high
+cancellation_names:
+  - cancellation_token
+  - cancellationToken
+  - abort_signal
+  - abortSignal
+  - signal
+risky_patterns:
+  - pattern: "create_task("
+    severity: high
+    reason: "spawned task requires explicit lifetime ownership"
+  - pattern: "Task.Run("
+    severity: high
+    reason: "spawned .NET task may escape caller lifetime"
+  - pattern: "CancellationToken.None"
+    severity: high
+    reason: "explicitly discards caller cancellation"
+  - pattern: "new AbortController("
+    severity: medium
+    reason: "fresh abort source may break parent propagation"
+  - pattern: "except asyncio.CancelledError"
+    severity: medium
+    reason: "cancellation handler must rethrow or terminate intentionally"
+  - pattern: "catch (OperationCanceledException"
+    severity: medium
+    reason: "cancellation handler must preserve cancellation semantics"
+suppressions: []
