@@ -1,0 +1,11 @@
+{
+  "canonical_resource": "https://mcp.example.com/",
+  "allowed_audiences": ["https://mcp.example.com/"],
+  "require_resource_parameter": true,
+  "allow_provider_compatibility_fallback": false,
+  "fallback_allowed_for_impact": ["read-low"],
+  "high_impact_classes": ["write", "admin", "financial", "deployment", "identity"],
+  "require_introspection_for_opaque_tokens": true,
+  "fallback_review_days": 30,
+  "minimum_scope_count": 1
+}
