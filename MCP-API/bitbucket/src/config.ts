@@ -13,6 +13,10 @@ export interface BitbucketConfig {
   timeoutMs: number;
   maxRetries: number;
   baseUrl: string;
+  preferMcp: boolean;
+  rovoMcpUrl: string;
+  rovoEmail?: string;
+  rovoApiToken?: string;
 }
 
 function csvSet(value?: string) {
@@ -28,6 +32,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): BitbucketConfi
   const maxRetries = Number(env.BITBUCKET_MAX_RETRIES ?? 3);
   if (!Number.isInteger(timeoutMs) || timeoutMs < 1000 || timeoutMs > 120000) throw new Error('BITBUCKET_TIMEOUT_MS must be 1000..120000');
   if (!Number.isInteger(maxRetries) || maxRetries < 0 || maxRetries > 5) throw new Error('BITBUCKET_MAX_RETRIES must be 0..5');
+  const preferMcp = (env.BITBUCKET_PREFER_MCP ?? 'true').toLowerCase() !== 'false';
   return {
     authMode,
     accessToken: env.BITBUCKET_ACCESS_TOKEN,
@@ -38,7 +43,11 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): BitbucketConfi
     approvalSecret: env.BITBUCKET_APPROVAL_SECRET,
     timeoutMs,
     maxRetries,
-    baseUrl: 'https://api.bitbucket.org/2.0'
+    baseUrl: 'https://api.bitbucket.org/2.0',
+    preferMcp,
+    rovoMcpUrl: env.ATLASSIAN_ROVO_MCP_URL ?? 'https://mcp.atlassian.com/v1/native/mcp',
+    rovoEmail: env.ATLASSIAN_MCP_EMAIL,
+    rovoApiToken: env.ATLASSIAN_MCP_API_TOKEN
   };
 }
 
