@@ -1,0 +1,9 @@
+{
+  "workflows": [
+    {"tool":"vercel.project.list","input":{"limit":20},"permission":"READ","approval":false,"expected":"project page/list"},
+    {"tool":"vercel.deployment.logs","input":{"idOrUrl":"dpl_example","limit":100},"permission":"READ","approval":false,"expected":"bounded deployment events/log result"},
+    {"tool":"vercel.environment.create","input":{"project":"my-app","key":"API_BASE_URL","value":"https://example.invalid","target":["preview"],"type":"encrypted","approvalId":"<64-char-derived-approval>"},"permission":"WRITE","approval":true,"expected":"created environment variable metadata"},
+    {"tool":"vercel.domain.add","input":{"project":"my-app","domain":"app.example.com","approvalId":"<64-char-derived-approval>"},"permission":"WRITE","approval":true,"expected":"project-domain assignment"},
+    {"tool":"vercel.deployment.cancel","input":{"id":"dpl_example","approvalId":"<64-char-derived-approval>"},"permission":"HIGH_RISK","approval":true,"expected":"cancel result"}
+  ]
+}
