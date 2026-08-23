@@ -1,0 +1,49 @@
+id: qdrant
+name: Qdrant
+upstream:
+  - official-mcp
+  - rest
+official_mcp:
+  package: mcp-server-qdrant
+  tools:
+    - qdrant-store
+    - qdrant-find
+api:
+  base_url: configurable via QDRANT_URL
+auth:
+  type: api-key
+  header: api-key
+capabilities:
+  - collection.list
+  - collection.get
+  - collection.create
+  - collection.delete
+  - point.get
+  - point.upsert
+  - point.delete
+  - query
+  - scroll
+  - memory.store
+  - memory.find
+risk:
+  default: READ
+  write:
+    - qdrant.collection.create
+    - qdrant.point.upsert
+    - qdrant.memory.store
+  destructive:
+    - qdrant.collection.delete
+    - qdrant.point.delete
+approval:
+  required_for_write: true
+  required_for_destructive: true
+environment:
+  - QDRANT_URL
+  - QDRANT_API_KEY
+  - QDRANT_COLLECTION
+  - QDRANT_ALLOWED_COLLECTIONS
+  - QDRANT_APPROVAL_SECRET
+  - QDRANT_TIMEOUT_SECONDS
+  - QDRANT_MAX_RETRIES
+  - QDRANT_PREFER_OFFICIAL_MCP
+  - QDRANT_UVX_COMMAND
