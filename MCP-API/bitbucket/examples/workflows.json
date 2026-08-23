@@ -1,0 +1,37 @@
+{
+  "readRepository": {
+    "tool": "bitbucket.repository.get",
+    "input": { "workspace": "acme", "repo": "platform" },
+    "expectedOutput": { "uuid": "{repository-uuid}", "name": "platform", "mainbranch": { "name": "main" } },
+    "permission": "READ",
+    "approvalRequired": false
+  },
+  "createPullRequest": {
+    "tool": "bitbucket.pull_request.create",
+    "input": {
+      "workspace": "acme",
+      "repo": "platform",
+      "title": "Update dependency",
+      "sourceBranch": "agent/update-dependency",
+      "destinationBranch": "main",
+      "description": "Prepared change for review.",
+      "approvalId": "<64-char approval digest>"
+    },
+    "expectedOutput": { "id": 123, "state": "OPEN", "links": { "html": { "href": "https://bitbucket.org/example" } } },
+    "permission": "WRITE",
+    "approvalRequired": true
+  },
+  "mergePullRequest": {
+    "tool": "bitbucket.pull_request.merge",
+    "input": {
+      "workspace": "acme",
+      "repo": "platform",
+      "id": 123,
+      "strategy": "squash",
+      "approvalId": "<64-char approval digest>"
+    },
+    "expectedOutput": { "id": 123, "state": "MERGED" },
+    "permission": "HIGH_RISK",
+    "approvalRequired": true
+  }
+}
