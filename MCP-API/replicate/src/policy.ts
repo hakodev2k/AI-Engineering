@@ -10,6 +10,7 @@ export const TOOL_RISK: Record<string, Risk> = {
   'replicate.prediction.list': 'READ',
   'replicate.prediction.get': 'READ',
   'replicate.prediction.create': 'WRITE',
+  'replicate.model.prediction.create': 'WRITE',
   'replicate.prediction.cancel': 'WRITE',
   'replicate.deployment.list': 'READ',
   'replicate.deployment.get': 'READ',
@@ -22,6 +23,7 @@ export const TOOL_RISK: Record<string, Risk> = {
 export function assertApproval(tool: string, approvalId: string | undefined, secret: string | undefined) {
   const risk = TOOL_RISK[tool];
   if (risk === 'READ') return;
+  if (!risk) throw new Error(`Unknown tool risk classification: ${tool}`);
   if (!secret) throw new Error(`${tool} requires approval but REPLICATE_APPROVAL_SECRET is not configured`);
   if (!approvalId) throw new Error(`${tool} requires explicit approval`);
   const expected = approvalDigest(secret, tool);
