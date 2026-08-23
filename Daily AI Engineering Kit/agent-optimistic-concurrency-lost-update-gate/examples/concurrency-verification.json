@@ -1,0 +1,1 @@
+{"status":"verified","two_writer_test":"passed","build":"passed","targeted_tests":"passed","unintended_changes":"none","approval":"not-required","evidence":[{"kind":"test","detail":"ConcurrentUpdate_WhenBothReadSameVersion_RejectsSecondWriter passed"},{"kind":"build","detail":"Project build completed with exit code 0"}],"remaining_risks":[]}
