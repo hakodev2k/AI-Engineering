@@ -1,0 +1,29 @@
+[project]
+name = "ai-engineering-qdrant-mcp-connector"
+version = "1.0.0"
+description = "Reusable MCP connector for Qdrant with official MCP preference and REST fallback"
+requires-python = ">=3.11"
+dependencies = [
+  "fastmcp>=2.7,<3",
+  "httpx>=0.27,<1",
+  "mcp>=1.9,<2",
+  "pydantic>=2.10,<3"
+]
+
+[project.optional-dependencies]
+test = ["pytest>=8.3,<9", "pytest-asyncio>=0.23,<1", "respx>=0.22,<1"]
+
+[project.scripts]
+qdrant-connector = "qdrant_connector.server:main"
+
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/qdrant_connector"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+asyncio_mode = "auto"
+testpaths = ["tests"]
