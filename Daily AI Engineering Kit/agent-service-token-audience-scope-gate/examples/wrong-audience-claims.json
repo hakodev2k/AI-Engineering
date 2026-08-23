@@ -1,0 +1,1 @@
+{"iss":"https://login.microsoftonline.com/{tenant-id}/v2.0","aud":"api://different-service","scp":"orders.read","exp":4102444800,"nbf":1700000000,"iat":1700000000,"sub":"subject-123","azp":"client-123"}
