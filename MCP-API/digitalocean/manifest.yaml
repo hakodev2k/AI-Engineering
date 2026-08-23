@@ -1,0 +1,70 @@
+id: digitalocean
+name: DigitalOcean
+upstream:
+  - mcp
+  - rest
+auth:
+  type: bearer-token
+  token_env: DIGITALOCEAN_API_TOKEN
+mcp:
+  official_package: "@digitalocean/mcp"
+  services:
+    droplets: droplets
+    networking: networking
+  local_command: "npx -y @digitalocean/mcp --services <service>"
+api:
+  base_url: https://api.digitalocean.com/v2
+capabilities:
+  - account.get
+  - region.list
+  - droplet.list
+  - droplet.get
+  - droplet.create
+  - droplet.reboot
+  - droplet.power_on
+  - droplet.power_off
+  - droplet.snapshot
+  - firewall.list
+  - firewall.get
+  - firewall.create
+  - firewall.add_droplets
+scopes:
+  read:
+    - account:read
+    - regions:read
+    - droplet:read
+    - firewall:read
+  write:
+    - droplet:create
+    - droplet:update
+    - firewall:create
+    - firewall:update
+risk:
+  default: READ
+  write:
+    - digitalocean.droplet.create
+    - digitalocean.droplet.snapshot
+  high_risk:
+    - digitalocean.droplet.reboot
+    - digitalocean.droplet.power_on
+    - digitalocean.droplet.power_off
+    - digitalocean.firewall.create
+    - digitalocean.firewall.add_droplets
+approval:
+  required_for:
+    - digitalocean.droplet.create
+    - digitalocean.droplet.reboot
+    - digitalocean.droplet.power_on
+    - digitalocean.droplet.power_off
+    - digitalocean.droplet.snapshot
+    - digitalocean.firewall.create
+    - digitalocean.firewall.add_droplets
+environment:
+  - DIGITALOCEAN_API_TOKEN
+  - DIGITALOCEAN_APPROVAL_SECRET
+  - DIGITALOCEAN_ALLOWED_DROPLET_IDS
+  - DIGITALOCEAN_ALLOWED_FIREWALL_IDS
+  - DIGITALOCEAN_TIMEOUT_MS
+  - DIGITALOCEAN_MAX_RETRIES
+  - DIGITALOCEAN_MCP_ENABLED
+  - DIGITALOCEAN_MCP_COMMAND
