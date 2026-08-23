@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "allowed_bootstrap_methods": ["workload-identity", "oidc-federation", "managed-identity", "local-credential-chain"],
+  "forbidden_secret_name_patterns": ["client_secret", "api_key", "password", "private_key", "access_token", "refresh_token"],
+  "forbidden_file_patterns": [".env", "*.pfx", "*.p12", "*.pem", "id_rsa", "credentials.json"],
+  "production_forbids_static_bootstrap_secrets": true,
+  "production_identity_change_requires_approval": true,
+  "max_retry_attempts": 2
+}
