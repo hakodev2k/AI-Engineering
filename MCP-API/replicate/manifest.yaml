@@ -1,0 +1,59 @@
+id: replicate
+name: Replicate
+upstream:
+  - rest
+official_mcp:
+  available: false
+  checked: 2026-08-24
+api:
+  base_url: https://api.replicate.com/v1
+auth:
+  type: bearer-api-token
+  environment: REPLICATE_API_TOKEN
+capabilities:
+  - model.search
+  - model.get
+  - model.version.list
+  - prediction.list
+  - prediction.get
+  - prediction.create
+  - model.prediction.create
+  - prediction.cancel
+  - deployment.list
+  - deployment.get
+  - deployment.prediction.create
+  - training.list
+  - training.get
+  - training.cancel
+risk:
+  default: READ
+  write_tools:
+    - replicate.prediction.create
+    - replicate.model.prediction.create
+    - replicate.prediction.cancel
+    - replicate.deployment.prediction.create
+    - replicate.training.cancel
+approval:
+  required_for:
+    - replicate.prediction.create
+    - replicate.model.prediction.create
+    - replicate.prediction.cancel
+    - replicate.deployment.prediction.create
+    - replicate.training.cancel
+rate_limits:
+  prediction_create_per_minute: 600
+  other_endpoints_per_minute: 3000
+security:
+  credential_exposure: connector-only
+  arbitrary_url_tool: false
+  webhook_url_input: false
+  model_allowlist_supported: true
+  deployment_allowlist_supported: true
+environment:
+  - REPLICATE_API_TOKEN
+  - REPLICATE_APPROVAL_SECRET
+  - REPLICATE_ALLOWED_OWNERS
+  - REPLICATE_ALLOWED_MODELS
+  - REPLICATE_ALLOWED_DEPLOYMENTS
+  - REPLICATE_TIMEOUT_MS
+  - REPLICATE_MAX_RETRIES
