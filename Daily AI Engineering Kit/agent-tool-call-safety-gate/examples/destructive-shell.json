@@ -1,0 +1,8 @@
+{
+  "request_id": "example-destructive-shell-001",
+  "tool": "shell",
+  "operation": "execute",
+  "arguments": {"command": "git reset --hard HEAD~1"},
+  "requested_by": "implementation-agent",
+  "context": {"environment": "development"}
+}

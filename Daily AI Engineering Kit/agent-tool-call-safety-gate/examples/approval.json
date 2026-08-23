@@ -1,0 +1,7 @@
+{
+  "request_id": "example-shell-approval-001",
+  "rule_id": "approval-shell-execution",
+  "decision": "approved",
+  "approver": "engineering-owner@example.invalid",
+  "expires_at": "2099-12-31T23:59:59Z"
+}

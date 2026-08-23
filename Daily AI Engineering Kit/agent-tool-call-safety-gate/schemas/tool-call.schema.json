@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "tool-call.schema.json",
+  "title": "Agent Tool Call Request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["request_id", "tool", "operation", "arguments", "requested_by"],
+  "properties": {
+    "request_id": {"type": "string", "minLength": 1, "maxLength": 200},
+    "tool": {"type": "string", "minLength": 1, "maxLength": 200},
+    "operation": {"type": "string", "minLength": 1, "maxLength": 200},
+    "arguments": {"type": "object"},
+    "requested_by": {"type": "string", "minLength": 1, "maxLength": 200},
+    "context": {"type": "object"}
+  }
+}

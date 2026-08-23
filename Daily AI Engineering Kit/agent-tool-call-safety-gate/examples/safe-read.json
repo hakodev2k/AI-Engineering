@@ -1,0 +1,8 @@
+{
+  "request_id": "example-safe-read-001",
+  "tool": "repository",
+  "operation": "read-file",
+  "arguments": {"path": "src/app.py"},
+  "requested_by": "implementation-agent",
+  "context": {"environment": "development"}
+}

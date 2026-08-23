@@ -1,0 +1,82 @@
+{
+  "version": 1,
+  "default_action": "deny",
+  "rules": [
+    {
+      "id": "deny-irrevocable-shell-patterns",
+      "priority": 1000,
+      "effect": "deny",
+      "reason": "Irreversible or history-rewriting command patterns are never automated by this gate.",
+      "match": {
+        "tool": "shell*",
+        "operation": "execute*",
+        "argument_regex": {
+          "command": "(?i)(git\\s+push\\s+.*--force|git\\s+reset\\s+--hard|rm\\s+-rf\\s+/(?:\\s|$)|drop\\s+database|truncate\\s+table|kubectl\\s+delete\\s+namespace)"
+        }
+      }
+    },
+    {
+      "id": "allow-repository-read",
+      "priority": 800,
+      "effect": "allow",
+      "reason": "Read-only repository inspection is permitted.",
+      "match": {"tool": "repository", "operation": "read*"}
+    },
+    {
+      "id": "allow-repository-search",
+      "priority": 800,
+      "effect": "allow",
+      "reason": "Read-only repository search is permitted.",
+      "match": {"tool": "repository", "operation": "search*"}
+    },
+    {
+      "id": "allow-filesystem-read",
+      "priority": 800,
+      "effect": "allow",
+      "reason": "Read-only filesystem access is permitted by policy; OS permissions remain authoritative.",
+      "match": {"tool": "filesystem", "operation": "read*"}
+    },
+    {
+      "id": "allow-git-observation",
+      "priority": 800,
+      "effect": "allow",
+      "reason": "Non-mutating Git inspection is permitted.",
+      "match": {"tool": "git", "operation": "status|diff|show|log"}
+    },
+    {
+      "id": "approval-shell-execution",
+      "priority": 600,
+      "effect": "approval",
+      "reason": "Arbitrary shell execution crosses a deterministic safety boundary.",
+      "match": {"tool": "shell*", "operation": "execute*"}
+    },
+    {
+      "id": "approval-repository-write",
+      "priority": 600,
+      "effect": "approval",
+      "reason": "Repository mutation requires explicit authorization.",
+      "match": {"tool": "repository|filesystem", "operation": "write|create|update|delete|move|rename"}
+    },
+    {
+      "id": "approval-git-mutation",
+      "priority": 600,
+      "effect": "approval",
+      "reason": "Git mutation requires explicit authorization.",
+      "match": {"tool": "git", "operation": "add|commit|push|merge|rebase|reset|checkout|switch|tag|branch-delete"}
+    },
+    {
+      "id": "approval-database-mutation",
+      "priority": 600,
+      "effect": "approval",
+      "reason": "Database writes and schema operations require explicit authorization.",
+      "match": {"tool": "database*", "operation": "execute|write|migrate|schema*|delete|update|insert"}
+    },
+    {
+      "id": "approval-production-change",
+      "priority": 700,
+      "effect": "approval",
+      "reason": "Production, deployment, infrastructure, configuration, and secret changes require a human checkpoint.",
+      "match": {"tool": "deploy*|infra*|secret*|config*", "operation": "*"}
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "gate-decision.schema.json",
+  "title": "Agent Tool Call Gate Decision",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["request_id", "status", "policy_version", "matched_rule_id", "reason", "evaluated_at", "approval_valid"],
+  "properties": {
+    "request_id": {"type": "string"},
+    "status": {"enum": ["allow", "deny", "approval_required", "invalid", "error"]},
+    "policy_version": {"type": ["integer", "null"]},
+    "matched_rule_id": {"type": ["string", "null"]},
+    "reason": {"type": "string"},
+    "evaluated_at": {"type": "string"},
+    "approval_valid": {"type": "boolean"},
+    "evidence": {"type": "array", "items": {"type": "string"}}
+  }
+}
