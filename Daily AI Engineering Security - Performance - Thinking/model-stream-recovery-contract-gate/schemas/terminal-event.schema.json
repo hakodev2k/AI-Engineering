@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Normalized Agent Terminal Trace",
+  "type": "object",
+  "required": ["run_id", "turn_id", "events"],
+  "properties": {
+    "run_id": {"type": "string", "minLength": 1},
+    "turn_id": {"type": "string", "minLength": 1},
+    "recovery_required": {"type": "boolean", "default": true},
+    "events": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["seq", "event"],
+        "properties": {
+          "seq": {"type": "integer", "minimum": 1},
+          "event": {"enum": ["stream_error", "transport_error", "provider_error", "watchdog_timeout", "user_cancel", "terminal_classified", "recovery_hook_start", "recovery_hook_end", "retry_start", "terminal_final"]},
+          "cause": {"enum": ["stream_stall", "transport_error", "provider_error", "watchdog_timeout", "user_cancelled", "unknown_failure", "completed"]},
+          "actor": {"enum": ["user", "runtime", "provider", "transport", "watchdog", "hook", "unknown"]},
+          "retryable": {"type": "boolean"},
+          "result": {"enum": ["success", "failure", "aborted", "continued"]},
+          "timestamp": {"type": "string"}
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": true
+}
