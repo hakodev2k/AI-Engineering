@@ -1,0 +1,11 @@
+{
+  "max_resume_input_tokens": 80000,
+  "critical_sections": ["active_goal", "acceptance_criteria", "security_constraints", "current_branch", "uncommitted_changes", "blocking_failures"],
+  "lazy_sections": ["historical_tool_outputs", "old_logs", "resolved_failures", "inactive_files"],
+  "duplicate_normalization": "whitespace",
+  "max_lazy_load_tokens_per_step": 12000,
+  "max_rediscovery_calls": 4,
+  "max_replan_attempts": 2,
+  "require_freshness_for_tool_facts": true,
+  "quality_regression_tolerance": 0.0
+}
