@@ -29,9 +29,13 @@ capabilities:
   - firewall.create
   - firewall.add_droplets
 scopes:
-  read:
+  base_read:
     - account:read
     - regions:read
+    - sizes:read
+    - actions:read
+    - image:read
+    - snapshot:read
     - droplet:read
     - firewall:read
   write:
@@ -39,6 +43,11 @@ scopes:
     - droplet:update
     - firewall:create
     - firewall:update
+  associated_when_used:
+    - ssh_key:read
+    - tag:read
+    - tag:create
+    - vpc:read
 risk:
   default: READ
   write:
