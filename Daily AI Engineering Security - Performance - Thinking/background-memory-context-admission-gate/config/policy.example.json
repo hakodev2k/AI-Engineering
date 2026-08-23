@@ -1,0 +1,8 @@
+{
+  "context_window_tokens": 272000,
+  "reserve_system_tokens": 24000,
+  "reserve_output_tokens": 16000,
+  "safety_fraction": 0.9,
+  "bytes_per_token_estimate": 3.0,
+  "chunk_overlap_tokens": 1024
+}
