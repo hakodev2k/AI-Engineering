@@ -16,6 +16,13 @@ function normalizeResult<T>(result: any): T {
   return result as T;
 }
 
+function childEnvironment(token: string): Record<string, string> {
+  const env: Record<string, string> = {};
+  for (const [key, value] of Object.entries(process.env)) if (value !== undefined) env[key] = value;
+  env.DIGITALOCEAN_API_TOKEN = token;
+  return env;
+}
+
 export class DigitalOceanMcpBridge {
   private readonly clients = new Map<Service, Promise<Connected>>();
 
@@ -29,7 +36,7 @@ export class DigitalOceanMcpBridge {
       const transport = new StdioClientTransport({
         command: this.config.mcpCommand,
         args: ['-y', '@digitalocean/mcp', '--services', service],
-        env: { DIGITALOCEAN_API_TOKEN: this.config.token }
+        env: childEnvironment(this.config.token)
       });
       const client = new Client({ name: `digitalocean-${service}-bridge`, version: '1.0.0' });
       await client.connect(transport);
