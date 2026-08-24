@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "protected_files": [
+    {"path": ".claude/settings.json", "required": false},
+    {"path": ".claude/settings.local.json", "required": false},
+    {"path": ".mcp.json", "required": false},
+    {"path": ".codex/config.toml", "required": false}
+  ]
+}
