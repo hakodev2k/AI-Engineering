@@ -1,0 +1,41 @@
+[
+  {
+    "tool": "mongodb.document.find",
+    "input": {
+      "database": "app",
+      "collection": "users",
+      "filter": { "active": true },
+      "projection": { "email": 1, "name": 1 },
+      "limit": 20
+    },
+    "permission": "READ",
+    "approvalRequired": false,
+    "expectedOutput": "Official MongoDB MCP find result wrapped as MCP text content"
+  },
+  {
+    "tool": "mongodb.aggregate.run",
+    "input": {
+      "database": "app",
+      "collection": "orders",
+      "pipeline": [
+        { "$match": { "status": "paid" } },
+        { "$group": { "_id": "$currency", "total": { "$sum": "$amount" } } }
+      ]
+    },
+    "permission": "READ",
+    "approvalRequired": false,
+    "expectedOutput": "Bounded aggregation result; $out and $merge are rejected"
+  },
+  {
+    "tool": "mongodb.document.insert_many",
+    "input": {
+      "database": "app",
+      "collection": "events",
+      "documents": [{ "type": "signup", "source": "example" }],
+      "approvalId": "<HMAC-SHA256 approval token>"
+    },
+    "permission": "WRITE",
+    "approvalRequired": true,
+    "expectedOutput": "Inserted document count and identifiers from official MongoDB MCP server"
+  }
+]
