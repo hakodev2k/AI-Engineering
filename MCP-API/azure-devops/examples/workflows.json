@@ -1,0 +1,39 @@
+{
+  "examples": [
+    {
+      "tool": "azure_devops.repository.list",
+      "input": { "project": "ExampleProject", "top": 20 },
+      "expectedOutput": { "shape": "array or Azure DevOps REST value wrapper of repository metadata" },
+      "permission": "READ",
+      "approvalRequired": false
+    },
+    {
+      "tool": "azure_devops.file.read",
+      "input": { "project": "ExampleProject", "repository": "service-api", "path": "/README.md", "branch": "main" },
+      "expectedOutput": { "shape": "text/file metadata returned by official MCP or REST fallback" },
+      "permission": "READ",
+      "approvalRequired": false
+    },
+    {
+      "tool": "azure_devops.pull_request.create",
+      "input": { "project": "ExampleProject", "repository": "service-api", "title": "Prepare release", "sourceBranch": "release/1.2", "targetBranch": "main", "approvalId": "<64-char approval HMAC>" },
+      "expectedOutput": { "shape": "created pull request metadata" },
+      "permission": "WRITE",
+      "approvalRequired": true
+    },
+    {
+      "tool": "azure_devops.work_item.create",
+      "input": { "project": "ExampleProject", "type": "Task", "title": "Investigate latency regression", "description": "Review recent build and telemetry changes.", "approvalId": "<64-char approval HMAC>" },
+      "expectedOutput": { "shape": "created work item metadata" },
+      "permission": "WRITE",
+      "approvalRequired": true
+    },
+    {
+      "tool": "azure_devops.pipeline.run",
+      "input": { "project": "ExampleProject", "pipelineId": 42, "branch": "main", "approvalId": "<64-char approval HMAC>" },
+      "expectedOutput": { "shape": "queued pipeline run metadata" },
+      "permission": "HIGH_RISK",
+      "approvalRequired": true
+    }
+  ]
+}
