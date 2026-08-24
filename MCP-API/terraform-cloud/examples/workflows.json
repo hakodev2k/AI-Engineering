@@ -1,0 +1,23 @@
+[
+  {
+    "workflow": "inspect-workspace-and-runs",
+    "steps": [
+      {"tool":"terraform_cloud.workspace.list","input":{"organization":"example-org"},"permission":"READ","approval":false},
+      {"tool":"terraform_cloud.workspace.get","input":{"workspaceId":"ws-123"},"permission":"READ","approval":false},
+      {"tool":"terraform_cloud.run.list","input":{"workspaceId":"ws-123","pageSize":20},"permission":"READ","approval":false}
+    ]
+  },
+  {
+    "workflow": "speculative-plan",
+    "steps": [
+      {"tool":"terraform_cloud.run.create_plan","input":{"workspaceId":"ws-123","message":"Agent-prepared speculative plan","approvalId":"<64-hex-approval>"},"permission":"WRITE","approval":true}
+    ]
+  },
+  {
+    "workflow": "apply-reviewed-run",
+    "steps": [
+      {"tool":"terraform_cloud.run.get","input":{"runId":"run-123"},"permission":"READ","approval":false},
+      {"tool":"terraform_cloud.run.apply","input":{"runId":"run-123","comment":"Approved after human review","approvalId":"<64-hex-approval>"},"permission":"HIGH_RISK","approval":true}
+    ]
+  }
+]
