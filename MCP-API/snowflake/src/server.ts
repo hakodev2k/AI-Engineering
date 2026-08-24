@@ -14,7 +14,14 @@ const server = new McpServer({ name: 'snowflake-mcp-connector', version: '1.0.0'
 const identifier = z.string().min(1).max(255).regex(/^[A-Za-z_][A-Za-z0-9_$]*$/);
 const statementHandle = z.string().uuid();
 const approvalId = z.string().length(64).optional();
-const output = (value: unknown) => ({ content: [{ type: 'text' as const, text: JSON.stringify(value) }] });
+const MAX_TOOL_OUTPUT_BYTES = 512000;
+const output = (value: unknown) => {
+  const text = JSON.stringify(value);
+  if (Buffer.byteLength(text, 'utf8') > MAX_TOOL_OUTPUT_BYTES) {
+    throw new Error('Snowflake tool output exceeds 500 KiB. Narrow the query/columns/rows or retrieve a specific SQL API result partition.');
+  }
+  return { content: [{ type: 'text' as const, text }] };
+};
 
 function description(name: string, purpose: string) {
   const p = TOOL_POLICY[name];
