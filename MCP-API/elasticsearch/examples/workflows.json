@@ -1,0 +1,29 @@
+{
+  "workflows": [
+    {
+      "name": "discover-and-search",
+      "steps": [
+        { "tool": "elasticsearch.index.list", "input": { "index": "products" }, "permission": "READ", "approval": false },
+        { "tool": "elasticsearch.index.mapping", "input": { "index": "products" }, "permission": "READ", "approval": false },
+        { "tool": "elasticsearch.search.natural_language", "input": { "index": "products", "query": "recent products with strong customer ratings", "size": 10 }, "permission": "READ", "approval": false }
+      ],
+      "expected_output": "Structured Elasticsearch or Agent Builder tool results serialized as MCP text content."
+    },
+    {
+      "name": "read-update-read",
+      "steps": [
+        { "tool": "elasticsearch.document.get", "input": { "index": "products", "id": "sku-123" }, "permission": "READ", "approval": false },
+        { "tool": "elasticsearch.document.update", "input": { "index": "products", "id": "sku-123", "doc": { "status": "reviewed" }, "approvalId": "<64-char-hmac>" }, "permission": "WRITE", "approval": true },
+        { "tool": "elasticsearch.document.get", "input": { "index": "products", "id": "sku-123" }, "permission": "READ", "approval": false }
+      ],
+      "expected_output": "Provider responses for the document before and after an approved partial update."
+    },
+    {
+      "name": "analytics",
+      "steps": [
+        { "tool": "elasticsearch.esql.query", "input": { "index": "logs-*", "query": "FROM logs-* | STATS errors = COUNT(*) BY service.name | SORT errors DESC | LIMIT 20" }, "permission": "READ", "approval": false }
+      ],
+      "expected_output": "Tabular ES|QL results, preferably through Elastic Agent Builder MCP with REST fallback."
+    }
+  ]
+}
