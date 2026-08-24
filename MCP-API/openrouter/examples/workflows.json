@@ -1,0 +1,32 @@
+{
+  "examples": [
+    {
+      "tool": "openrouter.model.list",
+      "input": { "supportedParameters": "tools", "sort": "pricing-low-to-high" },
+      "expected_output": { "data": "array of current model metadata" },
+      "permission": "READ",
+      "approval_required": false
+    },
+    {
+      "tool": "openrouter.analytics.query",
+      "input": { "metrics": ["request_count"], "dimensions": ["model"], "granularity": "day", "limit": 100 },
+      "expected_output": { "data": "analytics rows and query metadata" },
+      "permission": "READ with management key",
+      "approval_required": false
+    },
+    {
+      "tool": "openrouter.inference.chat",
+      "input": { "model": "openai/gpt-5.6-sol", "messages": [{ "role": "user", "content": "Summarize this incident report." }], "dataCollection": "deny", "approvalId": "<HMAC_SHA256_APPROVAL>" },
+      "expected_output": { "id": "generation id", "choices": "chat completion choices", "usage": "token/cost metadata when returned" },
+      "permission": "WRITE",
+      "approval_required": true
+    },
+    {
+      "tool": "openrouter.embedding.create",
+      "input": { "model": "openai/text-embedding-3-small", "input": ["first document", "second document"], "approvalId": "<HMAC_SHA256_APPROVAL>" },
+      "expected_output": { "data": "embedding vectors", "usage": "usage metadata when returned" },
+      "permission": "WRITE",
+      "approval_required": true
+    }
+  ]
+}
