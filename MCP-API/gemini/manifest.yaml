@@ -1,0 +1,53 @@
+id: gemini
+name: Google Gemini API
+upstream:
+  - rest
+mcp:
+  official_provider_server: false
+  note: Google Gemini SDK can consume MCP tools, but no official Gemini API MCP server exposes these Gemini API operations.
+auth:
+  type: api-key
+  header: x-goog-api-key
+api:
+  base_url: https://generativelanguage.googleapis.com/v1beta
+capabilities:
+  - model.list
+  - model.get
+  - token.count
+  - content.generate
+  - embedding.create
+  - file.list
+  - file.get
+  - file.upload
+  - file.delete
+risk:
+  default: READ
+  read_tools:
+    - gemini.model.list
+    - gemini.model.get
+    - gemini.token.count
+    - gemini.file.list
+    - gemini.file.get
+  write_tools:
+    - gemini.content.generate
+    - gemini.embedding.create
+  high_risk_tools:
+    - gemini.file.upload
+  destructive_tools:
+    - gemini.file.delete
+approval:
+  configurable_billable:
+    - gemini.content.generate
+    - gemini.embedding.create
+  required_for:
+    - gemini.file.upload
+    - gemini.file.delete
+environment:
+  - GEMINI_API_KEY
+  - GEMINI_APPROVAL_SECRET
+  - GEMINI_REQUIRE_APPROVAL_FOR_BILLABLE
+  - GEMINI_ALLOWED_MODELS
+  - GEMINI_ALLOWED_UPLOAD_ROOTS
+  - GEMINI_TIMEOUT_MS
+  - GEMINI_MAX_RETRIES
+  - GEMINI_MAX_RESPONSE_BYTES
