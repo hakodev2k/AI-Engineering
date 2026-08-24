@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "max_receipt_age_seconds": 86400,
+  "require_human_approver": true,
+  "require_workspace_match": true,
+  "require_phase_scope": true
+}

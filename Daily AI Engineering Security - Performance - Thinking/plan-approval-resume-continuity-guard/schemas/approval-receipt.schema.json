@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Plan Approval Receipt",
+  "type": "object",
+  "required": ["schema_version", "task_id", "plan_sha256", "workspace_revision", "approval_id", "decision", "approved_at", "expires_at", "approver_type", "allowed_phases"],
+  "properties": {
+    "schema_version": {"type": "integer", "const": 1},
+    "task_id": {"type": "string", "minLength": 1},
+    "plan_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "workspace_revision": {"type": "string", "minLength": 1},
+    "approval_id": {"type": "string", "minLength": 1},
+    "decision": {"type": "string", "enum": ["approved"]},
+    "approved_at": {"type": "string", "format": "date-time"},
+    "expires_at": {"type": "string", "format": "date-time"},
+    "approver_type": {"type": "string", "enum": ["human"]},
+    "allowed_phases": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+  },
+  "additionalProperties": false
+}
