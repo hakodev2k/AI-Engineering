@@ -1,0 +1,25 @@
+{
+  "examples": [
+    {
+      "workflow": "Discover and infer",
+      "steps": [
+        { "tool": "fireworks.model.list", "input": { "pageSize": 20 }, "permission": "models.read", "approvalRequired": false, "expectedOutput": { "models": [], "nextPageToken": "optional" } },
+        { "tool": "fireworks.chat.create", "input": { "model": "accounts/fireworks/models/<model-id>", "messages": [{ "role": "user", "content": "Summarize this incident report." }], "maxTokens": 500, "approvalId": "<derived-approval-id>" }, "permission": "inference.execute", "approvalRequired": true, "expectedOutput": { "choices": [], "usage": {} } }
+      ]
+    },
+    {
+      "workflow": "RAG preparation",
+      "steps": [
+        { "tool": "fireworks.embedding.create", "input": { "model": "fireworks/qwen3-embedding-8b", "input": ["document one", "document two"], "approvalId": "<derived-approval-id>" }, "permission": "inference.execute", "approvalRequired": true, "expectedOutput": { "data": [], "usage": {} } },
+        { "tool": "fireworks.rerank.create", "input": { "model": "fireworks/qwen3-reranker-8b", "query": "Which document discusses deployment?", "documents": ["document one", "document two"], "topN": 2, "approvalId": "<derived-approval-id>" }, "permission": "inference.execute", "approvalRequired": true, "expectedOutput": { "data": [], "usage": {} } }
+      ]
+    },
+    {
+      "workflow": "Inspect dedicated capacity",
+      "steps": [
+        { "tool": "fireworks.deployment.list", "input": { "pageSize": 20 }, "permission": "deployments.read", "approvalRequired": false, "expectedOutput": { "deployments": [], "nextPageToken": "optional" } },
+        { "tool": "fireworks.deployment.get", "input": { "deploymentId": "deployment-id" }, "permission": "deployments.read", "approvalRequired": false, "expectedOutput": { "name": "accounts/.../deployments/...", "state": "..." } }
+      ]
+    }
+  ]
+}
