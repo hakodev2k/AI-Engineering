@@ -1,0 +1,66 @@
+id: terraform-cloud
+name: HCP Terraform / Terraform Cloud
+upstream:
+  - mcp
+  - rest
+mcp:
+  implementation: hashicorp/terraform-mcp-server
+  transport: stdio
+  toolset: terraform
+  preferred_for:
+    - organization.list
+    - project.list
+    - workspace.list
+    - workspace.get
+    - run.list
+    - run.get
+    - variable.list
+    - workspace.create
+    - run.create_plan
+    - run.apply
+    - run.cancel
+    - workspace.safe_delete
+rest:
+  base_url: ${TFE_ADDRESS}/api/v2
+  fallback: true
+auth:
+  type: bearer-token
+  environment: TFE_TOKEN
+capabilities:
+  - organization.list
+  - project.list
+  - workspace.list
+  - workspace.get
+  - run.list
+  - run.get
+  - variable.list
+  - workspace.create
+  - run.create_plan
+  - run.apply
+  - run.cancel
+  - workspace.safe_delete
+risk:
+  default: READ
+  write:
+    - terraform_cloud.workspace.create
+    - terraform_cloud.run.create_plan
+  high_risk:
+    - terraform_cloud.run.apply
+    - terraform_cloud.run.cancel
+  destructive:
+    - terraform_cloud.workspace.safe_delete
+approval:
+  required_for_all_writes: true
+  high_risk_requires_destructive_enablement: true
+environment:
+  - TFE_ADDRESS
+  - TFE_TOKEN
+  - TERRAFORM_MCP_COMMAND
+  - TERRAFORM_MCP_ARGS
+  - TERRAFORM_CLOUD_ALLOWED_ORGS
+  - TERRAFORM_CLOUD_ALLOWED_WORKSPACES
+  - TERRAFORM_CLOUD_APPROVAL_SECRET
+  - TERRAFORM_CLOUD_TIMEOUT_MS
+  - TERRAFORM_CLOUD_MAX_RETRIES
+  - TERRAFORM_CLOUD_ENABLE_WRITE
+  - TERRAFORM_CLOUD_ENABLE_DESTRUCTIVE
