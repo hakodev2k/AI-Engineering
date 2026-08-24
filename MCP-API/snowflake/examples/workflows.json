@@ -1,0 +1,32 @@
+{
+  "examples": [
+    {
+      "workflow": "Discover and inspect a table",
+      "steps": [
+        { "tool": "snowflake.database.list", "input": { "limit": 50 }, "permission": "READ", "approvalRequired": false, "expectedOutput": "SHOW DATABASES result" },
+        { "tool": "snowflake.schema.list", "input": { "database": "ANALYTICS", "limit": 100 }, "permission": "READ", "approvalRequired": false, "expectedOutput": "SHOW SCHEMAS result" },
+        { "tool": "snowflake.table.list", "input": { "database": "ANALYTICS", "schema": "PUBLIC", "limit": 100 }, "permission": "READ", "approvalRequired": false, "expectedOutput": "SHOW TABLES result" },
+        { "tool": "snowflake.table.describe", "input": { "database": "ANALYTICS", "schema": "PUBLIC", "table": "ORDERS" }, "permission": "READ", "approvalRequired": false, "expectedOutput": "DESCRIBE TABLE result" },
+        { "tool": "snowflake.table.sample", "input": { "database": "ANALYTICS", "schema": "PUBLIC", "table": "ORDERS", "limit": 10 }, "permission": "READ", "approvalRequired": false, "expectedOutput": "Up to 10 rows" }
+      ]
+    },
+    {
+      "workflow": "Run a bounded read query",
+      "steps": [
+        { "tool": "snowflake.query.execute_read", "input": { "sql": "SELECT ORDER_ID, TOTAL FROM ANALYTICS.PUBLIC.ORDERS LIMIT 20", "timeoutSeconds": 60 }, "permission": "READ", "approvalRequired": false, "expectedOutput": "MCP result when compatible; otherwise SQL API result or statement handle" }
+      ]
+    },
+    {
+      "workflow": "Insert one approved row",
+      "steps": [
+        { "tool": "snowflake.row.insert", "input": { "database": "ANALYTICS", "schema": "PUBLIC", "table": "AGENT_NOTES", "values": { "NOTE_ID": 42, "BODY": "reviewed" }, "approvalId": "<64-hex HMAC approval>" }, "permission": "WRITE", "approvalRequired": true, "expectedOutput": "SQL API insert result/status" }
+      ]
+    },
+    {
+      "workflow": "Cancel a runaway query",
+      "steps": [
+        { "tool": "snowflake.query.cancel", "input": { "statementHandle": "11111111-1111-4111-8111-111111111111", "approvalId": "<64-hex HMAC approval>" }, "permission": "HIGH_RISK", "approvalRequired": true, "expectedOutput": "Snowflake cancel status" }
+      ]
+    }
+  ]
+}
