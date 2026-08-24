@@ -1,0 +1,70 @@
+id: docker-hub
+name: Docker Hub
+upstream:
+  - mcp
+  - rest
+mcp:
+  official: true
+  implementation: Docker Hub MCP server
+  transport: stdio
+  configured_by:
+    - DOCKER_HUB_MCP_COMMAND
+    - DOCKER_HUB_MCP_ARGS_JSON
+api:
+  base_url: https://hub.docker.com/v2
+auth:
+  types:
+    - personal-access-token
+    - anonymous-public-read
+  token_exchange: https://hub.docker.com/v2/auth/token
+  secret_environment:
+    - DOCKER_HUB_USERNAME
+    - DOCKER_HUB_PAT
+capabilities:
+  - search
+  - namespace.list
+  - repository.list
+  - repository.get
+  - repository.create
+  - repository.update
+  - tag.list
+  - tag.get
+  - dockerfile.get
+  - dockerfile.set
+transport_routing:
+  dockerhub.search: mcp
+  dockerhub.namespace.list: mcp
+  dockerhub.repository.list: mcp_then_rest
+  dockerhub.repository.get: mcp_then_rest
+  dockerhub.repository.create: mcp_then_rest
+  dockerhub.repository.update: mcp_then_rest
+  dockerhub.tag.list: mcp_then_rest
+  dockerhub.tag.get: mcp_then_rest
+  dockerhub.dockerfile.get: mcp
+  dockerhub.dockerfile.set: mcp
+permissions:
+  pat_read: Read
+  pat_write: Write
+  pat_delete: not_required
+risk:
+  default: READ
+  write_tools:
+    - dockerhub.repository.create
+    - dockerhub.repository.update
+    - dockerhub.dockerfile.set
+approval:
+  required_for:
+    - dockerhub.repository.create
+    - dockerhub.repository.update
+    - dockerhub.dockerfile.set
+environment:
+  - DOCKER_HUB_USERNAME
+  - DOCKER_HUB_PAT
+  - DOCKER_HUB_ALLOWED_NAMESPACES
+  - DOCKER_HUB_ALLOWED_REPOSITORIES
+  - DOCKER_HUB_APPROVAL_SECRET
+  - DOCKER_HUB_TIMEOUT_MS
+  - DOCKER_HUB_MAX_RETRIES
+  - DOCKER_HUB_MCP_ENABLED
+  - DOCKER_HUB_MCP_COMMAND
+  - DOCKER_HUB_MCP_ARGS_JSON
