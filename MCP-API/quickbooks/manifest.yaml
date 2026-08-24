@@ -1,0 +1,57 @@
+id: quickbooks
+name: QuickBooks Online
+upstream:
+  - rest
+official_mcp:
+  available: false
+api:
+  type: rest
+  production_base_url: https://quickbooks.api.intuit.com/v3/company
+  sandbox_base_url: https://sandbox-quickbooks.api.intuit.com/v3/company
+auth:
+  type: oauth2
+  token_endpoint: https://oauth.platform.intuit.com/oauth2/v1/tokens/bearer
+  scope: com.intuit.quickbooks.accounting
+capabilities:
+  - company.get
+  - customer.search
+  - customer.get
+  - customer.create
+  - invoice.list
+  - invoice.get
+  - invoice.create
+  - payment.list
+  - payment.get
+  - item.search
+  - report.run
+  - webhook.verify
+risk:
+  default: READ
+  write_tools:
+    - quickbooks.customer.create
+    - quickbooks.invoice.create
+approval:
+  required_for:
+    - quickbooks.customer.create
+    - quickbooks.invoice.create
+reliability:
+  bounded_retries: true
+  retry_safe_methods_only: true
+  timeout_configurable: true
+  rate_limit_retry_after: true
+security:
+  credentials_isolated: true
+  arbitrary_api_passthrough: false
+  webhook_hmac_verification: true
+environment:
+  - QUICKBOOKS_REALM_ID
+  - QUICKBOOKS_ACCESS_TOKEN
+  - QUICKBOOKS_REFRESH_TOKEN
+  - QUICKBOOKS_CLIENT_ID
+  - QUICKBOOKS_CLIENT_SECRET
+  - QUICKBOOKS_ENVIRONMENT
+  - QUICKBOOKS_MINOR_VERSION
+  - QUICKBOOKS_APPROVAL_SECRET
+  - QUICKBOOKS_TIMEOUT_MS
+  - QUICKBOOKS_MAX_RETRIES
+  - QUICKBOOKS_WEBHOOK_VERIFIER_TOKEN
