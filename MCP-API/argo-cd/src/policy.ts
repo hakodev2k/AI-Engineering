@@ -8,13 +8,13 @@ export const TOOL_RISK: Record<string, Risk> = {
   'argocd.application.resource_tree': 'READ',
   'argocd.application.manifests': 'READ',
   'argocd.application.events': 'READ',
-  'argocd.application.logs': 'READ',
+  'argocd.application.sync_windows': 'READ',
+  'argocd.application.revision_metadata': 'READ',
   'argocd.project.list': 'READ',
   'argocd.project.get': 'READ',
   'argocd.repository.list': 'READ',
   'argocd.cluster.list': 'READ',
-  'argocd.application.sync': 'HIGH_RISK',
-  'argocd.application.terminate_operation': 'HIGH_RISK'
+  'argocd.application.sync': 'HIGH_RISK'
 };
 
 export function approvalDigest(secret: string, tool: string) {
