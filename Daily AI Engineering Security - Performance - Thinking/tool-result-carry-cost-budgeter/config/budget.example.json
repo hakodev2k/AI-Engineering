@@ -1,0 +1,6 @@
+{
+  "max_direct_tool_result_tokens": 50000,
+  "max_cumulative_carry_tokens": 150000,
+  "max_carry_amplification_ratio": 4.0,
+  "top_n": 10
+}
