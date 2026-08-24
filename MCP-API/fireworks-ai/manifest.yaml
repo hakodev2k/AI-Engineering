@@ -1,0 +1,74 @@
+id: fireworks-ai
+name: Fireworks AI
+upstream:
+  - rest
+official_mcp:
+  available: false
+  note: Fireworks Responses API can consume external MCP/SSE tools, but Fireworks does not document a provider-hosted MCP server for these account/inference capabilities.
+auth:
+  type: api-key
+  header: "Authorization: Bearer <FIREWORKS_API_KEY>"
+api:
+  inference_base_url: https://api.fireworks.ai/inference/v1
+  platform_base_url: https://api.fireworks.ai/v1
+capabilities:
+  - model.list
+  - model.get
+  - deployment.list
+  - deployment.get
+  - chat.create
+  - completion.create
+  - response.create
+  - response.list
+  - embedding.create
+  - rerank.create
+  - deployment.create
+risk:
+  default: READ
+  read_tools:
+    - fireworks.model.list
+    - fireworks.model.get
+    - fireworks.deployment.list
+    - fireworks.deployment.get
+    - fireworks.response.list
+  write_tools:
+    - fireworks.chat.create
+    - fireworks.completion.create
+    - fireworks.response.create
+    - fireworks.embedding.create
+    - fireworks.rerank.create
+  high_risk_tools:
+    - fireworks.deployment.create
+approval:
+  required_for:
+    - fireworks.chat.create
+    - fireworks.completion.create
+    - fireworks.response.create
+    - fireworks.embedding.create
+    - fireworks.rerank.create
+    - fireworks.deployment.create
+credentials:
+  exposed_to_agent: false
+  required_environment:
+    - FIREWORKS_API_KEY
+  optional_environment:
+    - FIREWORKS_ACCOUNT_ID
+    - FIREWORKS_ALLOWED_MODELS
+    - FIREWORKS_APPROVAL_SECRET
+    - FIREWORKS_TIMEOUT_MS
+    - FIREWORKS_MAX_RETRIES
+    - FIREWORKS_MAX_INPUT_CHARS
+    - FIREWORKS_MAX_DOCUMENTS
+reliability:
+  retries: bounded exponential backoff for GET only
+  retryable_statuses:
+    - 429
+    - 503
+    - 5xx
+  post_retries: disabled
+  timeout: configurable
+security:
+  arbitrary_http_tool: false
+  arbitrary_external_mcp_forwarding: false
+  model_allowlist: configurable
+  input_size_limits: configurable
