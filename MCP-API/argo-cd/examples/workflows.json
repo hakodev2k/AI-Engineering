@@ -1,0 +1,20 @@
+[
+  {
+    "workflow": "Inspect deployment health",
+    "steps": [
+      { "tool": "argocd.application.get", "input": { "name": "payments-api", "project": "production" }, "permission": "READ", "approvalRequired": false },
+      { "tool": "argocd.application.resource_tree", "input": { "name": "payments-api", "project": "production" }, "permission": "READ", "approvalRequired": false },
+      { "tool": "argocd.application.events", "input": { "name": "payments-api" }, "permission": "READ", "approvalRequired": false }
+    ],
+    "expectedOutputShape": { "untrustedProviderData": true, "value": "Argo CD API response" }
+  },
+  {
+    "workflow": "Review then deploy an approved revision",
+    "steps": [
+      { "tool": "argocd.application.revision_metadata", "input": { "name": "payments-api", "revision": "abc123", "project": "production" }, "permission": "READ", "approvalRequired": false },
+      { "tool": "argocd.application.sync_windows", "input": { "name": "payments-api", "project": "production" }, "permission": "READ", "approvalRequired": false },
+      { "tool": "argocd.application.sync", "input": { "name": "payments-api", "project": "production", "revision": "abc123", "prune": false, "dryRun": false, "approvalId": "<64-char HMAC approval>" }, "permission": "HIGH_RISK", "approvalRequired": true }
+    ],
+    "expectedOutputShape": { "untrustedProviderData": true, "value": "Application after sync request" }
+  }
+]
