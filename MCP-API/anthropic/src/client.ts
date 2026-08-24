@@ -43,7 +43,8 @@ export class AnthropicClient {
           const text = await response.text();
           throw new AnthropicApiError(response.status, `Anthropic API ${response.status}: ${text.slice(0, 2000)}`, requestId, retryAfter);
         }
-        const contentType = response.headers.get('content-type') ?? '';
+        const contentType = (response.headers.get('content-type') ?? '').toLowerCase();
+        if (contentType.includes('application/jsonl') || contentType.includes('application/x-ndjson')) return await response.text() as T;
         if (contentType.includes('application/json')) return await response.json() as T;
         return await response.text() as T;
       } catch (error) {
