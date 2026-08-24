@@ -1,0 +1,9 @@
+{
+  "max_transcript_bytes": 268435456,
+  "max_largest_line_bytes": 16777216,
+  "max_base64_ratio": 0.60,
+  "max_duplicate_payload_ratio": 0.20,
+  "materialization_multiplier": 10.0,
+  "max_projected_materialization_bytes": 2147483648,
+  "min_digest_chars": 4096
+}
