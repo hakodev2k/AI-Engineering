@@ -1,0 +1,45 @@
+[
+  {
+    "workflow": "discover-and-save",
+    "steps": [
+      {
+        "tool": "spotify.catalog.search",
+        "input": { "query": "artist:Miles Davis track:So What", "types": ["track"], "market": "US", "limit": 5 },
+        "permission": "READ",
+        "approvalRequired": false,
+        "expectedOutput": { "tracks": { "items": "array", "next": "string|null" } }
+      },
+      {
+        "tool": "spotify.playlist.add_items",
+        "input": { "playlistId": "examplePlaylistId", "uris": ["spotify:track:exampleTrackId"], "approvalId": "<64-char HMAC>" },
+        "permission": "WRITE",
+        "approvalRequired": true,
+        "expectedOutput": { "snapshot_id": "string" }
+      }
+    ]
+  },
+  {
+    "workflow": "create-private-playlist",
+    "steps": [
+      {
+        "tool": "spotify.playlist.create",
+        "input": { "name": "Research Listening", "public": false, "description": "Created through the connector", "approvalId": "<64-char HMAC>" },
+        "permission": "WRITE",
+        "approvalRequired": true,
+        "expectedOutput": { "id": "string", "snapshot_id": "string" }
+      }
+    ]
+  },
+  {
+    "workflow": "remove-item-with-snapshot",
+    "steps": [
+      {
+        "tool": "spotify.playlist.remove_items",
+        "input": { "playlistId": "examplePlaylistId", "uris": ["spotify:track:exampleTrackId"], "snapshotId": "exampleSnapshot", "approvalId": "<64-char HMAC>" },
+        "permission": "DESTRUCTIVE",
+        "approvalRequired": true,
+        "expectedOutput": { "snapshot_id": "string" }
+      }
+    ]
+  }
+]
