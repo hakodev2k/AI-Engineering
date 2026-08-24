@@ -1,0 +1,42 @@
+[
+  {
+    "tool": "n8n.workflow.search",
+    "input": { "query": "invoice", "limit": 20 },
+    "expectedOutput": { "type": "workflow search/list result" },
+    "permission": "READ",
+    "approvalRequired": false
+  },
+  {
+    "tool": "n8n.workflow.get",
+    "input": { "workflowId": "workflow-id" },
+    "expectedOutput": { "type": "workflow details" },
+    "permission": "READ",
+    "approvalRequired": false
+  },
+  {
+    "tool": "n8n.workflow.create",
+    "input": {
+      "name": "Example workflow",
+      "nodes": [{ "id": "1", "name": "Manual Trigger", "type": "n8n-nodes-base.manualTrigger", "typeVersion": 1, "position": [0, 0], "parameters": {} }],
+      "connections": {},
+      "approvalId": "<HMAC approval token>"
+    },
+    "expectedOutput": { "type": "created workflow" },
+    "permission": "WRITE",
+    "approvalRequired": true
+  },
+  {
+    "tool": "n8n.execution.list",
+    "input": { "workflowId": "workflow-id", "limit": 25 },
+    "expectedOutput": { "type": "execution page with optional cursor" },
+    "permission": "READ",
+    "approvalRequired": false
+  },
+  {
+    "tool": "n8n.workflow.activate",
+    "input": { "workflowId": "workflow-id", "approvalId": "<HMAC approval token>" },
+    "expectedOutput": { "type": "activated workflow" },
+    "permission": "HIGH_RISK",
+    "approvalRequired": true
+  }
+]
