@@ -1,0 +1,17 @@
+[
+  {
+    "workflow": "discover-and-generate",
+    "steps": [
+      { "tool": "groq.model.list", "input": {}, "permission": "READ", "approval_required": false, "expected_output": { "data": "array of model objects" } },
+      { "tool": "groq.chat.complete", "input": { "model": "openai/gpt-oss-20b", "messages": [{ "role": "user", "content": "Summarize the deployment notes." }], "maxCompletionTokens": 800 }, "permission": "WRITE", "approval_required": true, "expected_output": { "choices": "array", "usage": "object" } }
+    ]
+  },
+  {
+    "workflow": "batch-monitoring",
+    "steps": [
+      { "tool": "groq.batch.list", "input": { "limit": 20 }, "permission": "READ", "approval_required": false, "expected_output": { "data": "array", "paging": "object when another page exists" } },
+      { "tool": "groq.batch.get", "input": { "batchId": "batch_example" }, "permission": "READ", "approval_required": false, "expected_output": { "id": "string", "status": "string" } },
+      { "tool": "groq.batch.cancel", "input": { "batchId": "batch_example", "approvalId": "64-character approval digest" }, "permission": "HIGH_RISK", "approval_required": true, "expected_output": { "id": "string", "status": "cancelling or cancelled" } }
+    ]
+  }
+]
