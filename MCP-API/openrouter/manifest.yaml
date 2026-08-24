@@ -1,0 +1,60 @@
+id: openrouter
+name: OpenRouter
+upstream:
+  - rest
+  - official-mcp-researched
+transport:
+  primary: rest
+  rationale: deterministic schemas, explicit key separation, bounded retries, and safer approval controls for agent execution
+  official_mcp:
+    available: true
+    endpoint: https://mcp.openrouter.ai/mcp
+    role: interactive model discovery, pricing, benchmarks, docs, and test inference
+auth:
+  type: bearer-api-key
+  inference_key_env: OPENROUTER_API_KEY
+  management_key_env: OPENROUTER_MANAGEMENT_KEY
+api:
+  base_url: https://openrouter.ai/api/v1
+capabilities:
+  - model.list
+  - benchmark.list
+  - generation.get
+  - generation.content.get
+  - activity.list
+  - credits.get
+  - analytics.meta
+  - analytics.query
+  - inference.chat
+  - embedding.create
+risk:
+  default: READ
+  write:
+    - openrouter.inference.chat
+    - openrouter.embedding.create
+  high_risk:
+    - openrouter.generation.content.get
+approval:
+  required_for:
+    - openrouter.inference.chat
+    - openrouter.embedding.create
+    - openrouter.generation.content.get
+reliability:
+  retry_safe_gets: true
+  retry_analytics_query: true
+  retry_inference_posts: false
+  retry_embedding_posts: false
+  max_retries_env: OPENROUTER_MAX_RETRIES
+security:
+  model_allowlist_env: OPENROUTER_ALLOWED_MODELS
+  credentials_exposed_to_llm: false
+  retrieved_content_untrusted: true
+environment:
+  - OPENROUTER_API_KEY
+  - OPENROUTER_MANAGEMENT_KEY
+  - OPENROUTER_APPROVAL_SECRET
+  - OPENROUTER_ALLOWED_MODELS
+  - OPENROUTER_APP_TITLE
+  - OPENROUTER_HTTP_REFERER
+  - OPENROUTER_TIMEOUT_MS
+  - OPENROUTER_MAX_RETRIES
