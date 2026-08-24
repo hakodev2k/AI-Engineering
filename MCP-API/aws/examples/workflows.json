@@ -1,0 +1,25 @@
+[
+  {
+    "workflow": "Inspect compute before maintenance",
+    "steps": [
+      { "tool": "aws.identity.get", "input": { "region": "us-east-1" }, "permission": "READ", "approvalRequired": false, "output": { "Account": "123456789012", "Arn": "arn:aws:sts::123456789012:assumed-role/example/session" } },
+      { "tool": "aws.ec2.instance.list", "input": { "region": "us-east-1", "maxResults": 50 }, "permission": "READ", "approvalRequired": false, "output": { "Reservations": [] } },
+      { "tool": "aws.ec2.instance.stop", "input": { "region": "us-east-1", "instanceIds": ["i-0123456789abcdef0"], "approvalId": "<64-char-approval-token>" }, "permission": "HIGH_RISK", "approvalRequired": true, "output": { "StoppingInstances": [] } }
+    ]
+  },
+  {
+    "workflow": "Investigate application health",
+    "steps": [
+      { "tool": "aws.lambda.function.list", "input": { "region": "us-east-1", "maxItems": 50 }, "permission": "READ", "approvalRequired": false, "output": { "Functions": [] } },
+      { "tool": "aws.logs.filter", "input": { "region": "us-east-1", "logGroupName": "/aws/lambda/example", "filterPattern": "ERROR", "limit": 100 }, "permission": "READ", "approvalRequired": false, "output": { "events": [], "nextToken": null } }
+    ]
+  },
+  {
+    "workflow": "Inspect S3 without exposing object content",
+    "steps": [
+      { "tool": "aws.s3.object.list", "input": { "region": "us-east-1", "bucket": "example-bucket", "prefix": "reports/", "maxKeys": 100 }, "permission": "READ", "approvalRequired": false, "output": { "Contents": [] } },
+      { "tool": "aws.s3.object.metadata", "input": { "region": "us-east-1", "bucket": "example-bucket", "key": "reports/latest.json" }, "permission": "READ", "approvalRequired": false, "output": { "ContentLength": 1024, "ContentType": "application/json" } },
+      { "tool": "aws.s3.object.presign_get", "input": { "region": "us-east-1", "bucket": "example-bucket", "key": "reports/latest.json", "expiresInSeconds": 300, "approvalId": "<64-char-approval-token>" }, "permission": "HIGH_RISK", "approvalRequired": true, "output": { "url": "<temporary-presigned-url>" } }
+    ]
+  }
+]
