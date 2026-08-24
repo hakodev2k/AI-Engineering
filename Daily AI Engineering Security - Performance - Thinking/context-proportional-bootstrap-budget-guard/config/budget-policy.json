@@ -1,0 +1,8 @@
+{
+  "max_bootstrap_ratio": 0.35,
+  "min_task_reserve_ratio": 0.45,
+  "min_output_reserve_ratio": 0.20,
+  "quality_regression_tolerance": 0.02,
+  "max_adjustment_iterations": 2,
+  "required_kinds": ["security", "authorization", "task", "output_contract"]
+}
