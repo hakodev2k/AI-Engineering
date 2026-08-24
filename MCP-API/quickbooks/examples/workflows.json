@@ -1,0 +1,21 @@
+[
+  {
+    "workflow": "Find a customer and inspect invoices",
+    "steps": [
+      { "tool": "quickbooks.customer.search", "input": { "name": "Acme", "pageSize": 20 }, "permission": "READ", "approvalRequired": false, "output": "QuickBooks QueryResponse containing Customer records" },
+      { "tool": "quickbooks.invoice.list", "input": { "page": 1, "pageSize": 50 }, "permission": "READ", "approvalRequired": false, "output": "QuickBooks QueryResponse containing Invoice records" }
+    ]
+  },
+  {
+    "workflow": "Review financial statements",
+    "steps": [
+      { "tool": "quickbooks.report.run", "input": { "report": "ProfitAndLoss", "startDate": "2026-01-01", "endDate": "2026-12-31", "accountingMethod": "Accrual" }, "permission": "READ", "approvalRequired": false, "output": "QuickBooks report JSON" }
+    ]
+  },
+  {
+    "workflow": "Create an approved invoice",
+    "steps": [
+      { "tool": "quickbooks.invoice.create", "input": { "customerId": "42", "lines": [{ "itemId": "7", "description": "Consulting", "amount": 1000, "quantity": 10, "unitPrice": 100 }], "approvalId": "<64-char-HMAC-approval>" }, "permission": "WRITE", "approvalRequired": true, "output": "QuickBooks Invoice create response" }
+    ]
+  }
+]
