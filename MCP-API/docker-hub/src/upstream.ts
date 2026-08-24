@@ -20,9 +20,10 @@ export class DockerHubUpstream {
       try {
         const env: Record<string, string> = {};
         for (const [k, v] of Object.entries(process.env)) if (v !== undefined) env[k] = v;
-        if (this.config.username) env.HUB_USERNAME = this.config.username;
         if (this.config.pat) env.HUB_PAT_TOKEN = this.config.pat;
-        const transport = new StdioClientTransport({ command: this.config.mcpCommand, args: this.config.mcpArgs, env });
+        const args = [...this.config.mcpArgs];
+        if (this.config.username && !args.some(v => v.startsWith('--username='))) args.push(`--username=${this.config.username}`);
+        const transport = new StdioClientTransport({ command: this.config.mcpCommand, args, env });
         const client = new Client({ name: 'docker-hub-connector-upstream', version: '1.0.0' });
         await client.connect(transport);
         this.mcp = client;
