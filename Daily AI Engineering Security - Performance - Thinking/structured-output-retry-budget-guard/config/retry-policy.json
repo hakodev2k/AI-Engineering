@@ -1,0 +1,7 @@
+{
+  "max_repair_attempts": 2,
+  "max_identical_invalid_attempts": 2,
+  "max_total_terminal_attempts": 4,
+  "terminal_deadline_seconds": 120,
+  "allow_full_task_rerun_on_format_failure": false
+}
