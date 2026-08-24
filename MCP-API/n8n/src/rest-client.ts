@@ -4,10 +4,12 @@ export class N8nApiError extends Error {
   constructor(public status: number, message: string, public retryAfter?: number) { super(message); }
 }
 
+type Query = Record<string, string | number | boolean | undefined>;
+
 export class N8nRestClient {
   constructor(private readonly config: N8nConfig, private readonly fetchImpl: typeof fetch = fetch) {}
 
-  async request<T>(method: string, path: string, body?: unknown, query?: Record<string, string | number | boolean | undefined>): Promise<T> {
+  async request<T>(method: string, path: string, body?: unknown, query?: Query): Promise<T> {
     const url = new URL(`${this.config.baseUrl}/api/v1${path}`);
     for (const [k, v] of Object.entries(query ?? {})) if (v !== undefined) url.searchParams.set(k, String(v));
     for (let attempt = 0; ; attempt++) {
@@ -48,8 +50,8 @@ export class N8nRestClient {
     }
   }
 
-  get<T>(path: string, query?: Record<string, string | number | boolean | undefined>) { return this.request<T>('GET', path, undefined, query); }
-  post<T>(path: string, body?: unknown) { return this.request<T>('POST', path, body); }
-  put<T>(path: string, body?: unknown) { return this.request<T>('PUT', path, body); }
-  delete<T>(path: string) { return this.request<T>('DELETE', path); }
+  get<T>(path: string, query?: Query) { return this.request<T>('GET', path, undefined, query); }
+  post<T>(path: string, body?: unknown, query?: Query) { return this.request<T>('POST', path, body, query); }
+  put<T>(path: string, body?: unknown, query?: Query) { return this.request<T>('PUT', path, body, query); }
+  delete<T>(path: string, query?: Query) { return this.request<T>('DELETE', path, undefined, query); }
 }
