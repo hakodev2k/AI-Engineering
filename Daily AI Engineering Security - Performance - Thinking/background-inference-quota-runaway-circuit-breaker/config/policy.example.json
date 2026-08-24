@@ -1,0 +1,8 @@
+{
+  "max_same_turn_requests": 5,
+  "max_no_progress_seconds": 120,
+  "max_automated_recovery_attempts": 2,
+  "fail_closed_on_ambiguous_terminal_state": true,
+  "require_independent_verification": true,
+  "required_metrics": ["background_calls_per_task","idle_calls_per_task","same_turn_repetitions","no_progress_seconds","tokens_after_terminal_state","false_block_rate"]
+}
