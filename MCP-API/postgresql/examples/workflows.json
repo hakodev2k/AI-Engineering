@@ -1,0 +1,25 @@
+{
+  "examples": [
+    {
+      "tool": "postgresql.table.describe",
+      "input": { "schema": "public", "table": "orders" },
+      "permission": "READ",
+      "approvalRequired": false,
+      "expectedOutput": { "columns": "array", "constraints": "array" }
+    },
+    {
+      "tool": "postgresql.row.select",
+      "input": { "schema": "public", "table": "orders", "columns": ["id", "status"], "filters": { "status": "pending" }, "limit": 25 },
+      "permission": "READ",
+      "approvalRequired": false,
+      "expectedOutput": { "rows": "array", "rowCount": "number", "limit": "number", "offset": "number" }
+    },
+    {
+      "tool": "postgresql.row.update",
+      "input": { "schema": "public", "table": "orders", "values": { "status": "reviewed" }, "filters": { "id": 123 }, "approvalId": "<64-hex approval token>" },
+      "permission": "WRITE",
+      "approvalRequired": true,
+      "expectedOutput": { "rowCount": "number", "rows": "array" }
+    }
+  ]
+}
