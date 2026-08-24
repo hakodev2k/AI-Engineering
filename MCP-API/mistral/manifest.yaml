@@ -1,0 +1,60 @@
+id: mistral
+name: Mistral AI
+upstream:
+  - rest
+mcp:
+  official_provider_server: false
+  note: Mistral Studio supports registering external MCP servers as Connectors, but Mistral does not publish an official MCP server that exposes the Mistral inference API.
+auth:
+  type: api-key
+  header: Authorization Bearer
+api:
+  base_url: https://api.mistral.ai
+capabilities:
+  - model.list
+  - model.get
+  - chat.complete
+  - embedding.create
+  - code.complete
+  - moderation.text
+  - moderation.chat
+  - ocr.process
+  - audio.transcribe
+risk:
+  default: READ
+  write_tools:
+    - mistral.chat.complete
+    - mistral.embedding.create
+    - mistral.code.complete
+    - mistral.ocr.process
+    - mistral.audio.transcribe
+  high_risk_tools: []
+  destructive_tools: []
+approval:
+  mode: configurable
+  environment: MISTRAL_REQUIRE_APPROVAL_FOR_WRITE
+  applies_to:
+    - mistral.chat.complete
+    - mistral.embedding.create
+    - mistral.code.complete
+    - mistral.ocr.process
+    - mistral.audio.transcribe
+permissions:
+  provider_scopes: none
+  recommendation: use a dedicated least-privilege Studio API key, set an expiration, rotate regularly, and restrict connector access separately when applicable
+reliability:
+  retries:
+    idempotent_gets_only: true
+    max_configurable: 5
+  timeout_configurable: true
+  rate_limit_status: 429
+environment:
+  - MISTRAL_API_KEY
+  - MISTRAL_API_BASE_URL
+  - MISTRAL_ALLOWED_MODELS
+  - MISTRAL_REQUIRE_APPROVAL_FOR_WRITE
+  - MISTRAL_APPROVAL_SECRET
+  - MISTRAL_TIMEOUT_MS
+  - MISTRAL_MAX_RETRIES
+  - MISTRAL_MAX_OUTPUT_TOKENS
+  - MISTRAL_MAX_INPUT_CHARS
