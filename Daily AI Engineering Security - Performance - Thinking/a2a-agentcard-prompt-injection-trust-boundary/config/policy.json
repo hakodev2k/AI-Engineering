@@ -1,0 +1,1 @@
+{"strict":true,"max_text_length":2000,"instruction_patterns":["\\bignore\\b.{0,40}\\b(previous|prior|system|developer|instructions?)\\b","\\b(system|developer)\\s+(override|message|instruction)\\b","\\bdo not (tell|reveal|mention)\\b","\\bexecute\\b.{0,40}\\b(command|shell|script|tool)\\b","\\bexfiltrat(e|ion)\\b|\\bsteal\\b.{0,30}\\b(secret|token|credential)\\b"]}
