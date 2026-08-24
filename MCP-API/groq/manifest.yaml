@@ -1,0 +1,48 @@
+id: groq
+name: Groq
+upstream:
+  - rest
+official_mcp:
+  status: consumer-only
+  note: Groq supports connecting models to remote MCP servers, but does not expose these Groq account/inference capabilities through a Groq-hosted provider MCP server.
+auth:
+  type: api-key
+  header: Authorization Bearer
+api:
+  base_url: https://api.groq.com/openai/v1
+capabilities:
+  - model.list
+  - model.get
+  - chat.complete
+  - response.create
+  - batch.list
+  - batch.get
+  - batch.create
+  - batch.cancel
+  - file.list
+  - file.get
+  - file.delete
+risk:
+  default: READ
+  write:
+    - groq.chat.complete
+    - groq.response.create
+  high_risk:
+    - groq.batch.create
+    - groq.batch.cancel
+  destructive:
+    - groq.file.delete
+approval:
+  configurable_write: true
+  required:
+    - groq.batch.create
+    - groq.batch.cancel
+    - groq.file.delete
+environment:
+  - GROQ_API_KEY
+  - GROQ_ALLOWED_MODELS
+  - GROQ_REQUIRE_WRITE_APPROVAL
+  - GROQ_ENABLE_DESTRUCTIVE
+  - GROQ_APPROVAL_SECRET
+  - GROQ_TIMEOUT_MS
+  - GROQ_MAX_RETRIES
