@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Canonical Agent Event Record",
+  "type": "object",
+  "required": ["seq", "event_id", "kind"],
+  "properties": {
+    "seq": {"type": "integer", "minimum": 1},
+    "event_id": {"type": "string", "minLength": 1},
+    "kind": {"enum": ["assistant_text", "user_message", "tool_use", "tool_result", "checkpoint", "completion"]},
+    "tool_use_id": {"type": "string", "minLength": 1},
+    "timestamp": {"type": "string"},
+    "payload_hash": {"type": "string"},
+    "redacted": {"type": "boolean"}
+  },
+  "allOf": [
+    {"if": {"properties": {"kind": {"const": "tool_use"}}}, "then": {"required": ["tool_use_id"]}},
+    {"if": {"properties": {"kind": {"const": "tool_result"}}}, "then": {"required": ["tool_use_id"]}}
+  ],
+  "additionalProperties": true
+}
