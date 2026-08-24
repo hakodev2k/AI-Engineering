@@ -1,0 +1,54 @@
+id: together-ai
+name: Together AI
+upstream:
+  - rest
+mcp:
+  official_general_server: false
+  note: Together AI documents MCP support for Code Interpreter distribution, but no official general-purpose MCP server covers the platform capabilities implemented here.
+auth:
+  type: api-key-bearer
+  environment: TOGETHER_API_KEY
+api:
+  base_url: https://api.together.ai/v1
+capabilities:
+  - model.list
+  - chat.complete
+  - embedding.create
+  - rerank.create
+  - image.generate
+  - fine_tuning.list
+  - fine_tuning.get
+  - fine_tuning.create
+  - fine_tuning.cancel
+risk:
+  default: READ
+  tools:
+    together.model.list: READ
+    together.chat.complete: WRITE
+    together.embedding.create: WRITE
+    together.rerank.create: WRITE
+    together.image.generate: WRITE
+    together.fine_tuning.list: READ
+    together.fine_tuning.get: READ
+    together.fine_tuning.create: HIGH_RISK
+    together.fine_tuning.cancel: HIGH_RISK
+approval:
+  required_for:
+    - together.chat.complete
+    - together.embedding.create
+    - together.rerank.create
+    - together.image.generate
+    - together.fine_tuning.create
+    - together.fine_tuning.cancel
+security:
+  model_allowlist_env: TOGETHER_ALLOWED_MODELS
+  costing_writes_disabled_by_default: true
+  fine_tuning_disabled_by_default: true
+environment:
+  - TOGETHER_API_KEY
+  - TOGETHER_APPROVAL_SECRET
+  - TOGETHER_ALLOWED_MODELS
+  - TOGETHER_TIMEOUT_MS
+  - TOGETHER_MAX_RETRIES
+  - TOGETHER_ENABLE_COSTING_WRITES
+  - TOGETHER_ENABLE_FINE_TUNING
