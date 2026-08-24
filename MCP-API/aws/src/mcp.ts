@@ -16,9 +16,14 @@ type AdapterFactory = (config: AwsConfig) => Promise<McpAdapter>;
 async function defaultAdapterFactory(config: AwsConfig): Promise<McpAdapter> {
   if (!config.mcpAccessToken) throw new Error('AWS_MCP_ACCESS_TOKEN is not configured');
   const client = new Client({ name: 'aws-mcp-connector-upstream', version: '1.0.0' });
+  const boundedFetch: typeof fetch = (input, init) => {
+    const timeout = AbortSignal.timeout(config.timeoutMs);
+    const signal = init?.signal ? AbortSignal.any([init.signal, timeout]) : timeout;
+    return fetch(input, { ...init, signal });
+  };
   const transport = new StreamableHTTPClientTransport(new URL(config.mcpEndpoint), {
     authProvider: { token: async () => config.mcpAccessToken! },
-    requestInit: { signal: AbortSignal.timeout(config.timeoutMs) }
+    fetch: boundedFetch
   });
   await client.connect(transport);
   return client as unknown as McpAdapter;
