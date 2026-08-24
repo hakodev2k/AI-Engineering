@@ -1,0 +1,61 @@
+id: mongodb
+name: MongoDB
+upstream:
+  - mcp
+official_mcp:
+  package: mongodb-mcp-server
+  version: 2.0.0
+  transport: stdio
+auth:
+  database:
+    type: connection-string
+    environment: MDB_MCP_CONNECTION_STRING
+  atlas:
+    type: oauth2-service-account
+    client_id_environment: MDB_MCP_API_CLIENT_ID
+    client_secret_environment: MDB_MCP_API_CLIENT_SECRET
+capabilities:
+  - database.list
+  - collection.list
+  - collection.schema
+  - index.list
+  - collection.storage_size
+  - database.stats
+  - document.find
+  - document.count
+  - aggregate.run
+  - query.explain
+  - document.insert_many
+  - document.update_one
+risk:
+  default: READ
+  write_tools:
+    - mongodb.document.insert_many
+    - mongodb.document.update_one
+  destructive_tools: []
+approval:
+  required_for:
+    - mongodb.document.insert_many
+    - mongodb.document.update_one
+security:
+  read_only_default: true
+  server_side_javascript: disabled
+  destructive_upstream_tools: disabled
+  index_check_default: true
+  namespace_allowlists: supported
+limits:
+  max_documents_default: 50
+  max_bytes_default: 1048576
+  max_time_ms_default: 10000
+environment:
+  - MDB_MCP_CONNECTION_STRING
+  - MDB_MCP_API_CLIENT_ID
+  - MDB_MCP_API_CLIENT_SECRET
+  - MONGODB_CONNECTOR_ALLOW_WRITES
+  - MONGODB_CONNECTOR_APPROVAL_SECRET
+  - MONGODB_CONNECTOR_ALLOWED_DATABASES
+  - MONGODB_CONNECTOR_ALLOWED_COLLECTIONS
+  - MONGODB_CONNECTOR_MAX_DOCUMENTS
+  - MONGODB_CONNECTOR_MAX_BYTES
+  - MONGODB_CONNECTOR_MAX_TIME_MS
+  - MONGODB_CONNECTOR_INDEX_CHECK
