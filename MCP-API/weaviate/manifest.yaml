@@ -1,0 +1,48 @@
+id: weaviate
+name: Weaviate
+upstream:
+  - mcp
+  - rest
+  - graphql
+mcp:
+  endpoint: /v1/mcp
+  availability: built-in preview from Weaviate 1.37.1+
+  preferred_tools:
+    - weaviate-collections-get-config
+    - weaviate-tenants-list
+    - weaviate-query-hybrid
+    - weaviate-objects-upsert
+api:
+  base_url: ${WEAVIATE_URL}
+auth:
+  types:
+    - api-key
+  notes: Existing Weaviate authentication and RBAC apply to built-in MCP and APIs.
+capabilities:
+  - collection.list
+  - collection.get
+  - tenant.list
+  - object.get
+  - object.list
+  - search.hybrid
+  - object.upsert
+  - object.delete
+  - health.ready
+risk:
+  default: READ
+  write:
+    - weaviate.object.upsert
+  destructive:
+    - weaviate.object.delete
+approval:
+  required_for:
+    - weaviate.object.upsert
+    - weaviate.object.delete
+environment:
+  - WEAVIATE_URL
+  - WEAVIATE_API_KEY
+  - WEAVIATE_MCP_ENABLED
+  - WEAVIATE_ALLOWED_COLLECTIONS
+  - WEAVIATE_APPROVAL_SECRET
+  - WEAVIATE_TIMEOUT_MS
+  - WEAVIATE_MAX_RETRIES
