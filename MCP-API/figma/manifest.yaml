@@ -1,0 +1,63 @@
+id: figma
+name: Figma
+upstream:
+  - rest
+upstream_mcp:
+  available: true
+  official: true
+  recommended_endpoint: https://mcp.figma.com/mcp
+  proxied_by_this_connector: false
+  reason: Figma currently limits its remote MCP server to clients in the Figma MCP Catalog; this reusable server uses the official REST API for deterministic cross-client behavior.
+auth:
+  types:
+    - oauth2-bearer
+    - personal-access-token
+    - plan-access-token
+  recommended: oauth2-bearer
+api:
+  base_url: https://api.figma.com
+capabilities:
+  - file.get
+  - file.nodes
+  - image.render
+  - image_fills.list
+  - comment.list
+  - comment.create
+  - component.list_file
+  - component_set.list_file
+  - style.list_file
+  - variables.local
+  - variables.published
+  - webhook.list
+  - webhook.create
+  - webhook.delete
+scopes:
+  - file_content:read
+  - file_comments:read
+  - file_comments:write
+  - library_content:read
+  - file_variables:read
+  - webhooks:read
+  - webhooks:write
+risk:
+  default: READ
+  write_tools:
+    - figma.comment.create
+  high_risk_tools:
+    - figma.webhook.create
+  destructive_tools:
+    - figma.webhook.delete
+approval:
+  required_for:
+    - figma.comment.create
+    - figma.webhook.create
+    - figma.webhook.delete
+environment:
+  - FIGMA_AUTH_MODE
+  - FIGMA_ACCESS_TOKEN
+  - FIGMA_TOKEN
+  - FIGMA_ALLOWED_FILE_KEYS
+  - FIGMA_ALLOWED_TEAM_IDS
+  - FIGMA_APPROVAL_SECRET
+  - FIGMA_TIMEOUT_MS
+  - FIGMA_MAX_RETRIES
