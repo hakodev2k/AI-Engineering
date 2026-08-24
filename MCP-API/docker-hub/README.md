@@ -141,7 +141,7 @@ DOCKER_HUB_MCP_ARGS_JSON=["/FULL/PATH/TO/docker-hub-mcp-server/dist/index.js","-
 
 `DOCKER_HUB_ALLOWED_NAMESPACES` and `DOCKER_HUB_ALLOWED_REPOSITORIES` are comma-separated allowlists. Repository entries may be either `repository` or `namespace/repository`.
 
-The official Docker Hub MCP repository documents authenticated stdio usage with `HUB_PAT_TOKEN` plus a `--username=...` argument. This connector keeps the PAT in the subprocess environment as `HUB_PAT_TOKEN`; callers should include the upstream `--username=<name>` in `DOCKER_HUB_MCP_ARGS_JSON` when using authenticated MCP mode.
+The official Docker Hub MCP repository documents authenticated stdio usage with `HUB_PAT_TOKEN` plus a `--username=...` argument. This connector keeps the PAT in the subprocess environment as `HUB_PAT_TOKEN` and automatically appends `--username=<DOCKER_HUB_USERNAME>` when a username is configured and the argument is not already present.
 
 ## Tools and permissions
 
