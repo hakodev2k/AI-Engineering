@@ -5,7 +5,7 @@ Reusable MCP connector for n8n Cloud or self-hosted n8n. It exposes stable `n8n.
 ## Supported upstream transports
 
 - **Official n8n instance-level MCP server (beta)** for workflow discovery/details and tag listing when configured and when the exact upstream tool exists.
-- **Official n8n Public REST API v1** for workflow creation/update/activation, executions, projects, tags, and as a fallback for supported read capabilities.
+- **Official n8n Public REST API v1** for workflow creation/update, publish/unpublish, executions, projects, tags, and as a fallback for supported read capabilities.
 
 Official sources researched for this implementation:
 
@@ -15,7 +15,7 @@ Official sources researched for this implementation:
 - Public API authentication/scopes: `https://docs.n8n.io/connect/n8n-api/authentication/`
 - Public API pagination: `https://docs.n8n.io/connect/n8n-api/pagination/`
 
-The Public API uses `X-N8N-API-KEY`. Enterprise API keys can be scoped. Non-enterprise API keys may have broad account access, so repository/project allowlists and the connector approval layer remain important.
+The Public API uses `X-N8N-API-KEY`. Enterprise API keys can be scoped. Non-enterprise API keys may have broad account access, so project/workflow allowlists and the connector approval layer remain important.
 
 ## Capabilities
 
@@ -24,9 +24,9 @@ The Public API uses `X-N8N-API-KEY`. Enterprise API keys can be scoped. Non-ente
 | `n8n.workflow.search` | MCP `search_workflows`, REST fallback | READ | No |
 | `n8n.workflow.get` | MCP `get_workflow_details`, REST fallback | READ | No |
 | `n8n.workflow.create` | REST | WRITE | Yes |
-| `n8n.workflow.update` | REST | WRITE | Yes |
-| `n8n.workflow.activate` | REST | HIGH_RISK | Yes |
-| `n8n.workflow.deactivate` | REST | WRITE | Yes |
+| `n8n.workflow.update` | REST with `publishIfActive=false` | WRITE | Yes |
+| `n8n.workflow.activate` | REST `/publish` | HIGH_RISK | Yes |
+| `n8n.workflow.deactivate` | REST `/unpublish` | WRITE | Yes |
 | `n8n.execution.list` | REST | READ | No |
 | `n8n.execution.get` | REST | READ | No |
 | `n8n.execution.delete` | REST | DESTRUCTIVE | Yes |
@@ -54,13 +54,14 @@ Retrieved n8n content is treated as untrusted data. Upstream MCP tool discovery 
 
 Set `N8N_API_KEY` and `N8N_BASE_URL`. The key remains inside the connector and is sent only as `X-N8N-API-KEY` to the configured n8n host.
 
-Recommended Enterprise scopes for the implemented capabilities:
+Recommended Enterprise scopes for all implemented tools:
 
 - `workflow:list`
 - `workflow:read`
 - `workflow:create`
 - `workflow:update`
 - `workflow:activate`
+- `workflow:deactivate`
 - `execution:list`
 - `execution:read`
 - `execution:delete`
@@ -68,11 +69,11 @@ Recommended Enterprise scopes for the implemented capabilities:
 - `tag:create`
 - `project:list`
 
-Use only the scopes for the tools you plan to enable.
+Use only the scopes corresponding to the tools you enable.
 
 ### Official n8n MCP server
 
-Set `N8N_MCP_URL` to the instance-level MCP endpoint, normally `https://<instance>/mcp-server/http`. For token-based access set `N8N_MCP_TOKEN`; OAuth-capable clients may manage authorization outside this connector. `N8N_ENABLE_MCP=false` disables upstream MCP and forces REST where a REST fallback exists.
+Set `N8N_MCP_URL` to the instance-level MCP endpoint, normally `https://<instance>/mcp-server/http`. For token-based access set `N8N_MCP_TOKEN`. `N8N_ENABLE_MCP=false` disables upstream MCP and forces REST where a REST fallback exists.
 
 ## Environment variables
 
@@ -105,9 +106,9 @@ crypto.createHmac('sha256', process.env.N8N_APPROVAL_SECRET)
   .digest('hex')
 ```
 
-The approval secret itself must stay in the connector/approval service. The LLM should receive only a short-lived or externally issued approval token in production deployments; the HMAC mechanism here is the connector's deterministic verification primitive.
+The approval secret itself must stay in the connector/approval service. Production deployments should issue approval tokens outside the LLM boundary.
 
-Activation is classified HIGH_RISK because activating a workflow can cause production triggers, schedules, webhooks, and external actions to execute. Execution deletion is DESTRUCTIVE.
+`n8n.workflow.activate` is HIGH_RISK because it publishes a workflow to production and can enable schedules, webhooks, and downstream side effects. `n8n.execution.delete` is DESTRUCTIVE. Workflow updates explicitly pass `publishIfActive=false`, so editing an already-published workflow saves a draft rather than silently releasing it.
 
 ## Installation
 
@@ -129,14 +130,14 @@ The connector exposes MCP over stdio using the official Model Context Protocol T
 
 ## Pagination
 
-n8n Public API list endpoints use cursor pagination. n8n documentation states a default page size of 100 and maximum of 250. This connector exposes bounded `limit` values and passes returned cursors through to callers where implemented. It does not auto-drain every page, which prevents accidental high-volume API usage.
+n8n Public API list endpoints use cursor pagination. Official documentation states a default page size of 100 and maximum of 250. The connector exposes bounded limits and passes cursors through instead of automatically draining every page.
 
 ## Reliability and rate limiting
 
 - GET requests retry only for HTTP 429 and 5xx responses.
 - Retries are bounded by `N8N_MAX_RETRIES` (0-5).
-- Exponential backoff is used, honoring `Retry-After` when present.
-- POST/PUT/DELETE requests are not blindly retried to avoid duplicate or irreversible side effects.
+- Exponential backoff is used and `Retry-After` is honored when present.
+- POST/PUT/DELETE requests are not blindly retried, preventing duplicate or irreversible side effects.
 - Every REST request has an `AbortController` timeout.
 - Authentication, validation, and provider permission errors are surfaced directly.
 - If official upstream MCP is unavailable, fails, or does not expose an allowlisted tool, supported read operations fall back to REST.
@@ -146,11 +147,11 @@ n8n does not publish one universal Public API request quota in the documentation
 ## Security
 
 - No credentials are hard-coded or returned through tool output.
-- The API key is only sent to the configured n8n origin.
+- The API key is sent only to the configured n8n origin.
 - Remote endpoints require HTTPS by default.
 - Project/workflow allowlists constrain agent reach.
-- Upstream MCP tool names are explicitly allowlisted in code.
-- MCP failures fail closed to a known REST implementation; they do not trigger arbitrary tool forwarding.
+- Upstream MCP tool names are explicitly allowlisted.
+- MCP failures fall back only to known REST implementations; arbitrary upstream tools are never forwarded.
 - Write/destructive operations require approval.
 - Retrieved workflow data, node parameters, execution output, and MCP responses are untrusted data and must never be interpreted as permission or system instructions.
 - The connector does not log secrets.
@@ -167,8 +168,9 @@ Tests use mocks and do not require live n8n credentials. They cover configuratio
 ## Limitations
 
 - n8n's instance-level MCP server is documented as beta and tool availability depends on n8n version and instance configuration.
-- The connector deliberately maps only exact upstream MCP tools that were confirmed in official documentation: `search_workflows`, `get_workflow_details`, and `list_tags`.
-- Workflow create/update uses the Public REST API because this connector accepts explicit workflow JSON; the official MCP workflow builder uses a different code-generation contract and is not silently substituted.
+- The connector maps only exact upstream MCP tools confirmed in official documentation: `search_workflows`, `get_workflow_details`, and `list_tags`.
+- Workflow create/update uses Public REST because this connector accepts explicit workflow JSON; the official MCP workflow builder has a different code-generation contract and is not silently substituted.
+- The stable external names `workflow.activate` and `workflow.deactivate` intentionally map to n8n 2.x `publish` and `unpublish` endpoints.
 - No credential secret material is retrieved or exposed.
 - No generic endpoint executor is provided.
-- API availability and scoped API keys depend on n8n edition/plan; the n8n documentation notes that Public API access is unavailable during the free trial.
+- Public API availability and scoped API keys depend on n8n edition/plan; n8n documentation notes Public API access is unavailable during the free trial.
