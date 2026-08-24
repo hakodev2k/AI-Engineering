@@ -1,0 +1,91 @@
+id: snowflake
+name: Snowflake
+version: 1.0.0
+runtime:
+  language: typescript
+  node: ">=20"
+upstream:
+  - mcp
+  - rest
+mcp:
+  official: true
+  type: remote
+  endpoint_template: "https://<account_url>/api/v2/databases/{database}/schemas/{schema}/mcp-servers/{name}"
+  protocol_revision: "2025-11-25"
+  configured_env: SNOWFLAKE_MCP_URL
+  preferred_capabilities:
+    - query.execute_read
+rest:
+  official: true
+  base_url: "https://<account>.snowflakecomputing.com"
+  sql_api: "/api/v2/statements"
+auth:
+  rest:
+    supported:
+      - oauth2-bearer
+      - programmatic-access-token
+    env_token: SNOWFLAKE_TOKEN
+    env_token_type: SNOWFLAKE_TOKEN_TYPE
+  mcp:
+    supported:
+      - oauth2
+    env_access_token: SNOWFLAKE_MCP_ACCESS_TOKEN
+permissions:
+  principle: least-privilege
+  boundaries:
+    - SNOWFLAKE_ALLOWED_DATABASES
+    - SNOWFLAKE_ALLOWED_SCHEMAS
+capabilities:
+  - database.list
+  - schema.list
+  - table.list
+  - table.describe
+  - table.sample
+  - warehouse.list
+  - query.execute_read
+  - query.status
+  - query.partition.get
+  - query.cancel
+  - row.insert
+risk:
+  default: READ
+  write:
+    - snowflake.row.insert
+  high_risk:
+    - snowflake.query.cancel
+  destructive: []
+approval:
+  required_for:
+    - snowflake.row.insert
+    - snowflake.query.cancel
+  mechanism: HMAC-SHA256 tool-bound approval token
+security:
+  credentials_exposed_to_llm: false
+  arbitrary_http_tool: false
+  arbitrary_write_sql_tool: false
+  read_sql_single_statement_only: true
+  source_content_untrusted: true
+reliability:
+  timeout_env: SNOWFLAKE_TIMEOUT_MS
+  bounded_retries_env: SNOWFLAKE_MAX_RETRIES
+  retry_policy: read/idempotent requests only
+  throttling: exponential-jittered-backoff
+  pagination: SQL API result partitions via explicit partition tool
+environment:
+  required:
+    - SNOWFLAKE_ACCOUNT_URL
+    - SNOWFLAKE_TOKEN
+  optional:
+    - SNOWFLAKE_TOKEN_TYPE
+    - SNOWFLAKE_WAREHOUSE
+    - SNOWFLAKE_DATABASE
+    - SNOWFLAKE_SCHEMA
+    - SNOWFLAKE_ROLE
+    - SNOWFLAKE_ALLOWED_DATABASES
+    - SNOWFLAKE_ALLOWED_SCHEMAS
+    - SNOWFLAKE_APPROVAL_SECRET
+    - SNOWFLAKE_TIMEOUT_MS
+    - SNOWFLAKE_MAX_RETRIES
+    - SNOWFLAKE_MCP_URL
+    - SNOWFLAKE_MCP_ACCESS_TOKEN
+    - SNOWFLAKE_MCP_SQL_TOOL
