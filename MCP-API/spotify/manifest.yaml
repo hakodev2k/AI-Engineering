@@ -1,0 +1,63 @@
+id: spotify
+name: Spotify
+upstream:
+  - rest
+official_mcp:
+  available: false
+  note: No official Spotify MCP server was identified; connector uses the official Spotify Web API.
+auth:
+  type: oauth2
+  modes:
+    - bearer-access-token
+    - authorization-code-refresh-token
+api:
+  base_url: https://api.spotify.com/v1
+  token_url: https://accounts.spotify.com/api/token
+capabilities:
+  - catalog.search
+  - track.get
+  - artist.get
+  - album.get
+  - user.me
+  - user.top
+  - playlist.list_mine
+  - playlist.get
+  - playlist.items
+  - playlist.create
+  - playlist.add_items
+  - playlist.remove_items
+scopes:
+  read:
+    - user-read-private
+    - user-top-read
+    - playlist-read-private
+    - playlist-read-collaborative
+  write:
+    - playlist-modify-private
+    - playlist-modify-public
+risk:
+  default: READ
+  write_tools:
+    - spotify.playlist.create
+    - spotify.playlist.add_items
+  destructive_tools:
+    - spotify.playlist.remove_items
+approval:
+  required_for:
+    - spotify.playlist.create
+    - spotify.playlist.add_items
+    - spotify.playlist.remove_items
+  destructive_disabled_by_default: true
+security:
+  provider_content_untrusted: true
+  ml_training_with_spotify_content_prohibited: true
+  content_download_not_supported: true
+environment:
+  - SPOTIFY_ACCESS_TOKEN
+  - SPOTIFY_CLIENT_ID
+  - SPOTIFY_CLIENT_SECRET
+  - SPOTIFY_REFRESH_TOKEN
+  - SPOTIFY_APPROVAL_SECRET
+  - SPOTIFY_ENABLE_DESTRUCTIVE
+  - SPOTIFY_TIMEOUT_MS
+  - SPOTIFY_MAX_RETRIES
