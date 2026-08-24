@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "MCP Session Capability Snapshot",
+  "type": "object",
+  "required": ["session_id", "server_id", "negotiated_version", "protocol_era", "effective_capabilities"],
+  "properties": {
+    "session_id": {"type": "string", "minLength": 1},
+    "server_id": {"type": "string", "minLength": 1},
+    "negotiated_version": {"type": "string", "minLength": 1},
+    "protocol_era": {"type": "string", "enum": ["legacy", "modern"]},
+    "effective_capabilities": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+    "negotiation_mode": {"type": "string"},
+    "fallback_used": {"type": "boolean"},
+    "captured_at": {"type": "string"}
+  },
+  "additionalProperties": true
+}
