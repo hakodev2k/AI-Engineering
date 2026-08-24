@@ -1,0 +1,18 @@
+[
+  {
+    "workflow": "inspect-and-generate",
+    "steps": [
+      { "tool": "gemini.model.list", "input": { "pageSize": 20 }, "permission": "READ", "approvalRequired": false, "output": { "models": "array" } },
+      { "tool": "gemini.token.count", "input": { "model": "gemini-3.5-flash", "text": "Summarize this design." }, "permission": "READ", "approvalRequired": false, "output": { "totalTokens": "number" } },
+      { "tool": "gemini.content.generate", "input": { "model": "gemini-3.5-flash", "prompt": "Summarize this design.", "approvalId": "<HMAC>" }, "permission": "WRITE", "approvalRequired": true, "output": { "candidates": "array", "usageMetadata": "object" } }
+    ]
+  },
+  {
+    "workflow": "temporary-file-analysis",
+    "steps": [
+      { "tool": "gemini.file.upload", "input": { "path": "/approved-root/report.pdf", "mimeType": "application/pdf", "approvalId": "<HMAC>" }, "permission": "HIGH_RISK", "approvalRequired": true, "output": { "file": "object" } },
+      { "tool": "gemini.file.list", "input": {}, "permission": "READ", "approvalRequired": false, "output": { "files": "array" } },
+      { "tool": "gemini.file.delete", "input": { "name": "files/example", "approvalId": "<HMAC>" }, "permission": "DESTRUCTIVE", "approvalRequired": true, "output": {} }
+    ]
+  }
+]
