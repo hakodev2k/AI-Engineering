@@ -72,8 +72,8 @@ server.tool('fireworks.response.create', 'WRITE/responses.write. Create a non-st
 });
 
 server.tool('fireworks.response.list', 'READ/responses.read. List stored Responses API responses; no approval required.', {
-  limit: z.number().int().min(1).max(100).optional(), after: z.string().max(500).optional(), order: z.enum(['asc', 'desc']).optional()
-}, async a => out(await client.inferenceGet('/responses', { limit: a.limit, after: a.after, order: a.order })));
+  limit: z.number().int().min(1).max(100).optional(), after: z.string().max(500).optional(), before: z.string().max(500).optional()
+}, async a => out(await client.inferenceGet('/responses', { limit: a.limit, after: a.after, before: a.before })));
 
 server.tool('fireworks.embedding.create', 'WRITE/inference.execute. Generate embeddings. Explicit approval required.', {
   model, input: z.union([z.string().min(1).max(config.maxInputChars), z.array(z.string().min(1).max(config.maxInputChars)).min(1).max(config.maxDocuments)]), dimensions: z.number().int().positive().max(65536).optional(), approvalId
