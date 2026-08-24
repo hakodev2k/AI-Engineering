@@ -1,0 +1,11 @@
+# Rules — Turn Atomicity for Compaction
+- Compaction MUST NOT commit while the active turn is nonterminal.
+- Compaction MUST NOT commit while any tool invocation is `planned`, `issued`, `running`, `unknown`, or otherwise unresolved.
+- State-changing tool completion MUST be represented by durable structured state, not inferred only from summary text.
+- Every tool invocation MUST have an invocation id; high-risk/state-changing operations SHOULD have a correlation or idempotency key.
+- An uncertain side effect MUST be reconciled before retry; it MUST NOT be blindly replayed.
+- Compaction MUST preserve the active goal id and turn identity unless a genuine new user turn is accepted.
+- A compaction artifact MUST NOT be promoted to an ordinary user command that can reactivate stale work.
+- Pre-compaction validation MUST fail closed on missing required state.
+- Compaction retries MUST be bounded by policy and MUST re-read current turn state before each retry.
+- The agent that implements the compaction change MUST NOT be the only verifier of safe-boundary behavior.
