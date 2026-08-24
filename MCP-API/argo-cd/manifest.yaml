@@ -1,0 +1,50 @@
+id: argo-cd
+name: Argo CD
+upstream:
+  - rest
+mcp:
+  official_server: false
+  note: No official Argo CD MCP server was identified; this connector exposes the official Argo CD REST API through MCP tools.
+api:
+  base_url: ${ARGOCD_SERVER_URL}
+  swagger_path: /swagger-ui
+auth:
+  type: bearer-jwt
+  credential_env: ARGOCD_TOKEN
+  guidance: Use an Argo CD automation/local account or project role token with least-privilege RBAC.
+capabilities:
+  - application.list
+  - application.get
+  - application.resource_tree
+  - application.manifests
+  - application.events
+  - application.sync_windows
+  - application.revision_metadata
+  - project.list
+  - project.get
+  - repository.list
+  - cluster.list
+  - application.sync
+risk:
+  default: READ
+  high_risk:
+    - argocd.application.sync
+approval:
+  required_for:
+    - argocd.application.sync
+environment:
+  required:
+    - ARGOCD_SERVER_URL
+    - ARGOCD_TOKEN
+  optional:
+    - ARGOCD_ALLOWED_PROJECTS
+    - ARGOCD_ALLOWED_APPLICATIONS
+    - ARGOCD_APPROVAL_SECRET
+    - ARGOCD_TIMEOUT_MS
+    - ARGOCD_MAX_RETRIES
+    - ARGOCD_ALLOW_INSECURE_TLS
+security:
+  credentials_exposed_to_llm: false
+  provider_content_untrusted: true
+  tls_required_by_default: true
+  destructive_tools: disabled
