@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/approval-wait-latency-attribution-profiler/tool-event.schema.json",
+  "title": "Approval-gated tool call timing document",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["call_created_ms", "execution_start_ms", "execution_end_ms"],
+  "properties": {
+    "call_id": {"type": ["string", "null"]},
+    "call_created_ms": {"type": "number"},
+    "approval_requested_ms": {"type": ["number", "null"]},
+    "approval_resolved_ms": {"type": ["number", "null"]},
+    "execution_start_ms": {"type": "number"},
+    "execution_end_ms": {"type": "number"},
+    "continuation_end_ms": {"type": ["number", "null"]}
+  }
+}
