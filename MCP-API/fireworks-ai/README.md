@@ -4,12 +4,15 @@ Reusable Model Context Protocol (MCP) server for selected Fireworks AI inference
 
 ## Supported upstream transport
 
-The implemented upstream transport is the official Fireworks REST API.
+The implemented operational upstream transport is the official Fireworks REST API.
 
-Fireworks documents OpenAI-compatible Chat Completions and Completions APIs, a Responses API, embeddings, reranking, account model APIs, and deployment APIs. The Fireworks Responses API can itself call external MCP/SSE tools, but the official Fireworks documentation reviewed for this connector does not document a Fireworks-hosted MCP server exposing these Fireworks account/inference capabilities. Therefore this connector does not depend on an unofficial MCP server.
+Fireworks also publishes an official **Fireworks Docs MCP** endpoint at `https://docs.fireworks.ai/mcp`. That MCP server is designed for documentation search in coding agents; it does not expose the operational inference, account-model, response, embedding, rerank, or deployment capabilities implemented here. Under the connector transport rule, those required capabilities therefore fall back to Fireworks' official REST APIs rather than an unofficial MCP server.
+
+Fireworks additionally documents that its Responses API can invoke external MCP/SSE tools. This connector intentionally does not expose arbitrary external MCP server forwarding because doing so would weaken SSRF and permission boundaries.
 
 Official sources used during implementation:
 
+- Fireworks Docs MCP: `https://docs.fireworks.ai/ecosystem/integrations/development-setup`
 - API introduction/authentication: `https://docs.fireworks.ai/api-reference/introduction`
 - Chat Completions: `https://docs.fireworks.ai/api-reference/post-chatcompletions`
 - Completions: `https://docs.fireworks.ai/api-reference/post-completions`
@@ -37,6 +40,8 @@ Fireworks MCP server (stdio)
         v
 Official Fireworks REST API
 ```
+
+The official Fireworks Docs MCP remains a separate documentation-only upstream and is not used to execute account or inference operations.
 
 No tool accepts an arbitrary URL, arbitrary REST method, or arbitrary external MCP server. This prevents the connector from becoming a generic credential-bearing HTTP proxy or an SSRF primitive.
 
@@ -187,7 +192,7 @@ Coverage includes authentication configuration, model allowlisting, approval enf
 
 ## Limitations
 
-- No Fireworks-hosted upstream MCP server is used because none was documented for these provider capabilities in the official sources reviewed for this implementation. The external interface of this package is still MCP.
+- The official Fireworks Docs MCP is documentation-search-only and is not an operational Fireworks control plane. The implemented operational capabilities use official REST APIs.
 - Streaming is intentionally not exposed; MCP tool results are returned after the upstream request completes.
 - Arbitrary Responses API external MCP/SSE tools are intentionally not exposed.
 - Fine-tuning, datasets, routers, quota changes, billing, secrets, API-key administration, deployment update/scale/delete, and model upload/delete are not implemented.
