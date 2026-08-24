@@ -1,0 +1,8 @@
+{
+  "examples": [
+    {"tool":"redis.key.scan","input":{"pattern":"app:*","count":100,"cursor":0},"permission":"READ","approvalRequired":false,"outputShape":{"cursor":"number","keys":"string[]","scan_complete":"boolean"}},
+    {"tool":"redis.key.get","input":{"key":"app:user:42"},"permission":"READ","approvalRequired":false,"outputShape":"MCP content result"},
+    {"tool":"redis.key.set","input":{"key":"app:session:42","value":"active","expirationSeconds":3600,"approvalId":"<64-hex-approval>"},"permission":"WRITE","approvalRequired":true,"outputShape":"MCP content result"},
+    {"tool":"redis.key.delete","input":{"key":"app:session:42","approvalId":"<64-hex-strong-approval>"},"permission":"DESTRUCTIVE","approvalRequired":true,"outputShape":"MCP content result"}
+  ]
+}
