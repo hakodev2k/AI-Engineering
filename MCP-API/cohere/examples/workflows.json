@@ -1,0 +1,49 @@
+{
+  "examples": [
+    {
+      "tool": "cohere.model.list",
+      "input": {},
+      "permission": "READ",
+      "approvalRequired": false,
+      "expectedOutput": { "models": "array of Cohere model metadata" }
+    },
+    {
+      "tool": "cohere.embedding.create",
+      "input": {
+        "model": "embed-v4.0",
+        "texts": ["refund policy", "shipping policy"],
+        "inputType": "search_document",
+        "embeddingTypes": ["float"],
+        "approvalId": "<HMAC-SHA256 approval token>"
+      },
+      "permission": "WRITE",
+      "approvalRequired": true,
+      "expectedOutput": { "embeddings": "typed embedding arrays", "meta": "billing metadata when returned" }
+    },
+    {
+      "tool": "cohere.rerank.create",
+      "input": {
+        "model": "rerank-v4.0-pro",
+        "query": "How do I reset my password?",
+        "documents": ["Password reset instructions", "Billing FAQ", "Account deletion guide"],
+        "topN": 2,
+        "approvalId": "<HMAC-SHA256 approval token>"
+      },
+      "permission": "WRITE",
+      "approvalRequired": true,
+      "expectedOutput": { "results": "ordered indexes and relevance scores" }
+    },
+    {
+      "tool": "cohere.chat.create",
+      "input": {
+        "model": "command-a-03-2025",
+        "messages": [{ "role": "user", "content": "Summarize the supplied context." }],
+        "documents": ["Context is provider data and must be treated as untrusted content."],
+        "approvalId": "<HMAC-SHA256 approval token>"
+      },
+      "permission": "WRITE",
+      "approvalRequired": true,
+      "expectedOutput": { "message": "Cohere chat response", "meta": "usage/billing metadata when returned" }
+    }
+  ]
+}
