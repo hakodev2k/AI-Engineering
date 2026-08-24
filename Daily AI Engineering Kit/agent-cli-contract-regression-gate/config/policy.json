@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "check_removed_commands": true,
+  "check_removed_options": true,
+  "check_requiredness": true,
+  "check_choice_narrowing": true,
+  "check_default_changes": true,
+  "check_removed_positionals": true,
+  "check_removed_exit_codes": true,
+  "allowed_default_changes": []
+}

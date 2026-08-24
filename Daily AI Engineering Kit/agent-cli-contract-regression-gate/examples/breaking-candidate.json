@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "commands": [
+    {
+      "name": "deploy",
+      "options": [
+        {"name": "--environment", "required": true, "default": "production", "choices": ["production"]}
+      ],
+      "positionals": [
+        {"name": "artifact", "required": true}
+      ],
+      "exit_codes": [0]
+    }
+  ]
+}

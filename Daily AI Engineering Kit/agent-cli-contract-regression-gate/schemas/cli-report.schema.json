@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "cli-report.schema.json",
+  "type": "object",
+  "required": ["status", "breaking_count", "findings"],
+  "properties": {
+    "status": {"enum": ["compatible", "breaking", "invalid", "error"]},
+    "breaking_count": {"type": "integer", "minimum": 0},
+    "findings": {"type": "array"}
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "cli-contract.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "commands"],
+  "properties": {
+    "version": {"const": 1},
+    "commands": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "options", "positionals", "exit_codes"],
+        "properties": {
+          "name": {"type": "string", "minLength": 1},
+          "options": {"type": "array"},
+          "positionals": {"type": "array"},
+          "exit_codes": {"type": "array", "items": {"type": "integer"}}
+        }
+      }
+    }
+  }
+}

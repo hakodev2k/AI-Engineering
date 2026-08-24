@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "commands": [
+    {
+      "name": "deploy",
+      "options": [
+        {"name": "--environment", "required": false, "default": "staging", "choices": ["staging", "production", "preview"]},
+        {"name": "--dry-run", "required": false, "default": false, "choices": []},
+        {"name": "--verbose", "required": false, "default": false, "choices": []}
+      ],
+      "positionals": [
+        {"name": "artifact", "required": true}
+      ],
+      "exit_codes": [0, 2, 3]
+    }
+  ]
+}
