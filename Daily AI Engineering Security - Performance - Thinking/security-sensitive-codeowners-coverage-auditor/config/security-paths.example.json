@@ -1,0 +1,6 @@
+{
+  "paths": [
+    {"path": "src/auth/token-validator.ts", "required_owners": ["@example/security-auth"]},
+    {"path": "src/agent/memory-store.ts", "required_owners": ["@example/agent-security"]}
+  ]
+}
