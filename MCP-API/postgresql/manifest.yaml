@@ -1,0 +1,55 @@
+id: postgresql
+name: PostgreSQL
+upstream:
+  - native-protocol
+driver:
+  package: pg
+  protocol: PostgreSQL wire protocol
+auth:
+  type: connection-string
+  credential_source: environment
+api:
+  base_url: null
+mcp:
+  official_server: false
+capabilities:
+  - database.info
+  - schema.list
+  - table.list
+  - table.describe
+  - index.list
+  - row.select
+  - row.count
+  - row.insert
+  - row.update
+  - row.delete
+risk:
+  default: READ
+  write_tools:
+    - postgresql.row.insert
+    - postgresql.row.update
+  destructive_tools:
+    - postgresql.row.delete
+approval:
+  required_for:
+    - postgresql.row.insert
+    - postgresql.row.update
+    - postgresql.row.delete
+  destructive_default_enabled: false
+security:
+  arbitrary_sql: disabled
+  update_delete_require_filter: true
+  identifiers_validated: true
+  bind_parameters: true
+  provider_content_untrusted: true
+environment:
+  - POSTGRES_DATABASE_URL
+  - POSTGRES_SSL_MODE
+  - POSTGRES_SSL_CA_FILE
+  - POSTGRES_ALLOWED_SCHEMAS
+  - POSTGRES_ALLOWED_TABLES
+  - POSTGRES_APPROVAL_SECRET
+  - POSTGRES_ENABLE_DELETE
+  - POSTGRES_STATEMENT_TIMEOUT_MS
+  - POSTGRES_CONNECTION_TIMEOUT_MS
+  - POSTGRES_POOL_MAX
