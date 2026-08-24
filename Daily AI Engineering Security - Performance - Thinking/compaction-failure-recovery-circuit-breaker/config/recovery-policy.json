@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "max_consecutive_failures": 2,
+  "max_retry_debris_growth_tokens": 4096,
+  "require_checkpoint_before_retry": true,
+  "events": {
+    "start": "compaction_start",
+    "success": "compaction_success",
+    "failure": "compaction_failure",
+    "checkpoint": "checkpoint_saved",
+    "progress": "meaningful_progress",
+    "session_end": "session_end"
+  }
+}
