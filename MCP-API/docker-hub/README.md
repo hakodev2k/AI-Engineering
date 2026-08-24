@@ -1,6 +1,6 @@
 # Docker Hub MCP/API Connector
 
-Reusable MCP connector for Docker Hub. It exposes a stable provider-scoped tool surface while preferring Docker's official Docker Hub MCP server and falling back to the official Docker Hub API v2 where this connector has an explicit, documented mapping.
+Reusable MCP connector for Docker Hub. It exposes a stable provider-scoped tool surface while preferring Docker's official `docker/hub-mcp` server and falling back to the official Docker Hub API v2 where this connector has an explicit, documented mapping.
 
 ## Provider and purpose
 
@@ -10,16 +10,17 @@ Typical agent workflows:
 
 - Search for container images and inspect repository metadata.
 - Discover namespaces and repositories.
+- Check whether repositories and tags exist before using them.
 - Inspect tags before selecting or deploying an image.
-- Read repository Dockerfile metadata exposed by Docker Hub MCP.
+- Query Docker Hardened Images exposed by the official MCP server.
 - Create or update repositories only after explicit human approval.
-- Update Dockerfile metadata only after explicit human approval.
 
 This connector does not implement image push/pull, repository deletion, token management, billing, organization administration, or arbitrary HTTP execution.
 
 ## Official sources
 
-- Docker Hub MCP server: https://docs.docker.com/docker-hub/mcp-server/
+- Docker Hub MCP docs: https://docs.docker.com/docker-hub/mcp-server/
+- Official Docker Hub MCP source: https://github.com/docker/hub-mcp
 - Docker Hub API reference: https://docs.docker.com/reference/api/hub/latest/
 - Docker Hub API deprecations: https://docs.docker.com/reference/api/hub/deprecated/
 - Docker Hub API changelog: https://docs.docker.com/reference/api/hub/changelog/
@@ -38,14 +39,33 @@ The external interface is always MCP. Upstream routing is capability-specific:
 | `dockerhub.namespace.list` | Official Docker Hub MCP | None |
 | `dockerhub.repository.list` | Official Docker Hub MCP | Docker Hub API v2 |
 | `dockerhub.repository.get` | Official Docker Hub MCP | Docker Hub API v2 |
+| `dockerhub.repository.check` | Official Docker Hub MCP | None |
 | `dockerhub.repository.create` | Official Docker Hub MCP | Docker Hub API v2 |
 | `dockerhub.repository.update` | Official Docker Hub MCP | Docker Hub API v2 |
 | `dockerhub.tag.list` | Official Docker Hub MCP | Docker Hub API v2 |
 | `dockerhub.tag.get` | Official Docker Hub MCP | Docker Hub API v2 |
-| `dockerhub.dockerfile.get` | Official Docker Hub MCP | None |
-| `dockerhub.dockerfile.set` | Official Docker Hub MCP | None |
+| `dockerhub.tag.check` | Official Docker Hub MCP | None |
+| `dockerhub.hardened_image.list` | Official Docker Hub MCP | None |
 
 For MCP-only capabilities, failure to configure or start the official upstream MCP server fails safely instead of inventing an API route.
+
+## Official MCP tool mapping
+
+The connector maps its stable names to current official `docker/hub-mcp` tools:
+
+- `search`
+- `get_namespaces`
+- `list_repositories_by_namespace`
+- `get_repository_info`
+- `check_repository`
+- `create_repository`
+- `update_repository_info`
+- `list_repository_tags`
+- `read_repository_tag`
+- `check_repository_tag`
+- `docker_hardened_images`
+
+Create and update calls follow the official MCP schema and pass repository fields inside the `body` object.
 
 ## Architecture
 
@@ -62,9 +82,9 @@ Provider credentials are loaded only from the connector environment. They are ne
 
 ## Runtime
 
-- Node.js 20 or newer
+- Node.js 20 or newer for this connector
 - npm
-- Optional: a local installation of Docker's official Docker Hub MCP server for MCP-primary and MCP-only capabilities
+- Optional but recommended: Docker's official Docker Hub MCP server. Its current upstream repository documents Node.js 22+ for building/running that server.
 
 Install and build:
 
@@ -85,7 +105,7 @@ The server communicates over stdio.
 
 ### Public read
 
-Some Docker Hub API reads can work without credentials for public content. The official Docker Hub MCP server also documents public-repository usage.
+Some Docker Hub API reads can work without credentials for public content. The official Docker Hub MCP server also documents public-content operation without authentication.
 
 ### Authenticated access
 
@@ -101,10 +121,8 @@ For REST fallback, the connector exchanges the username and PAT at Docker Hub's 
 Docker documents PAT permission levels as Read, Write, or Delete. Use the least privilege required:
 
 - Read-only workflows: Read.
-- Repository create/update or Dockerfile update workflows: Write.
+- Repository create/update workflows: Write.
 - Delete permission is not required because this connector exposes no delete tool.
-
-Organization automation can use Docker organization access controls as appropriate, but this package does not manage tokens or organization membership.
 
 ## Environment variables
 
@@ -123,55 +141,51 @@ DOCKER_HUB_MCP_ARGS_JSON=["/FULL/PATH/TO/docker-hub-mcp-server/dist/index.js","-
 
 `DOCKER_HUB_ALLOWED_NAMESPACES` and `DOCKER_HUB_ALLOWED_REPOSITORIES` are comma-separated allowlists. Repository entries may be either `repository` or `namespace/repository`.
 
-The Docker Hub MCP documentation shows a Node/stdio configuration and uses `HUB_USERNAME` plus `HUB_PAT_TOKEN`. This connector injects those variables into the upstream MCP subprocess from its own credential layer.
+The official Docker Hub MCP repository documents authenticated stdio usage with `HUB_PAT_TOKEN` plus a `--username=...` argument. This connector keeps the PAT in the subprocess environment as `HUB_PAT_TOKEN`; callers should include the upstream `--username=<name>` in `DOCKER_HUB_MCP_ARGS_JSON` when using authenticated MCP mode.
 
-## Tools
+## Tools and permissions
 
-### READ
+READ tools:
 
 - `dockerhub.search`
 - `dockerhub.namespace.list`
 - `dockerhub.repository.list`
 - `dockerhub.repository.get`
+- `dockerhub.repository.check`
 - `dockerhub.tag.list`
 - `dockerhub.tag.get`
-- `dockerhub.dockerfile.get`
+- `dockerhub.tag.check`
+- `dockerhub.hardened_image.list`
 
-READ tools may execute without human approval, subject to provider permissions and connector allowlists.
-
-### WRITE
+WRITE tools:
 
 - `dockerhub.repository.create`
 - `dockerhub.repository.update`
-- `dockerhub.dockerfile.set`
 
-Every WRITE tool requires explicit approval.
+READ tools may execute without human approval, subject to provider permissions and connector allowlists. Every WRITE tool requires explicit approval.
 
 ## Approval model
 
 `DOCKER_HUB_APPROVAL_SECRET` is an out-of-band connector secret. A caller supplies an `approvalId` equal to the lowercase hex HMAC-SHA256 of the exact tool name using that secret.
 
-Examples of bound tool names:
+Bound write tool names:
 
 ```text
 dockerhub.repository.create
 dockerhub.repository.update
-dockerhub.dockerfile.set
 ```
 
 The approval secret is never exposed to the LLM. A separate trusted approval component should generate approval IDs after a human approves the specific operation.
 
-The connector distinguishes read from execution: agents can inspect Docker Hub freely within configured boundaries, but mutations cannot silently cross the approval boundary.
-
 ## Validation and security
 
 - Namespace, repository, and tag identifiers use constrained schemas.
-- Repository and namespace allowlists are enforced before upstream calls.
+- Repository and namespace allowlists are enforced before scoped upstream calls.
 - Credentials are environment-only and isolated from tool parameters.
 - No unrestricted URL or arbitrary provider-request tool exists.
 - Provider content is returned as data and must be treated as untrusted content, not instructions.
 - Upstream MCP startup or tool errors fail closed; only explicitly mapped API fallbacks are attempted.
-- The API base URL is fixed to `https://hub.docker.com/v2`, preventing caller-controlled SSRF targets.
+- The REST base URL is fixed to `https://hub.docker.com/v2`, preventing caller-controlled SSRF targets.
 - Write operations are not automatically retried.
 - No destructive delete capability is registered.
 
@@ -189,7 +203,7 @@ Docker documents an abuse rate limit across Hub properties and separate image pu
 
 ## Pagination
 
-Repository and tag list tools expose bounded `page` and `pageSize` inputs. The connector does not automatically crawl all pages, which prevents accidental high-volume API use.
+Repository and tag list tools expose bounded `page` and `pageSize` inputs. Namespace pagination mirrors the official MCP schema, which currently represents `page` and `page_size` as strings. The connector does not automatically crawl all pages.
 
 ## Examples
 
@@ -208,11 +222,11 @@ Tests cover configuration validation, allowlist denial, approval enforcement, PA
 
 ## Client compatibility
 
-This package is a standard stdio MCP server built with the official MCP TypeScript SDK. It can be used by MCP clients that support stdio server processes, including common desktop/editor/agent clients. Compatibility depends on the client supporting standard MCP stdio transport; no client-specific protocol extensions are required.
+This package is a standard stdio MCP server built with the official MCP TypeScript SDK. It can be used by MCP clients that support stdio server processes. No client-specific protocol extensions are required.
 
 ## Limitations
 
-- Search, namespace discovery, and Dockerfile operations require the official Docker Hub MCP server because this connector does not invent undocumented REST fallbacks.
+- Search, namespace discovery, existence checks, and Docker Hardened Image queries require the official Docker Hub MCP server because this connector does not invent undocumented REST fallbacks.
 - Exact Docker Hub permissions still depend on the authenticated account, namespace membership, repository visibility, subscription, and token permissions.
 - This connector manages Docker Hub metadata; it does not implement registry image push/pull or OCI manifest transfer.
 - Webhooks, organization administration, token administration, billing, repository deletion, and destructive operations are deliberately outside this connector's scope.
