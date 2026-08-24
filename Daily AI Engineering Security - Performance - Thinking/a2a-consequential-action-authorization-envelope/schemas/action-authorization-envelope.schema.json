@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "A2A Consequential Action Authorization Envelope",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "authorization_id", "caller_id", "receiver_id", "task_id", "message_sha256",
+    "action", "parameters_sha256", "purpose", "issued_at", "expires_at", "nonce", "max_uses"
+  ],
+  "properties": {
+    "authorization_id": {"type": "string", "minLength": 1, "maxLength": 256},
+    "caller_id": {"type": "string", "minLength": 1, "maxLength": 512},
+    "receiver_id": {"type": "string", "minLength": 1, "maxLength": 512},
+    "task_id": {"type": "string", "minLength": 1, "maxLength": 512},
+    "message_sha256": {"type": "string", "pattern": "^[0-9a-fA-F]{64}$"},
+    "action": {"type": "string", "minLength": 1, "maxLength": 512},
+    "parameters_sha256": {"type": "string", "pattern": "^[0-9a-fA-F]{64}$"},
+    "purpose": {"type": "string", "minLength": 1, "maxLength": 1024},
+    "issued_at": {"type": "string", "format": "date-time"},
+    "expires_at": {"type": "string", "format": "date-time"},
+    "nonce": {"type": "string", "minLength": 16, "maxLength": 512},
+    "max_uses": {"const": 1}
+  }
+}
