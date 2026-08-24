@@ -1,0 +1,65 @@
+id: n8n
+name: n8n
+upstream:
+  - mcp
+  - rest
+mcp:
+  status: beta
+  endpoint: "${N8N_MCP_URL}"
+  preferred_tools:
+    - search_workflows
+    - get_workflow_details
+    - list_tags
+rest:
+  base_url: "${N8N_BASE_URL}/api/v1"
+auth:
+  mcp:
+    type: oauth2-or-bearer-token
+    token_env: N8N_MCP_TOKEN
+  rest:
+    type: api-key
+    header: X-N8N-API-KEY
+    key_env: N8N_API_KEY
+capabilities:
+  - workflow.search
+  - workflow.get
+  - workflow.create
+  - workflow.update
+  - workflow.activate
+  - workflow.deactivate
+  - execution.list
+  - execution.get
+  - execution.delete
+  - tag.list
+  - tag.create
+  - project.list
+risk:
+  default: READ
+  write:
+    - n8n.workflow.create
+    - n8n.workflow.update
+    - n8n.workflow.deactivate
+    - n8n.tag.create
+  high_risk:
+    - n8n.workflow.activate
+  destructive:
+    - n8n.execution.delete
+approval:
+  required_for:
+    - n8n.workflow.create
+    - n8n.workflow.update
+    - n8n.workflow.activate
+    - n8n.workflow.deactivate
+    - n8n.execution.delete
+    - n8n.tag.create
+environment:
+  - N8N_BASE_URL
+  - N8N_API_KEY
+  - N8N_MCP_URL
+  - N8N_MCP_TOKEN
+  - N8N_ENABLE_MCP
+  - N8N_ALLOWED_PROJECT_IDS
+  - N8N_ALLOWED_WORKFLOW_IDS
+  - N8N_APPROVAL_SECRET
+  - N8N_TIMEOUT_MS
+  - N8N_MAX_RETRIES
