@@ -1,0 +1,69 @@
+id: azure-devops
+name: Azure DevOps
+upstream:
+  - mcp
+  - rest
+mcp:
+  official_package: '@azure-devops/mcp@2.9.0'
+  local_transport: stdio
+  remote_endpoint: 'https://mcp.dev.azure.com/{organization}'
+  remote_status: public-preview
+  strategy: 'Prefer official MCP; fall back to REST when MCP is disabled, unavailable, or a selected tool fails.'
+auth:
+  types:
+    - entra-bearer-token
+    - personal-access-token
+  recommended: entra-bearer-token
+api:
+  base_url: 'https://dev.azure.com/{organization}'
+  version: '7.1'
+capabilities:
+  - project.list
+  - repository.list
+  - file.read
+  - pull_request.list
+  - pull_request.get
+  - pull_request.create
+  - work_item.get
+  - work_item.create
+  - work_item.comment
+  - build.list
+  - build.get
+  - pipeline.run
+risk:
+  default: READ
+  write_tools:
+    - azure_devops.pull_request.create
+    - azure_devops.work_item.create
+    - azure_devops.work_item.comment
+  high_risk_tools:
+    - azure_devops.pipeline.run
+approval:
+  required_for:
+    - azure_devops.pull_request.create
+    - azure_devops.work_item.create
+    - azure_devops.work_item.comment
+    - azure_devops.pipeline.run
+permissions:
+  least_privilege_guidance:
+    read:
+      - vso.project
+      - vso.code
+      - vso.work
+      - vso.build
+    write:
+      - vso.code_write
+      - vso.work_write
+      - vso.build_execute
+environment:
+  - AZURE_DEVOPS_ORGANIZATION
+  - AZURE_DEVOPS_AUTH_MODE
+  - AZURE_DEVOPS_BEARER_TOKEN
+  - AZURE_DEVOPS_PAT
+  - AZURE_DEVOPS_PAT_EMAIL
+  - AZURE_DEVOPS_ALLOWED_PROJECTS
+  - AZURE_DEVOPS_ALLOWED_REPOSITORIES
+  - AZURE_DEVOPS_APPROVAL_SECRET
+  - AZURE_DEVOPS_TIMEOUT_MS
+  - AZURE_DEVOPS_MAX_RETRIES
+  - AZURE_DEVOPS_MCP_ENABLED
