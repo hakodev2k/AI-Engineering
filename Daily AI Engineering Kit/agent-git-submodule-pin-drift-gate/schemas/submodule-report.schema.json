@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Submodule Drift Report",
+  "type": "object",
+  "required": ["status", "repo", "baseline", "findings", "summary"],
+  "properties": {
+    "status": {"enum": ["pass", "fail", "approval_required", "invalid", "error"]},
+    "repo": {"type": "string"},
+    "baseline": {"type": "string"},
+    "findings": {"type": "array", "items": {"type": "object"}},
+    "summary": {"type": "object"}
+  }
+}

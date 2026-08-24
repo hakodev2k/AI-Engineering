@@ -1,0 +1,7 @@
+{
+  "decision": "approved",
+  "approver": "repository-owner@example.invalid",
+  "paths": ["vendor/example"],
+  "reason": "Reviewed upstream commit range and release notes.",
+  "expires_at": "2099-12-31T23:59:59Z"
+}

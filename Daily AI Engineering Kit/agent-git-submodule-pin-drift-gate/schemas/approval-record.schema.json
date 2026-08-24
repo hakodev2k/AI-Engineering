@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Submodule Approval Record",
+  "type": "object",
+  "required": ["decision", "approver", "paths", "reason", "expires_at"],
+  "properties": {
+    "decision": {"const": "approved"},
+    "approver": {"type": "string", "minLength": 1},
+    "paths": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+    "reason": {"type": "string", "minLength": 1},
+    "expires_at": {"type": "string"}
+  }
+}

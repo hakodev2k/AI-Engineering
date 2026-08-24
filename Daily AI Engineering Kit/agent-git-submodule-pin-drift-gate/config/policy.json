@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "url_change": "approval",
+  "branch_tracking_change": "approval",
+  "gitlink_change": "approval",
+  "dirty_submodule": "deny",
+  "uninitialized_submodule": "deny",
+  "missing_gitmodules_entry": "deny",
+  "allow_relative_urls": true,
+  "max_submodules": 100
+}
