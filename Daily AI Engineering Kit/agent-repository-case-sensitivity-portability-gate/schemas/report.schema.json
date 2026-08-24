@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "report.schema.json",
+  "title": "Repository Case Portability Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["status", "root", "source", "checked_paths", "blocking_findings", "warnings", "findings"],
+  "properties": {
+    "status": {"enum": ["pass", "fail", "invalid", "error"]},
+    "root": {"type": "string"},
+    "source": {"enum": ["git", "filesystem", "unknown"]},
+    "checked_paths": {"type": "integer", "minimum": 0},
+    "blocking_findings": {"type": "integer", "minimum": 0},
+    "warnings": {"type": "integer", "minimum": 0},
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["kind", "severity", "message", "paths"],
+        "properties": {
+          "kind": {"type": "string"},
+          "severity": {"enum": ["error", "warning"]},
+          "message": {"type": "string"},
+          "paths": {"type": "array", "items": {"type": "string"}},
+          "source_file": {"type": ["string", "null"]},
+          "reference": {"type": ["string", "null"]}
+        }
+      }
+    }
+  }
+}

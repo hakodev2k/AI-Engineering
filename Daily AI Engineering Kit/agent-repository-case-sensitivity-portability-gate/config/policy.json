@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "ignored_directories": [
+    ".git",
+    ".hg",
+    ".svn",
+    "node_modules",
+    "bin",
+    "obj",
+    "dist",
+    "build",
+    ".next",
+    ".cache"
+  ],
+  "source_extensions": [".js", ".jsx", ".ts", ".tsx", ".mjs", ".cjs"],
+  "module_extensions": [".js", ".jsx", ".ts", ".tsx", ".mjs", ".cjs", ".json"],
+  "index_names": ["index.js", "index.jsx", "index.ts", "index.tsx", "index.mjs", "index.cjs"],
+  "block_unresolved_relative_imports": false,
+  "max_file_bytes": 2097152
+}

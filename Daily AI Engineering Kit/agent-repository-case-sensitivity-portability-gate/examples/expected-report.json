@@ -1,0 +1,18 @@
+{
+  "status": "fail",
+  "root": "/example/repository",
+  "source": "git",
+  "checked_paths": 3,
+  "blocking_findings": 1,
+  "warnings": 0,
+  "findings": [
+    {
+      "kind": "path-case-collision",
+      "severity": "error",
+      "message": "Paths collide on a case-insensitive filesystem.",
+      "paths": ["src/Widget.ts", "src/widget.ts"],
+      "source_file": null,
+      "reference": null
+    }
+  ]
+}
