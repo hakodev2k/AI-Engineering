@@ -1,0 +1,48 @@
+{
+  "examples": [
+    {
+      "tool": "together.model.list",
+      "input": { "dedicated": false },
+      "permission": "READ",
+      "approvalRequired": false,
+      "expectedOutput": "Array of model metadata including id, type, context length, and pricing when available."
+    },
+    {
+      "tool": "together.chat.complete",
+      "input": {
+        "model": "Qwen/Qwen3.5-9B",
+        "messages": [{ "role": "user", "content": "Summarize this incident in three bullets." }],
+        "maxTokens": 400,
+        "approvalId": "<64-char approval HMAC>"
+      },
+      "permission": "WRITE",
+      "approvalRequired": true,
+      "expectedOutput": "Together chat completion JSON including choices and usage."
+    },
+    {
+      "tool": "together.rerank.create",
+      "input": {
+        "model": "Salesforce/Llama-Rank-v1",
+        "query": "Which runbook covers database latency?",
+        "documents": ["Database latency runbook", "Frontend release checklist"],
+        "topN": 1,
+        "approvalId": "<64-char approval HMAC>"
+      },
+      "permission": "WRITE",
+      "approvalRequired": true,
+      "expectedOutput": "Ranked results with relevance scores and source indexes."
+    },
+    {
+      "tool": "together.fine_tuning.create",
+      "input": {
+        "model": "meta-llama/Meta-Llama-3.1-8B-Instruct-Reference",
+        "trainingFile": "file-example",
+        "nEpochs": 1,
+        "approvalId": "<64-char approval HMAC>"
+      },
+      "permission": "HIGH_RISK",
+      "approvalRequired": true,
+      "expectedOutput": "Fine-tuning job metadata with an ft-* id and status."
+    }
+  ]
+}
