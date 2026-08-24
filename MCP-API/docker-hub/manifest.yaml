@@ -5,7 +5,7 @@ upstream:
   - rest
 mcp:
   official: true
-  implementation: Docker Hub MCP server
+  source: https://github.com/docker/hub-mcp
   transport: stdio
   configured_by:
     - DOCKER_HUB_MCP_COMMAND
@@ -25,23 +25,25 @@ capabilities:
   - namespace.list
   - repository.list
   - repository.get
+  - repository.check
   - repository.create
   - repository.update
   - tag.list
   - tag.get
-  - dockerfile.get
-  - dockerfile.set
+  - tag.check
+  - hardened_image.list
 transport_routing:
   dockerhub.search: mcp
   dockerhub.namespace.list: mcp
   dockerhub.repository.list: mcp_then_rest
   dockerhub.repository.get: mcp_then_rest
+  dockerhub.repository.check: mcp
   dockerhub.repository.create: mcp_then_rest
   dockerhub.repository.update: mcp_then_rest
   dockerhub.tag.list: mcp_then_rest
   dockerhub.tag.get: mcp_then_rest
-  dockerhub.dockerfile.get: mcp
-  dockerhub.dockerfile.set: mcp
+  dockerhub.tag.check: mcp
+  dockerhub.hardened_image.list: mcp
 permissions:
   pat_read: Read
   pat_write: Write
@@ -51,12 +53,10 @@ risk:
   write_tools:
     - dockerhub.repository.create
     - dockerhub.repository.update
-    - dockerhub.dockerfile.set
 approval:
   required_for:
     - dockerhub.repository.create
     - dockerhub.repository.update
-    - dockerhub.dockerfile.set
 environment:
   - DOCKER_HUB_USERNAME
   - DOCKER_HUB_PAT
