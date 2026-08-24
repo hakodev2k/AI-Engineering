@@ -1,0 +1,24 @@
+[
+  {
+    "workflow": "Inspect a design before implementation",
+    "steps": [
+      { "tool": "figma.file.get", "input": { "fileKey": "YOUR_FILE_KEY", "depth": 2 }, "permission": "READ", "approvalRequired": false, "output": "File metadata and document tree" },
+      { "tool": "figma.file.nodes", "input": { "fileKey": "YOUR_FILE_KEY", "ids": ["1:2"] }, "permission": "READ", "approvalRequired": false, "output": "Selected node subtree and component/style metadata" },
+      { "tool": "figma.image.render", "input": { "fileKey": "YOUR_FILE_KEY", "ids": ["1:2"], "format": "png", "scale": 2 }, "permission": "READ", "approvalRequired": false, "output": "Expiring rendered image URL map" }
+    ]
+  },
+  {
+    "workflow": "Review and comment",
+    "steps": [
+      { "tool": "figma.comment.list", "input": { "fileKey": "YOUR_FILE_KEY", "asMarkdown": true }, "permission": "READ", "approvalRequired": false, "output": "Comments array" },
+      { "tool": "figma.comment.create", "input": { "fileKey": "YOUR_FILE_KEY", "message": "Reviewed by the implementation agent.", "nodeId": "1:2", "approvalId": "HMAC_SHA256_APPROVAL" }, "permission": "WRITE", "approvalRequired": true, "output": "Created comment" }
+    ]
+  },
+  {
+    "workflow": "Subscribe to file updates",
+    "steps": [
+      { "tool": "figma.webhook.create", "input": { "eventType": "FILE_UPDATE", "context": "file", "contextId": "YOUR_FILE_KEY", "endpoint": "https://example.com/figma-events", "passcode": "replace-with-a-strong-secret", "status": "PAUSED", "approvalId": "HMAC_SHA256_APPROVAL" }, "permission": "HIGH_RISK", "approvalRequired": true, "output": "Created webhook, paused by default" },
+      { "tool": "figma.webhook.list", "input": { "context": "file", "contextId": "YOUR_FILE_KEY" }, "permission": "READ", "approvalRequired": false, "output": "Webhook list" }
+    ]
+  }
+]
