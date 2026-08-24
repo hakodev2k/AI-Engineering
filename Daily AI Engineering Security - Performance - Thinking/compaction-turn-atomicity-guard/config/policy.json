@@ -1,0 +1,7 @@
+{
+  "allowed_terminal_states": ["completed", "checkpointed", "failed"],
+  "resolved_tool_states": ["confirmed", "failed"],
+  "max_compaction_retries": 2,
+  "require_goal_id": true,
+  "require_tool_correlation_id": true
+}
