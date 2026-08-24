@@ -2,7 +2,7 @@ import { readFile } from 'node:fs/promises';
 import { describe, expect, it } from 'vitest';
 import { assertBucketAllowed, assertFunctionAllowed, assertRegionAllowed, loadConfig } from '../src/config.js';
 import { approvalDigest, assertApproval, TOOL_RISK } from '../src/policy.js';
-import { AwsManagedMcpTransport, preferMcp } from '../src/mcp.js';
+import { AwsManagedMcpTransport, preferMcp, type McpAdapter } from '../src/mcp.js';
 
 describe('AWS connector configuration', () => {
   it('loads safe defaults without static credentials', () => {
@@ -32,27 +32,30 @@ describe('approval policy', () => {
 });
 
 describe('managed MCP transport and fallback', () => {
-  it('uses discovered run_script with a strict fixed tool name', async () => {
+  it('uses only the discovered official run_script tool', async () => {
     let calls = 0;
-    const fakeFetch: typeof fetch = async (_input, init) => {
-      calls++;
-      const request = JSON.parse(String(init?.body));
-      const result = request.method === 'tools/list'
-        ? { tools: [{ name: 'aws___run_script', inputSchema: { properties: { script: {} } } }] }
-        : { content: [{ type: 'text', text: JSON.stringify({ ok: true }) }] };
-      return new Response(JSON.stringify({ jsonrpc: '2.0', id: request.id, result }), { status: 200, headers: { 'content-type': 'application/json' } });
+    const adapter: McpAdapter = {
+      async listTools() { calls++; return { tools: [{ name: 'aws___run_script', inputSchema: { properties: { script: {} } } }] }; },
+      async callTool(input) { calls++; expect(input.name).toBe('aws___run_script'); return { content: [{ type: 'text', text: JSON.stringify({ ok: true }) }] }; }
     };
     const c = loadConfig({ AWS_REGION: 'us-east-1', AWS_MCP_ACCESS_TOKEN: 'test-token' });
-    const mcp = new AwsManagedMcpTransport(c, fakeFetch);
+    const mcp = new AwsManagedMcpTransport(c, async () => adapter);
     await expect(mcp.runScript('print(1)')).resolves.toEqual({ ok: true });
     expect(calls).toBe(2);
   });
 
   it('falls back to scoped SDK behavior when MCP fails', async () => {
-    const fakeFetch: typeof fetch = async () => new Response('unavailable', { status: 503 });
+    const adapter: McpAdapter = { async listTools() { throw new Error('unavailable'); }, async callTool() { throw new Error('unreachable'); } };
     const c = loadConfig({ AWS_REGION: 'us-east-1', AWS_MCP_ACCESS_TOKEN: 'test-token' });
-    const mcp = new AwsManagedMcpTransport(c, fakeFetch);
+    const mcp = new AwsManagedMcpTransport(c, async () => adapter);
     await expect(preferMcp(mcp, 'print(1)', async () => ({ via: 'sdk' }))).resolves.toEqual({ via: 'sdk' });
+  });
+
+  it('rejects unexpected newly discovered MCP tools', async () => {
+    const adapter: McpAdapter = { async listTools() { return { tools: [{ name: 'aws___dangerous_new_tool', inputSchema: { properties: {} } }] }; }, async callTool() { throw new Error('must not be called'); } };
+    const c = loadConfig({ AWS_REGION: 'us-east-1', AWS_MCP_ACCESS_TOKEN: 'test-token' });
+    const mcp = new AwsManagedMcpTransport(c, async () => adapter);
+    await expect(mcp.runScript('print(1)')).rejects.toThrow(/unavailable/);
   });
 });
 
