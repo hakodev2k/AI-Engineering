@@ -55,12 +55,13 @@ server.tool('mongodb.document.find', 'Run a bounded read query. Server-side Java
   connectionId, database, collection,
   filter: jsonObject.default({}),
   projection: jsonObject.optional(),
-  sort: jsonObject.optional(),
-  limit: z.number().int().min(1).max(config.maxDocuments).optional()
+  sort: z.record(z.string(), z.union([z.literal(1), z.literal(-1)])).optional(),
+  limit: z.number().int().min(1).max(config.maxDocuments).optional(),
+  responseBytesLimit: z.number().int().min(1024).max(config.maxBytes).optional()
 }, async a => {
   assertNamespaceAllowed(config, a.database, a.collection);
   rejectDangerousMongoOperators(a.filter); rejectDangerousMongoOperators(a.projection); rejectDangerousMongoOperators(a.sort);
-  return call('find', { ...a, limit: a.limit ?? config.maxDocuments });
+  return call('find', { ...a, limit: a.limit ?? config.maxDocuments, responseBytesLimit: a.responseBytesLimit ?? config.maxBytes });
 });
 
 server.tool('mongodb.document.count', 'Count documents matching a filter.', {
@@ -85,12 +86,19 @@ server.tool('mongodb.query.explain', 'Explain a find or aggregation operation fo
   connectionId, database, collection,
   method: z.enum(['find', 'aggregate']),
   filter: jsonObject.optional(),
+  projection: jsonObject.optional(),
+  sort: z.record(z.string(), z.union([z.literal(1), z.literal(-1)])).optional(),
+  limit: z.number().int().min(1).max(config.maxDocuments).optional(),
   pipeline: z.array(jsonObject).max(100).optional(),
-  verbosity: z.enum(['queryPlanner', 'executionStats', 'allPlansExecution']).optional()
+  verbosity: z.enum(['queryPlanner', 'queryPlannerExtended', 'executionStats', 'allPlansExecution']).optional()
 }, async a => {
   assertNamespaceAllowed(config, a.database, a.collection);
-  rejectDangerousMongoOperators(a.filter); rejectDangerousMongoOperators(a.pipeline);
-  return call('explain', a);
+  rejectDangerousMongoOperators(a.filter); rejectDangerousMongoOperators(a.projection); rejectDangerousMongoOperators(a.sort); rejectDangerousMongoOperators(a.pipeline);
+  if (a.method === 'aggregate' && !a.pipeline?.length) throw new Error('pipeline is required when method=aggregate');
+  const method = a.method === 'aggregate'
+    ? [{ name: 'aggregate', arguments: { pipeline: a.pipeline } }]
+    : [{ name: 'find', arguments: { filter: a.filter ?? {}, projection: a.projection, sort: a.sort, limit: a.limit } }];
+  return call('explain', { connectionId: a.connectionId, database: a.database, collection: a.collection, method, verbosity: a.verbosity });
 });
 
 server.tool('mongodb.document.insert_many', 'Insert documents. WRITE; requires explicit human approval and write mode.', {
@@ -102,20 +110,6 @@ server.tool('mongodb.document.insert_many', 'Insert documents. WRITE; requires e
   assertApproval(config, 'mongodb.document.insert_many', a.approvalId);
   const { approvalId: _approval, ...args } = a;
   return call('insert-many', args);
-});
-
-server.tool('mongodb.document.update_one', 'Update one matching document. WRITE; requires explicit human approval and write mode.', {
-  connectionId, database, collection,
-  filter: jsonObject,
-  update: jsonObject,
-  upsert: z.boolean().optional(),
-  approvalId
-}, async a => {
-  assertNamespaceAllowed(config, a.database, a.collection);
-  rejectDangerousMongoOperators(a.filter); rejectDangerousMongoOperators(a.update);
-  assertApproval(config, 'mongodb.document.update_one', a.approvalId);
-  const { approvalId: _approval, ...args } = a;
-  return call('update-one', args);
 });
 
 const shutdown = () => { void upstream.close().finally(() => server.close()).finally(() => process.exit(0)); };
