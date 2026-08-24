@@ -36,9 +36,8 @@ MongoDB MCP Server 2.0.0 was released on August 4, 2026 and requires an explicit
 | `mongodb.aggregate.run` | `aggregate` | READ | No |
 | `mongodb.query.explain` | `explain` | READ | No |
 | `mongodb.document.insert_many` | `insert-many` | WRITE | Yes |
-| `mongodb.document.update_one` | `update-one` | WRITE | Yes |
 
-Destructive tools such as delete-many, drop collection, drop database, drop index, and destructive Atlas operations are intentionally not exposed.
+Destructive tools such as delete-many, drop collection, drop database, drop index, update-many, rename-collection, and destructive Atlas operations are intentionally not exposed.
 
 ## Architecture
 
@@ -61,7 +60,7 @@ For database tools, configure a MongoDB connection string:
 export MDB_MCP_CONNECTION_STRING='mongodb+srv://...'
 ```
 
-Use a database user with only the roles required by the selected tools. Read-only roles are recommended unless write tools are explicitly needed.
+Use a database user with only the roles required by the selected tools. Read-only roles are recommended unless the insert tool is explicitly needed.
 
 The official MongoDB MCP Server can also use Atlas service-account credentials for Atlas administration. Atlas service accounts use OAuth 2.0 client credentials and are preferred by MongoDB over legacy Atlas API keys. This connector does not expose Atlas administration tools in this version.
 
@@ -102,7 +101,7 @@ The connector communicates with clients over stdio. It starts the official Mongo
 
 READ tools can execute automatically subject to namespace allowlists and query limits.
 
-WRITE tools require both:
+The single WRITE tool requires both:
 
 1. `MONGODB_CONNECTOR_ALLOW_WRITES=true`
 2. A valid approval token in `approvalId`
@@ -155,15 +154,16 @@ mongodb.database.list
   -> mongodb.index.list
   -> mongodb.document.find
   -> mongodb.aggregate.run
+  -> mongodb.query.explain
 ```
 
 For a write flow:
 
 ```text
 inspect schema
-  -> prepare documents/update
+  -> prepare documents
   -> obtain human approval token outside the model
-  -> mongodb.document.insert_many or mongodb.document.update_one
+  -> mongodb.document.insert_many
 ```
 
 ## Testing
@@ -185,6 +185,6 @@ The package exposes a standard stdio MCP server and is suitable for MCP clients 
 
 - A preconfigured `MDB_MCP_CONNECTION_STRING` is required; the wrapper intentionally does not expose the upstream `connect` tool because passing arbitrary connection strings through an agent tool can leak credentials or expand access.
 - Atlas cluster-management tools are not exposed in this version even though the official MongoDB MCP Server supports them.
-- Destructive operations are intentionally omitted rather than merely hidden behind approval.
+- Destructive and broad multi-document mutation operations are intentionally omitted rather than merely hidden behind approval.
 - `mongodb.aggregate.run` is read-only by policy and rejects `$out` and `$merge`.
 - The wrapper pins MongoDB MCP Server 2.0.0 so upstream tool contracts do not silently change between installs; upgrades should be reviewed against MongoDB release notes first.
