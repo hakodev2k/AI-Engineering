@@ -1,0 +1,20 @@
+{
+  "public_reason_codes": [
+    "ACTION_NOT_ALLOWED",
+    "INPUT_NOT_SUPPORTED",
+    "AUTHORIZATION_REQUIRED",
+    "RESOURCE_NOT_AVAILABLE"
+  ],
+  "protected_literals": [
+    "internal_autosend_parameter",
+    "hidden_connector_route",
+    "security_feature_flag"
+  ],
+  "protected_patterns": [
+    "(?i)undocumented\\s+(parameter|route|endpoint)",
+    "(?i)(disabled|bypass(ed|able)?)\\s+(guardrail|protection|check)",
+    "(?i)internal\\s+(tool|route|parameter|feature flag)"
+  ],
+  "max_matches_per_response": 0,
+  "max_unique_matches_per_sequence": 0
+}
