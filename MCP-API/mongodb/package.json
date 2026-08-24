@@ -6,7 +6,7 @@
   "engines": { "node": ">=22.12.0" },
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "start": "node dist/server.js",
+    "start": "node dist/src/server.js",
     "test": "vitest run --dir tests",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
