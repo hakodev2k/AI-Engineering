@@ -3,6 +3,7 @@ import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import { z } from 'zod';
 import { assertNamespaceAllowed, loadConfig } from './config.js';
 import { assertApproval } from './policy.js';
+import { rejectDangerousMongoOperators } from './safety.js';
 import { MongoUpstream } from './upstream.js';
 
 const config = loadConfig();
@@ -18,22 +19,12 @@ const jsonObject = z.record(z.string(), z.unknown());
 const approvalId = z.string().length(64).optional();
 const output = (value: unknown) => ({ content: [{ type: 'text' as const, text: JSON.stringify(value) }] });
 
-function rejectDangerous(value: unknown): void {
-  if (Array.isArray(value)) return value.forEach(rejectDangerous);
-  if (!value || typeof value !== 'object') return;
-  for (const [key, nested] of Object.entries(value as Record<string, unknown>)) {
-    if (['$where', '$function', '$accumulator', '$out', '$merge'].includes(key)) throw new Error(`Unsafe MongoDB operator is blocked: ${key}`);
-    rejectDangerous(nested);
-  }
-}
-
 async function call(name: string, args: Record<string, unknown>) {
   if (!upstream.has(name)) throw new Error(`Required official MongoDB MCP tool is unavailable: ${name}`);
   return output(await upstream.call(name, args));
 }
 
-server.tool('mongodb.database.list', 'List databases through the official MongoDB MCP server.', { connectionId },
-  async a => call('list-databases', a));
+server.tool('mongodb.database.list', 'List databases through the official MongoDB MCP server.', { connectionId }, async a => call('list-databases', a));
 
 server.tool('mongodb.collection.list', 'List collections in an allowed database.', { connectionId, database }, async a => {
   assertNamespaceAllowed(config, a.database);
@@ -68,7 +59,7 @@ server.tool('mongodb.document.find', 'Run a bounded read query. Server-side Java
   limit: z.number().int().min(1).max(config.maxDocuments).optional()
 }, async a => {
   assertNamespaceAllowed(config, a.database, a.collection);
-  rejectDangerous(a.filter); rejectDangerous(a.projection); rejectDangerous(a.sort);
+  rejectDangerousMongoOperators(a.filter); rejectDangerousMongoOperators(a.projection); rejectDangerousMongoOperators(a.sort);
   return call('find', { ...a, limit: a.limit ?? config.maxDocuments });
 });
 
@@ -76,7 +67,7 @@ server.tool('mongodb.document.count', 'Count documents matching a filter.', {
   connectionId, database, collection, query: jsonObject.default({})
 }, async a => {
   assertNamespaceAllowed(config, a.database, a.collection);
-  rejectDangerous(a.query);
+  rejectDangerousMongoOperators(a.query);
   return call('count', a);
 });
 
@@ -86,7 +77,7 @@ server.tool('mongodb.aggregate.run', 'Run a read-only aggregation pipeline. $out
   responseBytesLimit: z.number().int().min(1024).max(config.maxBytes).optional()
 }, async a => {
   assertNamespaceAllowed(config, a.database, a.collection);
-  rejectDangerous(a.pipeline);
+  rejectDangerousMongoOperators(a.pipeline);
   return call('aggregate', { ...a, responseBytesLimit: a.responseBytesLimit ?? config.maxBytes });
 });
 
@@ -98,7 +89,7 @@ server.tool('mongodb.query.explain', 'Explain a find or aggregation operation fo
   verbosity: z.enum(['queryPlanner', 'executionStats', 'allPlansExecution']).optional()
 }, async a => {
   assertNamespaceAllowed(config, a.database, a.collection);
-  rejectDangerous(a.filter); rejectDangerous(a.pipeline);
+  rejectDangerousMongoOperators(a.filter); rejectDangerousMongoOperators(a.pipeline);
   return call('explain', a);
 });
 
@@ -121,7 +112,7 @@ server.tool('mongodb.document.update_one', 'Update one matching document. WRITE;
   approvalId
 }, async a => {
   assertNamespaceAllowed(config, a.database, a.collection);
-  rejectDangerous(a.filter); rejectDangerous(a.update);
+  rejectDangerousMongoOperators(a.filter); rejectDangerousMongoOperators(a.update);
   assertApproval(config, 'mongodb.document.update_one', a.approvalId);
   const { approvalId: _approval, ...args } = a;
   return call('update-one', args);
