@@ -1,0 +1,7 @@
+{
+  "minimum_measured_samples": 5,
+  "maximum_failure_rate": 0.0,
+  "maximum_first_byte_median_ratio": 1.20,
+  "maximum_first_byte_p95_ratio": 1.30,
+  "note": "Starting defaults only. Calibrate with stable internal baselines; never relax thresholds merely to pass an upgrade."
+}
