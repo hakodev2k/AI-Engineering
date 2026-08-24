@@ -1,0 +1,11 @@
+# Rules — Adaptive Watchdog Policy
+- A model watchdog MUST distinguish TTFT from mid-stream inactivity.
+- Human approval/input wait and tool execution MUST NOT consume model-stream stall budget.
+- Timeout values MUST be bounded by configured floors and ceilings.
+- Automatic tuning MUST NOT occur below `min_samples` healthy observations for the applicable bucket.
+- A timeout that falls inside the observed healthy p99 MUST be flagged as a possible false positive.
+- A timeout/cancellation MUST preserve a typed cause; it MUST NOT be reported as user cancellation unless a user cancellation signal exists.
+- Automatic retries MUST be bounded by `max_auto_retries` and SHOULD use jitter/backoff for provider-wide incidents.
+- Retry token overhead MUST be measured; a retry policy MUST NOT be called an improvement if it merely shifts latency into repeated full-context calls.
+- Performance changes MUST retain a before/after baseline using the same workload class.
+- Operators SHOULD separate provider/model/effort buckets when their latency distributions differ materially.
