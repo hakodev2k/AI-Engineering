@@ -31,7 +31,6 @@ server.tool('cohere.chat.create', 'Generate a non-streaming Cohere Chat response
   documents: z.array(z.string().min(1).max(100000)).max(50).optional(),
   maxTokens: z.number().int().min(1).max(32768).optional(),
   temperature: z.number().min(0).max(2).optional(),
-  seed: z.number().int().min(0).max(4294967295).optional(),
   approvalId
 }, async a => {
   assertModelAllowed(config, a.model);
@@ -42,7 +41,6 @@ server.tool('cohere.chat.create', 'Generate a non-streaming Cohere Chat response
     documents: a.documents,
     max_tokens: a.maxTokens,
     temperature: a.temperature,
-    seed: a.seed,
     stream: false
   }));
 });
