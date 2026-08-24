@@ -1,0 +1,74 @@
+id: elasticsearch
+name: Elasticsearch
+upstream:
+  - mcp
+  - rest
+mcp:
+  official: true
+  provider: Elastic Agent Builder
+  endpoint: "${ELASTIC_KIBANA_URL}/api/agent_builder/mcp"
+  minimum_version: "Elasticsearch 9.2+ or Serverless with Agent Builder"
+  preferred_tools:
+    - platform.core.search
+    - platform.core.list_indices
+    - platform.core.get_index_mapping
+    - platform.core.get_document_by_id
+    - platform.core.execute_esql
+api:
+  base_url: "${ELASTICSEARCH_URL}"
+  documentation: https://www.elastic.co/docs/api/doc/elasticsearch/
+auth:
+  preferred: api_key
+  supported:
+    - api_key
+    - bearer
+    - basic
+  mcp: api_key
+capabilities:
+  - index.list
+  - index.mapping
+  - document.get
+  - document.search
+  - search.natural_language
+  - esql.query
+  - document.count
+  - document.create
+  - document.update
+  - document.delete
+risk:
+  default: READ
+  write:
+    - elasticsearch.document.create
+    - elasticsearch.document.update
+  destructive:
+    - elasticsearch.document.delete
+approval:
+  required_for:
+    - elasticsearch.document.create
+    - elasticsearch.document.update
+    - elasticsearch.document.delete
+security:
+  allowlist_env: ELASTIC_ALLOWED_INDICES
+  credentials_exposed_to_agent: false
+  unrestricted_api_proxy: false
+  retrieved_content_is_untrusted: true
+reliability:
+  bounded_retries: true
+  retry_statuses: [429, 502, 503, 504]
+  destructive_retries: false
+environment:
+  required_one_of:
+    - ELASTICSEARCH_API_KEY
+    - ELASTICSEARCH_BEARER_TOKEN
+    - ELASTICSEARCH_USERNAME+ELASTICSEARCH_PASSWORD
+  required:
+    - ELASTICSEARCH_URL
+  optional:
+    - ELASTIC_ALLOWED_INDICES
+    - ELASTIC_APPROVAL_SECRET
+    - ELASTIC_TIMEOUT_MS
+    - ELASTIC_MAX_RETRIES
+    - ELASTIC_PREFER_MCP
+    - ELASTIC_KIBANA_URL
+    - ELASTIC_KIBANA_API_KEY
+    - ELASTIC_MCP_SPACE
