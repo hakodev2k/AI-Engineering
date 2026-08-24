@@ -1,0 +1,44 @@
+id: redis
+name: Redis
+upstream:
+  - mcp
+mcp:
+  implementation: redis/mcp-redis
+  package: redis-mcp-server
+  transport: stdio
+auth:
+  type: redis-url
+  credential_env: REDIS_URL
+capabilities:
+  - key.get
+  - key.type
+  - key.scan
+  - hash.get
+  - hash.get_all
+  - key.set
+  - hash.set
+  - key.expire
+  - key.delete
+risk:
+  default: READ
+  write:
+    - redis.key.set
+    - redis.hash.set
+    - redis.key.expire
+  destructive:
+    - redis.key.delete
+approval:
+  write_required: true
+  destructive_disabled_by_default: true
+security:
+  key_prefix_allowlist: REDIS_ALLOWED_KEY_PREFIXES
+  credentials_exposed_to_llm: false
+environment:
+  - REDIS_URL
+  - REDIS_ALLOWED_KEY_PREFIXES
+  - REDIS_APPROVAL_SECRET
+  - REDIS_ALLOW_DESTRUCTIVE
+  - REDIS_DESTRUCTIVE_APPROVAL_SECRET
+  - REDIS_UPSTREAM_COMMAND
+  - REDIS_UPSTREAM_ARGS
+  - REDIS_UPSTREAM_TIMEOUT_MS
