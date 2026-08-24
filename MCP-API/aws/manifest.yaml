@@ -1,0 +1,75 @@
+id: aws
+name: Amazon Web Services
+upstream:
+  - mcp
+  - sdk
+mcp:
+  type: managed-remote
+  endpoint: https://aws-mcp.us-east-1.api.aws/mcp
+  preferred_tools:
+    - aws___run_script
+  deprecated_tools_not_used:
+    - aws___call_aws
+api:
+  sdk: AWS SDK for JavaScript v3
+auth:
+  mcp:
+    type: oauth2-bearer
+    env: AWS_MCP_ACCESS_TOKEN
+  sdk:
+    type: default-credential-provider-chain
+    recommended: IAM Identity Center or temporary role credentials
+capabilities:
+  - identity.get
+  - s3.bucket.list
+  - s3.object.list
+  - s3.object.metadata
+  - s3.object.presign_get
+  - ec2.instance.list
+  - ec2.instance.start
+  - ec2.instance.stop
+  - lambda.function.list
+  - lambda.function.get
+  - cloudwatch.metric.get
+  - logs.filter
+iam_actions:
+  read:
+    - sts:GetCallerIdentity
+    - s3:ListAllMyBuckets
+    - s3:ListBucket
+    - s3:GetObject
+    - ec2:DescribeInstances
+    - lambda:ListFunctions
+    - lambda:GetFunction
+    - cloudwatch:GetMetricData
+    - logs:FilterLogEvents
+  high_risk:
+    - ec2:StartInstances
+    - ec2:StopInstances
+risk:
+  default: READ
+  high_risk_tools:
+    - aws.s3.object.presign_get
+    - aws.ec2.instance.start
+    - aws.ec2.instance.stop
+approval:
+  required_for:
+    - aws.s3.object.presign_get
+    - aws.ec2.instance.start
+    - aws.ec2.instance.stop
+environment:
+  - AWS_REGION
+  - AWS_PROFILE
+  - AWS_CONNECTOR_ALLOWED_REGIONS
+  - AWS_CONNECTOR_ALLOWED_BUCKETS
+  - AWS_CONNECTOR_ALLOWED_FUNCTION_PREFIXES
+  - AWS_CONNECTOR_APPROVAL_SECRET
+  - AWS_CONNECTOR_TIMEOUT_MS
+  - AWS_CONNECTOR_PREFER_MCP
+  - AWS_MCP_ENDPOINT
+  - AWS_MCP_ACCESS_TOKEN
+security:
+  credentials_exposed_to_llm: false
+  allowlists_supported: true
+  untrusted_provider_content: true
+  destructive_tools: []
