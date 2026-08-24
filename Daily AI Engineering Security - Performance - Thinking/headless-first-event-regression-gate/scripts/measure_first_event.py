@@ -23,11 +23,13 @@ def run_once(command, timeout_s, stdin_bytes):
         except BrokenPipeError: pass
     def drain_stdout():
         while True:
-            chunk=p.stdout.read(8192)
+            chunk=p.stdout.read1(8192)
             if not chunk: break
             if first[0] is None: first[0]=time.monotonic()
     def drain_stderr():
-        while p.stderr.read(8192): pass
+        while True:
+            chunk=p.stderr.read1(8192)
+            if not chunk: break
     out_t=threading.Thread(target=drain_stdout,daemon=True); err_t=threading.Thread(target=drain_stderr,daemon=True)
     out_t.start(); err_t.start(); timed_out=False
     try: p.wait(timeout=timeout_s)
