@@ -1,0 +1,31 @@
+[
+  {
+    "workflow": "discover-and-chat",
+    "steps": [
+      { "tool": "mistral.model.list", "input": {}, "permission": "READ", "approval": false },
+      { "tool": "mistral.chat.complete", "input": { "model": "mistral-small-latest", "messages": [{ "role": "user", "content": "Summarize this incident report." }], "maxTokens": 800 }, "permission": "WRITE", "approval": "configurable" }
+    ],
+    "expected_output": { "content": "MCP text containing the provider JSON response" }
+  },
+  {
+    "workflow": "semantic-indexing",
+    "steps": [
+      { "tool": "mistral.embedding.create", "input": { "model": "mistral-embed", "input": ["first document", "second document"] }, "permission": "WRITE", "approval": "configurable" }
+    ],
+    "expected_output": { "data": "embedding vectors and usage metadata" }
+  },
+  {
+    "workflow": "document-extraction",
+    "steps": [
+      { "tool": "mistral.ocr.process", "input": { "model": "mistral-ocr-latest", "url": "https://example.com/document.pdf", "kind": "document_url" }, "permission": "WRITE", "approval": "configurable" }
+    ],
+    "expected_output": { "pages": "OCR pages and extracted content" }
+  },
+  {
+    "workflow": "audio-transcription",
+    "steps": [
+      { "tool": "mistral.audio.transcribe", "input": { "model": "voxtral-mini-latest", "fileUrl": "https://example.com/audio.mp3", "language": "en", "timestampGranularities": ["segment"] }, "permission": "WRITE", "approval": "configurable" }
+    ],
+    "expected_output": { "text": "transcription", "segments": "timestamped segments when requested" }
+  }
+]
