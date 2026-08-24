@@ -1,0 +1,49 @@
+id: anthropic
+name: Anthropic
+upstream:
+  - rest
+auth:
+  type: api-key
+  header: x-api-key
+api:
+  base_url: https://api.anthropic.com
+  version_header: anthropic-version
+mcp:
+  official_provider_server: false
+  note: Anthropic supports MCP clients/connectors in Claude products and the Messages API, but does not expose Anthropic API operations through a dedicated official Anthropic MCP server.
+capabilities:
+  - model.list
+  - model.get
+  - message.count_tokens
+  - message.create
+  - batch.list
+  - batch.get
+  - batch.results
+  - batch.create
+  - batch.cancel
+risk:
+  default: READ
+  write_tools:
+    - anthropic.message.create
+    - anthropic.batch.create
+  high_risk_tools:
+    - anthropic.batch.cancel
+approval:
+  required_for:
+    - anthropic.message.create
+    - anthropic.batch.create
+    - anthropic.batch.cancel
+credentials:
+  isolated: true
+  required_environment:
+    - ANTHROPIC_API_KEY
+configuration:
+  optional_environment:
+    - ANTHROPIC_VERSION
+    - ANTHROPIC_BASE_URL
+    - ANTHROPIC_ALLOWED_MODELS
+    - ANTHROPIC_APPROVAL_SECRET
+    - ANTHROPIC_TIMEOUT_MS
+    - ANTHROPIC_MAX_RETRIES
+    - ANTHROPIC_MAX_OUTPUT_TOKENS
+    - ANTHROPIC_MAX_BATCH_REQUESTS
