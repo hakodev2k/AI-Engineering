@@ -26,17 +26,14 @@ capabilities:
   - aggregate.run
   - query.explain
   - document.insert_many
-  - document.update_one
 risk:
   default: READ
   write_tools:
     - mongodb.document.insert_many
-    - mongodb.document.update_one
   destructive_tools: []
 approval:
   required_for:
     - mongodb.document.insert_many
-    - mongodb.document.update_one
 security:
   read_only_default: true
   server_side_javascript: disabled
