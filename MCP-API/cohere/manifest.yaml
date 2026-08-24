@@ -1,0 +1,63 @@
+id: cohere
+name: Cohere
+upstream:
+  - rest
+mcp:
+  official_server: false
+  note: No official Cohere MCP server was identified in Cohere documentation as of 2026-08-24.
+api:
+  base_url: https://api.cohere.com
+  versions:
+    generation: v2
+    utility: v1
+auth:
+  type: api-key
+  header: Authorization
+  scheme: Bearer
+capabilities:
+  - model.list
+  - model.get
+  - chat.create
+  - embedding.create
+  - rerank.create
+  - tokenize.create
+  - detokenize.create
+  - dataset.list
+  - dataset.get
+risk:
+  default: READ
+  write_tools:
+    - cohere.chat.create
+    - cohere.embedding.create
+    - cohere.rerank.create
+  high_risk_tools: []
+  destructive_tools: []
+approval:
+  configurable: true
+  default_required: true
+  required_for:
+    - cohere.chat.create
+    - cohere.embedding.create
+    - cohere.rerank.create
+credentials:
+  isolated_from_llm: true
+  required_environment:
+    - COHERE_API_KEY
+environment:
+  - COHERE_API_KEY
+  - COHERE_BASE_URL
+  - COHERE_CLIENT_NAME
+  - COHERE_ALLOWED_MODELS
+  - COHERE_APPROVAL_SECRET
+  - COHERE_REQUIRE_WRITE_APPROVAL
+  - COHERE_TIMEOUT_MS
+  - COHERE_MAX_RETRIES
+rate_limits:
+  behavior:
+    - preserves Retry-After on provider errors
+    - bounded exponential backoff for idempotent GET operations
+    - no automatic retry for billable POST inference calls
+security:
+  allowlist_models: true
+  arbitrary_http_tool: false
+  retrieved_content_untrusted: true
