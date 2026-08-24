@@ -3,8 +3,11 @@ name: Fireworks AI
 upstream:
   - rest
 official_mcp:
-  available: false
-  note: Fireworks Responses API can consume external MCP/SSE tools, but Fireworks does not document a provider-hosted MCP server for these account/inference capabilities.
+  available: true
+  endpoint: https://docs.fireworks.ai/mcp
+  scope: documentation-search-only
+  used_for_operational_tools: false
+  note: The official Fireworks Docs MCP is for documentation search. It does not expose the implemented inference, model, response, embedding, rerank, or deployment operations, so those capabilities use the official REST API.
 auth:
   type: api-key
   header: "Authorization: Bearer <FIREWORKS_API_KEY>"
