@@ -1,0 +1,56 @@
+id: reddit
+name: Reddit
+upstream:
+  - rest
+mcp:
+  official_server: false
+  note: Reddit Developer Platform/Devvit is official but is not a general remote MCP server for external clients.
+auth:
+  type: oauth2
+  authorization_url: https://www.reddit.com/api/v1/authorize
+  token_url: https://www.reddit.com/api/v1/access_token
+api:
+  base_url: https://oauth.reddit.com
+scopes:
+  required_read:
+    - read
+  optional_identity:
+    - identity
+  required_write:
+    - submit
+    - save
+capabilities:
+  - identity.get
+  - subreddit.search
+  - subreddit.get
+  - post.list
+  - post.search
+  - post.get
+  - comments.list
+  - comment.create
+  - post.create
+  - thing.save
+  - thing.unsave
+risk:
+  default: READ
+  write_tools:
+    - reddit.comment.create
+    - reddit.post.create
+    - reddit.thing.save
+    - reddit.thing.unsave
+approval:
+  required_for:
+    - reddit.comment.create
+    - reddit.post.create
+    - reddit.thing.save
+    - reddit.thing.unsave
+environment:
+  - REDDIT_ACCESS_TOKEN
+  - REDDIT_REFRESH_TOKEN
+  - REDDIT_CLIENT_ID
+  - REDDIT_CLIENT_SECRET
+  - REDDIT_USER_AGENT
+  - REDDIT_ALLOWED_SUBREDDITS
+  - REDDIT_APPROVAL_SECRET
+  - REDDIT_TIMEOUT_MS
+  - REDDIT_MAX_RETRIES
