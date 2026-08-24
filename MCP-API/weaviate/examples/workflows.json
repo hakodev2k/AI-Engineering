@@ -1,0 +1,23 @@
+[
+  {
+    "tool": "weaviate.collection.get",
+    "input": { "collection": "SupportTickets" },
+    "permission": "READ",
+    "approval_required": false,
+    "output_shape": { "collection_config": "object" }
+  },
+  {
+    "tool": "weaviate.search.hybrid",
+    "input": { "collection": "SupportTickets", "query": "login issue", "alpha": 0.7, "limit": 5, "properties": ["title", "body"] },
+    "permission": "READ",
+    "approval_required": false,
+    "output_shape": { "results": "provider response" }
+  },
+  {
+    "tool": "weaviate.object.upsert",
+    "input": { "collection": "SupportTickets", "properties": { "title": "Example" }, "approvalId": "<HMAC-SHA256>" },
+    "permission": "WRITE",
+    "approval_required": true,
+    "output_shape": { "object": "provider response" }
+  }
+]
