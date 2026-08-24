@@ -1,0 +1,23 @@
+[
+  {
+    "workflow": "Inspect models and estimate tokens",
+    "steps": [
+      { "tool": "anthropic.model.list", "input": { "limit": 20 }, "permission": "READ", "approvalRequired": false, "expectedOutput": { "data": "model metadata array", "has_more": "boolean" } },
+      { "tool": "anthropic.message.count_tokens", "input": { "model": "<allowed-model-id>", "messages": [{ "role": "user", "content": "Summarize this incident report." }] }, "permission": "READ", "approvalRequired": false, "expectedOutput": { "input_tokens": "number" } }
+    ]
+  },
+  {
+    "workflow": "Generate one response",
+    "steps": [
+      { "tool": "anthropic.message.create", "input": { "model": "<allowed-model-id>", "maxTokens": 1024, "messages": [{ "role": "user", "content": "Draft a concise release-note summary." }], "approvalId": "<64-char-hmac>" }, "permission": "WRITE", "approvalRequired": true, "expectedOutput": { "id": "message id", "content": "content blocks", "usage": "token usage" } }
+    ]
+  },
+  {
+    "workflow": "Run and inspect a batch",
+    "steps": [
+      { "tool": "anthropic.batch.create", "input": { "requests": [{ "customId": "job-1", "model": "<allowed-model-id>", "maxTokens": 512, "messages": [{ "role": "user", "content": "Classify this ticket." }] }], "approvalId": "<64-char-hmac>" }, "permission": "WRITE", "approvalRequired": true, "expectedOutput": { "id": "batch id", "processing_status": "status" } },
+      { "tool": "anthropic.batch.get", "input": { "batchId": "<batch-id>" }, "permission": "READ", "approvalRequired": false, "expectedOutput": { "id": "batch id", "processing_status": "status" } },
+      { "tool": "anthropic.batch.results", "input": { "batchId": "<batch-id>" }, "permission": "READ", "approvalRequired": false, "expectedOutput": "JSONL result stream returned as text" }
+    ]
+  }
+]
