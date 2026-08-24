@@ -53,16 +53,9 @@ server.tool('openrouter.credits.get', 'Get total credits purchased and total usa
 server.tool('openrouter.analytics.meta', 'Get supported analytics metrics, dimensions, granularities, and filter operators. Requires a management key. READ.', {},
   async () => out(await client.get('/analytics/meta', requireManagementKey(config))));
 
-const analyticsFilter = z.object({
-  dimension: z.string().min(1).max(100),
-  operator: z.string().min(1).max(50),
-  value: z.union([z.string().max(500), z.number(), z.array(z.string().max(500)).max(100)])
-});
-
-server.tool('openrouter.analytics.query', 'Run a bounded analytics aggregation query. Requires a management key. READ.', {
+server.tool('openrouter.analytics.query', 'Run a bounded analytics aggregation query using documented metrics, dimensions, granularity, time range, and limits. Requires a management key. READ.', {
   metrics: z.array(z.string().min(1).max(100)).min(1).max(20),
   dimensions: z.array(z.string().min(1).max(100)).max(10).optional(),
-  filters: z.array(analyticsFilter).max(20).optional(),
   granularity: z.string().max(50).optional(),
   start: z.string().datetime().optional(),
   end: z.string().datetime().optional(),
@@ -71,7 +64,6 @@ server.tool('openrouter.analytics.query', 'Run a bounded analytics aggregation q
 }, async a => out(await client.post('/analytics/query', requireManagementKey(config), {
   metrics: a.metrics,
   dimensions: a.dimensions,
-  filters: a.filters,
   granularity: a.granularity,
   time_range: a.start || a.end ? { start: a.start, end: a.end } : undefined,
   limit: a.limit,
