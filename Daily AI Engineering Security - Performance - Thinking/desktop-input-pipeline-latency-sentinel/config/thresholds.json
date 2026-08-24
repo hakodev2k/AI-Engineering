@@ -1,0 +1,1 @@
+{"version":1,"max_gap_ms":32.0,"max_gap_over_16ms_rate":0.01,"max_regression_ratio":2.0,"min_events":100,"require_ab_pair":true}
