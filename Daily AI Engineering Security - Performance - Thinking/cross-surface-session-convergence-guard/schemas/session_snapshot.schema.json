@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SessionSnapshot",
+  "type": "object",
+  "required": ["session_id", "surface", "canonical_version", "last_durable_turn", "captured_at"],
+  "properties": {
+    "session_id": {"type": "string", "minLength": 1},
+    "surface": {"type": "string", "minLength": 1},
+    "canonical_version": {"type": "integer", "minimum": 0},
+    "last_durable_turn": {"type": "integer", "minimum": 0},
+    "selected_child_id": {"type": ["string", "null"]},
+    "active_writer_id": {"type": ["string", "null"]},
+    "writer_lease_expires_at": {"type": ["string", "null"]},
+    "registration_epoch": {"type": ["integer", "null"], "minimum": 0},
+    "captured_at": {"type": "string", "minLength": 1}
+  },
+  "additionalProperties": true
+}
