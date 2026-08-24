@@ -20,6 +20,19 @@ auth:
     type: api-key
     header: X-N8N-API-KEY
     key_env: N8N_API_KEY
+  least_privilege_scopes:
+    - workflow:list
+    - workflow:read
+    - workflow:create
+    - workflow:update
+    - workflow:activate
+    - workflow:deactivate
+    - execution:list
+    - execution:read
+    - execution:delete
+    - tag:list
+    - tag:create
+    - project:list
 capabilities:
   - workflow.search
   - workflow.get
