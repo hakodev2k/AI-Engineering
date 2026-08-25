@@ -17,10 +17,9 @@ export function buildServer(config: SendGridConfig, client = new SendGridClient(
     return ok(await client.request('GET', '/v3/scopes'));
   });
 
-  server.tool('sendgrid.sender.list', 'List verified/configured senders visible to this account.', {
-    limit: z.number().int().min(1).max(100).default(50),
-    offset: z.number().int().min(0).max(10000).default(0)
-  }, async ({ limit, offset }) => ok(await client.request('GET', `/v3/senders?limit=${limit}&offset=${offset}`)));
+  server.tool('sendgrid.sender.list', 'List verified/configured sender identities visible to this account.', {}, async () => {
+    return ok(await client.request('GET', '/v3/senders'));
+  });
 
   server.tool('sendgrid.template.list', 'List SendGrid templates.', {
     pageSize: z.number().int().min(1).max(200).default(50),
@@ -43,13 +42,13 @@ export function buildServer(config: SendGridConfig, client = new SendGridClient(
   server.tool('sendgrid.template.version.create', 'Create a version under an existing template. Requires WRITE enablement and explicit approval.', {
     templateId: id,
     name: z.string().min(1).max(100),
-    subject: z.string().min(1).max(998),
-    htmlContent: z.string().min(1).max(1000000),
-    plainContent: z.string().max(1000000).optional(),
+    subject: z.string().min(1).max(255),
+    htmlContent: z.string().min(1).max(1048576),
+    plainContent: z.string().max(1048576).optional(),
     active: z.boolean().default(false),
     approvalId: approval
-  }, async ({ templateId, approvalId, htmlContent, plainContent, ...rest }) => {
-    const payload = { ...rest, html_content: htmlContent, plain_content: plainContent };
+  }, async ({ templateId, approvalId, htmlContent, plainContent, active, ...rest }) => {
+    const payload = { ...rest, active: active ? 1 : 0, html_content: htmlContent, plain_content: plainContent };
     assertPolicy(config, 'sendgrid.template.version.create', { templateId, ...payload }, approvalId);
     return ok(await client.request('POST', `/v3/templates/${encodeURIComponent(templateId)}/versions`, payload, false));
   });
@@ -80,17 +79,18 @@ export function buildServer(config: SendGridConfig, client = new SendGridClient(
     return ok(await client.request('GET', '/v3/asm/groups'));
   });
 
-  server.tool('sendgrid.webhook.event.get', 'Read Event Webhook settings.', {}, async () => {
-    return ok(await client.request('GET', '/v3/user/webhooks/event/settings'));
+  server.tool('sendgrid.webhook.event.get', 'Read one Event Webhook by ID.', { webhookId: id }, async ({ webhookId }) => {
+    return ok(await client.request('GET', `/v3/user/webhooks/event/settings/${encodeURIComponent(webhookId)}`));
   });
 
-  server.tool('sendgrid.webhook.event.update', 'Update Event Webhook URL/enabled state. HIGH_RISK because event data may be sent externally; explicit approval required.', {
+  server.tool('sendgrid.webhook.event.update', 'Update an Event Webhook URL/enabled state. HIGH_RISK because event data may be sent externally; explicit approval required.', {
+    webhookId: id,
     enabled: z.boolean(),
     url: z.string().url().refine((v) => v.startsWith('https://'), 'Webhook URL must use HTTPS'),
     approvalId: approval
-  }, async ({ approvalId, ...payload }) => {
-    assertPolicy(config, 'sendgrid.webhook.event.update', payload, approvalId);
-    return ok(await client.request('PATCH', '/v3/user/webhooks/event/settings', payload, false));
+  }, async ({ webhookId, approvalId, ...payload }) => {
+    assertPolicy(config, 'sendgrid.webhook.event.update', { webhookId, ...payload }, approvalId);
+    return ok(await client.request('PATCH', `/v3/user/webhooks/event/settings/${encodeURIComponent(webhookId)}`, payload, false));
   });
 
   server.tool('sendgrid.email.send', 'Send a single external email via SendGrid. HIGH_RISK; requires explicit human approval. Suppression bypass options are intentionally not exposed.', {
