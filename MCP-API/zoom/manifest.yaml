@@ -18,17 +18,17 @@ api:
 auth:
   type: oauth2-access-token
   credential_env: ZOOM_ACCESS_TOKEN
-  least_privilege_scopes:
+  required_scope_families:
+    - user:read
+    - meeting:read
+    - meeting:write
+    - recording:read
+  verified_granular_examples:
     - user:read:user
-    - meeting:read:list_meetings
-    - meeting:read:meeting
-    - meeting:write:meeting
-    - meeting:update:meeting
-    - meeting:delete:meeting
+    - meeting:read:list_past_participants
     - cloud_recording:read:list_user_recordings
     - cloud_recording:read:list_recording_files
-    - report:read:list_meeting_participants
-  note: "Exact granular scope availability depends on Zoom app type; admin variants are only needed for cross-user/account access."
+  note: "Prefer the exact granular scope shown by Zoom for each enabled endpoint; admin variants are only needed for cross-user/account access."
 environment:
   required: [ZOOM_ACCESS_TOKEN]
   optional: [ZOOM_APPROVAL_SECRET, ZOOM_TIMEOUT_MS, ZOOM_MAX_RETRIES]
