@@ -1,0 +1,56 @@
+id: zoom
+name: Zoom
+version: 1.0.0
+runtime: node>=20
+external_interface: mcp
+upstream:
+  - rest
+  - official-mcp-available
+transport_strategy:
+  implemented: rest
+  rationale: "Zoom documents REST APIs as the deterministic option for explicit backend control; the official remote MCP server is available for dynamic AI tool discovery, but this connector preserves a stable scoped tool contract and approval boundary through official REST endpoints."
+official_mcp:
+  streamable_http: https://zoom.us/mcp/meeting/streamable
+  sse: https://zoom.us/mcp/meeting/sse
+  auth: oauth2.1-pkce
+api:
+  base_url: https://api.zoom.us/v2
+auth:
+  type: oauth2-access-token
+  credential_env: ZOOM_ACCESS_TOKEN
+  least_privilege_scopes:
+    - user:read:user
+    - meeting:read:list_meetings
+    - meeting:read:meeting
+    - meeting:write:meeting
+    - meeting:update:meeting
+    - meeting:delete:meeting
+    - cloud_recording:read:list_user_recordings
+    - cloud_recording:read:list_recording_files
+    - report:read:list_meeting_participants
+  note: "Exact granular scope availability depends on Zoom app type; admin variants are only needed for cross-user/account access."
+environment:
+  required: [ZOOM_ACCESS_TOKEN]
+  optional: [ZOOM_APPROVAL_SECRET, ZOOM_TIMEOUT_MS, ZOOM_MAX_RETRIES]
+risk:
+  default: READ
+capabilities:
+  - zoom.user.get
+  - zoom.meeting.list
+  - zoom.meeting.get
+  - zoom.meeting.create
+  - zoom.meeting.update
+  - zoom.meeting.delete
+  - zoom.recording.list
+  - zoom.recording.get
+  - zoom.transcript.get
+  - zoom.participant.list
+approval:
+  write: required
+  destructive: required
+  mechanism: "HMAC-SHA256(tool + canonical payload), validated inside connector"
+security:
+  credential_isolation: true
+  fixed_api_origin: true
+  arbitrary_http_tool: false
+  retrieved_content_untrusted: true
