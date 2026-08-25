@@ -20,9 +20,6 @@ public sealed record SqlServerOptions(
         var enableProcedureExecute = ParseBool("SQLSERVER_ENABLE_PROCEDURE_EXECUTE", false);
         var approvalSecret = Environment.GetEnvironmentVariable("SQLSERVER_APPROVAL_SECRET");
 
-        if (requireApproval && string.IsNullOrWhiteSpace(approvalSecret))
-            throw new InvalidOperationException("SQLSERVER_APPROVAL_SECRET is required when write approval is enabled.");
-
         return new SqlServerOptions(connectionString, timeout, maxRows, requireApproval, enableProcedureExecute, approvalSecret);
     }
 
@@ -38,6 +35,8 @@ public sealed record SqlServerOptions(
     private static bool ParseBool(string name, bool fallback)
     {
         var raw = Environment.GetEnvironmentVariable(name);
-        return string.IsNullOrWhiteSpace(raw) ? fallback : bool.Parse(raw);
+        if (string.IsNullOrWhiteSpace(raw)) return fallback;
+        if (!bool.TryParse(raw, out var value)) throw new InvalidOperationException($"{name} must be true or false.");
+        return value;
     }
 }
