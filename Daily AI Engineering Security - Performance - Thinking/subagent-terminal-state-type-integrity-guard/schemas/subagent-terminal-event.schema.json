@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Subagent Terminal Event",
+  "type": "object",
+  "required": ["child_id", "task_id", "dispatch_generation", "status", "terminal_state", "terminal_reason", "result_present", "unresolved_tool_calls", "live_descendants"],
+  "properties": {
+    "child_id": {"type": "string", "minLength": 1},
+    "task_id": {"type": "string", "minLength": 1},
+    "dispatch_generation": {"type": "integer", "minimum": 0},
+    "current_dispatch_generation": {"type": "integer", "minimum": 0},
+    "status": {"enum": ["success", "completed", "incomplete", "failed", "cancelled", "pending", "unknown"]},
+    "terminal_state": {"enum": ["completed", "tool_deferred", "limit", "cancelled", "failed", "interrupted", "timeout", "pending", "unknown"]},
+    "terminal_reason": {"type": "string"},
+    "result_present": {"type": "boolean"},
+    "result_id": {"type": "string"},
+    "unresolved_tool_calls": {"type": "integer", "minimum": 0},
+    "live_descendants": {"type": "integer", "minimum": 0}
+  },
+  "additionalProperties": true
+}
