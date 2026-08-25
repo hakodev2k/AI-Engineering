@@ -1,0 +1,19 @@
+{
+  "baseline_scenario": "baseline",
+  "min_samples_per_scenario": 10,
+  "ratio_thresholds": {
+    "cpu_percent": 2.0,
+    "read_mb_s": 5.0,
+    "write_mb_s": 5.0,
+    "working_set_mb": 2.0,
+    "handles": 2.0,
+    "threads": 2.0,
+    "input_stall_ms": 3.0
+  },
+  "absolute_thresholds": {
+    "read_mb_s": 200.0,
+    "write_mb_s": 100.0,
+    "input_stall_ms": 50.0
+  },
+  "require_matched_baseline": true
+}
