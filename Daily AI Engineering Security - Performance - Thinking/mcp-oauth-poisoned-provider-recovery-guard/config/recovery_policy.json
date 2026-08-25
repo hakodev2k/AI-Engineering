@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "max_transport_retries": 3,
+  "max_provider_recreations": 2,
+  "lock_error_markers": [
+    "current task is not holding this lock",
+    "auth-flow lock",
+    "oauthcontext.lock",
+    "lock corruption"
+  ],
+  "poison_timeout_threshold": 3,
+  "circuit_cooldown_seconds": 300
+}
