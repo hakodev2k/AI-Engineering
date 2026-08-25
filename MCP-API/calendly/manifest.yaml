@@ -1,0 +1,53 @@
+id: calendly
+name: Calendly
+upstream:
+  - mcp
+  - rest
+mcp:
+  endpoint: https://mcp.calendly.com/
+  auth: oauth2.1-dcr-pkce
+  scopes:
+    - mcp:scheduling:read
+    - mcp:scheduling:write
+rest:
+  base_url: https://api.calendly.com
+  auth: oauth2.1-or-personal-access-token
+auth:
+  credential_isolation: connector-only
+  environment:
+    - CALENDLY_MCP_ACCESS_TOKEN
+    - CALENDLY_API_TOKEN
+capabilities:
+  - user.read
+  - event_type.list
+  - event_type.read
+  - event_type.create
+  - event_type.update
+  - availability.read
+  - event.list
+  - event.read
+  - invitee.list
+  - booking.create
+  - event.cancel
+  - scheduling_link.create
+risk:
+  default: read
+  write_requires_approval: true
+  destructive_requires_approval: true
+permissions:
+  read:
+    - availability:read
+    - scheduled_events:read
+    - invitees:read
+  write:
+    - scheduled_events:write
+    - invitees:write
+  note: Exact REST OAuth scopes depend on the enabled endpoints and Calendly account/plan. MCP uses the two mcp:scheduling scopes above.
+required_env:
+  - CALENDLY_TRANSPORT
+  - CALENDLY_REQUIRE_WRITE_APPROVAL
+security:
+  untrusted_provider_content: true
+  arbitrary_http_tool: false
+  bounded_retries: true
+  timeout_and_cancellation: true
