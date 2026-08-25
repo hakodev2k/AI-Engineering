@@ -9,7 +9,7 @@ public sealed class SafetyAndPolicyTests
     [Theory]
     [InlineData("dbo")]
     [InlineData("Orders_2026")]
-    [InlineData("#temp")]
+    [InlineData("_internal")]
     public void QuoteIdentifier_AllowsSafeSqlServerIdentifiers(string input)
     {
         var result = SqlSafety.QuoteIdentifier(input);
