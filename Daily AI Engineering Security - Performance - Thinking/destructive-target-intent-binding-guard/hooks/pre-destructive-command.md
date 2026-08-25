@@ -1,24 +1,24 @@
-# Hook: Pre-Destructive Command
+# Hook: Pre-Destructive Operation
 
 ## Trigger
-Immediately before a shell/tool executor receives a filesystem-destructive command.
+Immediately before an executor performs a filesystem-destructive operation.
 
 ## Preconditions
-The host has serialized `command`, `cwd`, `allowed_roots`, and `authorized_targets` into a JSON request file. `authorized_targets` must originate from task scope/approval, not from the command parser.
+The host has serialized `operation`, `cwd`, `targets`, `allowed_roots`, `authorized_targets`, `recursive`, and `recoverable` into a JSON request. `authorized_targets` comes from task scope/approval, not from the executor implementation.
 
 ## Action
-Run the deterministic preflight and block automatic execution unless it returns `allow`.
+Run the deterministic target preflight and block automatic execution unless it returns `allow`.
 
-## Command
+## Script/command
 ```text
-python scripts/destructive_guard.py --input <request.json> --policy config/policy.json --output <decision.json>
+python scripts/target_guard.py --input <request.json> --policy config/policy.json --output <decision.json>
 ```
 
 ## Expected result
-Exit `0` only for non-destructive commands or exact non-recursive destructive targets that satisfy policy. Exit `20` for block, `21` for review, and `2` for invalid input/internal validation failure.
+Exit `0` only for an exact target set satisfying policy. Exit `20` for block, `21` for review, and `2` for invalid input/validation failure.
 
 ## Failure behavior
-Any non-zero exit blocks the executor. A `review` result may be retried only after exact target enumeration and explicit approval according to the workflow. Scanner failure must not be converted to allow.
+Any non-zero exit blocks automatic execution. A `review` result may be retried only after read-only target enumeration and explicit approval according to `workflows/preflight-execute-verify.md`. Scanner failure must not be converted to allow.
 
 ## Blocks completion
-Yes. A task cannot claim destructive cleanup completed if this hook did not pass or if independent postcondition verification is absent.
+Yes. Destructive cleanup cannot be reported complete without a passing preflight (or documented reviewed approval path) and independent postcondition verification.
