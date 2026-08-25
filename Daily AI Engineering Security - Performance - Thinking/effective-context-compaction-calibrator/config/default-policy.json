@@ -1,0 +1,5 @@
+{
+  "target_utilization_ratio": 0.88,
+  "minimum_response_runway_tokens": 12000,
+  "minimum_compaction_headroom_tokens": 16000
+}
