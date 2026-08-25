@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "classifier_unavailable": {
+    "low": "allow",
+    "medium": "manual_review",
+    "high": "manual_review",
+    "critical": "block"
+  },
+  "max_identical_retries": 1
+}
