@@ -10,9 +10,17 @@ const ALLOWED = new Set([
 
 export class DropboxUpstreamMcp {
   private client?: Client;
+  private discovered?: Set<string>;
   constructor(private readonly config: Config) {}
 
   get enabled(): boolean { return Boolean(this.config.mcpAccessToken); }
+
+  private withTimeout<T>(promise: Promise<T>, label: string): Promise<T> {
+    return new Promise<T>((resolve, reject) => {
+      const timer = setTimeout(() => reject(new Error(`${label} timed out after ${this.config.timeoutMs} ms`)), this.config.timeoutMs);
+      promise.then(v => { clearTimeout(timer); resolve(v); }, e => { clearTimeout(timer); reject(e); });
+    });
+  }
 
   private async getClient(): Promise<Client> {
     if (this.client) return this.client;
@@ -21,7 +29,9 @@ export class DropboxUpstreamMcp {
     const transport = new StreamableHTTPClientTransport(new URL(this.config.mcpUrl), {
       requestInit: { headers: { Authorization: `Bearer ${this.config.mcpAccessToken}` } }
     });
-    await client.connect(transport);
+    await this.withTimeout(client.connect(transport), 'Dropbox MCP connect');
+    const advertised = await this.withTimeout(client.listTools(), 'Dropbox MCP tools/list');
+    this.discovered = new Set(advertised.tools.map(tool => tool.name).filter(name => ALLOWED.has(name)));
     this.client = client;
     return client;
   }
@@ -29,7 +39,8 @@ export class DropboxUpstreamMcp {
   async call(tool: string, args: Record<string, unknown>): Promise<unknown> {
     if (!ALLOWED.has(tool)) throw new Error(`Upstream Dropbox MCP tool is not allowlisted: ${tool}`);
     const client = await this.getClient();
-    const result = await client.callTool({ name: tool, arguments: args });
+    if (!this.discovered?.has(tool)) throw new Error(`Dropbox MCP did not advertise required tool: ${tool}`);
+    const result = await this.withTimeout(client.callTool({ name: tool, arguments: args }), `Dropbox MCP ${tool}`);
     if ((result as any)?.isError) throw new Error(`Dropbox MCP tool ${tool} returned an error`);
     return result;
   }
@@ -37,5 +48,6 @@ export class DropboxUpstreamMcp {
   async close(): Promise<void> {
     await this.client?.close();
     this.client = undefined;
+    this.discovered = undefined;
   }
 }
