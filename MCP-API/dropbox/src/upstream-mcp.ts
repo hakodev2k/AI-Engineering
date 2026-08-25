@@ -1,5 +1,4 @@
-import { Client } from '@modelcontextprotocol/sdk/client/index.js';
-import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js';
+import { Client, StreamableHTTPClientTransport, type AuthProvider } from '@modelcontextprotocol/client';
 import type { Config } from './config.js';
 
 const ALLOWED = new Set([
@@ -25,10 +24,9 @@ export class DropboxUpstreamMcp {
   private async getClient(): Promise<Client> {
     if (this.client) return this.client;
     if (!this.config.mcpAccessToken) throw new Error('DROPBOX_MCP_ACCESS_TOKEN is not configured');
+    const authProvider: AuthProvider = { token: async () => this.config.mcpAccessToken };
     const client = new Client({ name: 'ai-engineering-dropbox-connector', version: '1.0.0' });
-    const transport = new StreamableHTTPClientTransport(new URL(this.config.mcpUrl), {
-      requestInit: { headers: { Authorization: `Bearer ${this.config.mcpAccessToken}` } }
-    });
+    const transport = new StreamableHTTPClientTransport(new URL(this.config.mcpUrl), { authProvider });
     await this.withTimeout(client.connect(transport), 'Dropbox MCP connect');
     const advertised = await this.withTimeout(client.listTools(), 'Dropbox MCP tools/list');
     this.discovered = new Set(advertised.tools.map(tool => tool.name).filter(name => ALLOWED.has(name)));
