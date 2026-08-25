@@ -178,17 +178,16 @@ This design binds approval to the exact operation and payload rather than accept
 
 ### Timeouts and cancellation
 
-Remote MCP connection, discovery and tool calls are bounded by connector timeouts. SDK/API calls are guarded by a caller-visible hard timeout. The official Dropbox JavaScript SDK methods used here do not expose a per-call `AbortSignal`, so a timed-out SDK request may continue settling underneath after the connector has stopped waiting for it. For that reason, mutating SDK calls are never automatically retried and mutating MCP failures never fall back to the SDK. This avoids replaying an action whose final provider state may be ambiguous.
+Remote MCP connection, discovery and tool calls are bounded by connector timeouts. SDK/API calls are guarded by a caller-visible hard timeout. The official Dropbox JavaScript SDK methods used here do not expose a per-call `AbortSignal`, so a timed-out SDK request may continue settling underneath after the connector has stopped waiting for it. A timeout is therefore **not retried**, even for reads. Mutating SDK calls are also never automatically retried, and mutating MCP failures never fall back to the SDK. This avoids replaying an action or issuing a concurrent duplicate request whose provider state may still be unresolved.
 
 ### Retries
 
-Only read-side SDK/API calls are retried automatically. Retry conditions are limited to:
+Only read-side SDK/API calls are retried automatically, and only after an explicit provider response indicating a transient condition:
 
 - HTTP 429
 - HTTP 5xx
-- connector timeout failures
 
-Backoff is bounded exponential backoff and honors `Retry-After` when available. Authentication, permission and validation errors are not retried. Write operations are never blindly retried.
+Backoff is bounded exponential backoff and honors `Retry-After` when available. Timeouts, authentication failures, permission failures and validation errors are not retried. Write operations are never blindly retried.
 
 ### MCP fallback
 
@@ -205,8 +204,8 @@ Dropbox does not publish one universal numeric request limit for every API opera
 The connector therefore:
 
 - preserves `Retry-After`
-- uses bounded exponential backoff for reads
-- avoids blind write retries
+- uses bounded exponential backoff for read calls after explicit 429/5xx responses
+- avoids timeout-triggered replay and blind write retries
 - limits list/search page sizes
 - exposes cursors rather than automatically crawling entire accounts
 
@@ -219,6 +218,7 @@ Errors are normalized into connector errors without leaking tokens. Relevant beh
 - `409`: provider conflict/path state error; fail rather than retrying mutations.
 - `429`: read calls may retry using provider backoff.
 - `5xx`: bounded read retry; writes fail without replay.
+- timeout: fail closed; do not issue another SDK call while the prior request could still settle.
 - MCP unknown/unadvertised tool: fail safely or use SDK fallback for reads only.
 
 ## Transport details
