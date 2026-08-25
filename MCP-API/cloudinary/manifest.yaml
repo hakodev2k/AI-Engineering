@@ -1,0 +1,52 @@
+id: cloudinary
+name: Cloudinary
+runtime: node20
+upstream:
+  - official-mcp
+  - official-node-sdk
+  - rest
+mcp:
+  official: true
+  transport: streamable-http
+  notes: Cloudinary hosts remote MCP servers; this connector exposes a stable local MCP contract and uses the official SDK for deterministic asset lifecycle operations.
+auth:
+  type: api-key-secret
+  env:
+    - CLOUDINARY_CLOUD_NAME
+    - CLOUDINARY_API_KEY
+    - CLOUDINARY_API_SECRET
+api:
+  admin: https://api.cloudinary.com/v1_1/{cloud_name}
+  upload: https://api.cloudinary.com/v1_1/{cloud_name}/{resource_type}/upload
+capabilities:
+  - asset.list
+  - asset.get
+  - asset.search
+  - asset.upload
+  - asset.rename
+  - asset.update
+  - asset.delete
+  - folder.list
+  - tag.list
+  - usage.get
+  - transformation.url
+risk:
+  default: READ
+  tools:
+    cloudinary.asset.list: READ
+    cloudinary.asset.get: READ
+    cloudinary.asset.search: READ
+    cloudinary.folder.list: READ
+    cloudinary.tag.list: READ
+    cloudinary.usage.get: READ
+    cloudinary.transformation.url: READ
+    cloudinary.asset.upload: WRITE
+    cloudinary.asset.update: WRITE
+    cloudinary.asset.rename: HIGH_RISK
+    cloudinary.asset.delete: DESTRUCTIVE
+approval:
+  required_for:
+    - cloudinary.asset.upload
+    - cloudinary.asset.update
+    - cloudinary.asset.rename
+    - cloudinary.asset.delete
