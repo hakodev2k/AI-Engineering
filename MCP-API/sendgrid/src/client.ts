@@ -25,7 +25,7 @@ export class SendGridClient {
           signal: controller.signal
         });
         const text = await res.text();
-        const parsed = text ? safeJson(text) : undefined;
+        const parsed = text ? safeJson(text) : null;
         if (res.ok) return parsed as T;
 
         const retryAfter = parseRetryAfter(res.headers);
