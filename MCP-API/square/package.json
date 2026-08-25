@@ -7,6 +7,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "start": "node dist/server.js",
+    "approval": "node dist/approval-cli.js",
     "test": "vitest run"
   },
   "dependencies": {
