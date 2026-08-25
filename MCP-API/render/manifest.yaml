@@ -1,0 +1,67 @@
+id: render
+name: Render
+version: 1.0.0
+runtime: node>=20
+upstream:
+  - mcp
+  - rest
+mcp:
+  official: true
+  endpoint: https://mcp.render.com/mcp
+  transport: streamable-http
+api:
+  base_url: https://api.render.com/v1
+auth:
+  type: api_key_bearer
+  env:
+    - RENDER_API_KEY
+  notes: "Render API keys inherit access to the user's workspaces; keep the key inside the connector credential layer."
+capabilities:
+  - workspace.list
+  - service.list
+  - service.get
+  - deploy.list
+  - deploy.get
+  - logs.list
+  - metrics.get
+  - project.list
+  - deploy.trigger
+  - service.restart
+  - service.suspend
+  - service.resume
+risk:
+  default: READ
+  tools:
+    render.workspace.list: READ
+    render.service.list: READ
+    render.service.get: READ
+    render.deploy.list: READ
+    render.deploy.get: READ
+    render.logs.list: READ
+    render.metrics.get: READ
+    render.project.list: READ
+    render.deploy.trigger: HIGH_RISK
+    render.service.restart: HIGH_RISK
+    render.service.suspend: HIGH_RISK
+    render.service.resume: HIGH_RISK
+approval:
+  required:
+    - render.deploy.trigger
+    - render.service.restart
+    - render.service.suspend
+    - render.service.resume
+environment:
+  required:
+    - RENDER_API_KEY
+  optional:
+    - RENDER_API_BASE_URL
+    - RENDER_MCP_URL
+    - RENDER_REQUEST_TIMEOUT_MS
+    - RENDER_MAX_RETRIES
+    - RENDER_ENABLE_API_FALLBACK
+    - RENDER_REQUIRE_WRITE_APPROVAL
+    - RENDER_APPROVAL_SECRET
+security:
+  credentials_exposed_to_llm: false
+  retrieved_provider_content: untrusted
+  destructive_tools_enabled_by_default: false
