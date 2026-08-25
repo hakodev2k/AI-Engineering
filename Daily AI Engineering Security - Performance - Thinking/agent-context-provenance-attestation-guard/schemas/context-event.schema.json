@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Agent Context Provenance Event",
+  "type": "object",
+  "required": ["event_id", "role", "source", "source_id", "transcript_recorded", "content_sha256"],
+  "properties": {
+    "event_id": {"type": "string", "minLength": 1},
+    "role": {"enum": ["user", "assistant", "system", "tool"]},
+    "source": {"enum": ["user_ingress", "assistant", "system", "harness", "tool", "subagent", "hook", "memory", "retrieval", "unknown"]},
+    "source_id": {"type": "string", "minLength": 1},
+    "transcript_recorded": {"type": "boolean"},
+    "authenticated_user": {"type": "boolean"},
+    "ingress_event_id": {"type": "string"},
+    "parent_event_ids": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "content_sha256": {"type": "string", "pattern": "^[a-fA-F0-9]{64}$"},
+    "timestamp": {"type": "string"}
+  },
+  "additionalProperties": true
+}
