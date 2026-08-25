@@ -1,0 +1,82 @@
+id: okta
+name: Okta
+version: 1.0.0
+
+upstream:
+  preferred:
+    type: mcp
+    implementation: Okta Open Source MCP Server
+    repository: https://github.com/okta/okta-mcp-server
+    mode: local-stdio
+  fallback:
+    type: rest
+    base_url: ${OKTA_ORG_URL}
+    api_prefix: /api/v1
+
+auth:
+  preferred:
+    type: oauth2
+    methods:
+      - device_authorization
+      - private_key_jwt
+  fallback:
+    type: api_token
+    header_scheme: SSWS
+  credentials_are_connector_local: true
+  required_environment:
+    - OKTA_ORG_URL
+  optional_environment:
+    - OKTA_ACCESS_TOKEN
+    - OKTA_API_TOKEN
+    - OKTA_MCP_ENABLED
+    - OKTA_MCP_COMMAND
+    - OKTA_MCP_ARGS
+    - OKTA_MCP_DIRECTORY
+    - OKTA_MCP_CLIENT_ID
+    - OKTA_MCP_SCOPES
+    - OKTA_MCP_PRIVATE_KEY
+    - OKTA_MCP_KEY_ID
+    - OKTA_APPROVAL_SECRET
+    - OKTA_ALLOW_REST_FALLBACK
+    - OKTA_TIMEOUT_MS
+    - OKTA_MAX_RETRIES
+
+scopes:
+  read:
+    - okta.users.read
+    - okta.groups.read
+    - okta.apps.read
+    - okta.logs.read
+  write:
+    - okta.users.manage
+    - okta.groups.manage
+
+capabilities:
+  - user.search
+  - user.get
+  - user.create
+  - user.update
+  - user.suspend
+  - user.unsuspend
+  - group.list
+  - group.get
+  - group.create
+  - group.members.list
+  - group.member.add
+  - group.member.remove
+  - application.list
+  - application.get
+  - system_log.query
+
+risk:
+  default: READ
+  approval:
+    WRITE: required
+    HIGH_RISK: required
+    DESTRUCTIVE: disabled
+
+security:
+  arbitrary_http: false
+  retrieved_content_is_untrusted: true
+  scope_filtered_upstream_tools: true
+  no_raw_credentials_to_llm: true
