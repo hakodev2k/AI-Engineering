@@ -23,9 +23,15 @@ export function requiresApproval(tool: string, config: Config): boolean {
   return risk === 'HIGH_RISK' || risk === 'DESTRUCTIVE' || (risk === 'WRITE' && config.requireWriteApproval);
 }
 
+function canonical(value: unknown): string {
+  if (value === null || typeof value !== 'object') return JSON.stringify(value);
+  if (Array.isArray(value)) return `[${value.map(canonical).join(',')}]`;
+  const obj = value as Record<string, unknown>;
+  return `{${Object.keys(obj).sort().map(key => `${JSON.stringify(key)}:${canonical(obj[key])}`).join(',')}}`;
+}
+
 export function approvalDigest(secret: string, tool: string, args: unknown): string {
-  const body = JSON.stringify(args, Object.keys((args ?? {}) as object).sort());
-  return crypto.createHmac('sha256', secret).update(`${tool}\n${body}`).digest('hex');
+  return crypto.createHmac('sha256', secret).update(`${tool}\n${canonical(args)}`).digest('hex');
 }
 
 export function assertApproval(tool: string, args: unknown, approvalId: string | undefined, config: Config): void {
