@@ -49,10 +49,12 @@ def load_trace(path: Path) -> list[dict[str, Any]]:
 
 
 def summarize(rows: list[dict[str, Any]]) -> dict[str, Any]:
+    if not rows:
+        raise ValueError("rows are empty")
     requests = len(rows)
     tokens = sum(float(r["input_tokens"]) for r in rows)
     latency = sum(float(r["latency_ms"]) for r in rows)
-    cost = sum(float(r["cost_usd"]) for r in rows)
+    cost = sum(float(r.get("cost_usd", 0.0)) for r in rows)
     hits = sum(1 for r in rows if r["cache_hit"])
     turns = {str(r["turn"]) for r in rows}
 
