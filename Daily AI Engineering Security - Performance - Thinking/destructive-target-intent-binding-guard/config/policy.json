@@ -1,13 +1,10 @@
 {
   "version": 1,
   "require_exact_target_binding": true,
-  "block_globs": true,
-  "block_unresolved_variables": true,
-  "block_command_substitution": true,
-  "block_drive_or_filesystem_roots": true,
-  "block_workspace_root_recursive_delete": true,
-  "review_git_clean": true,
-  "review_recursive_delete": true,
-  "destructive_commands": ["rm", "rmdir", "del", "erase", "remove-item", "git clean"],
-  "dangerous_flags": ["-r", "-rf", "-fr", "/s", "-recurse", "-force", "-f", "-x", "-X"]
+  "block_ambiguous_target_expressions": true,
+  "block_filesystem_roots": true,
+  "block_outside_allowed_roots": true,
+  "block_recursive_allowed_root": true,
+  "review_recursive": true,
+  "review_unrecoverable": true
 }
