@@ -1,4 +1,3 @@
-import crypto from 'node:crypto';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { z } from 'zod';
@@ -36,9 +35,7 @@ server.tool('square.catalog.list', 'List catalog objects by explicit types. READ
 
 server.tool('square.catalog.search', 'Search catalog objects using Square search filters. READ; scope ITEMS_READ.', {
   objectTypes: z.array(z.string().min(1).max(80)).min(1).max(20).optional(),
-  query: object.optional(),
-  cursor,
-  limit: z.number().int().min(1).max(1000).optional(),
+  query: object.optional(), cursor, limit: z.number().int().min(1).max(1000).optional(),
   includeDeletedObjects: z.boolean().optional()
 }, async a => out(await client.request('POST', '/catalog/search', { body: {
   object_types: a.objectTypes, query: a.query, cursor: a.cursor, limit: a.limit, include_deleted_objects: a.includeDeletedObjects
@@ -64,7 +61,7 @@ server.tool('square.customer.create', 'Create a customer. WRITE; configurable ex
     email_address: payload.emailAddress, phone_number: payload.phoneNumber, note: payload.note
   };
   if (payload.idempotencyKey) body.idempotency_key = payload.idempotencyKey;
-  return out(await client.request('POST', '/customers', { body, idempotencyKey: payload.idempotencyKey as string | undefined, retrySafe: Boolean(payload.idempotencyKey) }));
+  return out(await client.request('POST', '/customers', { body, retrySafe: Boolean(payload.idempotencyKey) }));
 });
 
 server.tool('square.customer.update', 'Update selected fields on a customer. WRITE; configurable explicit approval; scope CUSTOMERS_WRITE.', {
@@ -92,10 +89,10 @@ server.tool('square.order.get', 'Retrieve an order by ID. READ; scope ORDERS_REA
 );
 
 server.tool('square.order.create', 'Create a Square order. WRITE; configurable explicit approval; scope ORDERS_WRITE.', {
-  order: object, idempotencyKey: z.string().min(1).max(45).default(() => crypto.randomUUID()), approvalId
+  order: object, idempotencyKey: z.string().min(1).max(45), approvalId
 }, async a => {
   const payload = approved('square.order.create', a as unknown as Record<string, unknown>);
-  return out(await client.request('POST', '/orders', { body: { order: payload.order, idempotency_key: payload.idempotencyKey }, idempotencyKey: payload.idempotencyKey as string, retrySafe: true }));
+  return out(await client.request('POST', '/orders', { body: { order: payload.order, idempotency_key: payload.idempotencyKey }, retrySafe: true }));
 });
 
 server.tool('square.payment.list', 'List payments with bounded pagination controls. READ; scope PAYMENTS_READ.', {
@@ -112,20 +109,14 @@ server.tool('square.payment.get', 'Retrieve one payment. READ; scope PAYMENTS_RE
 );
 
 server.tool('square.refund.create', 'Refund a completed payment. HIGH_RISK financial action; explicit approval always required; scope PAYMENTS_WRITE.', {
-  paymentId: id,
-  amount: z.number().int().positive(),
-  currency: z.string().length(3).regex(/^[A-Z]{3}$/),
-  reason: z.string().max(192).optional(),
-  idempotencyKey: z.string().min(1).max(45).default(() => crypto.randomUUID()),
-  approvalId
+  paymentId: id, amount: z.number().int().positive(), currency: z.string().length(3).regex(/^[A-Z]{3}$/),
+  reason: z.string().max(192).optional(), idempotencyKey: z.string().min(1).max(45), approvalId
 }, async a => {
   const payload = approved('square.refund.create', a as unknown as Record<string, unknown>);
   return out(await client.request('POST', '/refunds', { body: {
-    idempotency_key: payload.idempotencyKey,
-    payment_id: payload.paymentId,
-    amount_money: { amount: payload.amount, currency: payload.currency },
-    reason: payload.reason
-  }, idempotencyKey: payload.idempotencyKey as string, retrySafe: true }));
+    idempotency_key: payload.idempotencyKey, payment_id: payload.paymentId,
+    amount_money: { amount: payload.amount, currency: payload.currency }, reason: payload.reason
+  }, retrySafe: true }));
 });
 
 const transport = new StdioServerTransport();
