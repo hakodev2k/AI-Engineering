@@ -11,34 +11,40 @@ function retryAfterMs(error: any): number | undefined {
   return Number.isFinite(seconds) && seconds >= 0 ? seconds * 1000 : undefined;
 }
 
-const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-
 export class DropboxApiClient {
-  private readonly dbx: Dropbox;
-  constructor(private readonly config: Config) {
-    if (!config.accessToken) throw new Error('DROPBOX_ACCESS_TOKEN is required for SDK fallback');
-    this.dbx = new Dropbox({ accessToken: config.accessToken });
+  private readonly dbx: any;
+  private readonly sleepFn: (ms: number) => Promise<void>;
+
+  constructor(private readonly config: Config, dbx?: any, sleepFn?: (ms: number) => Promise<void>) {
+    if (!config.accessToken && !dbx) throw new Error('DROPBOX_ACCESS_TOKEN is required for SDK fallback');
+    this.dbx = dbx ?? new Dropbox({ accessToken: config.accessToken });
+    this.sleepFn = sleepFn ?? (ms => new Promise(resolve => setTimeout(resolve, ms)));
   }
 
   private async invoke<T>(operation: (signal: AbortSignal) => Promise<T>, retryable: boolean): Promise<T> {
     let attempt = 0;
     while (true) {
       const controller = new AbortController();
-      const timer = setTimeout(() => controller.abort(), this.config.timeoutMs);
+      const timeoutError = new Error(`Dropbox request timed out after ${this.config.timeoutMs} ms`);
+      timeoutError.name = 'TimeoutError';
+      let timer: NodeJS.Timeout | undefined;
       try {
-        return await operation(controller.signal);
+        const timeout = new Promise<never>((_, reject) => {
+          timer = setTimeout(() => { controller.abort(); reject(timeoutError); }, this.config.timeoutMs);
+        });
+        return await Promise.race([operation(controller.signal), timeout]);
       } catch (error: any) {
         const status = statusOf(error);
-        const transient = status === 429 || (status !== undefined && status >= 500) || error?.name === 'AbortError';
+        const transient = status === 429 || (status !== undefined && status >= 500) || error?.name === 'AbortError' || error?.name === 'TimeoutError';
         if (!retryable || !transient || attempt >= this.config.maxRetries) {
           const suffix = status ? ` (HTTP ${status})` : '';
           throw new Error(`Dropbox request failed${suffix}: ${error?.message ?? String(error)}`);
         }
         const wait = retryAfterMs(error) ?? Math.min(500 * 2 ** attempt, 8000);
         attempt += 1;
-        await sleep(wait);
+        await this.sleepFn(wait);
       } finally {
-        clearTimeout(timer);
+        if (timer) clearTimeout(timer);
       }
     }
   }
@@ -66,11 +72,7 @@ export class DropboxApiClient {
   search(args: { query: string; path?: string; maxResults?: number }) {
     return this.read(async signal => (await this.dbx.filesSearchV2({
       query: args.query,
-      options: {
-        path: args.path,
-        max_results: args.maxResults ?? 20,
-        filename_only: false
-      }
+      options: { path: args.path, max_results: args.maxResults ?? 20, filename_only: false }
     } as any, { signal } as any)).result);
   }
 
