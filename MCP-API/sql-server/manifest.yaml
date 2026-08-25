@@ -1,0 +1,68 @@
+id: sql-server
+name: Microsoft SQL Server
+runtime: dotnet-8
+upstream:
+  - sdk
+  - tds
+upstream_mcp:
+  official: false
+  note: No official SQL Server MCP server is required by this connector; it exposes MCP locally using the official MCP C# SDK and connects with Microsoft.Data.SqlClient.
+provider:
+  sdk: Microsoft.Data.SqlClient
+  api_base_url: null
+auth:
+  type: connection-string
+  supported:
+    - sql-server-authentication
+    - windows-integrated-authentication
+    - microsoft-entra-authentication-via-sqlclient
+  credentials_env:
+    - SQLSERVER_CONNECTION_STRING
+permissions:
+  least_privilege: true
+  recommended_read:
+    - CONNECT
+    - SELECT
+    - VIEW DEFINITION
+  recommended_write_additions:
+    - INSERT
+    - UPDATE
+  procedure_execution:
+    - EXECUTE
+capabilities:
+  - database.health
+  - database.info
+  - schema.list
+  - table.list
+  - table.describe
+  - view.list
+  - procedure.list
+  - record.list
+  - record.get
+  - query.select
+  - record.insert
+  - record.update
+  - procedure.execute
+risk:
+  default: READ
+  tools:
+    sql-server.record.insert: WRITE
+    sql-server.record.update: WRITE
+    sql-server.procedure.execute: HIGH_RISK
+approval:
+  write: configurable-required-by-default
+  high_risk: always-required
+  destructive: not-implemented
+required_env:
+  - SQLSERVER_CONNECTION_STRING
+optional_env:
+  - SQLSERVER_COMMAND_TIMEOUT_SECONDS
+  - SQLSERVER_MAX_ROWS
+  - SQLSERVER_REQUIRE_WRITE_APPROVAL
+  - SQLSERVER_APPROVAL_SECRET
+  - SQLSERVER_ENABLE_PROCEDURE_EXECUTE
+security:
+  tls: "Microsoft.Data.SqlClient Encrypt is mandatory by default in current releases; keep TrustServerCertificate=false for production."
+  arbitrary_http: false
+  arbitrary_sql_write: false
+  provider_content_untrusted: true
