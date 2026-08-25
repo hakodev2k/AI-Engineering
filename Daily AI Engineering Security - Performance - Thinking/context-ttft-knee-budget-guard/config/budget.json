@@ -1,0 +1,7 @@
+{
+  "max_p95_ttft_ms": 30000,
+  "bin_size_tokens": 20000,
+  "safety_margin_ratio": 0.85,
+  "minimum_samples_per_bin": 3,
+  "default_soft_budget_tokens": 180000
+}
