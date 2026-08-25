@@ -1,0 +1,12 @@
+{
+  "pending_interrupts": [
+    {"id": "deploy-a", "task_id": "release"},
+    {"id": "deploy-b", "task_id": "release"}
+  ],
+  "resume": {
+    "responses": [
+      {"id": "deploy-a", "status": "approved"},
+      {"id": "deploy-b", "status": "rejected"}
+    ]
+  }
+}
