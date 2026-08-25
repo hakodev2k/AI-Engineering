@@ -1,0 +1,7 @@
+{
+  "require_execution_bounds": true,
+  "require_approval_bounds_when_approval_occurred": true,
+  "max_clock_skew_ms": 250,
+  "block_ambiguous_causal_claims": true,
+  "allowed_claim_phases": ["tool_execution", "approval_wait", "post_tool_overhead", "end_to_end"]
+}
