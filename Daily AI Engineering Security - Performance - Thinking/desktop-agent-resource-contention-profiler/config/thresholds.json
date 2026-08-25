@@ -1,0 +1,7 @@
+{
+  "input_latency_p95_ms_max": 50,
+  "read_mb_s_p95_max": 500,
+  "cpu_pct_p95_max": 90,
+  "event_loop_lag_p95_ms_max": 100,
+  "active_idle_input_latency_ratio_max": 5.0
+}
