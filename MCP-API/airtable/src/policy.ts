@@ -5,6 +5,7 @@ export type Risk = 'READ' | 'WRITE' | 'HIGH_RISK' | 'DESTRUCTIVE';
 
 export const TOOL_POLICY: Record<string, { risk: Risk; approval: boolean }> = {
   'airtable.base.list': { risk: 'READ', approval: false },
+  'airtable.base.create': { risk: 'HIGH_RISK', approval: true },
   'airtable.schema.get': { risk: 'READ', approval: false },
   'airtable.record.list': { risk: 'READ', approval: false },
   'airtable.record.get': { risk: 'READ', approval: false },
@@ -12,10 +13,7 @@ export const TOOL_POLICY: Record<string, { risk: Risk; approval: boolean }> = {
   'airtable.record.update': { risk: 'WRITE', approval: true },
   'airtable.record.delete': { risk: 'DESTRUCTIVE', approval: true },
   'airtable.comment.list': { risk: 'READ', approval: false },
-  'airtable.comment.create': { risk: 'WRITE', approval: true },
-  'airtable.webhook.list': { risk: 'READ', approval: false },
-  'airtable.webhook.create': { risk: 'HIGH_RISK', approval: true },
-  'airtable.webhook.delete': { risk: 'DESTRUCTIVE', approval: true }
+  'airtable.comment.create': { risk: 'WRITE', approval: true }
 };
 
 export function assertApproval(tool: string, approvalId: string | undefined, secret?: string) {
