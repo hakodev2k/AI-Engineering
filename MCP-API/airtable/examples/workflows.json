@@ -1,0 +1,30 @@
+[
+  {
+    "tool": "airtable.record.list",
+    "input": { "baseId": "appExample", "tableId": "Tasks", "view": "Open", "pageSize": 50 },
+    "permission": "READ",
+    "approvalRequired": false,
+    "expectedOutput": { "records": "array", "offset": "optional string" }
+  },
+  {
+    "tool": "airtable.record.create",
+    "input": { "baseId": "appExample", "tableId": "Tasks", "records": [{ "fields": { "Name": "Review launch checklist", "Status": "Open" } }], "approvalId": "<64-char-HMAC>" },
+    "permission": "WRITE",
+    "approvalRequired": true,
+    "expectedOutput": { "records": "array of created records" }
+  },
+  {
+    "tool": "airtable.record.update",
+    "input": { "baseId": "appExample", "tableId": "Tasks", "records": [{ "id": "recExample", "fields": { "Status": "Done" } }], "approvalId": "<64-char-HMAC>" },
+    "permission": "WRITE",
+    "approvalRequired": true,
+    "expectedOutput": { "records": "array of updated records" }
+  },
+  {
+    "tool": "airtable.record.delete",
+    "input": { "baseId": "appExample", "tableId": "Tasks", "recordId": "recExample", "approvalId": "<64-char-HMAC>" },
+    "permission": "DESTRUCTIVE",
+    "approvalRequired": true,
+    "expectedOutput": { "deleted": true, "id": "recExample" }
+  }
+]
