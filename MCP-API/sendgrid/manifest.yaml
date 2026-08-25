@@ -18,6 +18,18 @@ auth:
 permissions:
   least_privilege: true
   recommended_key_type: Custom Access
+  relevant_scopes:
+    - mail.send
+    - templates.read
+    - templates.create
+    - templates.versions.create
+    - suppression.read
+    - suppression.create
+    - suppression.delete
+    - asm.groups.read
+    - user.webhooks.event.settings.read
+    - user.webhooks.event.settings.update
+  note: Sender identity access should be enabled only when sender.list is used; validate the resulting key with account.scopes.get and remove unrelated privileges.
 capabilities:
   - account.scopes.get
   - sender.list
