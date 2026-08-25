@@ -16,8 +16,12 @@ export class DropboxApiClient {
   private readonly sleepFn: (ms: number) => Promise<void>;
 
   constructor(private readonly config: Config, dbx?: any, sleepFn?: (ms: number) => Promise<void>) {
-    if (!config.accessToken && !dbx) throw new Error('DROPBOX_ACCESS_TOKEN is required for SDK fallback');
-    this.dbx = dbx ?? new Dropbox({ accessToken: config.accessToken });
+    if (!config.accessToken && !config.refreshToken && !dbx) throw new Error('DROPBOX_ACCESS_TOKEN or refresh-token credentials are required for SDK fallback');
+    this.dbx = dbx ?? new Dropbox(config.refreshToken ? {
+      refreshToken: config.refreshToken,
+      clientId: config.appKey,
+      clientSecret: config.appSecret
+    } : { accessToken: config.accessToken });
     this.sleepFn = sleepFn ?? (ms => new Promise(resolve => setTimeout(resolve, ms)));
   }
 
@@ -52,61 +56,31 @@ export class DropboxApiClient {
   private read<T>(fn: (signal: AbortSignal) => Promise<T>) { return this.invoke(fn, true); }
   private write<T>(fn: (signal: AbortSignal) => Promise<T>) { return this.invoke(fn, false); }
 
-  whoAmI() {
-    return this.read(async signal => (await this.dbx.usersGetCurrentAccount(undefined as any, { signal } as any)).result);
-  }
+  whoAmI() { return this.read(async signal => (await this.dbx.usersGetCurrentAccount(undefined as any, { signal } as any)).result); }
 
   listFolder(args: { path: string; recursive?: boolean; limit?: number; cursor?: string }) {
     if (args.cursor) return this.read(async signal => (await this.dbx.filesListFolderContinue({ cursor: args.cursor }, { signal } as any)).result);
-    return this.read(async signal => (await this.dbx.filesListFolder({
-      path: args.path,
-      recursive: args.recursive ?? false,
-      limit: args.limit ?? 100
-    } as any, { signal } as any)).result);
+    return this.read(async signal => (await this.dbx.filesListFolder({ path: args.path, recursive: args.recursive ?? false, limit: args.limit ?? 100 } as any, { signal } as any)).result);
   }
 
-  getMetadata(path: string) {
-    return this.read(async signal => (await this.dbx.filesGetMetadata({ path } as any, { signal } as any)).result);
-  }
+  getMetadata(path: string) { return this.read(async signal => (await this.dbx.filesGetMetadata({ path } as any, { signal } as any)).result); }
 
   search(args: { query: string; path?: string; maxResults?: number }) {
-    return this.read(async signal => (await this.dbx.filesSearchV2({
-      query: args.query,
-      options: { path: args.path, max_results: args.maxResults ?? 20, filename_only: false }
-    } as any, { signal } as any)).result);
+    return this.read(async signal => (await this.dbx.filesSearchV2({ query: args.query, options: { path: args.path, max_results: args.maxResults ?? 20, filename_only: false } } as any, { signal } as any)).result);
   }
 
-  createFolder(path: string) {
-    return this.write(async signal => (await this.dbx.filesCreateFolderV2({ path, autorename: false } as any, { signal } as any)).result);
-  }
+  createFolder(path: string) { return this.write(async signal => (await this.dbx.filesCreateFolderV2({ path, autorename: false } as any, { signal } as any)).result); }
 
   createTextFile(path: string, content: string, autorename = false) {
-    return this.write(async signal => (await this.dbx.filesUpload({
-      path,
-      contents: Buffer.from(content, 'utf8'),
-      mode: { '.tag': 'add' },
-      autorename,
-      mute: false
-    } as any, { signal } as any)).result);
+    return this.write(async signal => (await this.dbx.filesUpload({ path, contents: Buffer.from(content, 'utf8'), mode: { '.tag': 'add' }, autorename, mute: false } as any, { signal } as any)).result);
   }
 
-  copy(fromPath: string, toPath: string, autorename = false) {
-    return this.write(async signal => (await this.dbx.filesCopyV2({ from_path: fromPath, to_path: toPath, autorename } as any, { signal } as any)).result);
-  }
-
-  move(fromPath: string, toPath: string, autorename = false) {
-    return this.write(async signal => (await this.dbx.filesMoveV2({ from_path: fromPath, to_path: toPath, autorename } as any, { signal } as any)).result);
-  }
-
-  delete(path: string, parentRev?: string) {
-    return this.write(async signal => (await this.dbx.filesDeleteV2({ path, parent_rev: parentRev } as any, { signal } as any)).result);
-  }
+  copy(fromPath: string, toPath: string, autorename = false) { return this.write(async signal => (await this.dbx.filesCopyV2({ from_path: fromPath, to_path: toPath, autorename } as any, { signal } as any)).result); }
+  move(fromPath: string, toPath: string, autorename = false) { return this.write(async signal => (await this.dbx.filesMoveV2({ from_path: fromPath, to_path: toPath, autorename } as any, { signal } as any)).result); }
+  delete(path: string, parentRev?: string) { return this.write(async signal => (await this.dbx.filesDeleteV2({ path, parent_rev: parentRev } as any, { signal } as any)).result); }
 
   createSharedLink(path: string, audience: 'public' | 'team' | 'no_one' = 'public') {
-    return this.write(async signal => (await this.dbx.sharingCreateSharedLinkWithSettings({
-      path,
-      settings: { requested_visibility: { '.tag': audience } }
-    } as any, { signal } as any)).result);
+    return this.write(async signal => (await this.dbx.sharingCreateSharedLinkWithSettings({ path, settings: { requested_visibility: { '.tag': audience } } } as any, { signal } as any)).result);
   }
 
   listSharedLinks(path?: string, cursor?: string) {
@@ -114,11 +88,6 @@ export class DropboxApiClient {
     return this.read(async signal => (await this.dbx.sharingListSharedLinks({ path, direct_only: Boolean(path) } as any, { signal } as any)).result);
   }
 
-  listRevisions(path: string, limit = 20) {
-    return this.read(async signal => (await this.dbx.filesListRevisions({ path, limit, mode: { '.tag': 'path' } } as any, { signal } as any)).result);
-  }
-
-  restoreRevision(path: string, rev: string) {
-    return this.write(async signal => (await this.dbx.filesRestore({ path, rev } as any, { signal } as any)).result);
-  }
+  listRevisions(path: string, limit = 20) { return this.read(async signal => (await this.dbx.filesListRevisions({ path, limit, mode: { '.tag': 'path' } } as any, { signal } as any)).result); }
+  restoreRevision(path: string, rev: string) { return this.write(async signal => (await this.dbx.filesRestore({ path, rev } as any, { signal } as any)).result); }
 }
