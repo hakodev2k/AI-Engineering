@@ -1,0 +1,41 @@
+id: mysql
+name: MySQL
+runtime: node20
+upstream:
+  - x-devapi
+sdk:
+  package: "@mysql/xdevapi"
+  version: "8.0.35"
+auth:
+  type: username-password
+  transport_security: tls-recommended
+  credential_env:
+    - MYSQL_XDEVAPI_URI
+api:
+  protocol: mysql-x-protocol
+  default_port: 33060
+capabilities:
+  - schema.list
+  - table.list
+  - table.describe
+  - row.select
+  - row.get
+  - row.insert
+  - row.update
+  - row.delete
+  - query.select
+  - server.health
+risk:
+  default: read
+  write_approval: true
+  destructive_approval: true
+environment:
+  - MYSQL_XDEVAPI_URI
+  - MYSQL_APPROVAL_SECRET
+  - MYSQL_TIMEOUT_MS
+  - MYSQL_MAX_ROWS
+  - MYSQL_ALLOW_WRITES
+  - MYSQL_ALLOW_DESTRUCTIVE
+notes:
+  official_mcp: false
+  transport_strategy: "Official Oracle-maintained MySQL Connector/Node.js X DevAPI; no upstream MCP dependency."
