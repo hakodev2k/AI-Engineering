@@ -1,0 +1,46 @@
+id: sendgrid
+name: Twilio SendGrid
+runtime: nodejs-20
+upstream:
+  - rest
+mcp:
+  official_server: false
+  note: No official Twilio SendGrid MCP server was identified in current official documentation; this connector exposes SendGrid Web API v3 through its own MCP server.
+api:
+  global_base_url: https://api.sendgrid.com
+  eu_base_url: https://api.eu.sendgrid.com
+auth:
+  type: api_key
+  header: Authorization
+  scheme: Bearer
+  env:
+    - SENDGRID_API_KEY
+permissions:
+  least_privilege: true
+  recommended_key_type: Custom Access
+capabilities:
+  - account.scopes.get
+  - sender.list
+  - template.list
+  - template.get
+  - template.create
+  - template.version.create
+  - suppression.global.get
+  - suppression.global.add
+  - suppression.global.remove
+  - suppression.group.list
+  - webhook.event.get
+  - webhook.event.update
+  - email.send
+risk:
+  default: READ
+  write_requires_approval: true
+  high_risk_requires_approval: true
+environment:
+  SENDGRID_API_KEY: required
+  SENDGRID_REGION: optional
+  SENDGRID_TIMEOUT_MS: optional
+  SENDGRID_MAX_RETRIES: optional
+  SENDGRID_APPROVAL_SECRET: required_for_approved_actions
+  SENDGRID_ALLOW_WRITES: optional
+  SENDGRID_ALLOW_HIGH_RISK: optional
