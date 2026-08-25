@@ -1,0 +1,11 @@
+{
+  "writers": [
+    {"id": "session-history", "mode": "authoritative_append"},
+    {"id": "gateway", "mode": "observer"},
+    {"id": "checkpoint", "mode": "replace"}
+  ],
+  "events": [
+    {"round": 1, "writer": "session-history", "message_ids": ["u1", "a1", "tool1", "r1"]},
+    {"round": 2, "writer": "session-history", "message_ids": ["u2", "a2"]}
+  ]
+}
