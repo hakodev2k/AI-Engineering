@@ -1,72 +1,72 @@
-# Research — Agent Phase Latency Attribution Profiler
+# Research
 
 ## Topic
-Phase-aware latency attribution for agent runs
+Provider-agnostic phase latency attribution for AI-agent runs.
 
 ## Category
 Performance
 
 ## Problem
-End-to-end agent timing can conflate human approval wait, queueing, model inference, retry/backoff, host orchestration, and tool execution. That makes bottleneck diagnosis unreliable and can lead an agent to optimize the wrong subsystem.
+Total runtime and model latency do not reveal where agent time is spent. Host orchestration, queueing, preparation, provider process startup, loop transitions, rendering, and long-session processing can dominate or accumulate while appearing as generic slowness.
 
 ## Why it matters now
-Current public reports in August 2026 describe multi-minute agent delays where the tool itself executed in seconds, requests for per-tool/phase timing, and simple tasks taking ~15 minutes with no visibility into backend versus model/tool time.
+Agent systems increasingly execute dozens or hundreds of model/tool transitions. Small host overhead compounds, while cold-start and long-session costs are often invisible in provider metrics. Recent August 2026 reports ask for phase-level observability and show measurable platform-specific transition overhead.
 
 ## Affected users
-Developers diagnosing slow coding agents; platform teams operating agent runtimes; users with approval-gated workflows; teams benchmarking tools/MCP servers; observability engineers.
+Agent-platform builders, coding-agent users, performance engineers, self-hosted runners, Windows developers, and teams comparing providers or runtime versions.
 
 ## Current public evidence
 
 ### Observed evidence
-1. **OpenAI Codex issue #38731, opened 2026-08-15.** A delayed manual approval was interpreted by the agent as a slow network query; the query itself completed in about 11 seconds, but the approval-inflated wall clock drove a false technical conclusion. The report explicitly asks for separate approval-wait and execution-only durations. https://github.com/openai/codex/issues/38731
-2. **OpenAI Codex issue #40087, opened 2026-08-22.** A feature request asks for model-vs-tool timing and specifically for separating actual tool execution from Codex overhead/waiting so a 100 ms command is not represented as a 5 second command. https://github.com/openai/codex/issues/40087
-3. **OpenAI Codex issue #39190, opened 2026-08-18.** Simple tasks reportedly take around 15 minutes with no visibility into queueing, model reasoning, context work, tool execution, retry/backoff, or final response generation. https://github.com/openai/codex/issues/39190
-4. **Anthropic Claude Code issue #86339, opened 2026-08-12.** Nine measured tool-use/result gaps clustered around 305–329 seconds while a recorded command duration was only about 1.4 seconds, demonstrating a large pre-execution wait that a coarse tool envelope would misattribute. https://github.com/anthropics/claude-code/issues/86339
+1. Multica issue #6859, opened 2026-08-12, says current broad lifecycle timestamps cannot distinguish queue pickup, payload hydration, resource locks, environment preparation, repository checkout, provider startup, platform-control calls, and actual task work. It proposes stable phase timestamps and time-to-first-business-action: https://github.com/multica-ai/multica/issues/6859
+2. OpenCode issue #44515, opened 2026-08-23, compares the same machine/provider/model and observes native Windows loop-to-stream transition around 1.19 s versus roughly 0.52 s under WSL2/Linux, with additional transition/TUI latency: https://github.com/anomalyco/opencode/issues/44515
+3. OpenCode issue #30067, opened 2026-05-31, reports long agent loops slowing from about 6 s per step to 30/60/100+ s and attributes the growth to O(N²) text/reasoning delta accumulation: https://github.com/anomalyco/opencode/issues/30067
+4. OpenCode issue #31293, opened 2026-06-08, reports Windows subagent invocation taking 2–4 minutes even for trivial prompts across models, indicating host/subagent path latency can be distinct from primary-agent inference: https://github.com/anomalyco/opencode/issues/31293
 
-## Interpretation
-Independent reports across two agent products show the same observability failure: elapsed time around an action is not equivalent to action execution time. The missing abstraction is a phase-labeled timeline whose semantics are validated before it is used for optimization or agent reasoning.
+### Interpretation
+The common problem is attribution, not a single runtime bug. An operator needs stable host-level phase definitions before deciding whether to tune prompts, caching, process startup, filesystem paths, session processing, provider selection, or orchestration.
 
 ## Existing approaches
-- Per-turn wall-clock timers.
-- Tool request/result timestamps.
-- Provider/API latency logs.
-- Progress messages and UI spinners.
-- Generic distributed tracing.
+- Total wall-clock duration.
+- Provider request latency and first-token metrics.
+- General logs with timestamps.
+- Ad hoc before/after comparisons.
+- Product-specific tracing/observability.
 
 ## Remaining limitations
-- Lifecycle phases may not be emitted as first-class spans.
-- Human approval and queue states are often inside a broader tool/turn interval.
-- Overlapping timestamps can double-count time.
-- Unattributed gaps disappear into “tool latency” or “agent overhead.”
-- A single run is vulnerable to load, cache, approval, and network variance.
+- Timestamps are often not normalized into comparable phases.
+- Provider metrics exclude host preparation and post-tool transitions.
+- Total duration hides whether useful work begins late.
+- Cross-platform comparisons can mix model, filesystem, process, and UI overhead.
+- Long-session complexity can create per-step growth that a single total-duration metric cannot localize.
 
 ## Root-cause analysis
-1. Instrumentation boundaries follow API envelopes rather than semantic execution phases.
-2. Waiting states are not modeled independently.
-3. Agent-visible progress uses wall-clock deltas without provenance.
-4. Optimization decisions are made without a validated baseline.
-5. Comparisons fail to control workload, cache, model, approval mode, and provider state.
+1. Agent execution crosses multiple processes and subsystems.
+2. Instrumentation names lifecycle events differently across providers/runtimes.
+3. Wall-clock timestamps across hosts are unsafe for small duration calculations.
+4. Platform-control work and task/business work are commonly mixed.
+5. Optimization is attempted before a phase baseline exists.
 
 ## Improvement opportunity
-Adopt explicit phase intervals, validate non-overlap, quantify gaps, and make performance claims only from phase-exclusive measurements across comparable repeated runs.
-
-## Proposed solution
-A dependency-free JSONL profiler plus a measurement skill, enforceable rules, independent verifier, post-run hook, and bounded optimization workflow.
+Define a minimal, versioned phase event contract and compute monotonic durations inside each runtime. Separate provider readiness, first provider event, first business action, first visible output, and terminal completion. Use repeated before/after traces to attribute improvements.
 
 ## Goal
-Prevent false latency diagnoses and make the dominant measurable phase actionable.
+Make at least 95% of measured run time attributable to named phases and prevent performance claims without comparable baseline evidence.
 
 ## Metrics
-Wall time; per-phase duration/share; unattributed gap; p50/p95 per phase across repetitions; tool execution versus approval wait; retry/backoff share; regression rate.
+Per-phase p50/p95, total runtime, time-to-first-business-action, time-to-first-visible-output, unattributed time ratio, regression percentage.
 
 ## Trigger
-A run exceeds latency SLO, a tool is described as slow, a workflow changes orchestration/approval/retry behavior, or a performance optimization is proposed.
+Slow-run report, runtime/provider upgrade, platform migration, orchestration change, cache change, or benchmark release.
 
 ## Inputs
-Phase interval JSONL and comparable workload metadata.
+Versioned JSONL phase events and benchmark metadata that excludes sensitive task content.
 
 ## Outputs
-Validated phase breakdown, gaps, dominant phase, named slow intervals, evidence suitable for before/after comparison.
+Per-run phase breakdown, aggregate metrics, dominant phase, and machine-readable verification result.
 
-## Verification
-Overlapping intervals must fail; gaps must be visible; known fixtures must attribute approval wait and tool execution separately; claimed optimization must reduce the targeted phase on repeated comparable runs without weakening security or correctness.
+## Relevant sources
+- https://github.com/multica-ai/multica/issues/6859
+- https://github.com/anomalyco/opencode/issues/44515
+- https://github.com/anomalyco/opencode/issues/30067
+- https://github.com/anomalyco/opencode/issues/31293

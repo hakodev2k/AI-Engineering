@@ -1,52 +1,52 @@
 # Skill: Phase Latency Investigation
 
 ## Purpose
-Find the real latency bottleneck in an agent run without confusing waiting time with execution time.
+Turn a vague slow-agent report into an attributable, reproducible performance finding.
 
 ## Trigger
-Latency SLO breach, “slow tool” claim, multi-minute turn, retry storm suspicion, approval-gated delay, or planned performance change.
+High total runtime, slow first useful action, platform/provider regression, or unexplained latency after tools complete.
 
 ## Inputs
-Phase JSONL trace, workload identifier, model/version, approval mode, cache state if available, run timestamps.
+Phase event traces, workload definition, runtime/provider/model/version metadata, correctness result.
 
 ## Preconditions
-Phase boundaries must be sourced from host/runtime events or independently measurable timestamps. Do not let model narrative define timings.
+Use the same workload for baseline and comparison. Capture at least five runs when practical and distinguish cold from warm runs.
+
+## Required context
+Queue, preparation, provider startup, model/tool loop, business-action, visible-output, and terminal boundaries.
 
 ## Allowed tools
-Trace/log readers, `scripts/profile_latency.py`, statistics tooling, deterministic workload runner.
+Read logs, run `scripts/phase_latency.py`, benchmark runner, statistics tooling.
 
 ## Constraints
-Never optimize by bypassing security/approval/correctness requirements. Do not claim a phase is slow from end-to-end time alone.
+Do not optimize before baseline measurement. Do not collect secrets/prompts merely for timing. Use monotonic clocks for same-process durations.
 
 ## Procedure
-1. Capture at least three baseline runs when feasible.
-2. Validate traces for malformed or overlapping intervals.
-3. Measure wall time, per-phase duration/share, and unattributed gaps.
-4. Identify the dominant measured phase and variance.
-5. Form one falsifiable hypothesis for that phase.
-6. Change one relevant mechanism only.
-7. Repeat equivalent runs under comparable conditions.
-8. Compare the targeted phase and end-to-end metrics.
-9. Run independent verification before claiming improvement.
+1. Define phase schema and workload.
+2. Capture baseline traces.
+3. Validate traces for missing or overlapping boundaries.
+4. Rank phases by median and p95 contribution.
+5. Form one hypothesis for the dominant controllable phase.
+6. Change one relevant mechanism.
+7. Repeat the same runs.
+8. Compare phase and total metrics.
+9. Verify output/task correctness.
+10. Hand evidence to Benchmark Verifier.
 
 ## Decision points
-- Overlap/invalid trace: instrumentation failure, not performance evidence.
-- Large gaps: improve instrumentation before diagnosis.
-- Approval/queue dominant: do not optimize the tool implementation.
-- Tool dominant: investigate the named tool itself.
-- Retry dominant: inspect failure/retry policy.
+If provider inference dominates, do not claim host optimization. If unattributed time exceeds 5%, improve instrumentation before tuning. If only cold runs regress, isolate startup rather than changing steady-state paths.
 
 ## Expected output
-Phase breakdown, dominant phase, hypothesis, before/after evidence, verification status.
+Baseline, dominant phase, hypothesis, intervention, before/after table, correctness status, residual risks.
 
 ## Metrics
-p50/p95 wall time and targeted phase; gap ratio; retry share; tool duration; approval wait.
+Phase p50/p95, TTFA/TTFBA/TTFVO, total p50/p95, unattributed ratio.
 
 ## Verification
-Equivalent workload, same security policy, sufficient repeated runs, no overlap, bounded gap budget.
+Improvement must reproduce on repeated comparable runs and the targeted phase must explain the total change.
 
 ## Failure handling
-Retry instrumentation collection at most twice. Mark comparison inconclusive when environment/provider conditions differ materially.
+Maximum two optimization hypotheses. If both fail, revert and escalate with traces.
 
 ## Stop conditions
-No valid baseline, unresolved overlapping spans, or optimization would require weakening required safety/correctness.
+Stop when evidence is insufficient, instrumentation overhead is material, or the target phase is outside team control.

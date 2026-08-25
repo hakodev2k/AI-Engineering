@@ -1,53 +1,53 @@
 # Workflow: Measure, Diagnose, Optimize
 
 ## Trigger
-Latency SLO breach or proposed agent performance optimization.
+Slow agent run or planned performance change.
 
 ## Goal
-Reduce measured latency in the responsible phase without weakening security or correctness.
+Improve a measured bottleneck rather than optimize by intuition.
 
 ## Inputs
-Equivalent workload definition, lifecycle phase trace, run metadata.
+Representative workload, phase trace adapter, correctness check.
 
 ## Baseline
-Prefer three or more runs; record model/runtime version, approval mode, cache/warmth, host, and relevant provider state.
+At least five comparable runs when feasible; record cold/warm state and phase p50/p95.
+
+## Context
+Use stable phase names: queue, prepare, provider_startup, orchestration, tool, business_work, completion; marks for provider_event, business_action, visible_output.
 
 ## Stages
-1. **Observe** — collect phase traces.
-2. **Measure baseline** — validate and profile every run.
-3. **Diagnose** — identify dominant phase and gap/variance.
-4. **Form hypothesis** — specify mechanism and expected phase effect.
-5. **Implement improvement** — change one mechanism.
-6. **Measure again** — repeat comparable workload.
-7. **Improved?** If no, re-evaluate once; if yes, verify.
-8. **Verify** — independent verifier checks traces and guardrails.
+1. **Observe** — reproduce slow behavior.
+2. **Measure baseline** — validate and profile traces.
+3. **Diagnose** — rank controllable phases and unattributed time.
+4. **Form hypothesis** — one causal, observable change.
+5. **Optimize** — implement the narrow intervention.
+6. **Measure again** — same workload/environment class.
+7. **Improved?** — if no, retry with new evidence; maximum two hypotheses.
+8. **Verify** — Benchmark Verifier recomputes results and checks correctness.
 
 ## Responsible agent
-Performance investigator owns measurement/hypothesis; implementer changes code/config; Performance Verifier independently validates.
+Performance investigator through stage 7; Benchmark Verifier for stage 8.
 
 ## Tools
-Profiler, runtime traces, benchmark runner, statistical summary.
+`phase_latency.py`, benchmark harness, runtime logs.
 
 ## Outputs
-Baseline profile, hypothesis, changed mechanism, after profile, verdict.
+Phase breakdown, hypothesis, before/after metrics, verification result.
 
 ## Checkpoints
-After baseline validation; before implementation; after measurement; before completion.
+After trace validation, after baseline ranking, after each intervention, before final claim.
 
 ## Metrics
-Wall p50/p95, target-phase p50/p95, gap ratio, retry share, approval wait, tool execution.
+Target phase p50/p95, total p50/p95, TTFBA, TTFVO, unattributed ratio, correctness.
 
 ## Retry policy
-One hypothesis re-evaluation after a failed optimization. Two instrumentation recollections maximum.
+Maximum two optimization attempts; failed attempt must produce new evidence before next change.
 
 ## Stop conditions
-Invalid traces persist, workloads cannot be made comparable, or required security/correctness would be weakened.
+Stop if traces are invalid, workload changed, correctness regresses, or two hypotheses fail.
 
 ## Failure path
-Revert ineffective change where appropriate; retain evidence; classify unknown bottleneck rather than inventing a cause.
-
-## Verification
-Independent comparison of raw traces and profiler output.
+Revert unsafe/regressing optimization, preserve traces, escalate bottleneck evidence.
 
 ## Definition of Done
-Baseline captured, phase cause supported, change implemented, repeat measurement complete, target metric improves, no unacceptable regression, safety preserved, verification passes.
+Baseline exists; bottleneck is attributable; post-change measurement is comparable; correctness passes; independent verifier accepts the claim.
