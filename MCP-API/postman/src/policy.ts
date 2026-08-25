@@ -27,7 +27,7 @@ function canonical(value: unknown): string {
     const obj = value as Record<string, unknown>;
     return `{${Object.keys(obj).sort().map(k => `${JSON.stringify(k)}:${canonical(obj[k])}`).join(',')}}`;
   }
-  return JSON.stringify(value);
+  return JSON.stringify(value) ?? 'null';
 }
 
 export function approvalToken(secret: string, tool: string, args: Record<string, unknown>): string {
