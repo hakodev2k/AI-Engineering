@@ -1,0 +1,73 @@
+id: mailchimp
+name: Mailchimp
+runtime:
+  language: typescript
+  node: ">=20"
+upstream:
+  - rest
+official_mcp:
+  available: false
+  note: "No official Mailchimp MCP server was identified in Mailchimp's official developer documentation during this implementation; the connector uses the official Marketing API."
+api:
+  product: Mailchimp Marketing API
+  version: "3.0"
+  base_url: "https://{server_prefix}.api.mailchimp.com/3.0"
+auth:
+  types:
+    - api_key
+    - oauth2_access_token
+  credential_isolation: true
+  required_environment:
+    - MAILCHIMP_SERVER_PREFIX
+  alternative_credentials:
+    - MAILCHIMP_API_KEY
+    - MAILCHIMP_OAUTH_ACCESS_TOKEN
+permissions:
+  default: READ
+  approval_secret_env: MAILCHIMP_APPROVAL_SECRET
+capabilities:
+  - account.read
+  - audience.list
+  - audience.read
+  - member.list
+  - member.read
+  - member.upsert
+  - member.archive
+  - member.tags.update
+  - campaign.list
+  - campaign.read
+  - campaign.create
+  - campaign.update
+  - campaign.content.update
+  - campaign.send
+  - report.read
+risk:
+  READ:
+    approval_required: false
+  WRITE:
+    approval_required: true
+  HIGH_RISK:
+    approval_required: true
+  DESTRUCTIVE:
+    approval_required: true
+tools:
+  mailchimp.account.get: READ
+  mailchimp.audience.list: READ
+  mailchimp.audience.get: READ
+  mailchimp.member.list: READ
+  mailchimp.member.get: READ
+  mailchimp.member.upsert: WRITE
+  mailchimp.member.archive: DESTRUCTIVE
+  mailchimp.member.tags.update: WRITE
+  mailchimp.campaign.list: READ
+  mailchimp.campaign.get: READ
+  mailchimp.campaign.create: WRITE
+  mailchimp.campaign.update: WRITE
+  mailchimp.campaign.content.update: WRITE
+  mailchimp.campaign.send: HIGH_RISK
+  mailchimp.report.get: READ
+security:
+  retrieved_content_untrusted: true
+  arbitrary_request_tool: false
+  bounded_retries: true
+  destructive_retries: false
