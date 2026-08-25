@@ -10,8 +10,8 @@ export interface SquareConfig {
   approvalSecret?: string;
 }
 
-function intEnv(name: string, fallback: number, min: number, max: number): number {
-  const raw = process.env[name];
+function intEnv(env: NodeJS.ProcessEnv, name: string, fallback: number, min: number, max: number): number {
+  const raw = env[name];
   if (!raw) return fallback;
   const value = Number.parseInt(raw, 10);
   if (!Number.isFinite(value) || value < min || value > max) {
@@ -20,8 +20,8 @@ function intEnv(name: string, fallback: number, min: number, max: number): numbe
   return value;
 }
 
-function boolEnv(name: string, fallback: boolean): boolean {
-  const raw = process.env[name];
+function boolEnv(env: NodeJS.ProcessEnv, name: string, fallback: boolean): boolean {
+  const raw = env[name];
   if (!raw) return fallback;
   if (raw === 'true') return true;
   if (raw === 'false') return false;
@@ -39,9 +39,9 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): SquareConfig {
     accessToken,
     environment,
     apiVersion: env.SQUARE_API_VERSION ?? '2026-08-19',
-    timeoutMs: intEnv('SQUARE_TIMEOUT_MS', 15000, 1000, 120000),
-    maxRetries: intEnv('SQUARE_MAX_RETRIES', 3, 0, 5),
-    requireWriteApproval: boolEnv('SQUARE_REQUIRE_WRITE_APPROVAL', true),
+    timeoutMs: intEnv(env, 'SQUARE_TIMEOUT_MS', 15000, 1000, 120000),
+    maxRetries: intEnv(env, 'SQUARE_MAX_RETRIES', 3, 0, 5),
+    requireWriteApproval: boolEnv(env, 'SQUARE_REQUIRE_WRITE_APPROVAL', true),
     approvalSecret: env.SQUARE_APPROVAL_SECRET?.trim() || undefined
   };
 }
