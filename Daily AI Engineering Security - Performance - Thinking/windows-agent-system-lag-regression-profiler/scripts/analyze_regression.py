@@ -37,11 +37,16 @@ def analyze(base,current,policy):
     for m in METRICS:
         bv=b[m]["p95"]; cv=c[m]["p95"]
         if bv is None or cv is None: continue
-        ratio=(cv/bv) if bv>0 else (float("inf") if cv>0 else 1.0)
-        ratios[m]=ratio
+        if bv>0:
+            ratio=cv/bv; ratio_for_report=ratio
+        elif cv>0:
+            ratio=float("inf"); ratio_for_report="infinite"
+        else:
+            ratio=1.0; ratio_for_report=1.0
+        ratios[m]=ratio_for_report
         rt=policy.get("ratio_thresholds",{}).get(m); at=policy.get("absolute_thresholds",{}).get(m)
         if (rt is not None and ratio>=float(rt)) or (at is not None and cv>=float(at)):
-            regressions.append({"metric":m,"baseline_p95":bv,"current_p95":cv,"ratio":ratio})
+            regressions.append({"metric":m,"baseline_p95":bv,"current_p95":cv,"ratio":ratio_for_report})
     status="invalid" if reasons else ("regression" if regressions else "pass")
     return {"status":status,"baseline":b,"current":c,"p95_ratios":ratios,"regressions":regressions,"reasons":reasons}
 
@@ -54,9 +59,7 @@ def main():
         rep=analyze(base,cur,policy)
     except (OSError,ValueError,json.JSONDecodeError) as e:
         print(f"input error: {e}",file=sys.stderr); return 3
-    try: txt=json.dumps(rep,indent=2,sort_keys=True,allow_nan=False)
-    except ValueError as e:
-        print(f"analysis error: {e}",file=sys.stderr); return 3
+    txt=json.dumps(rep,indent=2,sort_keys=True,allow_nan=False)
     if a.output:
         with open(a.output,"w",encoding="utf-8") as f: f.write(txt+"\n")
     else: print(txt)
