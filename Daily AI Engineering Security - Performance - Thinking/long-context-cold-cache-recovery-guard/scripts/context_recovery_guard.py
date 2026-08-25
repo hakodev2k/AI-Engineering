@@ -31,10 +31,15 @@ def classify(t,p=POLICY):
     return "allow",["within_policy_envelope"]
 
 def main():
-    ap=argparse.ArgumentParser(); ap.add_argument("telemetry"); args=ap.parse_args()
+    ap=argparse.ArgumentParser(); ap.add_argument("telemetry"); ap.add_argument("--policy"); args=ap.parse_args()
     try:
-        action,reasons=classify(load(args.telemetry)); print(json.dumps({"action":action,"reasons":reasons},sort_keys=True)); return EXIT[action]
-    except ValueError as e:
+        policy=dict(POLICY)
+        if args.policy:
+            override=load(args.policy)
+            if not isinstance(override,dict): raise ValueError("policy must be a JSON object")
+            policy.update(override)
+        action,reasons=classify(load(args.telemetry),policy); print(json.dumps({"action":action,"reasons":reasons},sort_keys=True)); return EXIT[action]
+    except (ValueError,KeyError,TypeError) as e:
         print(json.dumps({"action":"invalid","error":str(e)}),file=sys.stderr); return 2
 
 if __name__=="__main__": raise SystemExit(main())
