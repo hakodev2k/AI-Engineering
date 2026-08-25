@@ -1,0 +1,7 @@
+{
+  "require_source_id": true,
+  "require_exact_hash": true,
+  "allow_trust_all_global": false,
+  "allowed_sources": [],
+  "hash_algorithm": "sha256"
+}
