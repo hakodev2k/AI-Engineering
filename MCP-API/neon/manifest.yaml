@@ -1,0 +1,46 @@
+id: neon
+name: Neon
+upstream:
+  - mcp
+official_mcp:
+  endpoint: https://mcp.neon.tech/mcp
+  transport: streamable-http
+  oauth_scopes: [read, write, "*"]
+  api_key_header: Authorization
+api_fallback:
+  base_url: https://console.neon.tech/api/v2
+  status: researched-not-required-for-selected-tools
+auth:
+  type: oauth2-or-api-key
+  recommended: oauth2
+  env:
+    - NEON_API_KEY
+    - NEON_MCP_URL
+    - NEON_PROJECT_ID
+    - NEON_READONLY
+    - NEON_APPROVAL_SECRET
+    - NEON_TIMEOUT_MS
+capabilities:
+  - project.list
+  - project.get
+  - project.create
+  - project.delete
+  - branch.get
+  - branch.create
+  - branch.delete
+  - branch.compute.list
+  - database.table.list
+  - database.table.describe
+  - database.query.read
+  - database.query.explain
+  - database.query.slow.list
+risk:
+  default: read
+  approval:
+    write: required
+    destructive: required
+security:
+  project_scoping: supported
+  readonly_mode: supported
+  credentials_exposed_to_llm: false
+  arbitrary_upstream_tools: false
