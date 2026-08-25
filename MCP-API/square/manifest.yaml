@@ -1,0 +1,66 @@
+id: square
+name: Square
+version: 1.0.0
+runtime: node>=20
+upstream:
+  preferred: rest
+  available:
+    - mcp
+    - rest
+  mcp:
+    official: true
+    status: beta
+    remote_endpoint: https://mcp.squareup.com/sse
+    local_package: square-mcp-server
+    note: >-
+      The official MCP exposes generic discovery and make_api_request tools. This connector uses
+      the official REST API for its stable, provider-scoped contracts to restrict capabilities,
+      validate inputs, enforce approvals, and avoid exposing a generic arbitrary-request tool.
+  rest:
+    production_base_url: https://connect.squareup.com/v2
+    sandbox_base_url: https://connect.squareupsandbox.com/v2
+auth:
+  types:
+    - oauth2_access_token
+    - personal_access_token
+  recommended: oauth2_access_token
+  credential_env: SQUARE_ACCESS_TOKEN
+  credential_isolation: connector-only
+  oauth_scopes:
+    - MERCHANT_PROFILE_READ
+    - ITEMS_READ
+    - CUSTOMERS_READ
+    - CUSTOMERS_WRITE
+    - ORDERS_READ
+    - ORDERS_WRITE
+    - PAYMENTS_READ
+    - PAYMENTS_WRITE
+capabilities:
+  - location.list
+  - location.get
+  - catalog.list
+  - catalog.search
+  - customer.search
+  - customer.get
+  - customer.create
+  - customer.update
+  - order.search
+  - order.get
+  - order.create
+  - payment.list
+  - payment.get
+  - refund.create
+risk:
+  default: READ
+  write_approval_configurable: true
+  high_risk_requires_approval: true
+environment:
+  required:
+    - SQUARE_ACCESS_TOKEN
+  optional:
+    - SQUARE_ENVIRONMENT
+    - SQUARE_API_VERSION
+    - SQUARE_TIMEOUT_MS
+    - SQUARE_MAX_RETRIES
+    - SQUARE_REQUIRE_WRITE_APPROVAL
+    - SQUARE_APPROVAL_SECRET
