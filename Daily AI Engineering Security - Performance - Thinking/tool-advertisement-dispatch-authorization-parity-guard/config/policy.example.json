@@ -1,0 +1,5 @@
+{
+  "resolver_fallback_enabled": false,
+  "explicit_global_tools": [],
+  "require_request_membership": true
+}
