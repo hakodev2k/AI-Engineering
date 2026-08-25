@@ -1,0 +1,68 @@
+id: postman
+name: Postman
+runtime: node>=20
+upstream:
+  - mcp
+  - rest
+mcp:
+  official: true
+  remote_url: https://mcp.postman.com/minimal
+  local_package: '@postman/postman-mcp-server'
+  modes: [minimal, code, full, learn]
+api:
+  base_url: https://api.getpostman.com
+auth:
+  type: api-key
+  header: X-API-Key
+  remote_mcp_header: Authorization: Bearer <POSTMAN_API_KEY>
+  env:
+    - POSTMAN_API_KEY
+capabilities:
+  - workspace.list
+  - workspace.get
+  - workspace.create
+  - workspace.update
+  - collection.list
+  - collection.get
+  - collection.create
+  - collection.replace
+  - environment.list
+  - environment.get
+  - environment.create
+  - environment.replace
+  - spec.list
+  - spec.get
+  - collection.run
+risk:
+  default: read
+  write_requires_approval: configurable
+  high_risk_requires_approval: true
+permissions:
+  READ:
+    - postman.workspace.list
+    - postman.workspace.get
+    - postman.collection.list
+    - postman.collection.get
+    - postman.environment.list
+    - postman.environment.get
+    - postman.spec.list
+    - postman.spec.get
+  WRITE:
+    - postman.workspace.create
+    - postman.workspace.update
+    - postman.collection.create
+    - postman.collection.replace
+    - postman.environment.create
+    - postman.environment.replace
+  HIGH_RISK:
+    - postman.collection.run
+required_env:
+  - POSTMAN_API_KEY
+optional_env:
+  - POSTMAN_API_BASE_URL
+  - POSTMAN_MCP_URL
+  - POSTMAN_MCP_MODE
+  - POSTMAN_APPROVAL_SECRET
+  - POSTMAN_WRITE_APPROVAL
+  - POSTMAN_TIMEOUT_MS
+  - POSTMAN_MAX_RETRIES
