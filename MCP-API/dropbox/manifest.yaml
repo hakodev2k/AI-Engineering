@@ -14,7 +14,10 @@ sdk:
   api: Dropbox API v2
 auth:
   type: oauth2
-  token_env: DROPBOX_ACCESS_TOKEN
+  access_token_env: DROPBOX_ACCESS_TOKEN
+  refresh_token_env: DROPBOX_REFRESH_TOKEN
+  client_id_env: DROPBOX_APP_KEY
+  client_secret_env: DROPBOX_APP_SECRET
   mcp_token_env: DROPBOX_MCP_ACCESS_TOKEN
   required_scopes:
     - account_info.read
@@ -44,6 +47,9 @@ risk:
   destructive_approval_required: true
 environment:
   - DROPBOX_ACCESS_TOKEN
+  - DROPBOX_REFRESH_TOKEN
+  - DROPBOX_APP_KEY
+  - DROPBOX_APP_SECRET
   - DROPBOX_MCP_ACCESS_TOKEN
   - DROPBOX_MCP_URL
   - DROPBOX_APPROVAL_SECRET
