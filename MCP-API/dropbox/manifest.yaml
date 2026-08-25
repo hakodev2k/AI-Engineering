@@ -1,0 +1,57 @@
+id: dropbox
+name: Dropbox
+version: 1.0.0
+runtime: node>=22
+upstream:
+  - mcp
+  - sdk
+mcp:
+  endpoint: https://mcp.dropbox.com/mcp
+  status: official-remote-beta
+  auth: oauth2
+sdk:
+  package: dropbox
+  api: Dropbox API v2
+auth:
+  type: oauth2
+  token_env: DROPBOX_ACCESS_TOKEN
+  mcp_token_env: DROPBOX_MCP_ACCESS_TOKEN
+  required_scopes:
+    - account_info.read
+    - files.metadata.read
+    - files.content.read
+    - files.content.write
+    - sharing.read
+    - sharing.write
+capabilities:
+  - account.whoami
+  - folder.list
+  - file.metadata
+  - search
+  - folder.create
+  - file.create_text
+  - file.copy
+  - file.move
+  - file.delete
+  - shared_link.list
+  - shared_link.create
+  - file.revisions.list
+  - file.revision.restore
+risk:
+  default: READ
+  write_approval_configurable: true
+  high_risk_approval_required: true
+  destructive_approval_required: true
+environment:
+  - DROPBOX_ACCESS_TOKEN
+  - DROPBOX_MCP_ACCESS_TOKEN
+  - DROPBOX_MCP_URL
+  - DROPBOX_APPROVAL_SECRET
+  - DROPBOX_REQUIRE_WRITE_APPROVAL
+  - DROPBOX_TIMEOUT_MS
+  - DROPBOX_MAX_RETRIES
+security:
+  credential_isolation: connector-only
+  upstream_mcp_allowlist: true
+  provider_content_untrusted: true
+  arbitrary_http_tool: false
