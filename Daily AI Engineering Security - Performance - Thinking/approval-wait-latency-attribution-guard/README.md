@@ -1,111 +1,64 @@
 # Approval-Wait Latency Attribution Guard
 
-**Category:** Thinking / Performance
+**Category:** Thinking  
+**Status:** Implemented reference package; verification is deterministic against supplied traces.
 
 ## Problem
-Approval-gated agent actions can spend seconds or minutes waiting for a human and then execute in milliseconds. If the entire interval is labeled or reasoned about as tool execution, the agent can conclude that the command/API/tool is slow and optimize the wrong thing.
+Agent runtimes can collapse human approval wait, tool execution, and post-tool processing into one wall-clock duration. When that blended duration is exposed to the model or analytics as tool latency, the agent can form a false performance diagnosis and change implementation strategy on unsupported evidence.
 
 ## Evidence
-Current evidence and interpretation are documented in `evidence/research.md`. The package is motivated by a 2026-08-15 Codex report of approval dwell influencing performance conclusions, plus current OpenAI Agents SDK lifecycle documentation that models approval as a pause before execution.
+Current evidence and source links are in `evidence/research.md`. Recent Codex and Claude Code reports independently show approval-pending time being counted or structurally indistinguishable from execution time.
 
-## Existing approach
-Many systems expose a single elapsed duration or generic span. Human-in-the-loop frameworks already have explicit interruption/resume boundaries, but those boundaries are not automatically guaranteed to be preserved in performance evidence.
-
-## Existing limitations
-A combined duration hides approval dwell, queueing, execution, and post-processing. A model can use that ambiguous measurement as a false fact and make unnecessary changes.
+## Existing approach and limitation
+Wall-clock timing and paired `tool_use`/`tool_result` timestamps are useful for user-perceived duration, but they do not prove execution duration. Generic progress timers and dashboards can therefore misattribute waiting to the tool.
 
 ## Proposed improvement
-Treat latency as a typed lifecycle. Record approval and execution timestamps separately, validate causal ordering deterministically, and block performance claims that lack valid execution bounds.
+Require lifecycle-aware timing evidence before any performance conclusion: record approval request/decision, execution start/finish, and result-processing boundaries separately. Treat missing boundaries as `unknown`, never as execution time.
 
 ## Architecture
-- Research defines the real failure and source evidence.
-- Policy defines timing validity and regression thresholds.
-- Skill defines the reusable investigation procedure.
-- Rules make attribution requirements observable.
-- Investigator measures and diagnoses.
-- Independent verifier checks claims.
-- Workflow bounds optimization loops.
-- Hook runs a deterministic post-run gate.
-- Script validates traces and computes phase metrics.
-- Tests cover approval-dwell separation, impossible ordering, and regressions.
-
-## Actual package tree
-```text
-approval-wait-latency-attribution-guard/
-├── README.md
-├── config/
-│   └── latency-policy.json
-├── evidence/
-│   └── research.md
-├── hooks/
-│   └── post-run-latency-check.md
-├── rules/
-│   └── timing-boundaries.md
-├── scripts/
-│   └── latency_attribution.py
-├── skills/
-│   └── latency-attribution.md
-├── subagents/
-│   ├── performance-investigator.md
-│   └── verification-agent.md
-├── tests/
-│   └── test_latency_attribution.py
-└── workflows/
-    └── measure-diagnose-verify.md
-```
+- `skills/latency-attribution-analysis.md` — evidence-driven diagnosis procedure.
+- `rules/timing-evidence-rules.md` — enforceable attribution rules.
+- `subagents/timing-verifier.md` — independent verifier contract.
+- `workflows/measure-diagnose-verify.md` — bounded improvement workflow.
+- `hooks/post-tool-timing-check.md` — deterministic completion gate.
+- `scripts/attribution_guard.py` — JSONL trace validator and metric calculator.
+- `tests/test_attribution_guard.py` — regression tests.
+- `evidence/research.md` — observed evidence, interpretation, and sources.
 
 ## Installation
-Requires Python 3.10+ and only the standard library. Copy the package directory intact.
-
-## Configuration
-Edit `config/latency-policy.json` only with reviewed thresholds. Keep `diagnosis_metric` as execution time unless the investigation explicitly targets approval UX.
+Requires Python 3.10+ and no third-party packages.
 
 ## Usage
-Validate a JSONL trace:
-
 ```bash
-python scripts/latency_attribution.py trace.jsonl --policy config/latency-policy.json --strict
+python3 scripts/attribution_guard.py trace.jsonl
+python3 -m unittest tests/test_attribution_guard.py
 ```
 
-Each trace record requires `call_id`, `approval_required`, `requested_ms`, `execution_start_ms`, and `execution_end_ms`. Approval-gated records also require `approval_required_ms` and `approval_decision_ms`. Optional fields are `postprocess_end_ms` and `baseline_execution_ms`.
+## Input contract
+Each JSONL record contains `tool_id`, `event`, and `ts_ms`. Recognized events are `approval_requested`, `approval_decided`, `execution_started`, `execution_finished`, and `result_consumed`.
 
-Run tests:
-
-```bash
-python -m unittest tests/test_latency_attribution.py
-```
+## Output
+The validator emits JSON per tool with `approval_wait_ms`, `execution_ms`, `postprocess_ms`, `wall_ms`, `status`, and violations. Exit code 0 means all observed performance-attribution boundaries are valid; 2 means attribution is unsafe; 1 means invalid input.
 
 ## Workflow
-Follow `workflows/measure-diagnose-verify.md`: Observe → validate timing → measure baseline → diagnose phase → form hypothesis → implement → measure again → independently verify. A hypothesis gets at most two optimization attempts.
+Observe → capture baseline lifecycle trace → diagnose attribution gaps → instrument missing boundaries → capture again → independently verify. The workflow allows at most two instrumentation/measurement retries.
 
 ## Metrics
-- `approval_wait_ms`
-- `tool_execution_ms`
-- `postprocess_ms`
-- `total_wall_ms`
-- execution p50/p95
-- invalid-trace rate
-- before/after execution change percentage
+`attributable_tool_ratio`, `ambiguous_tool_count`, `approval_wait_ms`, `execution_ms`, `postprocess_ms`, and `false_slow_tool_decisions` found during review.
 
 ## Verification
-A performance claim is **Implemented** when instrumentation/change exists, **Measured** when equivalent before/after traces exist, and **Verified** only when the independent verifier confirms valid boundaries, tests, and metric semantics.
+**Implemented:** lifecycle validator and rules exist.  
+**Measured:** a real trace has separate timing components.  
+**Verified:** tests pass, no tool is labelled slow from wall time when execution duration is unknown, and an independent verifier confirms decisions use execution-only evidence.
 
 ## Safety
-This package MUST NOT reduce approval coverage to improve latency. Approval dwell may be optimized as UX/orchestration only while preserving required human decisions.
+This package never relaxes approval requirements. Approval delay is preserved as user-perceived latency but MUST NOT be reclassified as execution time.
 
 ## Failure handling
-**Detection:** script/test failure or insufficient timestamps. **Evidence:** preserve raw trace and blocking reasons. **Retry policy:** at most two optimization attempts per hypothesis. **Fallback:** restore the last verified implementation and instrument missing boundaries. **Escalation:** send unresolved instrumentation/security conflicts to a human owner. **Stop condition:** invalid evidence, two failed attempts, or required approval would be weakened.
+Malformed or incomplete traces fail closed for performance attribution. Retry instrumentation at most twice; if execution boundaries remain unavailable, report execution latency as unknown and escalate instrumentation rather than guessing.
 
 ## Definition of Done
-- `evidence/research.md` is complete and sourced.
-- Baseline execution metrics are captured when optimizing.
-- Timing order passes the deterministic gate.
-- Approval dwell is reported separately.
-- Improvement is measured on equivalent workload.
-- Tests pass.
-- Independent verifier accepts the claim.
-- Required approval boundaries are unchanged.
-- No blocking issue remains.
+Evidence documented; baseline captured; lifecycle boundaries instrumented; tests pass; before/after attribution compared; ambiguous tools are not used as performance evidence; independent verification complete; no approval/security control weakened.
 
 ## Customization
-Adapters may translate OpenTelemetry spans, SDK traces, JSON logs, or proprietary events into this package's normalized timestamps. Do not change the semantic boundary between approval and execution.
+Adapters may translate native telemetry into the event contract, but MUST preserve event ordering and original timestamps.
