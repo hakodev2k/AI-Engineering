@@ -80,7 +80,7 @@ export class DropboxApiClient {
   delete(path: string, parentRev?: string) { return this.write(async signal => (await this.dbx.filesDeleteV2({ path, parent_rev: parentRev } as any, { signal } as any)).result); }
 
   createSharedLink(path: string, audience: 'public' | 'team' | 'no_one' = 'public') {
-    return this.write(async signal => (await this.dbx.sharingCreateSharedLinkWithSettings({ path, settings: { requested_visibility: { '.tag': audience } } } as any, { signal } as any)).result);
+    return this.write(async signal => (await this.dbx.sharingCreateSharedLinkWithSettings({ path, settings: { audience: { '.tag': audience } } } as any, { signal } as any)).result);
   }
 
   listSharedLinks(path?: string, cursor?: string) {
