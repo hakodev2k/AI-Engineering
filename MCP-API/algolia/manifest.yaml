@@ -1,0 +1,36 @@
+id: algolia
+name: Algolia
+runtime: nodejs-20
+upstream:
+  - mcp
+  - rest
+official_mcp:
+  productivity_endpoint: https://mcp.algolia.com/mcp
+  public_endpoint_template: https://{APP_ID}.algolia.net/mcp/1/{UNIQ_ID}/mcp
+  configured_env: ALGOLIA_MCP_URL
+  note: Productivity MCP is OAuth user-scoped and read-only; Public MCP is application-scoped search/recommend. Search prefers MCP when configured and compatible, REST otherwise.
+api:
+  search_base_url_template: https://{APP_ID}-dsn.algolia.net
+  analytics_base_url: https://analytics.us.algolia.com
+auth:
+  type: api_key
+  headers: [x-algolia-application-id, x-algolia-api-key]
+  env: [ALGOLIA_APPLICATION_ID, ALGOLIA_SEARCH_API_KEY, ALGOLIA_ADMIN_API_KEY, ALGOLIA_MCP_URL, ALGOLIA_APPROVAL_SECRET]
+least_privilege:
+  read_acl: [search, browse, analytics]
+  write_acl: [addObject, deleteObject, settings]
+risk:
+  default: READ
+  approval_required: [algolia.record.save, algolia.settings.set, algolia.record.delete]
+  destructive: [algolia.record.delete]
+capabilities:
+  - index.list
+  - record.search
+  - record.get
+  - facet.search
+  - settings.get
+  - analytics.top_searches
+  - analytics.no_results
+  - record.save
+  - settings.set
+  - record.delete
