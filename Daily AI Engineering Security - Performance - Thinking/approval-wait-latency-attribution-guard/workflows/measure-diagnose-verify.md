@@ -1,53 +1,61 @@
-# Workflow: Measure, Diagnose, Verify
+# Workflow: Measure → Diagnose → Verify
 
 ## Trigger
-A performance claim or optimization involves approval-gated agent tools.
+A tool or agent path is reported slow, especially when human approval is involved.
 
 ## Goal
-Produce a causal latency decision using lifecycle-specific evidence.
+Identify the actual latency phase and verify any optimization against a stable baseline.
 
 ## Inputs
-Raw runtime trace, target tool, baseline workload.
+Baseline trace JSONL, candidate after-trace JSONL, policy config, workload description.
 
 ## Baseline
-Capture unmodified end-to-end and lifecycle events before changing instrumentation or code.
+Capture at least `minimum_samples` equivalent calls before changes. Record approval wait and execution time separately.
 
 ## Context
-Record runtime version, approval policy, tool version, workload identity, and environment.
+Preserve tool version, agent version, machine/environment, workload, network conditions, and approval mode.
 
 ## Stages
-1. **Observe** — collect raw trace and existing claim. Owner: investigator.
-2. **Measure baseline** — run validator. Owner: investigator.
-3. **Diagnose** — separate approval, execution, postprocess; list assumptions. Owner: investigator.
-4. **Hypothesize** — name the component expected to improve and metric threshold.
-5. **Implement** — instrument missing boundaries or apply the scoped optimization.
-6. **Measure again** — same workload and approval policy.
-7. **Decision checkpoint** — improvement must appear in execution-only metric when the claim is about tool speed.
-8. **Independent verification** — Timing Verifier reruns validator/tests.
+1. **Observe** — Performance Investigator records the reported symptom without accepting its proposed cause.
+2. **Validate trace** — run the attribution script; invalid traces block diagnosis.
+3. **Measure baseline** — calculate per-phase p50/p95 and total wall time.
+4. **Diagnose** — identify the phase responsible for the regression.
+5. **Form hypothesis** — state one measurable cause and expected metric movement.
+6. **Implement** — change only the diagnosed phase; approval boundaries stay intact.
+7. **Measure again** — repeat equivalent workload.
+8. **Compare** — calculate execution regression/improvement independently of approval dwell.
+9. **Verify** — separate reviewer checks fixtures, trace order, metric choice, and claim.
+
+## Responsible agent
+Approval-Aware Performance Investigator for stages 1–8; independent verifier for stage 9.
 
 ## Tools
-`scripts/attribution_guard.py`, test runner, native runtime telemetry.
+`scripts/latency_attribution.py`, test runner, trace/log reader, project benchmark tooling.
 
 ## Outputs
-Baseline, post-change metrics, decision record, verification status.
+Validated trace report, baseline metrics, hypothesis, after metrics, comparison, verification result.
 
 ## Checkpoints
-No implementation before baseline; no speed conclusion with unknown execution duration; no completion before independent verification.
+- C1: lifecycle ordering valid.
+- C2: baseline sample count sufficient.
+- C3: hypothesis names a measured phase.
+- C4: after workload equivalent.
+- C5: verifier agrees with metric and result.
 
 ## Metrics
-Execution p50/p95 when sample size permits, approval wait, wall time, attributable-tool ratio.
+Approval wait, execution latency, postprocess latency, total wall time, p50/p95, invalid-trace rate, improvement percentage.
 
 ## Retry policy
-At most two retries for missing/invalid lifecycle instrumentation. Optimization itself gets at most two bounded iterations.
+At most 2 optimization attempts for the same hypothesis. Each retry requires new evidence or a changed implementation.
 
 ## Stop conditions
-Verified improvement, disproven hypothesis, or retry budget exhausted.
+Stop on invalid instrumentation, insufficient comparable samples, two failed attempts, or a security/approval boundary conflict.
 
 ## Failure path
-Preserve evidence, classify execution latency unknown, revert speculative optimization if it was justified only by invalid timing, and escalate instrumentation gap.
+Restore the last verified behavior, retain traces, classify the run as unverified, and escalate the missing evidence or architectural blocker.
 
 ## Verification
-Run hook and independent verifier.
+Tests pass; raw timestamps support calculated durations; the optimization changes execution metrics rather than merely hiding approval time.
 
 ## Definition of Done
-Comparable before/after evidence, rules satisfied, tests pass, decision supported, verification status `verified`.
+Implemented, Measured, and Verified are all recorded separately; no blocking trace or approval-safety issue remains.
