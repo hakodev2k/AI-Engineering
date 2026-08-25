@@ -1,0 +1,69 @@
+id: airtable
+name: Airtable
+upstream:
+  - mcp
+  - rest
+mcp:
+  official: true
+  endpoint: https://mcp.airtable.com/mcp
+  strategy: prefer-official-mcp-with-rest-fallback
+api:
+  base_url: https://api.airtable.com/v0
+auth:
+  types:
+    - oauth2
+    - personal-access-token
+  credential_isolation: true
+scopes:
+  read:
+    - data.records:read
+    - schema.bases:read
+    - data.recordComments:read
+    - workspacesAndBases:read
+  write:
+    - data.records:write
+    - data.recordComments:write
+  schema_write:
+    - schema.bases:write
+capabilities:
+  - base.list
+  - base.create
+  - schema.get
+  - record.list
+  - record.get
+  - record.create
+  - record.update
+  - record.delete
+  - comment.list
+  - comment.create
+risk:
+  default: READ
+  write:
+    - airtable.record.create
+    - airtable.record.update
+    - airtable.comment.create
+  high_risk:
+    - airtable.base.create
+  destructive:
+    - airtable.record.delete
+approval:
+  required_for:
+    - airtable.base.create
+    - airtable.record.create
+    - airtable.record.update
+    - airtable.record.delete
+    - airtable.comment.create
+limits:
+  records_per_page: 100
+  records_per_write_request: 10
+  requests_per_second_per_base: 5
+environment:
+  - AIRTABLE_TOKEN
+  - AIRTABLE_MCP_URL
+  - AIRTABLE_MCP_TOKEN
+  - AIRTABLE_USE_MCP
+  - AIRTABLE_ALLOWED_BASES
+  - AIRTABLE_ALLOWED_TABLES
+  - AIRTABLE_APPROVAL_SECRET
+  - AIRTABLE_TIMEOUT_MS
+  - AIRTABLE_MAX_RETRIES
