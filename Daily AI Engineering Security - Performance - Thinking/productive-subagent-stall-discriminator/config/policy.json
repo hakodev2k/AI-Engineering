@@ -1,0 +1,10 @@
+{
+  "soft_stall_seconds": 600,
+  "hard_stall_seconds": 1200,
+  "minimum_stale_signals": 2,
+  "max_retries": 2,
+  "progress_window_seconds": 900,
+  "signals": ["model_event", "tool_event", "protocol_event", "durable_progress"],
+  "retry_on": ["confirmed_stall", "provider_timeout"],
+  "never_retry_on": ["human_cancel", "policy_denied"]
+}
