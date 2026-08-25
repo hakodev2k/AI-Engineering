@@ -1,0 +1,6 @@
+{
+  "max_scan_amplification": 80.0,
+  "max_scaling_exponent": 1.35,
+  "max_p95_parse_us": 5000.0,
+  "max_parse_us_per_final_kb": 20000.0
+}
