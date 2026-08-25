@@ -1,0 +1,7 @@
+{
+  "expected_removed_tokens": 9000,
+  "min_effective_reduction_ratio": 0.8,
+  "max_total_tokens": 42000,
+  "max_unrelated_category_growth": 1500,
+  "required_quality_floor": 0.98
+}
