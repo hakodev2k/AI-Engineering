@@ -1,0 +1,9 @@
+{
+  "compact_ratio": 0.82,
+  "evacuate_ratio": 0.95,
+  "cold_cache_hit_ratio": 0.10,
+  "cold_cache_age_seconds": 900,
+  "transport_error_threshold": 2,
+  "minimum_reserve_tokens": 12000,
+  "max_analysis_retries": 2
+}
