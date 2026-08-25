@@ -1,0 +1,8 @@
+{
+  "trusted_servers": ["corp-github", "corp-linear"],
+  "allow_trusted_read_only": true,
+  "ask_on_open_world": true,
+  "deny_destructive_tools": [],
+  "deny_tools": [],
+  "allow_tools": []
+}
