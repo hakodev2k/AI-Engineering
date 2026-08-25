@@ -22,6 +22,8 @@ Official sources researched for this connector:
 - File access guide: https://developers.dropbox.com/dbx-file-access-guide
 - Performance/rate-limit guidance: https://developers.dropbox.com/dbx-performance-guide
 - Error handling: https://developers.dropbox.com/error-handling-guide
+- MCP TypeScript SDK v2 server docs: https://github.com/modelcontextprotocol/typescript-sdk/blob/main/docs/server.md
+- MCP TypeScript SDK v2 client docs: https://github.com/modelcontextprotocol/typescript-sdk/blob/main/docs/client.md
 
 ## Architecture
 
@@ -48,9 +50,9 @@ Credentials stay inside the connector transport/authentication layer and are nev
 
 - Node.js 22+
 - TypeScript
-- `@modelcontextprotocol/sdk`
+- MCP TypeScript SDK v2: `@modelcontextprotocol/server` and `@modelcontextprotocol/client`
 - official `dropbox` JavaScript SDK
-- Zod input validation
+- Zod 4 input validation
 
 Install and build:
 
@@ -82,7 +84,7 @@ DROPBOX_MCP_ACCESS_TOKEN=
 DROPBOX_MCP_URL=https://mcp.dropbox.com/mcp
 ```
 
-The remote MCP service itself uses Dropbox OAuth. For standard MCP clients, Dropbox recommends its OAuth/Dynamic Client Registration connection flow. This connector accepts an already-issued bearer token so credentials remain isolated from the LLM.
+The remote MCP service itself uses Dropbox OAuth. For standard MCP clients, Dropbox recommends its OAuth/Dynamic Client Registration connection flow. This connector accepts an already-issued bearer token through the MCP SDK v2 `AuthProvider`, so credentials remain isolated from the LLM.
 
 ### SDK/API access token
 
@@ -125,7 +127,7 @@ These are also included among the scopes Dropbox currently documents for its rem
 | `DROPBOX_MCP_URL` | Pinned to `mcp.dropbox.com`; defaults to official endpoint |
 | `DROPBOX_APPROVAL_SECRET` | Connector-only HMAC secret for out-of-band approvals |
 | `DROPBOX_REQUIRE_WRITE_APPROVAL` | Defaults to `true` |
-| `DROPBOX_TIMEOUT_MS` | Per-operation timeout, 1,000–120,000 ms |
+| `DROPBOX_TIMEOUT_MS` | Caller-visible operation timeout, 1,000–120,000 ms |
 | `DROPBOX_MAX_RETRIES` | Bounded read retry count, 0–5 |
 
 The MCP hostname is validated to prevent redirecting provider credentials to an arbitrary host.
@@ -148,7 +150,7 @@ The MCP hostname is validated to prevent redirecting provider credentials to an 
 | `dropbox.file.revision.restore` | Restore old revision | HIGH_RISK | Always | MCP or SDK |
 | `dropbox.file.delete` | Move content to Deleted files | DESTRUCTIVE | Always | MCP or SDK |
 
-No arbitrary URL/API executor is exposed.
+No arbitrary URL/API executor is exposed. MCP v2 tool annotations additionally identify read-only and destructive behavior to compatible clients; connector-side policy remains authoritative.
 
 ## Approval model
 
@@ -176,7 +178,7 @@ This design binds approval to the exact operation and payload rather than accept
 
 ### Timeouts and cancellation
 
-SDK calls receive an `AbortSignal` and are also guarded by a hard timeout. Remote MCP connection, tool discovery and tool calls are timeout bounded.
+Remote MCP connection, discovery and tool calls are bounded by connector timeouts. SDK/API calls are guarded by a caller-visible hard timeout. The official Dropbox JavaScript SDK methods used here do not expose a per-call `AbortSignal`, so a timed-out SDK request may continue settling underneath after the connector has stopped waiting for it. For that reason, mutating SDK calls are never automatically retried and mutating MCP failures never fall back to the SDK. This avoids replaying an action whose final provider state may be ambiguous.
 
 ### Retries
 
@@ -184,7 +186,7 @@ Only read-side SDK/API calls are retried automatically. Retry conditions are lim
 
 - HTTP 429
 - HTTP 5xx
-- timeout/abort failures
+- connector timeout failures
 
 Backoff is bounded exponential backoff and honors `Retry-After` when available. Authentication, permission and validation errors are not retried. Write operations are never blindly retried.
 
@@ -223,7 +225,7 @@ Errors are normalized into connector errors without leaking tokens. Relevant beh
 
 ### Official MCP
 
-The connector uses the official Streamable HTTP MCP endpoint and discovers the server tool list after connection. It intersects discovered tools with a hard-coded allowlist. It does not automatically trust future Dropbox MCP tools.
+The connector uses the official Streamable HTTP MCP endpoint through `@modelcontextprotocol/client` v2. Bearer authentication uses the SDK's `AuthProvider`; raw tokens are not placed in tool arguments. After connecting, the adapter discovers the server tool list and intersects it with a hard-coded allowlist. It does not automatically trust future Dropbox MCP tools.
 
 ### Official SDK/API fallback
 
@@ -241,7 +243,7 @@ Normal unit tests require no live credentials. Mocks cover:
 - HTTP 429 read retry
 - no write retry on server errors
 - cursor pagination
-- timeout enforcement
+- caller-visible timeout enforcement
 - MCP read failure → SDK/API fallback
 - MCP write failure → no fallback/replay
 
@@ -256,9 +258,10 @@ npm test
 - The official Dropbox remote MCP is currently documented as beta; its tool schemas may evolve. The adapter fails safely if an expected tool is not advertised.
 - This connector does not expose every official Dropbox MCP capability. File requests, restore events/folder rewind, transcript extraction, Markdown/OCR extraction and temporary download-link generation are intentionally outside this version's contract.
 - `dropbox.file.create_text` is text-only and capped at 5 MiB. Large/binary uploads should use a separately designed upload-session capability with explicit file handling rather than placing binary data in an LLM tool argument.
+- The Dropbox JavaScript SDK does not provide per-route cancellation in the methods used here; SDK timeout is therefore a caller-side boundary rather than guaranteed network cancellation.
 - Delete uses normal Dropbox deletion semantics. Permanent deletion is not exposed.
 - Team impersonation/admin APIs are not implemented; no tenant, account, user or namespace IDs are hard-coded.
 
 ## Client compatibility
 
-This package is a standards-based stdio MCP server. It can be used by MCP clients that support stdio transport. Client-specific installation/configuration differs; the connector does not claim features outside the MCP protocol and implemented tool surface.
+This package uses MCP TypeScript SDK v2 and exposes a standards-based stdio MCP server through `@modelcontextprotocol/server`. It can be used by MCP clients that support stdio transport. Client-specific installation/configuration differs; the connector does not claim features outside the MCP protocol and implemented tool surface.
