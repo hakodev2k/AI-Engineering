@@ -1,0 +1,9 @@
+{
+  "helpers": [
+    {
+      "name": "macos-keychain-security",
+      "expected_path": "/usr/bin/security",
+      "check_path_shadowing": true
+    }
+  ]
+}
