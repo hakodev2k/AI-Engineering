@@ -38,7 +38,7 @@ export class DropboxApiClient {
         return await Promise.race([operation(), timeout]);
       } catch (error: any) {
         const status = statusOf(error);
-        const transient = status === 429 || (status !== undefined && status >= 500) || error?.name === 'TimeoutError';
+        const transient = status === 429 || (status !== undefined && status >= 500);
         if (!retryable || !transient || attempt >= this.config.maxRetries) {
           const suffix = status ? ` (HTTP ${status})` : '';
           throw new Error(`Dropbox request failed${suffix}: ${error?.message ?? String(error)}`);
