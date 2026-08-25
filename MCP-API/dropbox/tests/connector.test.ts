@@ -74,11 +74,11 @@ describe('SDK reliability', () => {
     const client = new DropboxApiClient(cfg(), { filesListFolderContinue: cont, filesListFolder: first }, async () => {});
     const out: any = await client.listFolder({ path: '', cursor: 'c1' });
     expect(out.entries[0].name).toBe('next');
-    expect(cont).toHaveBeenCalledWith({ cursor: 'c1' }, expect.anything());
+    expect(cont).toHaveBeenCalledWith({ cursor: 'c1' });
     expect(first).not.toHaveBeenCalled();
   });
 
-  it('enforces timeouts', async () => {
+  it('enforces caller-visible timeouts', async () => {
     const never = vi.fn().mockImplementation(() => new Promise(() => {}));
     const client = new DropboxApiClient(cfg({ timeoutMs: 5, maxRetries: 0 }), { usersGetCurrentAccount: never }, async () => {});
     await expect(client.whoAmI()).rejects.toThrow(/timed out/);
