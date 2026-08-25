@@ -1,0 +1,56 @@
+id: plaid
+name: Plaid
+upstream:
+  - rest
+auth:
+  type: client_credentials_style
+  credential_fields:
+    - PLAID_CLIENT_ID
+    - PLAID_SECRET
+api:
+  base_urls:
+    sandbox: https://sandbox.plaid.com
+    production: https://production.plaid.com
+capabilities:
+  - item.get
+  - accounts.get
+  - transactions.sync
+  - transactions.get
+  - transactions.recurring.get
+  - transactions.refresh
+  - identity.get
+  - investments.holdings.get
+  - investments.transactions.get
+  - investments.refresh
+  - liabilities.get
+  - auth.get
+risk:
+  default: read
+  tools:
+    plaid.item.get: READ
+    plaid.accounts.get: READ
+    plaid.transactions.sync: READ
+    plaid.transactions.get: READ
+    plaid.transactions.recurring.get: READ
+    plaid.transactions.refresh: WRITE
+    plaid.identity.get: READ
+    plaid.investments.holdings.get: READ
+    plaid.investments.transactions.get: READ
+    plaid.investments.refresh: WRITE
+    plaid.liabilities.get: READ
+    plaid.auth.get: HIGH_RISK
+approval:
+  required:
+    - plaid.transactions.refresh
+    - plaid.investments.refresh
+    - plaid.auth.get
+environment:
+  required:
+    - PLAID_CLIENT_ID
+    - PLAID_SECRET
+  optional:
+    - PLAID_ENV
+    - PLAID_TIMEOUT_MS
+    - PLAID_MAX_RETRIES
+    - PLAID_REQUIRE_WRITE_APPROVAL
+    - PLAID_APPROVAL_SECRET
