@@ -1,0 +1,6 @@
+{
+  "allow_operations": ["read", "write", "edit", "create"],
+  "deny_prefixes": [".git", ".ssh", ".aws", ".config/gcloud"],
+  "require_human_approval_outside_workspace": true,
+  "fail_closed_on_resolution_error": true
+}
