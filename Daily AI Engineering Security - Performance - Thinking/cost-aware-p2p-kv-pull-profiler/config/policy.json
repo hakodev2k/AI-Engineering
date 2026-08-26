@@ -1,0 +1,8 @@
+{
+  "minimum_samples_per_path": 3,
+  "max_ttft_p95_regression_ratio": 0.05,
+  "max_failed_pull_rate": 0.02,
+  "minimum_throughput_improvement_ratio": 0.0,
+  "load_buckets": [0, 4, 16, 32, 64],
+  "require_same_model_hardware_topology": true
+}
