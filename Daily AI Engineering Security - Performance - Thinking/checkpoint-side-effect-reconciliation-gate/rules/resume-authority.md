@@ -1,0 +1,11 @@
+# Rules: Resume Mutation Authority
+- A restored or compacted checkpoint MUST be treated as unverified until reconciled against durable state.
+- Mutation tools MUST remain unavailable while reconciliation status is not `reconciled`.
+- Completed external operations MUST have durable receipts or deterministic state evidence.
+- High-risk side effects MUST use idempotency keys when the destination supports them.
+- An agent MUST NOT repeat a mutation merely to test whether a previous mutation succeeded.
+- If durable world state is newer than the restored checkpoint, the workflow MUST reconcile or block.
+- Unexplained state divergence MUST require explicit human approval before any high-risk continuation.
+- Reconciliation retries MUST be bounded to the configured maximum.
+- Verification MUST use current external evidence rather than reconstructed conversational memory alone.
+- Logs MUST NOT contain secrets or reusable credentials.
