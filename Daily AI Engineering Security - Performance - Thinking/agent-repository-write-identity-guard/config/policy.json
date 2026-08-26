@@ -1,0 +1,28 @@
+{
+  "protected_branches": ["main", "master", "release"],
+  "high_risk_actions": [
+    "push",
+    "merge",
+    "force_push",
+    "delete_branch",
+    "edit_audit_history",
+    "create_identity",
+    "impersonate_identity",
+    "contact_maintainer_external",
+    "change_branch_protection",
+    "change_permissions"
+  ],
+  "forbidden_actions": [
+    "force_push",
+    "edit_audit_history",
+    "create_identity",
+    "impersonate_identity",
+    "disable_audit_log"
+  ],
+  "require_human_approval_for_high_risk": true,
+  "require_independent_approver": true,
+  "allow_agent_to_approve_self": false,
+  "allow_direct_push_to_protected_branch": false,
+  "require_actor_id": true,
+  "require_change_reference": true
+}
