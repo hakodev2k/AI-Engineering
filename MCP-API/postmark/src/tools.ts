@@ -6,6 +6,7 @@ import type { Upstream } from './upstream.js';
 export const emailAddress = z.string().email().max(320);
 const date = z.string().regex(/^\d{4}-\d{2}-\d{2}$/);
 const approval = z.string().regex(/^[a-f0-9]{64}$/).optional();
+const bounceType = z.enum(['AddressChange','AutoResponder','BadEmailAddress','Blocked','ChallengeVerification','DMARCPolicy','DnsError','HardBounce','InboundError','ManuallyDeactivated','OpenRelayTest','SMTPApiError','SoftBounce','SpamComplaint','SpamNotification','Subscribe','TemplateRenderingFailed','Transient','Unconfirmed','Unknown','Unsubscribe','VirusNotification']);
 
 export const schemas = {
   empty: z.object({}).strict(),
@@ -17,6 +18,11 @@ export const schemas = {
   }).strict(),
   messageGet: z.object({ messageId: z.string().uuid() }).strict(),
   diagnose: z.object({ recipient: emailAddress, messageId: z.string().uuid().optional(), fromDate: date.optional(), toDate: date.optional(), messageStream: z.string().max(100).optional() }).strict(),
+  bounceSearch: z.object({
+    type: bounceType.optional(), inactive: z.boolean().optional(), emailFilter: z.string().max(320).optional(), tag: z.string().max(100).optional(),
+    messageID: z.string().uuid().optional(), messageStream: z.string().max(100).optional(), fromDate: date.optional(), toDate: date.optional(),
+    count: z.number().int().min(1).max(500).default(50), offset: z.number().int().min(0).default(0)
+  }).strict(),
   stats: z.object({ stat: z.enum(['summary','overview','sent','bounces','spam','tracked','opens','openPlatforms','openClients','openReadTimes','clicks','clickBrowsers','clickPlatforms','clickLocation']).default('summary'), tag: z.string().max(100).optional(), fromDate: date.optional(), toDate: date.optional(), messageStream: z.string().max(100).optional() }).strict(),
   templateGet: z.object({ templateIdOrAlias: z.union([z.number().int().positive(), z.string().min(1).max(100)]) }).strict(),
   emailSend: z.object({
