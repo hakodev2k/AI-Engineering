@@ -24,6 +24,7 @@ register('postmark.server.get', 'READ: Get Postmark server configuration and tra
 register('postmark.email.search', 'READ: Search outbound email history with bounded filters and pagination.', schemas.emailSearch, 'searchOutboundMessages');
 register('postmark.email.get', 'READ: Get details and event timeline for one outbound message.', schemas.messageGet, 'getMessageDetails');
 register('postmark.delivery.diagnose', 'READ: Diagnose delivery for a recipient using Postmark message, bounce, and suppression data.', schemas.diagnose, 'diagnoseDelivery');
+register('postmark.bounce.search', 'READ: Search Postmark bounce history with bounded filters and pagination.', schemas.bounceSearch, 'searchBounces');
 register('postmark.stats.get', 'READ: Retrieve delivery statistics for a bounded date range.', schemas.stats, 'getDeliveryStats');
 register('postmark.template.list', 'READ: List templates on the configured Postmark server.', schemas.empty, 'listTemplates');
 register('postmark.template.get', 'READ: Retrieve one Postmark template by ID or alias.', schemas.templateGet, 'getTemplate');
