@@ -1,0 +1,57 @@
+id: doppler
+name: Doppler
+upstream:
+  - mcp
+  - rest
+official_mcp:
+  package: "@dopplerhq/mcp-server"
+  mode: local-stdio
+  status: experimental
+api:
+  base_url: "https://api.doppler.com/v3"
+auth:
+  type: bearer-token
+  env: DOPPLER_TOKEN
+  guidance: "Prefer config-scoped service tokens; use read-only tokens whenever writes are unnecessary."
+required_env:
+  - DOPPLER_TOKEN
+optional_env:
+  - DOPPLER_PROJECT
+  - DOPPLER_CONFIG
+  - DOPPLER_READ_ONLY
+  - DOPPLER_USE_UPSTREAM_MCP
+  - DOPPLER_APPROVAL_SECRET
+  - DOPPLER_TIMEOUT_MS
+  - DOPPLER_MAX_RETRIES
+capabilities:
+  - project.list
+  - project.get
+  - config.list
+  - config.get
+  - secret.names
+  - secret.list
+  - secret.get
+  - secret.download
+  - secret.update
+risk:
+  default: read
+  tools:
+    doppler.project.list: READ
+    doppler.project.get: READ
+    doppler.config.list: READ
+    doppler.config.get: READ
+    doppler.secret.names: READ
+    doppler.secret.list: HIGH_RISK
+    doppler.secret.get: HIGH_RISK
+    doppler.secret.download: HIGH_RISK
+    doppler.secret.update: HIGH_RISK
+approval:
+  required:
+    - doppler.secret.list
+    - doppler.secret.get
+    - doppler.secret.download
+    - doppler.secret.update
+security:
+  secret_values_are_sensitive: true
+  credentials_never_returned_to_agent: true
+  provider_content_is_untrusted_data: true
