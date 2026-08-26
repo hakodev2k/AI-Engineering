@@ -1,0 +1,62 @@
+id: postmark
+name: Postmark
+runtime: nodejs20
+upstream:
+  - mcp
+upstream_mcp:
+  implementation: "@activecampaign/postmark-mcp"
+  repository: "https://github.com/ActiveCampaign/postmark-mcp"
+  transport: stdio
+auth:
+  type: server-token
+  env:
+    - POSTMARK_SERVER_TOKEN
+    - POSTMARK_DEFAULT_SENDER_EMAIL
+    - POSTMARK_DEFAULT_MESSAGE_STREAM
+api_base_url: "https://api.postmarkapp.com"
+capabilities:
+  - server.read
+  - email.search
+  - email.read
+  - delivery.diagnose
+  - bounce.search
+  - stats.read
+  - template.list
+  - template.read
+  - email.send
+  - template.send
+  - webhook.list
+  - webhook.create
+  - webhook.delete
+risk:
+  default: READ
+  tools:
+    postmark.server.get: READ
+    postmark.email.search: READ
+    postmark.email.get: READ
+    postmark.delivery.diagnose: READ
+    postmark.bounce.search: READ
+    postmark.stats.get: READ
+    postmark.template.list: READ
+    postmark.template.get: READ
+    postmark.email.send: HIGH_RISK
+    postmark.template.send: HIGH_RISK
+    postmark.webhook.list: READ
+    postmark.webhook.create: HIGH_RISK
+    postmark.webhook.delete: DESTRUCTIVE
+approval:
+  required_for:
+    - postmark.email.send
+    - postmark.template.send
+    - postmark.webhook.create
+    - postmark.webhook.delete
+environment:
+  required:
+    - POSTMARK_SERVER_TOKEN
+    - POSTMARK_DEFAULT_SENDER_EMAIL
+    - POSTMARK_APPROVAL_SECRET
+  optional:
+    - POSTMARK_DEFAULT_MESSAGE_STREAM
+    - POSTMARK_WEBHOOK_URL_ALLOWLIST
+    - POSTMARK_RECIPIENT_DOMAIN_ALLOWLIST
+    - POSTMARK_UPSTREAM_TIMEOUT_MS
