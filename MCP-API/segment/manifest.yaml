@@ -1,0 +1,40 @@
+id: segment
+name: Twilio Segment
+upstream:
+  - rest
+mcp:
+  official: false
+  note: No official Segment MCP server was identified in Segment's official documentation during this implementation; the connector exposes Segment Public API operations as MCP tools.
+api:
+  us_base_url: https://api.segmentapis.com
+  eu_base_url: https://eu1.api.segmentapis.com
+auth:
+  type: bearer_token
+  env: SEGMENT_PUBLIC_API_TOKEN
+  scope: workspace
+capabilities:
+  - workspace.read
+  - source.list
+  - source.read
+  - source.create
+  - destination.list
+  - destination.read
+  - destination.update
+  - catalog.source.list
+  - catalog.destination.list
+  - tracking_plan.list
+  - tracking_plan.read
+  - tracking_plan.create
+  - tracking_plan.update
+  - tracking_plan.delete
+risk:
+  default: READ
+  write_requires_approval: true
+  destructive_requires_approval: true
+environment:
+  - SEGMENT_PUBLIC_API_TOKEN
+  - SEGMENT_REGION
+  - SEGMENT_REQUEST_TIMEOUT_MS
+  - SEGMENT_MAX_RETRIES
+  - SEGMENT_APPROVAL_SECRET
+  - SEGMENT_REQUIRE_WRITE_APPROVAL
