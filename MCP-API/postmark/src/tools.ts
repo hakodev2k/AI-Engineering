@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import type { Config } from './config.js';
-import { assertApproval } from './policy.js';
+import { assertApproval, TOOL_POLICY } from './policy.js';
 import type { Upstream } from './upstream.js';
 
 export const emailAddress = z.string().email().max(320);
@@ -36,6 +36,7 @@ export const schemas = {
 };
 
 function recipients(value: string | string[]): string[] { return Array.isArray(value) ? value : [value]; }
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 export function assertRecipientsAllowed(config: Config, value: string | string[]): void {
   if (!config.recipientDomainAllowlist.length) return;
@@ -51,6 +52,26 @@ export function assertWebhookAllowed(config: Config, value: string): void {
   if (config.webhookUrlAllowlist.length && !config.webhookUrlAllowlist.some(prefix => value.toLowerCase().startsWith(prefix))) throw new Error('Webhook URL is not allowlisted');
 }
 
+function isTransient(error: unknown): boolean {
+  const text = error instanceof Error ? error.message : String(error);
+  return /429|rate.?limit|timeout|timed.?out|ECONNRESET|EAI_AGAIN|503|temporar/i.test(text);
+}
+
+async function callWithPolicy(upstream: Upstream, tool: string, upstreamTool: string, args: Record<string, unknown>): Promise<unknown> {
+  const readOnly = TOOL_POLICY[tool]?.risk === 'READ';
+  const attempts = readOnly ? 3 : 1;
+  let last: unknown;
+  for (let i = 0; i < attempts; i++) {
+    try { return await upstream.call(upstreamTool, args); }
+    catch (error) {
+      last = error;
+      if (!readOnly || !isTransient(error) || i === attempts - 1) throw error;
+      await sleep(250 * (2 ** i));
+    }
+  }
+  throw last;
+}
+
 export async function invoke(upstream: Upstream, config: Config, tool: string, upstreamTool: string, args: Record<string, unknown>): Promise<unknown> {
   if (tool === 'postmark.email.send' && !args.textBody && !args.htmlBody) throw new Error('textBody or htmlBody is required');
   if (tool === 'postmark.template.send' && Number(Boolean(args.templateId)) + Number(Boolean(args.templateAlias)) !== 1) throw new Error('exactly one of templateId or templateAlias is required');
@@ -60,5 +81,5 @@ export async function invoke(upstream: Upstream, config: Config, tool: string, u
   delete clean.approval;
   if (tool === 'postmark.email.send' || tool === 'postmark.template.send') assertRecipientsAllowed(config, clean.to as string | string[]);
   if (tool === 'postmark.webhook.create') assertWebhookAllowed(config, clean.url as string);
-  return upstream.call(upstreamTool, clean);
+  return callWithPolicy(upstream, tool, upstreamTool, clean);
 }
