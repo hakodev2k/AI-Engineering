@@ -1,0 +1,46 @@
+id: honeycomb
+name: Honeycomb
+version: 1.0.0
+runtime: node>=20
+upstream:
+  - mcp
+mcp:
+  transport: streamable-http
+  us_endpoint: https://mcp.honeycomb.io/mcp
+  eu_endpoint: https://mcp.eu1.honeycomb.io/mcp
+auth:
+  type: api-key
+  header: Authorization
+  format: "Bearer <key-id>:<key-secret>"
+  oauth_supported_upstream: true
+  oauth_scopes:
+    read: mcp:read
+    write: mcp:write
+environment:
+  - HONEYCOMB_MCP_URL
+  - HONEYCOMB_MCP_API_KEY
+  - HONEYCOMB_APPROVAL_SECRET
+  - HONEYCOMB_TIMEOUT_MS
+  - HONEYCOMB_MAX_RETRIES
+  - HONEYCOMB_MAX_PAYLOAD_BYTES
+capabilities:
+  - environment.list
+  - dataset.list
+  - column.find
+  - query.run
+  - trace.get
+  - bubbleup.run
+  - service-map.get
+  - board.create
+  - trigger.create
+  - slo.update
+risk:
+  default: READ
+  WRITE: [honeycomb.board.create]
+  HIGH_RISK: [honeycomb.trigger.create, honeycomb.slo.update]
+approval:
+  required_for: [WRITE, HIGH_RISK, DESTRUCTIVE]
+security:
+  upstream_tool_allowlist: true
+  credentials_exposed_to_agent: false
+  provider_content_untrusted: true
