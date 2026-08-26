@@ -23,15 +23,15 @@ export const schemas = {
     to: z.union([emailAddress, z.array(emailAddress).min(1).max(50)]), subject: z.string().min(1).max(1000),
     textBody: z.string().max(2_000_000).optional(), htmlBody: z.string().max(5_000_000).optional(),
     from: emailAddress.optional(), cc: z.string().max(5000).optional(), bcc: z.string().max(5000).optional(), replyTo: emailAddress.optional(), tag: z.string().max(100).optional(), approval
-  }).refine(v => !!v.textBody || !!v.htmlBody, 'textBody or htmlBody is required').strict(),
+  }).strict(),
   templateSend: z.object({
     to: z.union([emailAddress, z.array(emailAddress).min(1).max(50)]), templateId: z.number().int().positive().optional(), templateAlias: z.string().min(1).max(100).optional(),
     templateModel: z.record(z.unknown()).default({}), from: emailAddress.optional(), tag: z.string().max(100).optional(), approval
-  }).refine(v => Number(!!v.templateId) + Number(!!v.templateAlias) === 1, 'exactly one of templateId or templateAlias is required').strict(),
+  }).strict(),
   webhookList: z.object({ messageStream: z.string().max(100).optional() }).strict(),
   webhookCreate: z.object({
     url: z.string().url(), messageStream: z.string().max(100).optional(), openEnabled: z.boolean().optional(), clickEnabled: z.boolean().optional(), deliveryEnabled: z.boolean().optional(), bounceEnabled: z.boolean().optional(), spamComplaintEnabled: z.boolean().optional(), subscriptionChangeEnabled: z.boolean().optional(), approval
-  }).refine(v => [v.openEnabled,v.clickEnabled,v.deliveryEnabled,v.bounceEnabled,v.spamComplaintEnabled,v.subscriptionChangeEnabled].some(Boolean), 'at least one webhook trigger must be enabled').strict(),
+  }).strict(),
   webhookDelete: z.object({ webhookId: z.number().int().positive(), approval }).strict()
 };
 
@@ -52,6 +52,9 @@ export function assertWebhookAllowed(config: Config, value: string): void {
 }
 
 export async function invoke(upstream: Upstream, config: Config, tool: string, upstreamTool: string, args: Record<string, unknown>): Promise<unknown> {
+  if (tool === 'postmark.email.send' && !args.textBody && !args.htmlBody) throw new Error('textBody or htmlBody is required');
+  if (tool === 'postmark.template.send' && Number(Boolean(args.templateId)) + Number(Boolean(args.templateAlias)) !== 1) throw new Error('exactly one of templateId or templateAlias is required');
+  if (tool === 'postmark.webhook.create' && !['openEnabled','clickEnabled','deliveryEnabled','bounceEnabled','spamComplaintEnabled','subscriptionChangeEnabled'].some(k => args[k] === true)) throw new Error('at least one webhook trigger must be enabled');
   assertApproval(config.approvalSecret, tool, args, typeof args.approval === 'string' ? args.approval : undefined);
   const clean = { ...args };
   delete clean.approval;
