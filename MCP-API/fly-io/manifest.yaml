@@ -1,0 +1,42 @@
+id: fly-io
+name: Fly.io
+upstream:
+  - rest
+upstream_mcp:
+  available: true
+  implementation: flyctl mcp server
+  status: experimental
+  selected: false
+  reason: Direct Machines REST API is used for a smaller deterministic allowlisted surface with explicit approval controls.
+api:
+  base_url: https://api.machines.dev/v1
+auth:
+  type: bearer_token
+  env: FLY_API_TOKEN
+  guidance: Prefer app-scoped deploy tokens; use broader org tokens only when required.
+capabilities:
+  - app.list
+  - app.get
+  - app.create
+  - app.delete
+  - machine.list
+  - machine.get
+  - machine.start
+  - machine.stop
+  - machine.delete
+  - volume.list
+  - volume.get
+  - volume.create
+  - volume.delete
+risk:
+  default: read
+  write_approval_env: FLY_REQUIRE_WRITE_APPROVAL
+  destructive: explicit_approval
+required_environment:
+  - FLY_API_TOKEN
+optional_environment:
+  - FLY_API_BASE_URL
+  - FLY_ORG_SLUG
+  - FLY_REQUIRE_WRITE_APPROVAL
+  - FLY_APPROVAL_SECRET
+  - FLY_TIMEOUT_MS
