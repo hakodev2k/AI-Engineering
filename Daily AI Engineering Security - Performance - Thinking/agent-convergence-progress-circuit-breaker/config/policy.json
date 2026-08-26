@@ -1,0 +1,8 @@
+{
+  "max_no_progress_turns": 3,
+  "max_work_expansion_without_acceptance_change": 2,
+  "max_review_retries_per_acceptance_row": 2,
+  "require_artifact_or_evidence_delta": true,
+  "require_acceptance_row_for_new_work": true,
+  "block_finalization_with_open_required_rows": true
+}
