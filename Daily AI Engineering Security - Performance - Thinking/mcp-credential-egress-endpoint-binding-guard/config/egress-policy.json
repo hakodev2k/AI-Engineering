@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "allowed_schemes": ["https"],
+  "default_allowed_ports": [443],
+  "deny_ip_literals": true,
+  "deny_url_userinfo": true,
+  "credential_bindings": {
+    "amazon-mq-rabbitmq": {
+      "allowed_host_regex": "^[a-zA-Z0-9-]+\\.mq\\.[a-z0-9-]+\\.on\\.aws$",
+      "allowed_tools": ["rabbitmq_broker_initialize_connection", "rabbitmq_broker_initialize_connection_with_oauth"]
+    },
+    "github-token": {
+      "allowed_host_regex": "^(api\\.github\\.com|github\\.com)$",
+      "allowed_tools": ["github_api"]
+    }
+  },
+  "require_human_approval_for_exception": true
+}
