@@ -1,0 +1,8 @@
+{
+  "max_iterations": 12,
+  "max_tool_calls": 24,
+  "max_total_tokens": 50000,
+  "max_same_signature_without_progress": 3,
+  "min_progress_delta": 1,
+  "require_finite_limits": true
+}
