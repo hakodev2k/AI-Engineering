@@ -14,6 +14,7 @@ const ALLOWED = new Set([
 export class SnykMcpClient {
   private client?: Client;
   private transport?: StdioClientTransport;
+  private discovered = new Set<string>();
 
   constructor(private readonly config: Config) {}
 
@@ -30,16 +31,14 @@ export class SnykMcpClient {
     });
     this.client = new Client({ name: 'ai-engineering-snyk-connector', version: '1.0.0' });
     await this.client.connect(this.transport);
-    const discovered = await this.client.listTools();
-    const names = new Set(discovered.tools.map(t => t.name));
-    for (const name of ALLOWED) {
-      if (!names.has(name)) throw new Error(`Official Snyk MCP server is missing expected tool: ${name}`);
-    }
+    const tools = await this.client.listTools();
+    this.discovered = new Set(tools.tools.map(t => t.name));
   }
 
   async call(tool: string, args: Record<string, unknown>): Promise<unknown> {
     if (!ALLOWED.has(tool)) throw new Error(`Upstream Snyk MCP tool is not allowlisted: ${tool}`);
     await this.connect();
+    if (!this.discovered.has(tool)) throw new Error(`Official Snyk MCP server does not expose ${tool} for the installed CLI/profile/entitlement`);
     const result = await this.client!.callTool({ name: tool, arguments: args });
     if (result.isError) throw new Error(`Snyk MCP tool ${tool} failed`);
     return result;
@@ -49,5 +48,6 @@ export class SnykMcpClient {
     if (this.client) await this.client.close();
     this.client = undefined;
     this.transport = undefined;
+    this.discovered.clear();
   }
 }
