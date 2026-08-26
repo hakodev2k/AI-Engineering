@@ -1,0 +1,13 @@
+{
+  "required_unique_controllers": 2,
+  "require_human_codeowner": true,
+  "count_unknown_provenance": false,
+  "allow_author_controller_approval": false,
+  "high_risk_paths": [
+    ".github/workflows/",
+    "scripts/",
+    "security/",
+    "auth/",
+    "infra/"
+  ]
+}
