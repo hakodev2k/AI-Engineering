@@ -1,0 +1,12 @@
+# Rules: Context Compaction
+- A before-compaction token baseline MUST be measured.
+- Provider-reported token usage MUST be preferred over estimates when available.
+- Current user intent, security boundaries, approvals, active decisions, and required completed-work evidence MUST be marked required before eviction.
+- Every required item MUST remain inline or have a verified retrieval reference after compaction.
+- Required context MUST NOT be removed merely to meet a token budget.
+- Large-context compaction MUST demonstrate configured minimum token reduction.
+- Post-compaction input and output token budgets MUST be enforced.
+- Duplicate summary content MUST be measured and SHOULD be removed when above threshold.
+- Failed compaction MUST NOT cause an infinite retry loop; maximum 2 revised attempts.
+- The compaction producer MUST NOT be its only verifier for critical retention.
+- Optimization SHOULD target redundant history/tool output before correctness-critical context.

@@ -1,0 +1,1 @@
+{"max_after_input_tokens":8000,"max_output_tokens":1200,"enforce_reduction_when_before_tokens_gte":8000,"min_reduction_ratio":0.20,"max_duplicate_paragraph_ratio":0.10}
