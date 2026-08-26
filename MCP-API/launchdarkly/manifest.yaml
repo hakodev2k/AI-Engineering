@@ -1,0 +1,69 @@
+id: launchdarkly
+name: LaunchDarkly
+version: 1.0.0
+runtime:
+  language: typescript
+  node: ">=20"
+upstream:
+  - type: mcp
+    implementation: official
+    hosted_endpoint: https://mcp.launchdarkly.com/mcp/launchdarkly
+    local_package: "@launchdarkly/mcp-server"
+    usage: feature-flag list/get/create/update/delete when configured
+  - type: rest
+    implementation: official
+    base_url: https://app.launchdarkly.com/api/v2
+    usage: projects, environments, REST fallback for flags, segments, webhooks
+auth:
+  rest:
+    type: api_access_token
+    env: LAUNCHDARKLY_ACCESS_TOKEN
+    recommendation: service token with least-privilege custom role
+  hosted_mcp:
+    type: oauth2
+    env: LAUNCHDARKLY_MCP_ACCESS_TOKEN
+    note: token must be provisioned by an OAuth-capable credential broker; raw credentials are never exposed to tool callers
+permissions:
+  read:
+    - launchdarkly.project.list
+    - launchdarkly.project.get
+    - launchdarkly.environment.list
+    - launchdarkly.flag.list
+    - launchdarkly.flag.get
+    - launchdarkly.segment.list
+    - launchdarkly.segment.get
+    - launchdarkly.webhook.list
+  write:
+    - launchdarkly.flag.create
+    - launchdarkly.segment.create
+  high_risk:
+    - launchdarkly.flag.update
+    - launchdarkly.segment.update
+    - launchdarkly.webhook.create
+  destructive:
+    - launchdarkly.flag.delete
+    - launchdarkly.webhook.delete
+approval:
+  write: required
+  high_risk: required
+  destructive: required_and_disabled_by_default
+environment:
+  required:
+    - LAUNCHDARKLY_ACCESS_TOKEN
+  optional:
+    - LAUNCHDARKLY_API_BASE_URL
+    - LAUNCHDARKLY_API_VERSION
+    - LAUNCHDARKLY_TIMEOUT_MS
+    - LAUNCHDARKLY_MAX_RETRIES
+    - LAUNCHDARKLY_MCP_MODE
+    - LAUNCHDARKLY_MCP_SERVER_URL
+    - LAUNCHDARKLY_MCP_ACCESS_TOKEN
+    - LAUNCHDARKLY_APPROVAL_SECRET
+    - LAUNCHDARKLY_ALLOW_DESTRUCTIVE
+risk:
+  default: read
+security:
+  provider_content_is_untrusted: true
+  unrestricted_proxy_tools: false
+  upstream_mcp_tool_allowlist: true
+  destructive_disabled_by_default: true
