@@ -11,6 +11,11 @@ export class CircleCiApiError extends Error {
   }
 }
 
+export interface PipelineRef {
+  branch?: string;
+  tag?: string;
+}
+
 export class CircleCiRestClient {
   constructor(private readonly config: Config, private readonly fetchImpl: typeof fetch = fetch) {}
 
@@ -26,7 +31,7 @@ export class CircleCiRestClient {
         const response = await this.fetchImpl(`${this.config.apiBaseUrl}${path}`, {
           method,
           headers: {
-            'Accept': 'application/json',
+            Accept: 'application/json',
             'Content-Type': 'application/json',
             'Circle-Token': this.config.apiToken
           },
@@ -59,14 +64,21 @@ export class CircleCiRestClient {
     return this.request('GET', `/pipeline/${encodeURIComponent(id)}`, undefined, signal);
   }
 
-  triggerPipeline(projectSlug: string, branch?: string, tag?: string, parameters?: Record<string, boolean | number | string>, signal?: AbortSignal): Promise<unknown> {
-    const vcs: Record<string, string> = {};
-    if (branch) vcs.branch = branch;
-    if (tag) vcs.tag = tag;
-    const body: Record<string, unknown> = {};
-    if (Object.keys(vcs).length) Object.assign(body, vcs);
+  triggerPipeline(
+    projectSlug: string,
+    definitionId: string,
+    configRef: PipelineRef,
+    checkoutRef: PipelineRef,
+    parameters?: Record<string, boolean | number | string>,
+    signal?: AbortSignal
+  ): Promise<unknown> {
+    const body: Record<string, unknown> = {
+      definition_id: definitionId,
+      config: configRef,
+      checkout: checkoutRef
+    };
     if (parameters && Object.keys(parameters).length) body.parameters = parameters;
-    return this.request('POST', `/project/${encodeProjectSlug(projectSlug)}/pipeline`, body, signal);
+    return this.request('POST', `/project/${encodeProjectSlug(projectSlug)}/pipeline/run`, body, signal);
   }
 }
 
