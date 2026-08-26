@@ -1,0 +1,6 @@
+{
+  "verification_ttl_seconds": 3600,
+  "require_clean_or_captured_diff": true,
+  "require_monotonic_verification_epoch": true,
+  "max_retries": 2
+}
