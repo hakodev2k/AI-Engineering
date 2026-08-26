@@ -7,6 +7,12 @@ export interface Upstream {
   close(): Promise<void>;
 }
 
+function inheritedEnv(): Record<string, string> {
+  const out: Record<string, string> = {};
+  for (const [key, value] of Object.entries(process.env)) if (typeof value === 'string') out[key] = value;
+  return out;
+}
+
 export class PostmarkUpstream implements Upstream {
   private client?: Client;
   private transport?: StdioClientTransport;
@@ -19,7 +25,7 @@ export class PostmarkUpstream implements Upstream {
       command: 'npx',
       args: ['-y', '@activecampaign/postmark-mcp'],
       env: {
-        ...process.env,
+        ...inheritedEnv(),
         POSTMARK_SERVER_TOKEN: this.config.serverToken,
         DEFAULT_SENDER_EMAIL: this.config.defaultSenderEmail,
         DEFAULT_MESSAGE_STREAM: this.config.defaultMessageStream,
