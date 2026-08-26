@@ -1,0 +1,8 @@
+{
+  "soft_budget_ratio": 0.8,
+  "hard_budget_ratio": 0.95,
+  "reserve_tokens_for_checkpoint": 2048,
+  "max_resume_attempts": 2,
+  "require_checkpoint_before_hard_stop": true,
+  "terminal_states": ["completed", "partial_budget_exhausted", "failed", "cancelled"]
+}
