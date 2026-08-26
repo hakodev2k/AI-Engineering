@@ -117,6 +117,7 @@ This is standard stdio MCP and can be used by MCP clients that support launching
 | `postmark.email.search` | `searchOutboundMessages` | READ | No |
 | `postmark.email.get` | `getMessageDetails` | READ | No |
 | `postmark.delivery.diagnose` | `diagnoseDelivery` | READ | No |
+| `postmark.bounce.search` | `searchBounces` | READ | No |
 | `postmark.stats.get` | `getDeliveryStats` | READ | No |
 | `postmark.template.list` | `listTemplates` | READ | No |
 | `postmark.template.get` | `getTemplate` | READ | No |
@@ -195,7 +196,7 @@ Postmark returns HTTP `429` when API use exceeds acceptable limits. Postmark's p
 
 ## Pagination and bounds
 
-`postmark.email.search` exposes the official upstream message-search pagination controls:
+`postmark.email.search` and `postmark.bounce.search` expose bounded pagination controls:
 
 - `count`: 1–500, default 50
 - `offset`: non-negative integer
@@ -239,7 +240,7 @@ Postmark's public API documentation currently documents `429 Rate Limit Exceeded
 
 ## Limitations
 
-- This connector exposes 12 of the official Postmark MCP server's 24 tools by design.
+- This connector exposes 13 of the official Postmark MCP server's 24 tools by design.
 - It does not expose batch sends, template mutation, suppression mutation, bounce activation, or arbitrary provider requests.
 - It does not use account-level Postmark APIs or Account Tokens.
 - It does not implement a webhook receiver; it manages Postmark webhook registrations only.
