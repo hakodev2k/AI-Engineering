@@ -1,0 +1,11 @@
+# Rules: Credential Egress Boundary
+- Credential-bearing tool destinations MUST be validated deterministically before execution.
+- Credential values MUST NOT be placed in prompts, logs, tests, traces or error messages.
+- A model-selected hostname, URL, repository, recipient or file path MUST be treated as attacker-controlled input unless policy proves otherwise.
+- Tool-level approval MUST NOT substitute for argument-level destination validation.
+- Each credential class MUST be bound to explicit allowed tools and destination patterns.
+- Plain HTTP, unexpected ports, URL userinfo and IP literals MUST be denied unless a separately reviewed policy explicitly requires them.
+- Prompt-injection detection SHOULD be used as defense in depth, not as the primary authorization boundary.
+- Policy exceptions MUST require explicit human approval and MUST NOT become permanent automatically.
+- High-risk failures MUST block before secrets are materialized into the outbound request.
+- Security verification MUST include hostile destination substitution tests.
