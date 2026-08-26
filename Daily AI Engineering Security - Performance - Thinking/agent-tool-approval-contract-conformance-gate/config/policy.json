@@ -1,0 +1,25 @@
+{
+  "require_approval_for": [
+    "code_execution",
+    "shell",
+    "network_write",
+    "credential_access",
+    "host_write"
+  ],
+  "require_sandbox_for": [
+    "code_execution",
+    "shell",
+    "host_write"
+  ],
+  "enforcing_approval_labels": [
+    "ask",
+    "human",
+    "policy"
+  ],
+  "weak_approval_labels": [
+    "auto",
+    "never",
+    "none",
+    "bypass"
+  ]
+}
