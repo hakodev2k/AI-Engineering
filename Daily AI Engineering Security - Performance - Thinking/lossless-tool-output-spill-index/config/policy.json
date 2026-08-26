@@ -1,0 +1,7 @@
+{
+  "spill_threshold_bytes": 32768,
+  "preview_bytes": 4096,
+  "max_read_bytes": 65536,
+  "retention_hint": "session",
+  "preview_encoding": "utf-8-replace"
+}
