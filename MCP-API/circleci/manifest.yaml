@@ -1,0 +1,76 @@
+id: circleci
+name: CircleCI
+runtime: node>=20
+
+upstream:
+  - type: mcp
+    endpoint: https://mcp.circleci.com/v1/mcp
+    status: preview
+    auth: oauth2-or-bearer-personal-token
+    preferred_for:
+      - run.list
+      - run.get
+      - workflow.list
+      - workflow.get
+      - workflow.rerun
+      - workflow.cancel
+      - job.list
+      - job.get
+      - job.logs
+      - job.artifacts
+      - job.tests
+      - usage.download
+  - type: rest
+    endpoint: https://circleci.com/api/v2
+    auth: personal-api-token
+    fallback_for:
+      - pipeline.get
+      - pipeline.trigger
+
+auth:
+  type: personal-api-token
+  required_env:
+    - CIRCLECI_TOKEN
+  optional_env:
+    - CIRCLECI_MCP_BEARER_TOKEN
+    - CIRCLECI_API_BASE_URL
+    - CIRCLECI_MCP_URL
+    - CIRCLECI_REQUEST_TIMEOUT_MS
+    - CIRCLECI_MAX_RETRIES
+    - CIRCLECI_APPROVAL_SECRET
+
+capabilities:
+  - run.list
+  - run.get
+  - workflow.list
+  - workflow.get
+  - workflow.rerun
+  - workflow.cancel
+  - job.list
+  - job.get
+  - job.logs
+  - job.artifacts
+  - job.tests
+  - usage.download
+  - pipeline.get
+  - pipeline.trigger
+
+risk:
+  default: READ
+  WRITE:
+    - pipeline.trigger
+  HIGH_RISK:
+    - workflow.rerun
+    - workflow.cancel
+
+approval:
+  required_for:
+    - pipeline.trigger
+    - workflow.rerun
+    - workflow.cancel
+
+security:
+  credentials_visible_to_agent: false
+  upstream_tool_allowlist: true
+  untrusted_provider_content: true
+  destructive_tools_enabled_by_default: false
