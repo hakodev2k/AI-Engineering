@@ -1,0 +1,10 @@
+{
+  "max_snapshot_age_turns": 1,
+  "compact_at_utilization": 0.8,
+  "minimum_reserve_tokens": 4096,
+  "max_capacity_mismatch_ratio": 0.02,
+  "allowed_snapshot_sources": [
+    "current_prompt",
+    "last_call_prompt"
+  ]
+}
