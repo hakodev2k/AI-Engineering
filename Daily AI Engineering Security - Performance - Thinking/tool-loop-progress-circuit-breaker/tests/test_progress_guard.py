@@ -10,12 +10,14 @@ class ProgressGuardTests(unittest.TestCase):
         h = [{"tool": "search", "args": {"q": "x"}, "status": "ok", "result_summary": "none", "progress": False}] * 3
         self.assertEqual(evaluate(h, {"tool": "search", "args": {"q": "x"}, "kind": "read"})["decision"], "recover")
 
-    def test_progress_resets_same_outcome_streak(self):
+    def test_progress_resets_repetition_window(self):
         h = [
-            {"tool": "search", "args": {"q": "a"}, "status": "ok", "result_summary": "none", "progress": False},
-            {"tool": "search", "args": {"q": "b"}, "status": "ok", "result_summary": "new evidence", "progress": True},
+            {"tool": "search", "args": {"q": "x"}, "status": "ok", "result_summary": "none", "progress": False},
+            {"tool": "search", "args": {"q": "x"}, "status": "ok", "result_summary": "none", "progress": False},
+            {"tool": "search", "args": {"q": "x"}, "status": "ok", "result_summary": "new evidence", "progress": True},
+            {"tool": "search", "args": {"q": "x"}, "status": "ok", "result_summary": "none", "progress": False},
         ]
-        self.assertEqual(evaluate(h, {"tool": "search", "args": {"q": "c"}, "kind": "read"})["decision"], "allow")
+        self.assertEqual(evaluate(h, {"tool": "search", "args": {"q": "x"}, "kind": "read"})["decision"], "allow")
 
     def test_blocks_mutating_replay_after_one_no_progress_execution(self):
         h = [{"tool": "write", "args": {"path": "a"}, "status": "ok", "result_summary": "unchanged", "progress": False}]
