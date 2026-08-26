@@ -1,0 +1,10 @@
+{
+  "wait_events": ["wait", "wait_agent", "list_agents", "status"],
+  "max_model_visible_polls_per_task": 40,
+  "max_consecutive_no_change_polls": 5,
+  "initial_backoff_seconds": 15,
+  "max_backoff_seconds": 300,
+  "max_cached_tokens_per_no_change_poll": 120000,
+  "duplicate_tool_output_window": 128,
+  "quality_regression_tolerance": 0.0
+}
