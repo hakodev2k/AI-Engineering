@@ -1,0 +1,5 @@
+{
+  "max_consecutive_retries": 4,
+  "max_same_action": 5,
+  "max_no_progress_steps": 8
+}
