@@ -25,9 +25,9 @@ export class FastlyClient {
         }
         const text = await res.text();
         const retryAfter = Number(res.headers.get('retry-after') || 0) || undefined;
-        const retryable = res.status === 429 || res.status >= 500;
+        const retryableRead = method === 'GET' && (res.status === 429 || res.status >= 500);
         const err = new FastlyError(res.status, `Fastly API ${res.status}: ${text.slice(0,500)}`, retryAfter);
-        if (!retryable || attempt === this.cfg.maxRetries || method === 'DELETE') throw err;
+        if (!retryableRead || attempt === this.cfg.maxRetries) throw err;
         last = err;
         const delay = retryAfter ? retryAfter*1000 : Math.min(4000, 250*(2**attempt));
         await new Promise(r => setTimeout(r, delay));
