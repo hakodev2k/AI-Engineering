@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import argparse, hashlib, json, sys
+import argparse, hashlib, json
 from pathlib import Path
 
 READ_LIMIT = 3
@@ -43,10 +43,16 @@ def call_fp(event):
 
 
 def outcome_fp(event):
-    return fingerprint({
-        "status": event.get("status"),
-        "result_summary": event.get("result_summary"),
-    })
+    return fingerprint({"status": event.get("status"), "result_summary": event.get("result_summary")})
+
+
+def since_last_progress(events):
+    window = []
+    for event in reversed(events):
+        if bool(event.get("progress", False)):
+            break
+        window.append(event)
+    return list(reversed(window))
 
 
 def evaluate(history, candidate):
@@ -56,28 +62,23 @@ def evaluate(history, candidate):
     if not isinstance(tool, str) or not isinstance(args, dict) or kind not in {"read", "mutate"}:
         raise ValueError("candidate requires string tool, object args, and kind read|mutate")
 
-    cfp = call_fp(candidate)
     relevant = [e for e in history if isinstance(e, dict) and e.get("tool")]
-    exact = [e for e in relevant if call_fp(e) == cfp]
-    no_progress_exact = [e for e in exact if not bool(e.get("progress", False))]
+    window = since_last_progress(relevant)
+    cfp = call_fp(candidate)
+    exact_no_progress = [e for e in window if call_fp(e) == cfp]
 
-    recent_outcomes = []
-    for e in reversed(relevant):
-        if e.get("result_summary") is None:
-            continue
-        if e.get("progress", False):
-            break
-        recent_outcomes.append(outcome_fp(e))
-        if len(recent_outcomes) >= READ_LIMIT:
-            break
+    recent_outcomes = [outcome_fp(e) for e in window if e.get("result_summary") is not None][-READ_LIMIT:]
     same_outcome_streak = 0
     if recent_outcomes:
-        first = recent_outcomes[0]
-        same_outcome_streak = sum(1 for fp in recent_outcomes if fp == first)
+        last = recent_outcomes[-1]
+        for fp in reversed(recent_outcomes):
+            if fp != last:
+                break
+            same_outcome_streak += 1
 
     limit = MUTATE_LIMIT if kind == "mutate" else READ_LIMIT
     reasons = []
-    if len(no_progress_exact) >= limit:
+    if len(exact_no_progress) >= limit:
         reasons.append("exact_call_no_progress_limit")
     if same_outcome_streak >= READ_LIMIT:
         reasons.append("same_outcome_no_progress_limit")
