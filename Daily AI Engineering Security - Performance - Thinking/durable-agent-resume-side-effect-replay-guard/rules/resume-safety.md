@@ -1,0 +1,12 @@
+# Rules: Resume Safety
+- Every consequential operation MUST have a stable `operation_id` persisted before execution.
+- Resume logic MUST distinguish workflow failure from evidence that an external effect did not occur.
+- A `confirmed_complete` consequential operation MUST NOT be replayed.
+- An ambiguous/in-flight non-idempotent operation MUST block automated replay.
+- Idempotent retry SHOULD use provider-native idempotency keys when available.
+- Checkpoint parentage MUST match expected lineage.
+- A response MUST match the persisted pending request ID.
+- Diagnosis MUST be bounded to 2 hypothesis revisions.
+- The implementer MUST NOT be the only verifier.
+- Human approval MUST precede dangerous/irreversible reconciliation.
+- Logs MUST NOT contain secrets.
