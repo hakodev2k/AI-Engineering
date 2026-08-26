@@ -40,7 +40,9 @@ Input:
 ```json
 {
   "projectSlug": "gh/acme/service",
-  "branch": "main",
+  "definitionId": "11111111-1111-4111-8111-111111111111",
+  "configBranch": "main",
+  "checkoutBranch": "main",
   "parameters": {
     "deploy": false,
     "environment": "staging"
@@ -49,4 +51,4 @@ Input:
 }
 ```
 
-Permission: WRITE. Approval: required. This operation uses CircleCI API v2 and is deliberately not retried automatically because duplicate pipeline creation is possible.
+Permission: WRITE. Approval: required. This operation uses CircleCI's recommended API v2 `project/<project-slug>/pipeline/run` endpoint and is deliberately not retried automatically because duplicate pipeline creation is possible. CircleCI currently documents this trigger method for GitHub and Bitbucket integrations, not GitLab projects.
