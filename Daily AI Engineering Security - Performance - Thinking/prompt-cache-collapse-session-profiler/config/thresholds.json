@@ -1,0 +1,7 @@
+{
+  "min_context_tokens": 100000,
+  "max_cache_read_ratio": 0.50,
+  "min_cache_write_ratio": 0.40,
+  "min_consecutive_collapse_requests": 2,
+  "max_optimization_iterations": 2
+}
