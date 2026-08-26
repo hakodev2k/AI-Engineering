@@ -1,0 +1,5 @@
+{
+  "allowed_tools": ["search", "read", "write", "deploy"],
+  "high_risk_tools": ["write", "deploy"],
+  "require_human_approval_for_high_risk": true
+}
