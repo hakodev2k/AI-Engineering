@@ -1,0 +1,75 @@
+id: snyk
+name: Snyk
+runtime: node>=20
+upstream:
+  - mcp
+  - rest
+mcp:
+  type: local
+  command_env: SNYK_CLI_PATH
+  args: ["mcp", "-t", "stdio"]
+  trusted: official-snyk-cli
+  allowlist:
+    - snyk_sca_scan
+    - snyk_code_scan
+    - snyk_iac_scan
+    - snyk_container_scan
+    - snyk_sbom_scan
+    - snyk_aibom
+rest:
+  base_url_env: SNYK_REST_BASE_URL
+  default_base_url: https://api.snyk.io/rest
+  version_env: SNYK_API_VERSION
+  default_version: 2024-10-15
+auth:
+  type: api-token-or-pat
+  credential_env: SNYK_TOKEN
+  header: "Authorization: token <secret>"
+  notes: Credentials remain inside the connector and upstream Snyk CLI/API transport.
+permissions:
+  api:
+    - org.read
+    - org.project.read
+    - org.project.snapshot.read
+  local_scan: local filesystem read and execution permissions required by Snyk CLI and ecosystem build tools
+capabilities:
+  - org.list
+  - project.list
+  - project.get
+  - issue.list
+  - issue.get
+  - project.sbom.get
+  - scan.sca
+  - scan.code
+  - scan.iac
+  - scan.container
+  - scan.sbom
+  - aibom.create
+risk:
+  default: READ
+  tools:
+    snyk.org.list: READ
+    snyk.project.list: READ
+    snyk.project.get: READ
+    snyk.issue.list: READ
+    snyk.issue.get: READ
+    snyk.project.sbom.get: READ
+    snyk.scan.sca: HIGH_RISK
+    snyk.scan.code: HIGH_RISK
+    snyk.scan.iac: HIGH_RISK
+    snyk.scan.container: HIGH_RISK
+    snyk.scan.sbom: HIGH_RISK
+    snyk.aibom.create: HIGH_RISK
+approval:
+  high_risk: required
+  destructive: disabled
+required_env:
+  - SNYK_TOKEN
+optional_env:
+  - SNYK_ORG_ID
+  - SNYK_REST_BASE_URL
+  - SNYK_API_VERSION
+  - SNYK_CLI_PATH
+  - SNYK_APPROVAL_SECRET
+  - SNYK_TIMEOUT_MS
+  - SNYK_MAX_RETRIES
