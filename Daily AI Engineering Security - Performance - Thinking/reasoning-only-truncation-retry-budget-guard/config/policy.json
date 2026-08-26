@@ -1,0 +1,7 @@
+{
+  "max_transient_empty_retries": 2,
+  "max_partial_continuations": 1,
+  "reasoning_only_length_action": "stop_and_adjust_budget",
+  "zero_usage_empty_action": "retry_transient",
+  "max_total_model_attempts": 4
+}
