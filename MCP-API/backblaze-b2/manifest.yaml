@@ -1,0 +1,43 @@
+id: backblaze-b2
+name: Backblaze B2
+upstream:
+  - s3-compatible-api
+auth:
+  type: application-key
+  credential_mapping:
+    access_key_id: B2_KEY_ID
+    secret_access_key: B2_APPLICATION_KEY
+api:
+  base_url: B2_ENDPOINT
+  signature: aws-sigv4
+capabilities:
+  - bucket.list
+  - bucket.head
+  - object.list
+  - object.version.list
+  - object.head
+  - object.read_text
+  - object.presign_download
+  - object.presign_upload
+  - object.write_text
+  - object.copy
+  - object.delete
+risk:
+  default: READ
+  write_requires_approval: true
+  destructive_requires_approval: true
+permissions:
+  bucket.list: [listBuckets, listAllBucketNames]
+  bucket.head: [listBuckets]
+  object.list: [listFiles]
+  object.version.list: [listFiles]
+  object.head: [readFiles]
+  object.read_text: [readFiles]
+  object.presign_download: [readFiles]
+  object.presign_upload: [writeFiles]
+  object.write_text: [writeFiles]
+  object.copy: [readFiles, writeFiles]
+  object.delete: [writeFiles, deleteFiles]
+environment:
+  required: [B2_KEY_ID, B2_APPLICATION_KEY, B2_REGION, B2_ENDPOINT]
+  optional: [B2_ALLOWED_BUCKETS, B2_ALLOWED_PREFIXES, B2_REQUIRE_WRITE_APPROVAL, B2_APPROVAL_SECRET, B2_TIMEOUT_MS, B2_MAX_READ_BYTES]
