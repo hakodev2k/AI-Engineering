@@ -50,7 +50,12 @@ describe('REST reliability', () => {
   it('never retries non-idempotent pipeline triggers', async () => {
     const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify({ message: 'throttled' }), { status: 429, headers: { 'retry-after': '0' } }));
     const client = new CircleCiRestClient(config, fetchMock as typeof fetch);
-    await expect(client.triggerPipeline('gh/acme/service', 'main')).rejects.toMatchObject({ status: 429 });
+    await expect(client.triggerPipeline(
+      'gh/acme/service',
+      '11111111-1111-4111-8111-111111111111',
+      { branch: 'main' },
+      { branch: 'main' }
+    )).rejects.toMatchObject({ status: 429 });
     expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 });
@@ -91,7 +96,12 @@ describe('MCP tool registration', () => {
 
     const result = await client.callTool({
       name: 'circleci.pipeline.trigger',
-      arguments: { projectSlug: 'gh/acme/service', branch: 'main' }
+      arguments: {
+        projectSlug: 'gh/acme/service',
+        definitionId: '11111111-1111-4111-8111-111111111111',
+        configBranch: 'main',
+        checkoutBranch: 'main'
+      }
     });
     expect(result.isError).toBe(true);
     expect(rest.triggerPipeline).not.toHaveBeenCalled();
