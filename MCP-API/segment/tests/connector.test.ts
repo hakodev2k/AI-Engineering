@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import { describe, expect, it, vi } from 'vitest';
 import { approvalDigest, loadConfig } from '../src/config.js';
 import { SegmentApiError, SegmentClient } from '../src/client.js';
@@ -16,7 +18,12 @@ describe('Segment connector configuration', () => {
   });
 });
 
-describe('permission and approval policy', () => {
+describe('tool registration and permission policy', () => {
+  it('registers every declared policy tool in the MCP server source', () => {
+    const serverSource = readFileSync(fileURLToPath(new URL('../src/server.ts', import.meta.url)), 'utf8');
+    for (const tool of Object.keys(TOOL_POLICY)) expect(serverSource).toContain(`server.tool('${tool}'`);
+  });
+
   it('classifies destructive and read operations', () => {
     expect(TOOL_POLICY['segment.workspace.get']).toEqual({ risk: 'READ', approval: false });
     expect(TOOL_POLICY['segment.tracking_plan.delete']).toEqual({ risk: 'DESTRUCTIVE', approval: true });
