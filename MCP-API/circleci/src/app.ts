@@ -12,7 +12,7 @@ export interface Dependencies {
 
 const uuid = z.string().uuid();
 const project = z.string().min(3).max(300).regex(/^[A-Za-z0-9._/-]+$/);
-const branch = z.string().min(1).max(255);
+const ref = z.string().min(1).max(255);
 const status = z.string().min(1).max(64);
 const date = z.string().regex(/^\d{4}-\d{2}-\d{2}$/);
 const approval = z.string().regex(/^[a-f0-9]{64}$/).optional();
@@ -28,7 +28,7 @@ export function createServer(config: Config, deps?: Dependencies): McpServer {
   const server = new McpServer({ name: 'circleci-connector', version: '1.0.0' });
 
   server.tool('circleci.run.list', 'List CircleCI runs through the official hosted MCP server.', {
-    project: project.optional(), branch: branch.optional(), status: status.optional()
+    project: project.optional(), branch: ref.optional(), status: status.optional()
   }, async (args) => textResult(await upstream.call('list_runs', args)));
 
   server.tool('circleci.run.get', 'Get one CircleCI run by UUID through the official hosted MCP server.', {
@@ -91,16 +91,27 @@ export function createServer(config: Config, deps?: Dependencies): McpServer {
     pipelineId: uuid
   }, async ({ pipelineId }) => textResult(await rest.getPipeline(pipelineId)));
 
-  server.tool('circleci.pipeline.trigger', 'Trigger a CircleCI pipeline through API v2. Requires explicit human approval and is never retried automatically.', {
+  server.tool('circleci.pipeline.trigger', 'Trigger a CircleCI pipeline through the recommended API v2 pipeline/run endpoint. Requires explicit human approval and is never retried automatically.', {
     projectSlug: project,
-    branch: branch.optional(),
-    tag: z.string().min(1).max(255).optional(),
+    definitionId: uuid,
+    configBranch: ref.optional(),
+    configTag: ref.optional(),
+    checkoutBranch: ref.optional(),
+    checkoutTag: ref.optional(),
     parameters: z.record(z.union([z.boolean(), z.number(), z.string()])).optional(),
     approvalToken: approval
   }, async ({ approvalToken, ...args }) => {
-    if (args.branch && args.tag) throw new Error('Specify branch or tag, not both');
+    if ((args.configBranch && args.configTag) || (!args.configBranch && !args.configTag)) throw new Error('Specify exactly one of configBranch or configTag');
+    if ((args.checkoutBranch && args.checkoutTag) || (!args.checkoutBranch && !args.checkoutTag)) throw new Error('Specify exactly one of checkoutBranch or checkoutTag');
+    if (args.parameters && Object.keys(args.parameters).length > 100) throw new Error('CircleCI allows at most 100 pipeline parameters');
+    for (const [key, value] of Object.entries(args.parameters ?? {})) {
+      if (key.length > 128) throw new Error(`Pipeline parameter key exceeds 128 characters: ${key}`);
+      if (String(value).length > 512) throw new Error(`Pipeline parameter value exceeds 512 characters: ${key}`);
+    }
     assertApproval('circleci.pipeline.trigger', args, approvalToken, config.approvalSecret);
-    return textResult(await rest.triggerPipeline(args.projectSlug, args.branch, args.tag, args.parameters));
+    const configRef = args.configBranch ? { branch: args.configBranch } : { tag: args.configTag! };
+    const checkoutRef = args.checkoutBranch ? { branch: args.checkoutBranch } : { tag: args.checkoutTag! };
+    return textResult(await rest.triggerPipeline(args.projectSlug, args.definitionId, configRef, checkoutRef, args.parameters));
   });
 
   return server;
