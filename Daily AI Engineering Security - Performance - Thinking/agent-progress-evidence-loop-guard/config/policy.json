@@ -1,0 +1,13 @@
+{
+  "max_no_progress_streak": 3,
+  "max_total_steps": 80,
+  "max_recovery_attempts": 2,
+  "require_durable_checkpoint_before_stop": true,
+  "allow_repeated_polling_when_result_changes": true,
+  "progress_fields": [
+    "artifact_sha256",
+    "workspace_sha256",
+    "verification_sha256",
+    "external_state_sha256"
+  ]
+}
