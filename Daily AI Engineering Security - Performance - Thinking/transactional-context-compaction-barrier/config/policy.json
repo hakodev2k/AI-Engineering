@@ -1,0 +1,9 @@
+{
+  "max_context_utilization": 0.80,
+  "require_context_snapshot_scope": true,
+  "require_durable_history_checkpoint": true,
+  "block_on_unresolved_side_effects": true,
+  "max_compaction_retries_per_digest": 2,
+  "minimum_reduction_ratio": 0.15,
+  "side_effecting_tools": ["file_write", "db_write", "job_create", "deploy", "git_push", "http_write", "payment", "email_send"]
+}
