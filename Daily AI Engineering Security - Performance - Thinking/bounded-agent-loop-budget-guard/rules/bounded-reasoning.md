@@ -1,0 +1,11 @@
+# Rules: Bounded Agent Reasoning
+- Every autonomous loop MUST have a finite positive iteration ceiling.
+- Every task MUST have finite tool-call and token budgets.
+- A repeated action signature without measurable progress MUST trigger an early stop at the configured threshold.
+- Completion predicates MUST NOT be the only termination mechanism.
+- Nested agents MUST share or roll up into a task-level budget ledger.
+- Approval loops MUST return pending approvals to the caller rather than silently cycling autonomously.
+- Budget increases MUST be justified by benchmark evidence and SHOULD be workload-specific.
+- A stopped loop MUST report failure/partial status explicitly and MUST NOT be labeled complete.
+- Retry loops MUST have bounded retry counts and observable stop conditions.
+- The implementation agent MUST NOT be the only verifier of a loop-safety change.
