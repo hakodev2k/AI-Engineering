@@ -1,0 +1,17 @@
+{
+  "components": [
+    {
+      "name": "n8n",
+      "version": "2.36.2",
+      "custom_code_enabled": true,
+      "controls": [
+        "isolated_worker",
+        "low_privilege_os_user",
+        "module_allowlist",
+        "network_egress_policy",
+        "filesystem_write_policy"
+      ],
+      "capabilities": []
+    }
+  ]
+}
