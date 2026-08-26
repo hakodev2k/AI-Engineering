@@ -1,0 +1,41 @@
+id: fastly
+name: Fastly
+upstream:
+  - rest
+official_mcp: false
+api_base_url: https://api.fastly.com
+auth:
+  type: api_token
+  header: Fastly-Key
+  env: FASTLY_API_TOKEN
+  recommended_scopes:
+    - global:read
+    - purge_select
+    - purge_all
+capabilities:
+  - service.list
+  - service.get
+  - version.list
+  - version.get
+  - version.validate
+  - version.clone
+  - version.activate
+  - domain.list
+  - domain.check
+  - stats.summary
+  - cache.purge_url
+  - cache.purge_key
+  - cache.purge_all
+risk:
+  default: READ
+approval:
+  write: configurable
+  high_risk: required
+  destructive: required
+environment:
+  - FASTLY_API_TOKEN
+  - FASTLY_API_BASE_URL
+  - FASTLY_TIMEOUT_MS
+  - FASTLY_MAX_RETRIES
+  - FASTLY_APPROVAL_SECRET
+  - FASTLY_REQUIRE_WRITE_APPROVAL
