@@ -1,0 +1,51 @@
+id: box
+name: Box
+runtime: nodejs20
+upstream:
+  - rest
+api_base_url: https://api.box.com/2.0
+upload_base_url: https://upload.box.com/api/2.0
+auth:
+  type: oauth2-bearer
+  credential_env: BOX_ACCESS_TOKEN
+  notes: Use a Box OAuth 2.0 access token or another Box-supported bearer access token. Credentials remain inside the connector.
+capabilities:
+  - item.search
+  - folder.list
+  - file.read_metadata
+  - folder.read_metadata
+  - folder.create
+  - file.upload
+  - file.update_metadata
+  - comment.list
+  - comment.create
+  - webhook.list
+  - webhook.create
+  - webhook.delete
+risk:
+  default: READ
+  approval_required:
+    - box.folder.create
+    - box.file.upload
+    - box.file.update_metadata
+    - box.comment.create
+    - box.webhook.create
+    - box.webhook.delete
+  destructive_disabled_by_default:
+    - box.webhook.delete
+environment:
+  required:
+    - BOX_ACCESS_TOKEN
+  optional:
+    - BOX_API_BASE_URL
+    - BOX_UPLOAD_BASE_URL
+    - BOX_TIMEOUT_MS
+    - BOX_MAX_RETRIES
+    - BOX_APPROVAL_SECRET
+    - BOX_ENABLE_DESTRUCTIVE
+security:
+  content_is_untrusted: true
+  arbitrary_http_requests: false
+  bounded_retries: true
+  rate_limit_retry_after: true
+  approval_digest: hmac-sha256
