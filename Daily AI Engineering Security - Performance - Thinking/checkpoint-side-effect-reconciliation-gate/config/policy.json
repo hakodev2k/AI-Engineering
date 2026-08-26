@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "mutation_requires_reconciliation": true,
+  "max_resume_age_seconds": 900,
+  "allowed_statuses_for_mutation": ["reconciled"],
+  "high_risk_operations": ["deploy", "email_send", "payment", "dns_change", "migration", "git_push", "release"],
+  "require_human_approval_on_world_ahead": true,
+  "maximum_reconciliation_retries": 2
+}
