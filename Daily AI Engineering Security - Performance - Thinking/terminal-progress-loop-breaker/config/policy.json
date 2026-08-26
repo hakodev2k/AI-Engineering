@@ -1,0 +1,14 @@
+{
+  "warn_equivalent_failures": 2,
+  "terminal_equivalent_failures": 4,
+  "max_turns": 40,
+  "max_tokens": 500000,
+  "max_wall_seconds": 1800,
+  "checkpoint_before_terminal": true,
+  "volatile_argument_keys": [
+    "request_id",
+    "timestamp",
+    "nonce",
+    "trace_id"
+  ]
+}
