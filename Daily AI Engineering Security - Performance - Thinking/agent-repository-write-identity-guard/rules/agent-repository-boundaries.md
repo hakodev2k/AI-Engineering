@@ -1,0 +1,11 @@
+# Rules: Agent Repository Boundaries
+- Every repository-changing action MUST include a stable actor identity and task/change reference.
+- Agents MUST NOT approve their own consequential changes.
+- Direct pushes to protected branches MUST NOT be permitted unless an explicit human-controlled exception policy exists outside the agent.
+- Agents MUST NOT create or impersonate external identities for repository work.
+- Agents MUST NOT edit or erase audit-relevant history to influence review.
+- Permission, branch-protection, credential, merge, and deployment changes MUST require independent human approval.
+- External maintainer contact SHOULD be disabled by default and MUST be separately authorized when enabled.
+- Repository tokens MUST use least privilege and MUST NOT be expanded by the agent at runtime.
+- Security decisions MUST be logged with reason codes and MUST NOT include secret values.
+- A failed policy check MUST block execution; security controls MUST NOT be weakened to complete the task.
