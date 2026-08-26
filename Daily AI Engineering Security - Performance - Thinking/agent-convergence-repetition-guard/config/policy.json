@@ -1,0 +1,8 @@
+{
+  "warn_repeated_identical": 2,
+  "stop_repeated_identical": 3,
+  "warn_no_progress": 3,
+  "stop_no_progress": 5,
+  "stop_scope_growth_streak": 4,
+  "max_recovery_cycles": 2
+}
