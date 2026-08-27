@@ -1,0 +1,10 @@
+{
+  "model_context_tokens": 200000,
+  "reserved_output_tokens": 16000,
+  "safety_margin_tokens": 8000,
+  "max_tool_result_tokens": 24000,
+  "max_tool_turn_tokens": 60000,
+  "minimum_evidence_excerpt_tokens": 256,
+  "max_identical_overflow_retries": 1,
+  "approx_chars_per_token": 4.0
+}
