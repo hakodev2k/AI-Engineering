@@ -1,0 +1,25 @@
+{
+  "cacheable_tools": {
+    "web_search": {"ttl_ms": 300000, "scope": "run"},
+    "web_fetch": {"ttl_ms": 300000, "scope": "run"},
+    "read_file": {"ttl_ms": 60000, "scope": "run"},
+    "list_directory": {"ttl_ms": 30000, "scope": "run"},
+    "lsp_diagnostics": {"ttl_ms": 30000, "scope": "run"}
+  },
+  "never_cache_tools": [
+    "shell_write",
+    "write_file",
+    "git_push",
+    "send_message",
+    "deploy",
+    "payment",
+    "credential",
+    "delete"
+  ],
+  "thresholds": {
+    "min_calls_for_measurement": 5,
+    "duplicate_rate_warning": 0.1,
+    "avoidable_latency_ms_warning": 1000
+  },
+  "max_trace_lines": 100000
+}
