@@ -1,0 +1,25 @@
+{
+  "max_checkpoint_tokens": 2500,
+  "max_rehydration_tokens": 12000,
+  "max_raw_tail_tokens": 16000,
+  "max_total_post_compaction_tokens": 36000,
+  "max_rebuild_attempts": 1,
+  "required_checkpoint_fields": [
+    "version",
+    "epoch_id",
+    "active_goal",
+    "constraints",
+    "decisions",
+    "failed_or_rejected_approaches",
+    "next_action",
+    "active_context_keys",
+    "verification_status"
+  ],
+  "critical_context_prefixes": [
+    "security.",
+    "auth.",
+    "approval.",
+    "task.constraint."
+  ],
+  "fail_closed_on_missing_critical_context": true
+}
