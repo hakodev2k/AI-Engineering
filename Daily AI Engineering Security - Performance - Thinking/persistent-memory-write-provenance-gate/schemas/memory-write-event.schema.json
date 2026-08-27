@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "MemoryWriteEvent",
+  "type": "object",
+  "required": ["key", "value", "source_type", "source_ref", "namespace"],
+  "properties": {
+    "key": {"type": "string", "minLength": 1},
+    "value": {"type": "string"},
+    "source_type": {"type": "string", "minLength": 1},
+    "source_ref": {"type": "string", "minLength": 1},
+    "namespace": {"type": "string", "minLength": 1},
+    "human_approved": {"type": "boolean", "default": false},
+    "requested_ttl_seconds": {"type": "integer", "minimum": 1}
+  },
+  "additionalProperties": true
+}
