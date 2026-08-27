@@ -1,0 +1,10 @@
+{
+  "max_compactions_per_100_turns": 4,
+  "min_turns_between_compactions": 8,
+  "max_repeated_static_tokens_per_turn": 12000,
+  "min_cache_read_ratio": 0.45,
+  "max_cache_creation_ratio": 0.45,
+  "max_reported_to_live_ratio": 1.35,
+  "max_compaction_attempts_without_progress": 2,
+  "progress_events": ["user_result", "test_pass", "artifact_saved", "task_checkpoint"]
+}
