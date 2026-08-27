@@ -1,0 +1,10 @@
+{
+  "namespace": "billing",
+  "operation": "charge-order",
+  "idempotency_key": "order-12345",
+  "target": "customer-67890",
+  "metadata": {
+    "amount_minor": 4999,
+    "currency": "USD"
+  }
+}
