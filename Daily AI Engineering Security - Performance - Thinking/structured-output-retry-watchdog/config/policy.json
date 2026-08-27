@@ -1,0 +1,8 @@
+{
+  "max_same_failure_retries": 2,
+  "max_total_retries_per_stage": 4,
+  "max_no_progress_seconds": 120,
+  "require_recovery_evidence_before_retry": true,
+  "allow_partial_parallel_completion": true,
+  "minimum_partial_verification_fraction": 0.67
+}
