@@ -1,0 +1,53 @@
+id: temporal
+name: Temporal
+version: 1.0.0
+
+upstream:
+  - official-sdk
+
+transport_strategy:
+  selected: official-typescript-sdk
+  mcp_status: docs-mcp-only
+  notes: >
+    Temporal documents a Docs MCP server for live documentation access, not a general
+    operational Workflow/Schedule management MCP server. Operational capabilities use
+    the official @temporalio/client SDK.
+
+auth:
+  type: api-key-with-tls
+  address_env: TEMPORAL_ADDRESS
+  namespace_env: TEMPORAL_NAMESPACE
+  api_key_env: TEMPORAL_API_KEY
+  tls_env: TEMPORAL_TLS
+  credential_isolation: connector-only
+
+capabilities:
+  - workflow.list
+  - workflow.describe
+  - workflow.start
+  - workflow.signal
+  - workflow.query
+  - workflow.cancel
+  - workflow.terminate
+  - schedule.list
+  - schedule.describe
+  - schedule.pause
+  - schedule.unpause
+  - schedule.delete
+
+risk:
+  default: READ
+  writes_require_approval: true
+  destructive_disabled_by_default: true
+
+required_environment:
+  - TEMPORAL_ADDRESS
+  - TEMPORAL_NAMESPACE
+
+optional_environment:
+  - TEMPORAL_API_KEY
+  - TEMPORAL_TLS
+  - TEMPORAL_SERVER_NAME_OVERRIDE
+  - TEMPORAL_TIMEOUT_MS
+  - TEMPORAL_APPROVAL_SECRET
+  - TEMPORAL_ENABLE_DESTRUCTIVE
