@@ -1,0 +1,11 @@
+{
+  "default_deadline_ms": 60000,
+  "validation_deadline_ms": 2000,
+  "network_deadline_ms": 30000,
+  "long_running_deadline_ms": 300000,
+  "stale_grace_ms": 5000,
+  "max_total_attempts": 2,
+  "max_total_wall_ms": 360000,
+  "auto_retry_idempotent_only": true,
+  "require_human_approval_for_consequential_retry": true
+}
