@@ -1,0 +1,11 @@
+# Rules: Convergence Contract
+- Acceptance criteria MUST have stable IDs for the duration of a bounded execution.
+- Every cycle MUST record remaining criteria and at least one evidence-backed progress event or explicitly record zero progress.
+- New work MUST NOT be added unless it is linked to a currently failed criterion.
+- New work per cycle MUST NOT exceed the configured cap.
+- A criterion MUST NOT be marked passed without artifact, test, or review evidence.
+- The workflow MUST stop when maximum cycles or no-progress limits are exceeded.
+- A stop caused by non-convergence MUST preserve a safe snapshot of task-owned work before further experimentation.
+- Review agents MUST NOT create unrelated acceptance criteria.
+- The implementing agent MUST NOT be the sole verifier of completion.
+- Dangerous or irreversible publication/deployment actions MUST require explicit human approval when policy requires it.
