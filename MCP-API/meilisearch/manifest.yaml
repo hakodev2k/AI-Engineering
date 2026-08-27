@@ -1,0 +1,59 @@
+id: meilisearch
+name: Meilisearch
+version: 1.0.0
+
+upstream:
+  - rest
+  - official-mcp-available
+
+transport_strategy:
+  selected: rest
+  reason: >
+    Meilisearch publishes an official MCP server, but its documented connection-management
+    flow can change hosts/API keys at runtime and its own README warns that this pattern is
+    not appropriate for production without safeguards. This connector uses the official
+    REST API with fixed, validated configuration and a restricted tool allowlist.
+
+api:
+  base_url_env: MEILISEARCH_URL
+  authentication: bearer_api_key
+
+auth:
+  type: api_key
+  credential_env: MEILISEARCH_API_KEY
+  credential_isolation: connector-only
+
+required_environment:
+  - MEILISEARCH_URL
+  - MEILISEARCH_API_KEY
+
+optional_environment:
+  - MEILISEARCH_TIMEOUT_MS
+  - MEILISEARCH_MAX_RETRIES
+  - MEILISEARCH_ALLOW_INSECURE_HTTP
+  - MEILISEARCH_APPROVAL_SECRET
+  - MEILISEARCH_ENABLE_DESTRUCTIVE
+
+capabilities:
+  - system.health
+  - system.version
+  - index.list
+  - index.get
+  - index.create
+  - index.update
+  - index.delete
+  - search.query
+  - document.list
+  - document.get
+  - document.add_or_update
+  - document.delete
+  - settings.get
+  - settings.update
+  - task.get
+  - task.list
+  - task.cancel
+
+risk:
+  default: READ
+  write_requires_approval: true
+  destructive_disabled_by_default: true
