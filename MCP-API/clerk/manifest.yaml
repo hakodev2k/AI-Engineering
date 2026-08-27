@@ -1,0 +1,51 @@
+id: clerk
+name: Clerk
+version: 1.0.0
+runtime: node>=20
+upstream:
+  official_mcp:
+    endpoint: https://mcp.clerk.com/mcp
+    transport: streamable-http
+    usage: documentation-and-sdk-snippets-only
+    proxied: false
+  rest:
+    base_url: https://api.clerk.com/v1
+    usage: identity-and-organization-management
+auth:
+  type: secret-key
+  environment_variable: CLERK_SECRET_KEY
+  note: Clerk Secret Keys are instance-scoped backend credentials; this connector narrows effective access with a fixed tool allowlist and approval policy.
+required_environment:
+  - CLERK_SECRET_KEY
+optional_environment:
+  - CLERK_API_BASE_URL
+  - CLERK_TIMEOUT_MS
+  - CLERK_APPROVAL_SECRET
+  - CLERK_REQUIRE_WRITE_APPROVAL
+  - CLERK_ALLOW_DESTRUCTIVE
+capabilities:
+  - user.list
+  - user.get
+  - user.create
+  - user.update
+  - user.delete
+  - organization.list
+  - organization.get
+  - organization.create
+  - organization.update
+  - organization.delete
+  - organization.membership.list
+  - organization.membership.create
+  - organization.membership.update
+  - organization.membership.delete
+  - organization.invitation.list
+  - organization.invitation.create
+  - organization.invitation.revoke
+risk:
+  default: READ
+  write_requires_approval_by_default: true
+  destructive_disabled_by_default: true
+security:
+  credentials_exposed_to_model: false
+  arbitrary_http_requests: false
+  retrieved_content_untrusted: true
