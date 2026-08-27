@@ -1,0 +1,11 @@
+[
+  {
+    "target_criterion": "API returns validated response",
+    "accepted_delta": ["src/api.py", "tests/test_api.py"],
+    "scope_growth": 0,
+    "verification": "accepted",
+    "retry": 0,
+    "max_retries": 2,
+    "all_required_criteria_verified": false
+  }
+]
