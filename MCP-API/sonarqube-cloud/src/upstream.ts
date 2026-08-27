@@ -41,7 +41,11 @@ export async function connectOfficialMcp(config: ConnectorConfig): Promise<Upstr
       const controller = new AbortController();
       const timer = setTimeout(() => controller.abort(), config.timeoutMs);
       try {
-        return await client.callTool({ name, arguments: args }, { signal: controller.signal });
+        return await client.callTool(
+          { name, arguments: args },
+          undefined,
+          { signal: controller.signal }
+        );
       } finally {
         clearTimeout(timer);
       }
