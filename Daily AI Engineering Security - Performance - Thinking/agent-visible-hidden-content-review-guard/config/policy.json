@@ -1,0 +1,8 @@
+{
+  "max_input_chars": 200000,
+  "block_html_comments": true,
+  "block_zero_width": true,
+  "blocked_tags": ["script", "style"],
+  "require_visible_evidence_for_privileged_action": true,
+  "privileged_actions": ["shell", "deploy", "git_push", "pipeline_run", "secret_read", "external_write"]
+}
