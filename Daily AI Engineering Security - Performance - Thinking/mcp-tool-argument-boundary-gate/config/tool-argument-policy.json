@@ -1,0 +1,25 @@
+{
+  "default_action": "deny",
+  "tools": {
+    "model_create": {
+      "string_fields": ["name", "modelfile", "source", "destination"],
+      "forbid_shell_metacharacters": true
+    },
+    "content_export": {
+      "allowed_hosts": ["api.contentful.com"],
+      "forbid_proxy": true
+    },
+    "file_read": {
+      "path_fields": ["path"],
+      "allowed_roots": ["/workspace"]
+    },
+    "file_write": {
+      "path_fields": ["path"],
+      "allowed_roots": ["/workspace"]
+    },
+    "upload_file": {
+      "path_fields": ["filePath"],
+      "allowed_roots": ["/workspace"]
+    }
+  }
+}
