@@ -37,6 +37,7 @@ agent-execution-sensitive-path-write-gate/
 ├── hooks/pre-file-write.md
 ├── rules/write-boundary.md
 ├── scripts/write_gate.py
+├── skills/execution-sensitive-write-analysis.md
 ├── subagents/security-verifier.md
 ├── tests/test_write_gate.py
 └── workflows/write-request-verification.md
