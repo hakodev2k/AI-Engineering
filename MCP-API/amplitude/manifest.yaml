@@ -1,0 +1,41 @@
+id: amplitude
+name: Amplitude
+runtime: node>=20
+upstream:
+  - rest
+official_mcp:
+  available: false
+  note: No official Amplitude MCP server was identified in Amplitude's official documentation during this implementation review.
+auth:
+  type: api-key-and-secret
+  credentials:
+    - AMPLITUDE_API_KEY
+    - AMPLITUDE_SECRET_KEY
+  isolation: connector-only
+regions:
+  - us
+  - eu
+api:
+  dashboard_us: https://amplitude.com
+  dashboard_eu: https://analytics.eu.amplitude.com
+  ingest_us: https://api2.amplitude.com
+  ingest_eu: https://api.eu.amplitude.com
+  profile_us: https://profile-api.amplitude.com
+capabilities:
+  - event.list
+  - user.count
+  - event.segment
+  - funnel.analyze
+  - retention.analyze
+  - chart.get
+  - user.activity
+  - user.profile
+  - event.ingest
+risk:
+  default: READ
+  approval_required:
+    - amplitude.event.ingest
+  destructive_tools: []
+env:
+  required: [AMPLITUDE_API_KEY, AMPLITUDE_SECRET_KEY]
+  optional: [AMPLITUDE_REGION, AMPLITUDE_TIMEOUT_MS, AMPLITUDE_MAX_RETRIES, AMPLITUDE_APPROVAL_SECRET]
