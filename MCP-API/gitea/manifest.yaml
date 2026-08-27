@@ -1,0 +1,46 @@
+id: gitea
+name: Gitea
+version: 1.0.0
+upstream:
+  - rest
+official_sources:
+  api: https://docs.gitea.com/api/
+  api_usage: https://docs.gitea.com/1.26/development/api-usage/
+  mcp: none-documented-officially
+auth:
+  type: api-token
+  header: "Authorization: token <token>"
+  env:
+    - GITEA_BASE_URL
+    - GITEA_TOKEN
+capabilities:
+  - repository.search
+  - repository.list_mine
+  - repository.get
+  - repository.branches.list
+  - file.read
+  - issue.list
+  - issue.get
+  - issue.create
+  - issue.comment.create
+  - pull_request.list
+  - pull_request.get
+  - pull_request.create
+risk:
+  default: READ
+  write_tools:
+    - gitea.issue.create
+    - gitea.issue.comment.create
+    - gitea.pull_request.create
+approval:
+  write_requires_approval: true
+  writes_disabled_by_default: true
+transport:
+  api_base_path: /api/v1
+reliability:
+  retries: bounded
+  pagination: page-limit
+  retry_after: respected
+security:
+  credentials_exposed_to_model: false
+  arbitrary_request_tool: false
