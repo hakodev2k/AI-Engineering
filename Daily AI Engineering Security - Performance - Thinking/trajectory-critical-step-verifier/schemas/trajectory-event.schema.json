@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TrajectoryEvent",
+  "type": "object",
+  "required": ["step", "action", "evidence_ids", "assumption_ids", "verification_status", "progress_claim"],
+  "properties": {
+    "step": {"type": "integer", "minimum": 1},
+    "action": {"type": "string", "minLength": 1},
+    "evidence_ids": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "assumption_ids": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "resolved_assumption_ids": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "verification_status": {"enum": ["unverified", "verified", "failed"]},
+    "progress_claim": {"enum": ["working", "blocked", "done", "fixed", "complete"]}
+  },
+  "additionalProperties": true
+}
