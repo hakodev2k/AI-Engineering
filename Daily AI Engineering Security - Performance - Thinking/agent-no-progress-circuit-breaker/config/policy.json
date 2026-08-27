@@ -1,0 +1,8 @@
+{
+  "max_steps": 60,
+  "max_no_progress_steps": 4,
+  "max_same_fingerprint": 3,
+  "max_total_tokens": 250000,
+  "max_repeated_verifications": 3,
+  "require_human_restart_after_circuit_open": true
+}
