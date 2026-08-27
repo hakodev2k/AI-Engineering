@@ -1,0 +1,7 @@
+{
+  "max_attempts": 2,
+  "min_shrink_tokens": 1024,
+  "min_free_tokens": 2048,
+  "max_retry_debris_tokens": 256,
+  "require_failure_fingerprint_change": true
+}
