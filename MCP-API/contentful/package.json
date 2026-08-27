@@ -1,0 +1,16 @@
+{
+  "name": "@ai-engineering/contentful-mcp-connector",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "start": "node src/server/index.js",
+    "check": "node --check src/server/index.js && node --check src/transport/upstream.js && node --check src/tools/catalog.js && node --check src/auth/config.js && node --check src/tools/policy.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "@contentful/mcp-server": "1.17.0",
+    "@modelcontextprotocol/sdk": "^1.26.0"
+  }
+}
