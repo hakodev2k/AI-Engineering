@@ -1,0 +1,9 @@
+{
+  "name": "@ai-engineering/posthog-mcp-connector",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "scripts": { "start": "node src/server.js", "test": "node --test", "check": "node --check src/*.js" },
+  "dependencies": { "@modelcontextprotocol/sdk": "^1.17.4" }
+}
