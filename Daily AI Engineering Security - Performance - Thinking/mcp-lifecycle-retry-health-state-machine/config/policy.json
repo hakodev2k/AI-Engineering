@@ -1,0 +1,8 @@
+{
+  "max_attempts": 3,
+  "base_backoff_ms": 250,
+  "max_backoff_ms": 2000,
+  "retry_http_statuses": [500, 502, 503, 504],
+  "retry_error_codes": ["timeout", "connection_reset", "stale_process_handle"],
+  "terminal_error_codes": ["unauthorized", "forbidden", "protocol_incompatible", "invalid_configuration"]
+}
