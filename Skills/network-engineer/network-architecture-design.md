@@ -1,46 +1,49 @@
 # Network Architecture Design
 
 ## Purpose
-Design secure, resilient, scalable network architectures that satisfy application, user, operational, and compliance requirements without unnecessary complexity.
+Design maintainable enterprise and cloud networks from requirements rather than vendor defaults.
 
 ## When to use
-Use for new environments, major topology changes, cloud/hybrid connectivity, segmentation redesign, capacity expansion, or recurring reliability problems.
+Use for new sites, cloud connectivity, segmentation redesigns, mergers, or material traffic-growth changes. Do not use as a substitute for an approved security or business requirement.
 
 ## Inputs
-Business requirements, application flows, site/cloud topology, traffic estimates, availability targets, security constraints, address space, existing diagrams, and operational capabilities.
+Business flows, application dependencies, user/site counts, latency and availability targets, addressing constraints, security zones, cloud regions, budget, and existing diagrams/configuration.
 
 ## Preconditions
-Confirm scope, ownership boundaries, critical workloads, recovery expectations, and constraints. Do not assume existing diagrams are current.
+Confirm authoritative requirements and identify owners for security, applications, infrastructure, and operations.
 
 ## Context to inspect
-Inspect physical and logical topology, routing domains, trust zones, WAN/Internet paths, DNS/DHCP dependencies, firewalls, load balancers, cloud networks, monitoring, and failure domains.
+Current L2/L3 topology, routing domains, WAN/Internet circuits, failure domains, NAT, DNS/DHCP/IPAM, firewall boundaries, cloud networks, monitoring, and known incidents.
 
 ## Core knowledge
-Prefer simple failure domains, explicit trust boundaries, deterministic routing, redundant critical paths, summarizable addressing, and observable dependencies. Redundancy without independent failure paths can create false resilience.
+Prefer explicit failure domains, deterministic routing, summarization, bounded blast radius, redundant paths without accidental complexity, and capacity headroom. Availability comes from eliminating correlated failure, not merely duplicating devices.
 
 ## Procedure
-1. Identify consumers, services, traffic flows, and NFRs.
-2. Map current topology and constraints.
-3. Define trust zones and failure domains.
-4. Design IP, routing, ingress, egress, and service connectivity.
-5. Design redundancy and convergence behavior.
-6. Validate MTU, DNS, NAT, firewall, and load-balancing implications.
-7. Model normal, degraded, maintenance, and disaster states.
-8. Estimate capacity and growth headroom.
-9. Define observability and operational ownership.
-10. Document decisions, assumptions, migration sequence, and rollback.
+1. Translate business requirements into traffic, availability, security, scale, and recovery requirements.
+2. Map producers, consumers, trust boundaries, north-south and east-west flows.
+3. Establish addressing and summarization strategy.
+4. Define L2 boundaries and L3 routing domains.
+5. Select routing protocols and convergence objectives.
+6. Design Internet, WAN, cloud, and data-center interconnects.
+7. Place security enforcement points without creating hidden asymmetric paths.
+8. Model device, link, site, provider, and control-plane failures.
+9. Calculate bandwidth and growth headroom.
+10. Define management-plane access and out-of-band recovery.
+11. Specify observability and operational ownership.
+12. Document alternatives and rejected trade-offs.
+13. Validate through diagrams, route/path simulation, and failure walkthroughs.
 
 ## Decision points
-Choose L2 extension only when unavoidable; prefer routed boundaries for fault isolation. Choose centralized controls for consistency versus distributed controls for locality and blast-radius reduction. Select active-active only when applications and state handling support it.
+Choose L2 extension only when workload constraints justify its larger failure domain. Prefer dynamic routing when topology or failover complexity exceeds what static routes can safely express. Choose active/active only when state, routing symmetry, and operations support it.
 
 ## Common failure patterns
-Single hidden dependencies, asymmetric routing, overlapping address space, excessive L2 domains, undocumented NAT, redundant devices sharing one upstream failure, and designs that cannot be operated by the team.
+Oversized broadcast domains, overlapping address space, undocumented NAT, single-provider dependencies, asymmetric firewall paths, unbounded route redistribution, fragile L2 stretch, and designs that cannot be operated during partial failure.
 
 ## Verification
-Validate diagrams against configurations, simulate failure paths, review route tables and policies, test representative traffic, measure convergence where relevant, and confirm monitoring detects critical path failures.
+Prove intended and failure-state paths, convergence, security boundaries, capacity, monitoring coverage, and recovery procedures. A diagram is implemented documentation; successful failover evidence is verification.
 
 ## Expected output
-An implementable network design with topology, flows, addressing, routing, security boundaries, resilience model, capacity assumptions, observability, migration, and rollback guidance.
+Architecture diagrams, addressing/routing plan, failure-domain analysis, capacity assumptions, security boundaries, operational requirements, and decision record.
 
 ## Stop conditions
-Stop and escalate when requirements conflict, ownership is unclear, address-space collisions cannot be resolved safely, or the change risks production without an approved rollback path.
+Escalate when requirements conflict, address ownership is unknown, security policy is unresolved, provider capabilities are unverified, or the design requires destructive production changes without an approved migration plan.

@@ -1,43 +1,45 @@
 # Wireless Network Engineering
 
 ## Purpose
-Design and troubleshoot enterprise Wi-Fi for reliable coverage, capacity, roaming, security, and user experience.
+Design and troubleshoot enterprise Wi-Fi for coverage, capacity, roaming, security, and predictable client experience.
 
 ## When to use
-Use for new wireless deployments, office redesign, density growth, roaming failures, interference, authentication issues, or performance complaints.
+Use for WLAN design, site expansion, roaming failures, interference, capacity complaints, or authentication issues.
 
 ## Inputs
-Floor plans, client density/types, application needs, RF survey data, AP/controller capabilities, authentication design, channel plan, and wired uplinks.
+Floor plans, client/device types, density, applications, RF survey data, AP/controller configuration, spectrum data, authentication logs, and performance telemetry.
 
 ## Context to inspect
-Inspect RF spectrum, RSSI/SNR, channel utilization, co-channel interference, AP placement/power, roaming events, 802.1X/RADIUS, DHCP/DNS, and switch PoE/uplinks.
+Channel plan, channel width, transmit power, SNR, retries, airtime utilization, roaming, band steering, DFS, SSIDs, VLANs, 802.1X/RADIUS, and wired uplinks.
 
 ## Core knowledge
-Wi-Fi is shared half-duplex radio capacity. Coverage alone is insufficient; channel reuse, client behavior, interference, airtime, and roaming determine experience.
+Wi-Fi is shared half-duplex airtime. Strong signal alone does not imply capacity. Design from client capabilities and application requirements; minimize co-channel interference and excessive SSID overhead.
 
 ## Procedure
-1. Define coverage, capacity, roaming, and application requirements.
-2. Survey RF environment and physical constraints.
-3. Design AP placement and channel/power plan.
-4. Choose bands/channel widths based on density and spectrum.
-5. Configure secure authentication and segmentation.
-6. Validate wired uplink and PoE capacity.
-7. Test representative client types and roaming paths.
-8. Measure SNR, retries, airtime, throughput, and latency.
-9. Tune using observed RF/client behavior.
-10. Document expected coverage and operational thresholds.
+1. Define coverage, capacity, roaming, and application targets.
+2. Inventory client radios and regulatory constraints.
+3. Perform predictive design followed by on-site validation for important deployments.
+4. Set channel widths appropriate to density and spectrum.
+5. Tune power to create useful cell boundaries without coverage holes.
+6. Limit SSIDs and map segmentation deliberately.
+7. Validate authentication and key-management flows.
+8. Measure SNR, retries, airtime, channel utilization, and PHY rates.
+9. Investigate interference with spectrum evidence.
+10. Test roaming using representative clients and applications.
+11. Verify wired uplink, DHCP, DNS, and gateway paths.
+12. Compare post-change telemetry to baseline.
 
 ## Decision points
-Prefer narrower channels in dense deployments for reuse; wider channels may help low-density high-throughput cases. Use 802.1X for enterprise identity where supported; PSKs require stronger lifecycle controls.
+Prefer 5/6 GHz where client support and regulation allow; retain 2.4 GHz for compatibility/IoT needs. Use wider channels only where spectrum reuse and density permit.
 
 ## Common failure patterns
-Adding APs to fix interference, excessive transmit power, overly wide channels, relying on signal bars, poor roaming assumptions, weak guest isolation, and ignoring wired bottlenecks.
+Too many APs at high power, 80/160 MHz channels in dense sites, excessive SSIDs, sticky clients, hidden-node problems, DFS surprises, and blaming RF for DHCP/RADIUS failures.
 
 ## Verification
-Perform post-deployment survey, roaming tests, authentication, capacity tests, spectrum review, and client-experience validation.
+Validate coverage and capacity survey, authentication, roaming, throughput, latency, retry rates, and peak-hour airtime.
 
 ## Expected output
-A validated wireless design or remediation with RF plan, security, capacity, roaming, and monitoring guidance.
+RF/WLAN design or remediation, survey evidence, configuration rationale, and measured client-experience results.
 
 ## Stop conditions
-Escalate when physical survey access is unavailable, regulatory constraints are unclear, or remediation requires structural/cabling changes outside scope.
+Stop when regulatory constraints are uncertain, physical survey access is required but unavailable, or client limitations invalidate the proposed design.
