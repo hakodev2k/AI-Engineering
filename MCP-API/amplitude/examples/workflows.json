@@ -1,0 +1,8 @@
+{
+  "examples": [
+    { "tool": "amplitude.event.list", "input": {}, "permission": "READ", "approvalRequired": false, "output": "Visible events with current-week totals/uniques" },
+    { "tool": "amplitude.event.segment", "input": { "event": { "event_type": "Signup" }, "start": "20260801", "end": "20260827", "metric": "uniques", "interval": "1" }, "permission": "READ", "approvalRequired": false, "output": "Time-series event segmentation result" },
+    { "tool": "amplitude.funnel.analyze", "input": { "events": [{ "event_type": "Signup" }, { "event_type": "Purchase" }], "start": "20260801", "end": "20260827" }, "permission": "READ", "approvalRequired": false, "output": "Funnel conversion and transition statistics" },
+    { "tool": "amplitude.event.ingest", "input": { "events": [{ "event_type": "Agent Test", "user_id": "user-12345" }], "approvalId": "<64-char approval HMAC>" }, "permission": "WRITE", "approvalRequired": true, "output": "Amplitude HTTP V2 ingestion response" }
+  ]
+}
