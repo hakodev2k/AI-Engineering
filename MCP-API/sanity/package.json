@@ -1,0 +1,16 @@
+{
+  "name": "@ai-engineering/sanity-mcp-connector",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22.12" },
+  "scripts": {
+    "start": "node src/server/index.js",
+    "check": "node --check src/server/index.js && node --check src/client/upstream-mcp.js && node --check src/client/sanity-rest.js && node --check src/client/router.js && node --check src/tools/definitions.js && node --check src/tools/policy.js && node --check src/auth/config.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.17.4",
+    "@sanity/client": "^7.0.0"
+  }
+}
