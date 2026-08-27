@@ -1,0 +1,44 @@
+id: firebase
+name: Firebase
+version: 1.0.0
+
+upstream:
+  - official-mcp
+
+official_mcp:
+  command: npx
+  args: [-y, firebase-tools@latest, mcp]
+  transport: stdio
+  source: https://firebase.google.com/docs/ai-assistance/mcp-server
+
+auth:
+  type: delegated_firebase_cli_google_auth
+  credential_isolation: upstream-process
+
+capabilities:
+  - project.get
+  - project.list
+  - app.list
+  - app.sdk_config.get
+  - firestore.document.get
+  - firestore.document.list
+  - firestore.collection.list
+  - firestore.document.create
+  - firestore.document.update
+  - firestore.document.delete
+  - remote_config.template.get
+  - remote_config.template.update
+  - storage.object.download_url.get
+
+risk:
+  default: READ
+  write_requires_approval: true
+  destructive_disabled_by_default: true
+
+optional_environment:
+  - FIREBASE_PROJECT_DIR
+  - FIREBASE_UPSTREAM_COMMAND
+  - FIREBASE_UPSTREAM_ARGS
+  - FIREBASE_TIMEOUT_MS
+  - FIREBASE_APPROVAL_SECRET
+  - FIREBASE_ENABLE_DESTRUCTIVE
