@@ -1,0 +1,9 @@
+{
+  "max_context_tokens": 258400,
+  "soft_utilization": 0.78,
+  "hard_utilization": 0.90,
+  "safety_margin_tokens": 12000,
+  "minimum_runway_tokens": 52000,
+  "idle_cache_risk_seconds": 14400,
+  "minimum_cache_read_ratio": 0.50
+}
