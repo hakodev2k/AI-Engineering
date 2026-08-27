@@ -1,0 +1,31 @@
+id: posthog
+name: PostHog
+version: 1.0.0
+upstream:
+  - official-mcp-available
+  - rest
+transport_strategy:
+  selected: rest
+  official_mcp_endpoint: https://mcp.posthog.com/mcp
+  reason: deterministic schemas, fixed project scoping, explicit approval boundaries, and safer retry policy
+auth:
+  type: personal_api_key
+  credential_env: POSTHOG_PERSONAL_API_KEY
+  project_id_env: POSTHOG_PROJECT_ID
+capabilities:
+  - project.read
+  - dashboard.list
+  - dashboard.get
+  - insight.list
+  - insight.get
+  - feature_flag.list
+  - feature_flag.get
+  - feature_flag.create
+  - feature_flag.update
+  - feature_flag.delete
+  - person.list
+  - person.get
+risk:
+  default: READ
+  writes_require_approval: true
+  destructive_disabled_by_default: true
