@@ -1,0 +1,10 @@
+{
+  "allowed_schemes": ["https"],
+  "allowed_domains": ["api.example.com"],
+  "allowed_ports": [443],
+  "deny_private": true,
+  "deny_loopback": true,
+  "deny_link_local": true,
+  "deny_multicast": true,
+  "require_resolved_ip": true
+}
