@@ -1,0 +1,7 @@
+{
+  "allowed_bind_addresses": ["127.0.0.1", "::1"],
+  "allow_non_loopback_with_auth": false,
+  "management_endpoints_require_auth": true,
+  "require_template_fingerprint": true,
+  "fail_on_policy_mismatch": true
+}
