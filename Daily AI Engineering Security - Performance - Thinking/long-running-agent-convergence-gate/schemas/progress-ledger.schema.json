@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Agent Progress Ledger",
+  "type": "object",
+  "required": ["cycle", "criteria", "history"],
+  "properties": {
+    "cycle": {"type": "integer", "minimum": 0},
+    "criteria": {"type": "array", "items": {"type": "object", "required": ["id", "status"], "properties": {"id": {"type": "string", "minLength": 1}, "status": {"enum": ["pending", "failed", "passed", "waived", "blocked"]}, "evidence": {"type": "array", "items": {"type": "string"}}}, "additionalProperties": true}},
+    "history": {"type": "array", "items": {"type": "object", "required": ["cycle", "remaining", "new_work_items", "progress_events"], "properties": {"cycle": {"type": "integer", "minimum": 0}, "remaining": {"type": "integer", "minimum": 0}, "new_work_items": {"type": "integer", "minimum": 0}, "progress_events": {"type": "integer", "minimum": 0}, "new_work_criterion_ids": {"type": "array", "items": {"type": "string"}}}, "additionalProperties": true}}
+  },
+  "additionalProperties": true
+}
