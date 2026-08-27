@@ -1,0 +1,30 @@
+id: infisical
+name: Infisical
+version: 1.0.0
+upstream:
+  - official-sdk
+auth:
+  type: machine_identity_universal_auth
+  client_id_env: INFISICAL_CLIENT_ID
+  client_secret_env: INFISICAL_CLIENT_SECRET
+  site_url_env: INFISICAL_SITE_URL
+permissions:
+  metadata_read: [secrets:describeSecret]
+  write: [secrets:create, secrets:edit]
+  destructive: [secrets:delete]
+capabilities:
+  - auth.status
+  - secret.list_metadata
+  - secret.list_imported_metadata
+  - secret.get_metadata
+  - secret.exists
+  - secret.create
+  - secret.update
+  - secret.delete
+risk:
+  default: READ
+  writes_require_approval: true
+  destructive_disabled_by_default: true
+security:
+  stored_secret_values_exposed_to_llm: false
+  credentials_exposed_to_llm: false
