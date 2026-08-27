@@ -1,0 +1,55 @@
+id: mattermost
+name: Mattermost
+runtime: node>=20
+upstream:
+  - mcp
+  - rest
+mcp:
+  official: true
+  endpoint_env: MATTERMOST_UPSTREAM_MCP_URL
+  production: Mattermost Agents embedded MCP endpoint
+rest:
+  base_url: ${MATTERMOST_SERVER_URL}/api/v4
+auth:
+  type: bearer
+  mechanisms:
+    - oauth2_access_token
+    - personal_access_token
+  credential_env:
+    - MATTERMOST_ACCESS_TOKEN
+    - MATTERMOST_UPSTREAM_MCP_BEARER_TOKEN
+capabilities:
+  - user.me
+  - team.list
+  - channel.list
+  - channel.get
+  - channel.search
+  - post.get
+  - post.search
+  - post.create
+  - post.update
+  - post.delete
+  - reaction.list
+  - reaction.add
+  - reaction.remove
+risk:
+  default: READ
+  approval_required:
+    - mattermost.post.create
+    - mattermost.post.update
+    - mattermost.reaction.add
+    - mattermost.reaction.remove
+    - mattermost.post.delete
+  destructive_disabled_by_default:
+    - mattermost.post.delete
+environment:
+  required:
+    - MATTERMOST_SERVER_URL
+    - MATTERMOST_ACCESS_TOKEN
+  optional:
+    - MATTERMOST_UPSTREAM_MCP_URL
+    - MATTERMOST_UPSTREAM_MCP_BEARER_TOKEN
+    - MATTERMOST_APPROVAL_SECRET
+    - MATTERMOST_TIMEOUT_MS
+    - MATTERMOST_MAX_RETRIES
+    - MATTERMOST_ENABLE_DESTRUCTIVE
