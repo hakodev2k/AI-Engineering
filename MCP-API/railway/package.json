@@ -1,0 +1,16 @@
+{
+  "name": "@ai-engineering/railway-mcp-connector",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "start": "node src/server.js",
+    "check": "node --check src/server.js && node --check src/upstream.js && node --check src/policy.js && node --check src/config.js && node --check src/schema.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.17.4",
+    "ajv": "^8.17.1"
+  }
+}
