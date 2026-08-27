@@ -1,0 +1,8 @@
+{
+  "trusted_user_sources": ["authenticated-ui", "authenticated-api"],
+  "forbidden_user_sources": ["assistant", "tool", "subagent", "peer-session", "framework-control", "retrieved-content"],
+  "required_fields": ["id", "role", "source_type", "source_id", "original_role", "transport_hops"],
+  "privileged_tools": ["shell", "write_file", "git_push", "deploy", "credential_read", "http_write"],
+  "max_transport_hops": 16,
+  "require_human_approval_for_privileged": true
+}
