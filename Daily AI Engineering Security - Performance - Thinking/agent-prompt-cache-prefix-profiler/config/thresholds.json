@@ -1,0 +1,8 @@
+{
+  "min_cache_read_ratio": 0.70,
+  "max_cache_creation_ratio": 0.25,
+  "max_static_replay_tokens_per_task": 5000,
+  "max_latency_regression_pct": 5.0,
+  "min_quality_pass_rate": 0.98,
+  "max_quality_regression_pct_points": 1.0
+}
