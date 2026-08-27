@@ -1,0 +1,20 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import { loadConfig, approvalDigest } from "../src/auth/config.js";
+import { authorize, TOOL_POLICY } from "../src/tools/policy.js";
+import { TOOL_DEFINITIONS } from "../src/tools/definitions.js";
+import { TemporalConnectorClient } from "../src/client/temporal-client.js";
+
+test("tool definitions and policies stay synchronized",()=>{const names=TOOL_DEFINITIONS.map(x=>x.name).sort(); assert.deepEqual(names,Object.keys(TOOL_POLICY).sort()); assert.equal(names.length,12);});
+test("configuration requires address and namespace",()=>assert.throws(()=>loadConfig({}),/TEMPORAL_ADDRESS/));
+test("plaintext is restricted to localhost",()=>assert.throws(()=>loadConfig({TEMPORAL_ADDRESS:"temporal.example.com:7233",TEMPORAL_NAMESPACE:"default",TEMPORAL_TLS:"false"}),/localhost/));
+test("read tool needs no approval",()=>assert.doesNotThrow(()=>authorize({approvalSecret:"",destructiveEnabled:false},"temporal.workflow.describe",{workflowId:"wf"})));
+test("approval is bound to exact payload",()=>{const cfg={approvalSecret:"secret",destructiveEnabled:false},tool="temporal.workflow.signal",payload={workflowId:"wf",signalName:"go",args:[1]},token=approvalDigest(cfg.approvalSecret,tool,payload); assert.doesNotThrow(()=>authorize(cfg,tool,payload,token)); assert.throws(()=>authorize(cfg,tool,{...payload,workflowId:"other"},token),/Invalid approval/);});
+test("destructive tools are disabled by default",()=>assert.throws(()=>authorize({approvalSecret:"secret",destructiveEnabled:false},"temporal.workflow.terminate",{workflowId:"wf",reason:"stop"},"0".repeat(64)),/disabled/));
+
+function fakeDeps(){const calls=[]; const wh={workflowId:"wf",firstExecutionRunId:"run",describe:async()=>({workflowId:"wf",startTime:new Date("2026-01-01T00:00:00Z")}),signal:async(...a)=>calls.push(["signal",...a]),query:async(...a)=>({a}),cancel:async()=>calls.push(["cancel"]),terminate:async(...a)=>calls.push(["terminate",...a])}; const sh={describe:async()=>({scheduleId:"daily"}),pause:async n=>calls.push(["pause",n]),unpause:async n=>calls.push(["unpause",n]),delete:async()=>calls.push(["deleteSchedule"])}; const obj={workflow:{list:()=>({async *[Symbol.asyncIterator](){yield{workflowId:"wf1"};yield{workflowId:"wf2"};}}),getHandle:()=>wh,start:async()=>wh},schedule:{list:()=>({async *[Symbol.asyncIterator](){yield{scheduleId:"daily"};}}),getHandle:()=>sh}}; class C{static async connect(o){calls.push(["connect",o]);return{};}} class Client{constructor(o){calls.push(["client",o.namespace]);return obj;}} return{Connection:C,Client,calls};}
+const cfg={address:"example.tmprl.cloud:7233",namespace:"ns",apiKey:"k",tls:true,serverNameOverride:"",timeoutMs:1000};
+test("connects with fixed namespace and api key",async()=>{const d=fakeDeps(),c=new TemporalConnectorClient(cfg,d); await c.describeWorkflow({workflowId:"wf"}); assert.equal(d.calls[0][1].apiKey,"k"); assert.equal(d.calls[1][1],"ns");});
+test("workflow listing is bounded",async()=>{const d=fakeDeps(),c=new TemporalConnectorClient(cfg,d),r=await c.listWorkflows({maxResults:1}); assert.equal(r.executions.length,1); assert.equal(r.truncated,true);});
+test("signal and terminate dispatch through scoped handles",async()=>{const d=fakeDeps(),c=new TemporalConnectorClient(cfg,d); await c.signalWorkflow({workflowId:"wf",signalName:"go",args:[42]}); await c.terminateWorkflow({workflowId:"wf",reason:"stop",details:["ticket"]}); assert.deepEqual(d.calls.find(x=>x[0]==="signal"),["signal","go",42]); assert.deepEqual(d.calls.find(x=>x[0]==="terminate"),["terminate","stop","ticket"]);});
+test("schedule pause, unpause and delete dispatch",async()=>{const d=fakeDeps(),c=new TemporalConnectorClient(cfg,d); await c.pauseSchedule({scheduleId:"daily",note:"m"}); await c.unpauseSchedule({scheduleId:"daily",note:"d"}); await c.deleteSchedule({scheduleId:"daily"}); assert.ok(d.calls.some(x=>x[0]==="pause")); assert.ok(d.calls.some(x=>x[0]==="unpause")); assert.ok(d.calls.some(x=>x[0]==="deleteSchedule"));});
