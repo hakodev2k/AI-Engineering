@@ -6,7 +6,8 @@
   "engines": { "node": ">=20" },
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "start": "node dist/server.js",
+    "start": "node dist/src/server.js",
+    "approve": "node dist/src/approve.js",
     "test": "vitest run"
   },
   "dependencies": {
