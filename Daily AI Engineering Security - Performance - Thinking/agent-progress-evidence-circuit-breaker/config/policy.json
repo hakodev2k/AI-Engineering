@@ -1,0 +1,15 @@
+{
+  "max_consecutive_no_progress_windows": 2,
+  "max_identical_tool_calls": 2,
+  "max_recovery_attempts": 2,
+  "terminal_task_states": ["paused", "blocked", "cancelled", "completed"],
+  "accepted_progress_kinds": [
+    "artifact_changed",
+    "test_status_changed",
+    "new_evidence",
+    "unique_tool_result",
+    "task_state_transition"
+  ],
+  "commentary_counts_as_progress": false,
+  "fail_closed_on_invalid_event": true
+}
