@@ -1,0 +1,55 @@
+id: hashicorp-vault
+name: HashiCorp Vault
+version: 1.0.0
+upstream:
+  - official-mcp
+  - rest
+official_mcp:
+  maturity: beta
+  transport: stdio
+  allowed_tools:
+    - list_mounts
+    - create_mount
+    - delete_mount
+    - list_secrets
+    - write_secret
+    - delete_secret
+    - enable_pki
+    - create_pki_issuer
+    - list_pki_issuers
+    - read_pki_issuer
+    - create_pki_role
+    - read_pki_role
+    - list_pki_roles
+    - delete_pki_role
+    - issue_pki_certificate
+auth:
+  supported: [vault_token, approle]
+  credential_isolation: connector-only
+capabilities:
+  - system.health
+  - permission.check
+  - mount.list
+  - mount.create
+  - mount.delete
+  - secret.list
+  - secret.write
+  - secret.delete
+  - pki.enable
+  - pki.issuer.list
+  - pki.issuer.read
+  - pki.issuer.create
+  - pki.role.list
+  - pki.role.read
+  - pki.role.create
+  - pki.role.delete
+  - pki.certificate.issue
+risk:
+  default: READ
+  write_requires_approval: true
+  high_risk_requires_approval: true
+  destructive_disabled_by_default: true
+security:
+  secret_read_to_llm: intentionally_not_exposed
+  arbitrary_api_requests: disabled
+  upstream_tool_discovery: allowlist_only
