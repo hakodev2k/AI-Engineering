@@ -1,0 +1,9 @@
+{
+  "window_seconds": 300,
+  "max_connect_attempts_per_key": 4,
+  "max_oauth_starts_per_key": 2,
+  "max_tool_list_refreshes_per_key": 2,
+  "cooldown_seconds_after_limit": 120,
+  "tool_catalog_ttl_seconds": 300,
+  "max_schema_reinjection_tokens": 4000
+}
