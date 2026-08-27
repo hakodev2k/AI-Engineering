@@ -1,0 +1,15 @@
+{
+  "max_value_chars": 2000,
+  "trusted_sources": ["user-explicit", "admin-policy"],
+  "blocked_instruction_patterns": [
+    "ignore previous",
+    "override system",
+    "send credentials",
+    "exfiltrate",
+    "disable security",
+    "persist this instruction"
+  ],
+  "high_risk_namespaces": ["credentials", "security-policy", "tool-authorization"],
+  "require_human_approval_for_untrusted_write": true,
+  "default_ttl_seconds_for_approved_untrusted": 86400
+}
