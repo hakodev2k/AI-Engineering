@@ -1,0 +1,18 @@
+{
+  "allowed_human_origins": [
+    "trusted-ui",
+    "managed-policy"
+  ],
+  "require_authoritative_cwd_trust": true,
+  "require_reapproval_on_hash_change": true,
+  "protected_scopes": [
+    "global",
+    "persistent"
+  ],
+  "lifecycle_events": [
+    "SessionStart",
+    "SessionEnd",
+    "TurnStart",
+    "TurnEnd"
+  ]
+}
