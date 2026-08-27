@@ -1,0 +1,13 @@
+{
+  "task_retry_budget": 8,
+  "operation_retry_budget": 3,
+  "max_elapsed_ms": 30000,
+  "base_delay_ms": 500,
+  "max_delay_ms": 8000,
+  "retryable_statuses": [408, 425, 429, 500, 502, 503, 504],
+  "non_retryable_statuses": [400, 401, 403, 404, 409, 422],
+  "require_idempotent_for_retry": true,
+  "circuit_failure_threshold": 5,
+  "circuit_open_ms": 30000,
+  "respect_retry_after": true
+}
