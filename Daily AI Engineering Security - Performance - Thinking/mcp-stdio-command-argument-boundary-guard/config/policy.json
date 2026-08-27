@@ -1,0 +1,18 @@
+{
+  "deny_shell_metacharacters": true,
+  "forbidden_flags": ["-c", "--command", "-e", "--eval", "/c"],
+  "servers": {
+    "filesystem": {
+      "executable": "npx",
+      "required_prefix": ["-y", "@modelcontextprotocol/server-filesystem"],
+      "max_extra_args": 2,
+      "extra_arg_regex": "^[A-Za-z0-9_./:\\\\-]+$"
+    },
+    "local-python-mcp": {
+      "executable": "python",
+      "required_prefix": ["-m", "my_mcp_server"],
+      "max_extra_args": 0,
+      "extra_arg_regex": "^$"
+    }
+  }
+}
