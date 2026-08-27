@@ -1,0 +1,7 @@
+{
+  "sensitive_path_fragments": [".github/hooks/", "agents/", "custom-agents/"],
+  "blocked_command_patterns": ["rm -rf", "curl | sh", "curl|sh", "wget | sh", "wget|sh", "powershell -enc", "invoke-expression", "iex "],
+  "require_approval": true,
+  "forbid_absolute_command_paths": true,
+  "forbid_parent_traversal": true
+}
