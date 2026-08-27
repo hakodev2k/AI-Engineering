@@ -1,0 +1,11 @@
+# Rules: Token and Prompt Cache Policy
+- Every optimization MUST begin with a measured baseline from representative tasks.
+- Tool definitions SHOULD be serialized deterministically when provider caching is prefix-sensitive.
+- Dynamic values MUST NOT be inserted into an otherwise stable prefix without measured justification.
+- Cache-read, cache-creation and uncached input tokens MUST be reported separately.
+- Static-prefix replay tokens per task MUST be measured before claiming improvement.
+- Correctness-critical context MUST NOT be removed merely to reduce tokens.
+- Before/after traces MUST use comparable tasks, model configuration and acceptance criteria.
+- An optimization MUST NOT be accepted if quality falls below configured thresholds.
+- Latency regressions beyond configured limits MUST block completion unless explicitly approved with evidence.
+- Two failed optimization hypotheses SHOULD stop the loop and trigger re-diagnosis rather than further blind tuning.
