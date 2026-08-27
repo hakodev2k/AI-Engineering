@@ -1,0 +1,3 @@
+{"turn":1,"event":"model","input_tokens":1200,"cache_read_tokens":900,"cache_creation_tokens":150,"live_context_tokens":1100,"reported_context_tokens":1120,"static_tokens":900}
+{"turn":2,"event":"task_checkpoint","input_tokens":1300,"cache_read_tokens":950,"cache_creation_tokens":160,"live_context_tokens":1200,"reported_context_tokens":1210,"static_tokens":900}
+{"turn":3,"event":"model","input_tokens":1350,"cache_read_tokens":980,"cache_creation_tokens":170,"live_context_tokens":1250,"reported_context_tokens":1260,"static_tokens":900}
