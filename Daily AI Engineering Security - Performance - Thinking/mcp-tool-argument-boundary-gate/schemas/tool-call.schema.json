@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "MCP Tool Call Envelope",
+  "type": "object",
+  "required": ["tool", "arguments"],
+  "properties": {
+    "tool": {"type": "string", "minLength": 1},
+    "arguments": {"type": "object"},
+    "symlink_map": {
+      "type": "object",
+      "description": "Optional preflight map of lexical path to canonical target for deterministic boundary checks."
+    }
+  },
+  "additionalProperties": false
+}
