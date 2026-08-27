@@ -1,0 +1,8 @@
+{
+  "minimum_requests_per_group": 3,
+  "max_write_to_read_ratio": 0.75,
+  "max_zero_cache_read_fraction": 0.5,
+  "min_repeated_input_tokens": 4096,
+  "require_stable_cache_key": true,
+  "require_stable_prefix_fingerprint": true
+}
