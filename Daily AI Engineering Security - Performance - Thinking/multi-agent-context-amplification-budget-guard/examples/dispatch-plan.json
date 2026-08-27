@@ -1,0 +1,20 @@
+{
+  "parent_tokens": 60000,
+  "required_context_removed": false,
+  "children": [
+    {
+      "name": "security-review",
+      "required_tokens": 18000,
+      "optional_inherited_tokens": 6000,
+      "expected_turns": 2,
+      "context_window": 200000
+    },
+    {
+      "name": "test-review",
+      "required_tokens": 16000,
+      "optional_inherited_tokens": 5000,
+      "expected_turns": 2,
+      "context_window": 200000
+    }
+  ]
+}
