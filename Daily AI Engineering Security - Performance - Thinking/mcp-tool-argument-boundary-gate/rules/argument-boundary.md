@@ -1,0 +1,12 @@
+# Rules: MCP Tool Argument Boundary
+- Unknown tools MUST be denied by default.
+- Tool authorization MUST include argument-level validation for dangerous sinks.
+- Shell or process inputs MUST NOT interpolate untrusted strings into a shell command.
+- If legacy string execution cannot be removed immediately, configured shell metacharacter checks MUST block unsafe values and the server SHOULD migrate to structured argv execution.
+- Credential-bearing outbound requests MUST use an explicit destination allowlist.
+- Caller-controlled proxy values MUST NOT be accepted for credential-bearing requests unless separately authenticated and explicitly approved.
+- Filesystem paths MUST be checked against canonical targets, not lexical prefixes alone.
+- Workspace-root checks MUST account for symlinks before reads, writes, uploads, or artifact generation.
+- Secrets MUST NOT appear in logs, fixtures, or guard output.
+- Security controls MUST NOT be weakened to improve convenience or latency.
+- High-risk exceptions MUST require explicit human approval and documented scope.
