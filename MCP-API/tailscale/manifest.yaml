@@ -1,0 +1,45 @@
+id: tailscale
+name: Tailscale
+upstream:
+  - rest
+auth:
+  type: oauth2-client-credentials-or-api-key
+  preferred: oauth2-client-credentials
+  oauth_token_url: https://api.tailscale.com/api/v2/oauth/token
+  scopes:
+    - devices:core:read
+    - devices:routes:read
+    - dns:read
+    - logs:configuration:read
+    - devices:core
+    - devices:routes
+api:
+  base_url: https://api.tailscale.com/api/v2
+mcp:
+  official_server: false
+  note: Tailscale documents MCP proxying via Aperture, but its tailnet-management surface is exposed through the official REST API.
+environment:
+  required:
+    - TAILSCALE_TAILNET
+  credentials_one_of:
+    - [TAILSCALE_OAUTH_CLIENT_ID, TAILSCALE_OAUTH_CLIENT_SECRET]
+    - [TAILSCALE_API_KEY]
+  optional:
+    - TAILSCALE_API_BASE_URL
+    - TAILSCALE_TIMEOUT_MS
+    - TAILSCALE_APPROVAL_SECRET
+capabilities:
+  - device.list
+  - device.get
+  - device.authorize
+  - device.remove
+  - routes.get
+  - routes.update
+  - dns.nameservers.get
+  - dns.preferences.get
+  - dns.searchpaths.get
+  - logs.configuration.list
+risk:
+  default: read
+  write_requires_approval: true
+  destructive_requires_approval: true
