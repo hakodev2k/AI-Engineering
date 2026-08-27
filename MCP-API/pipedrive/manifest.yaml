@@ -1,0 +1,46 @@
+id: pipedrive
+name: Pipedrive
+upstream:
+  - mcp
+  - rest
+official_mcp:
+  available: true
+  transport: remote
+  auth: oauth2
+  note: "Pipedrive maintains a native remote MCP service; this reusable connector exposes a stable local MCP surface and uses the official REST API for deterministic service-to-service execution."
+rest:
+  base_url: https://api.pipedrive.com
+auth:
+  types: [oauth2, api_token]
+  oauth_scopes:
+    - base
+    - deals:full
+    - contacts:full
+    - activities:full
+    - webhooks:full
+capabilities:
+  - item.search
+  - deal.get
+  - person.get
+  - organization.get
+  - activity.list
+  - deal.create
+  - deal.update
+  - person.create
+  - organization.create
+  - activity.create
+  - webhook.list
+  - webhook.create
+  - webhook.delete
+risk:
+  default: read
+  write_requires_approval: true
+  destructive_requires_approval: true
+environment:
+  - PIPEDRIVE_AUTH_MODE
+  - PIPEDRIVE_API_TOKEN
+  - PIPEDRIVE_ACCESS_TOKEN
+  - PIPEDRIVE_API_BASE_URL
+  - PIPEDRIVE_TIMEOUT_MS
+  - PIPEDRIVE_MAX_RETRIES
+  - PIPEDRIVE_APPROVAL_SECRET
