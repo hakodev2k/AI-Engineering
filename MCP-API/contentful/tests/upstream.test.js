@@ -1,0 +1,8 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import { ContentfulUpstream } from "../src/transport/upstream.js";
+const config=()=>({token:"secret",spaceId:"space",environmentId:"dev",host:"api.contentful.com",protectedEnvironments:[],upstreamCommand:"/fake/bin",timeoutMs:500,readRetries:1});
+
+test("credentials stay in upstream process env",async()=>{let options;const client={connect:async()=>{},listTools:async()=>({tools:[{name:"get_entry"}]}),close:async()=>{}};const bridge=new ContentfulUpstream(config(),{clientFactory:()=>client,transportFactory:o=>(options=o,{})});await bridge.listTools();assert.equal(options.env.CONTENTFUL_MANAGEMENT_ACCESS_TOKEN,"secret");assert.equal(options.env.SPACE_ID,"space");});
+test("undiscovered upstream tools fail closed",async()=>{const client={connect:async()=>{},listTools:async()=>({tools:[{name:"get_entry"}]}),callTool:async()=>({}),close:async()=>{}};const bridge=new ContentfulUpstream(config(),{clientFactory:()=>client,transportFactory:()=>({})});await bridge.listTools();await assert.rejects(()=>bridge.callTool("delete_space",{}),/unavailable/);});
+test("read retries transient error but write does not",async()=>{let calls=0;const client={connect:async()=>{},listTools:async()=>({tools:[{name:"get_entry"},{name:"create_entry"}]}),callTool:async()=>{calls++;if(calls===1)throw new Error("429 rate limit");return{content:[]};},close:async()=>{}};const bridge=new ContentfulUpstream(config(),{clientFactory:()=>client,transportFactory:()=>({})});await bridge.listTools();await bridge.callTool("get_entry",{},{readOnly:true});assert.equal(calls,2);calls=0;await assert.rejects(()=>bridge.callTool("create_entry",{},{readOnly:false}),/429/);assert.equal(calls,1);});

@@ -1,0 +1,53 @@
+id: contentful
+name: Contentful
+version: 1.0.0
+
+upstream:
+  - mcp
+
+official_mcp:
+  package: "@contentful/mcp-server"
+  pinned_version: "1.17.0"
+  transport: stdio
+  project: "https://github.com/contentful/contentful-mcp-server"
+
+auth:
+  type: content_management_access_token
+  credential_env: CONTENTFUL_MANAGEMENT_ACCESS_TOKEN
+  credential_isolation: connector-only
+
+required_environment:
+  - CONTENTFUL_MANAGEMENT_ACCESS_TOKEN
+  - CONTENTFUL_SPACE_ID
+
+optional_environment:
+  - CONTENTFUL_ENVIRONMENT_ID
+  - CONTENTFUL_HOST
+  - CONTENTFUL_PROTECTED_ENVIRONMENTS
+  - CONTENTFUL_APPROVAL_SECRET
+  - CONTENTFUL_ENABLE_DESTRUCTIVE
+  - CONTENTFUL_TIMEOUT_MS
+  - CONTENTFUL_READ_RETRIES
+
+capabilities:
+  - content_type.list
+  - content_type.get
+  - entry.search
+  - entry.get
+  - entry.snapshot.get
+  - entry.reference.resolve
+  - entry.create
+  - entry.update
+  - entry.publish
+  - entry.unpublish
+  - entry.archive
+  - entry.unarchive
+  - entry.delete
+  - asset.list
+  - asset.get
+
+risk:
+  default: READ
+  write_requires_approval: true
+  high_risk_requires_approval: true
+  destructive_disabled_by_default: true
