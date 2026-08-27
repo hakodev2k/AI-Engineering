@@ -1,0 +1,9 @@
+{
+  "high_risk_consequences": ["destructive", "financial", "external-write", "deployment", "credential-access"],
+  "require_leaf_tool": true,
+  "require_parsed_arguments": true,
+  "require_consequence_summary_for_high_risk": true,
+  "require_destination_for_high_risk": true,
+  "max_delegation_depth": 8,
+  "deny_unknown_consequence": true
+}
