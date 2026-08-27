@@ -1,0 +1,53 @@
+id: sanity
+name: Sanity
+version: 1.0.0
+
+upstream:
+  - official-mcp
+  - official-sdk
+
+mcp:
+  endpoint: https://mcp.sanity.io
+  authentication:
+    - oauth
+    - bearer_token
+  selected_for:
+    - content.query
+    - document.get
+    - schema.get
+    - schema.list
+    - release.list
+    - document.create_draft
+    - document.patch
+    - document.publish
+    - document.unpublish
+    - document.discard_draft
+
+fallback:
+  sdk: '@sanity/client'
+  selected_for:
+    - content.query
+    - document.get
+  notes: read-only fallback when official MCP is unavailable
+
+auth:
+  type: bearer_api_token
+  credential_env: SANITY_API_TOKEN
+  credential_isolation: connector-only
+
+capabilities:
+  - content.query
+  - document.get
+  - schema.get
+  - schema.list
+  - release.list
+  - document.create_draft
+  - document.patch
+  - document.publish
+  - document.unpublish
+  - document.discard_draft
+
+risk:
+  default: READ
+  writes_require_approval: true
+  destructive_disabled_by_default: true
