@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["task_id", "goal", "completed_steps", "pending_steps", "facts", "rejected_hypotheses", "progress_token", "verification_status"],
+  "properties": {
+    "task_id": {"type": "string", "minLength": 1},
+    "goal": {"type": "string", "minLength": 1},
+    "completed_steps": {"type": "array", "items": {"type": "string"}},
+    "pending_steps": {"type": "array", "items": {"type": "string"}},
+    "facts": {"type": "array", "items": {"type": "string"}},
+    "rejected_hypotheses": {"type": "array", "items": {"type": "string"}},
+    "progress_token": {"type": "string", "minLength": 1},
+    "verification_status": {"enum": ["not-started", "in-progress", "passed", "failed"]},
+    "next_action": {"type": "string"},
+    "risks": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": false
+}
