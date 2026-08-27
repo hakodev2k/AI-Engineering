@@ -1,0 +1,9 @@
+{
+  "session_budget_tokens": 1000000,
+  "reserve_tokens": 100000,
+  "max_children": 6,
+  "max_retries_per_child": 2,
+  "min_useful_to_bootstrap_ratio": 1.5,
+  "fallback_bootstrap_tokens": 25000,
+  "projection_safety_factor": 1.2
+}
