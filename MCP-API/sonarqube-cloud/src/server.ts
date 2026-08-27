@@ -11,6 +11,15 @@ export function stripConnectorFields(args: Record<string, unknown>): Record<stri
   return copy;
 }
 
+function isTransient(error: unknown): boolean {
+  const text = error instanceof Error ? error.message : String(error);
+  return /(429|rate.?limit|too many requests|502|503|504|econnreset|etimedout|timeout|aborted|temporar)/i.test(text);
+}
+
+function sleep(ms: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 export async function invokeTool(
   config: ConnectorConfig,
   upstream: Upstream,
@@ -21,7 +30,18 @@ export async function invokeTool(
   if (!def) throw new Error(`Unknown or disallowed tool: ${name}`);
   const parsed = def.schema.parse(rawArgs ?? {}) as Record<string, unknown>;
   if (def.approval) assertApproval(config.approvalSecret, name, parsed);
-  return upstream.call(def.upstream, stripConnectorFields(parsed));
+  const upstreamArgs = stripConnectorFields(parsed);
+  const maxAttempts = def.risk === 'READ' ? 2 : 1;
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      return await upstream.call(def.upstream, upstreamArgs);
+    } catch (error) {
+      if (attempt >= maxAttempts || !isTransient(error)) throw error;
+      await sleep(250 * (2 ** (attempt - 1)));
+    }
+  }
+  throw new Error('Unreachable retry state');
 }
 
 export function createServer(config: ConnectorConfig, upstream: Upstream): Server {
