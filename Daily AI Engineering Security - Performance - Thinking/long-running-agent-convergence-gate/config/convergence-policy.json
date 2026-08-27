@@ -1,0 +1,8 @@
+{
+  "max_cycles": 8,
+  "max_no_progress_cycles": 2,
+  "max_new_work_items_per_cycle": 2,
+  "require_failed_criterion_for_new_work": true,
+  "require_snapshot_on_stop": true,
+  "terminal_statuses": ["passed", "waived", "blocked"]
+}
