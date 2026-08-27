@@ -1,0 +1,8 @@
+{
+  "max_schema_tokens": 12000,
+  "max_startup_ms": 1500,
+  "required_tags": [],
+  "minimum_relevance": 0.35,
+  "never_defer_critical": true,
+  "quality_regression_tolerance": 0.0
+}
