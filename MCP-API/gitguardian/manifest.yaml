@@ -1,0 +1,53 @@
+id: gitguardian
+name: GitGuardian
+upstream:
+  - mcp
+  - rest
+auth:
+  type: api-key
+  env: GITGUARDIAN_API_KEY
+  header: Authorization: Token <redacted>
+api:
+  base_url_env: GITGUARDIAN_BASE_URL
+  default_base_url: https://api.gitguardian.com/v1
+mcp:
+  official_available: true
+  strategy: "Official GitGuardian MCP is recognized for developer/security workflows; this reusable server uses the official REST API for deterministic incident, source, scan, and note operations."
+required_scopes:
+  read: [incidents:read, sources:read, teams:read]
+  scan: [scan]
+  write: [incidents:write]
+capabilities:
+  - incident.list
+  - incident.get
+  - incident.locations.list
+  - incident.notes.list
+  - incident.note.create
+  - incident.assign
+  - source.list
+  - source.get
+  - team.list
+  - content.scan
+risk:
+  default: read
+  tools:
+    gitguardian.incident.list: READ
+    gitguardian.incident.get: READ
+    gitguardian.incident.locations.list: READ
+    gitguardian.incident.notes.list: READ
+    gitguardian.source.list: READ
+    gitguardian.source.get: READ
+    gitguardian.team.list: READ
+    gitguardian.content.scan: READ
+    gitguardian.incident.note.create: WRITE
+    gitguardian.incident.assign: WRITE
+approval:
+  required_for:
+    - gitguardian.incident.note.create
+    - gitguardian.incident.assign
+environment:
+  - GITGUARDIAN_API_KEY
+  - GITGUARDIAN_BASE_URL
+  - GITGUARDIAN_TIMEOUT_MS
+  - GITGUARDIAN_MAX_RETRIES
+  - GITGUARDIAN_APPROVAL_SECRET

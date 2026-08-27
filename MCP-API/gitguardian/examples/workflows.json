@@ -1,0 +1,25 @@
+{
+  "workflows": [
+    {
+      "name": "Triage high-risk incidents",
+      "steps": [
+        { "tool": "gitguardian.incident.list", "input": { "status": "TRIGGERED", "severity": "critical", "per_page": 20 }, "permission": "READ", "approval": false },
+        { "tool": "gitguardian.incident.get", "input": { "incident_id": 42 }, "permission": "READ", "approval": false },
+        { "tool": "gitguardian.incident.locations.list", "input": { "incident_id": 42, "per_page": 20 }, "permission": "READ", "approval": false }
+      ]
+    },
+    {
+      "name": "Add approved remediation note",
+      "steps": [
+        { "tool": "gitguardian.incident.note.create", "input": { "incident_id": 42, "comment": "Credential revoked and replacement deployed.", "approval_id": "<externally-generated-hmac>" }, "permission": "WRITE", "approval": true }
+      ]
+    },
+    {
+      "name": "Scan generated content before commit",
+      "steps": [
+        { "tool": "gitguardian.content.scan", "input": { "documents": [{ "filename": "app.env.example", "document": "SERVICE_TOKEN=example-not-a-real-secret" }] }, "permission": "READ", "approval": false }
+      ]
+    }
+  ],
+  "output_shape": "Tools return JSON serialized as MCP text content; upstream objects retain GitGuardian field names."
+}
