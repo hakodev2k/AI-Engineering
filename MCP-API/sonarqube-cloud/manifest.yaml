@@ -1,0 +1,74 @@
+id: sonarqube-cloud
+name: SonarQube Cloud
+runtime: nodejs20
+
+upstream:
+  - mcp
+
+mcp:
+  implementation: official
+  repository: https://github.com/SonarSource/sonarqube-mcp-server
+  image: sonarsource/sonarqube-mcp
+  transport: stdio
+
+auth:
+  type: user-token
+  environment:
+    - SONARQUBE_TOKEN
+    - SONARQUBE_ORG
+    - SONARQUBE_URL
+    - SONARQUBE_PROJECT_KEY
+  credential_isolation: connector_only
+
+capabilities:
+  - project.search
+  - branch.list
+  - pull_request.list
+  - issue.search
+  - issue.status.change
+  - quality_gate.status.get
+  - quality_gate.list
+  - measure.get
+  - security_hotspot.search
+  - security_hotspot.get
+  - security_hotspot.review
+  - rule.get
+
+risk:
+  default: READ
+  tools:
+    sonarqube.project.search: READ
+    sonarqube.branch.list: READ
+    sonarqube.pull_request.list: READ
+    sonarqube.issue.search: READ
+    sonarqube.issue.status.change: WRITE
+    sonarqube.quality_gate.status.get: READ
+    sonarqube.quality_gate.list: READ
+    sonarqube.measure.get: READ
+    sonarqube.security_hotspot.search: READ
+    sonarqube.security_hotspot.get: READ
+    sonarqube.security_hotspot.review: WRITE
+    sonarqube.rule.get: READ
+
+approval:
+  required:
+    - sonarqube.issue.status.change
+    - sonarqube.security_hotspot.review
+  mechanism: hmac-sha256
+  secret_environment: SONARQUBE_APPROVAL_SECRET
+
+environment:
+  required:
+    - SONARQUBE_TOKEN
+    - SONARQUBE_ORG
+  optional:
+    - SONARQUBE_URL
+    - SONARQUBE_PROJECT_KEY
+    - SONARQUBE_APPROVAL_SECRET
+    - SONARQUBE_TIMEOUT_MS
+
+security:
+  upstream_tool_allowlist: true
+  raw_api_passthrough: false
+  retrieved_content_untrusted: true
+  read_only_supported: true
