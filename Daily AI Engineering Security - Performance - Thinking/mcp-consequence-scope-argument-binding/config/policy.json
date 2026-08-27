@@ -1,0 +1,8 @@
+{
+  "repositories": ["hakodev2k/AI-Engineering"],
+  "branches": ["main"],
+  "filesystem_roots": ["./workspace"],
+  "network_hosts": ["api.github.com", "github.com"],
+  "high_consequence_tools": ["push_files", "write_file", "delete_file", "deploy", "connect", "http_write"],
+  "require_human_approval": true
+}
