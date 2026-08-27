@@ -1,0 +1,55 @@
+id: railway
+name: Railway
+version: 1.0.0
+
+upstream:
+  - official-mcp
+
+official_mcp:
+  mode: local
+  command_env: RAILWAY_CLI_PATH
+  default_command: railway
+  args:
+    - mcp
+  remote_endpoint: https://mcp.railway.com
+  notes: >
+    Railway provides both local and remote official MCP servers. This connector uses the
+    local official MCP through the Railway CLI so credentials stay in Railway's CLI
+    authentication layer and are never provided to the LLM or this connector as tool
+    arguments.
+
+auth:
+  type: railway_cli_session
+  setup: railway login
+  credential_isolation: upstream-cli
+  remote_oauth_available: true
+
+capabilities:
+  - account.whoami
+  - workspace.list
+  - project.list
+  - project.create
+  - service.list
+  - service.create
+  - service.config.get
+  - deployment.list
+  - deployment.deploy
+  - environment.status
+  - variable.list
+  - variable.set
+  - logs.get
+  - metrics.get
+
+risk:
+  default: READ
+  write_requires_approval: true
+  high_risk_disabled_by_default: true
+  destructive_not_exposed: true
+
+required_environment: []
+optional_environment:
+  - RAILWAY_CLI_PATH
+  - RAILWAY_MCP_TIMEOUT_MS
+  - RAILWAY_APPROVAL_SECRET
+  - RAILWAY_ENABLE_HIGH_RISK
+  - RAILWAY_ENABLE_DESTRUCTIVE
