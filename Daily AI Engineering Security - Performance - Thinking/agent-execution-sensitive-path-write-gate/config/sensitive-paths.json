@@ -1,0 +1,30 @@
+{
+  "workspace_relative_patterns": [
+    ".vscode/tasks.json",
+    ".vscode/settings.json",
+    ".github/workflows/**",
+    ".git/hooks/**",
+    "**/.env",
+    "**/.env.*",
+    "**/mcp.json",
+    "**/mcp*.json",
+    "**/agent*.json",
+    "**/settings.json"
+  ],
+  "home_relative_patterns": [
+    ".kiro/settings/mcp.json",
+    ".config/**/mcp*.json",
+    ".ssh/**",
+    ".bashrc",
+    ".zshrc",
+    ".profile"
+  ],
+  "always_block_patterns": [
+    "/etc/**",
+    "/usr/local/bin/**",
+    "C:/Windows/System32/**"
+  ],
+  "require_human_approval": true,
+  "allow_outside_workspace": false,
+  "resolve_symlinks": true
+}
