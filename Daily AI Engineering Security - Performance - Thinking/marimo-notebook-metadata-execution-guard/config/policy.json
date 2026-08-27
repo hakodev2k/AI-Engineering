@@ -1,0 +1,6 @@
+{
+  "safe_top_level_sections": ["formatting", "save", "display", "keymap", "diagnostics", "lint", "snippets", "datasources"],
+  "side_effect_markers": ["mcp", "command", "exec", "server", "secrets", "api_key", "base_url", "endpoint", "runtime", "package_management"],
+  "max_metadata_bytes": 65536,
+  "require_explicit_trust_for_risky_metadata": true
+}
