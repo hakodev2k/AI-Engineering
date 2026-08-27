@@ -16,10 +16,11 @@ export const POLICY: Record<string,{risk:Risk;approval:boolean}> = {
 };
 
 function canonical(v: unknown): string {
-  if (v === null || typeof v !== 'object') return JSON.stringify(v);
+  if (v === undefined) return 'null';
+  if (v === null || typeof v !== 'object') return JSON.stringify(v) ?? 'null';
   if (Array.isArray(v)) return `[${v.map(canonical).join(',')}]`;
   const o = v as Record<string,unknown>;
-  return `{${Object.keys(o).sort().filter(k=>k!=='approvalId').map(k=>`${JSON.stringify(k)}:${canonical(o[k])}`).join(',')}}`;
+  return `{${Object.keys(o).sort().filter(k=>k!=='approvalId' && o[k] !== undefined).map(k=>`${JSON.stringify(k)}:${canonical(o[k])}`).join(',')}}`;
 }
 
 export function assertApproval(cfg: Config, tool: string, input: Record<string,unknown>) {
