@@ -1,0 +1,89 @@
+id: buildkite
+name: Buildkite
+version: 1.0.0
+runtime: node>=20
+
+upstream:
+  - mcp
+  - rest
+
+mcp:
+  type: official-remote
+  endpoint: https://mcp.buildkite.com/direct
+  interactive_oauth_endpoint: https://mcp.buildkite.com/mcp
+  toolsets:
+    - user
+    - pipelines
+    - builds
+    - logs
+    - artifacts
+    - annotations
+
+api:
+  type: rest
+  version: v2
+  base_url: https://api.buildkite.com/v2
+
+auth:
+  type: bearer-token
+  credential: Buildkite API access token
+  environment:
+    - BUILDKITE_API_TOKEN
+  least_privilege_scopes:
+    - read_user
+    - read_organizations
+    - read_pipelines
+    - read_builds
+    - read_build_logs
+    - read_artifacts
+    - write_builds
+    - write_artifacts
+
+capabilities:
+  - organization.read
+  - pipeline.list
+  - pipeline.read
+  - build.list
+  - build.read
+  - build.create
+  - build.cancel
+  - build.rebuild
+  - job.list
+  - job.read
+  - job.retry
+  - job.unblock
+  - logs.search
+  - logs.read
+  - artifact.list
+  - artifact.delete
+  - annotation.list
+  - annotation.create
+
+risk:
+  default: READ
+  classes:
+    READ:
+      approval_required: false
+    WRITE:
+      approval_required: true
+    HIGH_RISK:
+      approval_required: true
+    DESTRUCTIVE:
+      approval_required: true
+      enabled_by_default: false
+
+required_environment:
+  - BUILDKITE_API_TOKEN
+optional_environment:
+  - BUILDKITE_MCP_URL
+  - BUILDKITE_API_BASE_URL
+  - BUILDKITE_TOOLSETS
+  - BUILDKITE_APPROVAL_SECRET
+  - BUILDKITE_TIMEOUT_MS
+  - BUILDKITE_MAX_READ_RETRIES
+
+security:
+  credentials_exposed_to_model: false
+  arbitrary_http_tool: false
+  retrieved_content_trusted_as_instructions: false
+  destructive_tools_disabled_without_explicit_approval: true
