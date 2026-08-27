@@ -1,46 +1,43 @@
 # Storage Incident Response
 
 ## Purpose
-Restore storage service safely during outages, latency events, capacity emergencies, corruption, and degraded redundancy while preserving data and evidence.
+Stabilize storage incidents, preserve data integrity, restore service, and produce evidence-based root-cause and prevention actions.
 
 ## When to use
-Use when storage health threatens availability, integrity, recovery objectives, or dependent services.
+Use for outages, severe latency, capacity exhaustion, path loss, corruption, quorum loss, replication failure, or unexplained storage errors.
 
 ## Inputs
-Incident symptoms, timeline, SLO impact, telemetry, topology, recent changes, protection state, and recovery procedures.
-
-## Preconditions
-Assign incident command, identify data-integrity risk, and prevent uncontrolled concurrent changes.
+Incident timeline, alerts, client symptoms, topology, logs, metrics, recent changes, recovery runbooks, and backups.
 
 ## Context to inspect
-Alerts, logs, host IO, network, storage health, capacity, replication, rebuilds, backups, recent deployments, and vendor events.
+Control/data planes, capacity, latency, queueing, hardware health, network, replication, rebuilds, maintenance, and change history.
 
 ## Core knowledge
-During storage incidents, data safety can conflict with rapid restoration. Stabilize before optimizing. Preserve the last good copy, avoid split brain, and distinguish capacity, performance, connectivity, and integrity failure modes.
+Data integrity outranks rapid but unsafe recovery. Stabilization should minimize writes and topology changes when state is ambiguous. Correlation is not causation; preserve evidence before destructive repair.
 
 ## Procedure
-1. State impact and affected scope.
-2. Establish timeline and recent changes.
-3. Check data-integrity and redundancy risk first.
-4. Stabilize demand or isolate failing components where safe.
-5. Correlate client, network, and backend evidence.
-6. Form and test bounded hypotheses.
-7. Apply reversible mitigations first.
-8. Validate recovery from client perspective.
-9. Monitor for recurrence.
-10. Preserve evidence and complete root-cause follow-up.
+1. Establish incident command, scope, and user impact.
+2. Protect data: pause risky automation or writes when integrity is uncertain.
+3. Capture topology, health, logs, metrics, and recent changes.
+4. Identify whether failure is client, network, control-plane, capacity, media, or replication related.
+5. Apply the lowest-risk reversible mitigation.
+6. Monitor recovery and secondary effects.
+7. Validate data/application integrity before declaring restoration.
+8. Preserve evidence and timeline.
+9. Determine root cause and contributing factors.
+10. Assign prevention, detection, and recovery improvements.
 
 ## Decision points
-Prefer service degradation or admission control over risky writes when integrity is uncertain. Fail over only when target state, fencing, and replication status are known.
+Fail over only when target consistency and fencing are known. Prefer reversible traffic reduction or isolation before destructive repair. Restore from backup only after corruption scope and recovery point are understood.
 
 ## Common failure patterns
-Rebooting evidence away, parallel uncoordinated changes, filling the last capacity reserve, premature failover, ignoring backup health, and declaring recovery from backend metrics alone.
+Multiple simultaneous changes, reboot-first troubleshooting, deleting evidence, unsafe failover, ignoring capacity/rebuild interactions, and closing on symptom disappearance.
 
 ## Verification
-Application SLOs recover, redundancy/protection state is safe, integrity checks pass where relevant, and monitoring remains stable through a defined observation window.
+Confirm client SLO recovery, integrity checks, redundancy restoration, backlog normalization, and absence of continuing errors.
 
 ## Expected output
-An incident timeline, mitigation, recovery evidence, root cause or next investigation, and corrective actions.
+Incident timeline, mitigation, validation evidence, root cause, contributing factors, and corrective actions.
 
 ## Stop conditions
-Escalate immediately when no safe writable copy is known, corruption is expanding, destructive recovery is proposed, or authority for failover is missing.
+Escalate immediately for suspected widespread corruption, split brain, unknown authoritative copy, or actions requiring destructive recovery.

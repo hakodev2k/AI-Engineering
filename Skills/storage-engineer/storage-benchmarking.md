@@ -1,46 +1,43 @@
 # Storage Benchmarking
 
 ## Purpose
-Produce reproducible storage benchmarks that represent real workload semantics and avoid misleading cache, queue, or dataset effects.
+Design trustworthy storage benchmarks that predict workload behavior and expose limits without producing misleading headline numbers.
 
 ## When to use
-Use for technology evaluation, acceptance testing, tuning, migration validation, or capacity modeling.
+Use for technology evaluation, migration validation, capacity planning, regression testing, or tuning.
 
 ## Inputs
-Workload profile, candidate systems, SLOs, dataset size, concurrency, request mix, durability semantics, and test environment.
-
-## Preconditions
-Protect production data; isolate destructive tests and record all relevant configuration.
+Production workload characteristics, candidate systems, test environment, SLOs, datasets, benchmark tools, and resource limits.
 
 ## Context to inspect
-Host CPU/memory, filesystem, mount options, cache, queue settings, network, storage tier, replication, compression, encryption, and background tasks.
+Caching layers, compression, deduplication, background maintenance, network path, media state, filesystem settings, and platform throttles.
 
 ## Core knowledge
-Benchmark results are meaningful only for stated conditions. Warm/cold cache, sync/async writes, compressibility, queue depth, dataset size, and test duration can radically change results.
+Benchmarks are valid only when request size, access distribution, concurrency, durability semantics, working-set size, and test duration resemble the target workload. Tail latency and steady state are critical.
 
 ## Procedure
-1. Translate workload characterization into test profiles.
-2. Define success metrics and run duration.
-3. Create a dataset larger than unintended caches where appropriate.
-4. Control warm-up and cache state.
-5. Record software/hardware configuration.
-6. Run multiple repetitions.
-7. Capture latency distributions, IOPS, throughput, CPU, network, and queueing.
-8. Test steady state and relevant degraded states.
-9. Analyze variance and confidence.
-10. Preserve scripts and raw results.
+1. State the question the benchmark must answer.
+2. Capture production workload distributions.
+3. Build a dataset larger than unintended caches when appropriate.
+4. Define read/write mix, sequential/random pattern, concurrency, and durability mode.
+5. Warm or cold start deliberately and label it.
+6. Run long enough to reach steady state.
+7. Record latency percentiles, IOPS, throughput, errors, throttling, and resource metrics.
+8. Repeat runs and quantify variance.
+9. Test saturation and recovery from overload.
+10. Preserve commands, configuration, and environment metadata for reproducibility.
 
 ## Decision points
-Use synthetic tools for controlled component limits and application-level benchmarks for end-to-end validity. Never substitute peak synthetic numbers for production expectations.
+Use synthetic tools for controlled limits and replay/application tests for realism. Benchmark failure/rebuild states when production may operate there.
 
 ## Common failure patterns
-Tiny datasets, short tests, compressible zero data, buffered writes presented as durable, one-run conclusions, and comparing systems with unequal protection settings.
+Tiny datasets, short tests, disabled durability, hidden cache, incomparable environments, single-run conclusions, and reporting throughput without latency.
 
 ## Verification
-Re-run from documented instructions and obtain materially consistent results; confirm benchmark IO semantics match the target workload.
+A second operator should be able to reproduce results within explained variance. Cross-check benchmark behavior against observed production traces.
 
 ## Expected output
-A reproducible benchmark package with methodology, configuration, raw evidence, distributions, interpretation, and limitations.
+Reproducible test plan, raw results, percentile analysis, bottleneck notes, and recommendation tied to requirements.
 
 ## Stop conditions
-Stop if tests can overwrite real data, configurations are not comparable, or durability semantics cannot be verified.
+Stop when environments are not comparable, critical benchmark parameters are unknown, or the test can corrupt/shared-impact production.
