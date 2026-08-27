@@ -29,7 +29,9 @@ agent-tool-call-deadline-watchdog/
 ├── skills/tool-stall-investigation.md
 ├── subagents/performance-verifier.md
 ├── tests/test_tool_watchdog.py
-└── workflows/measure-diagnose-optimize.md
+└── workflows/
+    ├── failure-recovery.md
+    └── measure-diagnose-optimize.md
 ```
 
 ## Installation
@@ -43,7 +45,7 @@ Create an event JSON with call lifecycle metadata, then run:
 `python scripts/tool_watchdog.py --event event.json --policy config/policy.json`
 
 ## Workflow
-Follow `workflows/measure-diagnose-optimize.md`: Measure → Diagnose → Hypothesize → Optimize → Measure again → Independently verify.
+Use `workflows/measure-diagnose-optimize.md` for normal optimization and `workflows/failure-recovery.md` when a call cannot be safely retried.
 
 ## Metrics
 p95/p99 tool latency; stale-call rate; mean recovery time; retries per call; duplicate-side-effect count.
