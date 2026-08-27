@@ -1,0 +1,10 @@
+{
+  "context_limit_tokens": 131072,
+  "reserved_output_tokens": 8192,
+  "safety_margin_tokens": 1024,
+  "max_compaction_attempts": 2,
+  "max_same_signature_retries": 1,
+  "minimum_progress_tokens": 512,
+  "minimum_progress_ratio": 0.01,
+  "fail_if_immutable_context_cannot_fit": true
+}
