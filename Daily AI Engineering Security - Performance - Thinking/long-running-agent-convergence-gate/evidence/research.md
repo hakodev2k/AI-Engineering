@@ -27,7 +27,7 @@ Developers running long-lived coding tasks, teams using subagents/review agents,
 These reports differ in implementation, but share observable control failures: no durable acceptance ledger, no evidence requirement for spawning new work, no no-progress threshold, and no deterministic stop/snapshot gate. This package does not infer hidden reasoning; it governs externally visible task state.
 
 ## Existing approaches
-- TODO/task lists.
+- Task lists.
 - Planner/reviewer subagents.
 - User-authored keep-going instructions.
 - Ad hoc retry limits and manual interruption.
