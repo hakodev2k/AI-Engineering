@@ -1,0 +1,5 @@
+{
+  "max_effective_mcp_for_tool_free_ephemeral": 0,
+  "allowed_completion_actions": ["remove_shutdown"],
+  "unsubscribe_only_actions": ["unsubscribe", "thread_unsubscribe"]
+}
