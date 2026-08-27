@@ -1,0 +1,9 @@
+{
+  "wall_timeout_ms": 900000,
+  "idle_progress_timeout_ms": 180000,
+  "cleanup_timeout_ms": 30000,
+  "barrier_mode": "quorum",
+  "minimum_successes": 2,
+  "maximum_recovery_attempts": 1,
+  "progress_events": ["tool_result", "checkpoint", "artifact_saved", "verification_result"]
+}
