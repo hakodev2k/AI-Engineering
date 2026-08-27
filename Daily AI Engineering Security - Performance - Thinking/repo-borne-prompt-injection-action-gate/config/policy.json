@@ -1,0 +1,20 @@
+{
+  "trusted_instruction_sources": [
+    "system",
+    "developer",
+    "user"
+  ],
+  "side_effect_actions": [
+    "network_write",
+    "repo_write",
+    "issue_comment",
+    "pr_comment",
+    "git_push",
+    "shell",
+    "deploy",
+    "credential_read"
+  ],
+  "block_destination_from_untrusted_content": true,
+  "forbid_untrusted_triggered_credential_read": true,
+  "require_explicit_user_authorization_for_side_effects": true
+}
