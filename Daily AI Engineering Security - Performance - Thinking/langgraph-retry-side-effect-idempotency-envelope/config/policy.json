@@ -1,0 +1,7 @@
+{
+  "max_attempts": 3,
+  "stale_claim_seconds": 900,
+  "require_explicit_idempotency_key": true,
+  "allow_stale_reclaim": false,
+  "store_result_inline_max_bytes": 16384
+}
