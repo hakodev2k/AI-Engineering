@@ -1,0 +1,65 @@
+id: browserstack
+name: BrowserStack
+version: 1.0.0
+
+upstream:
+  - official-mcp
+  - rest
+
+mcp:
+  official_local_package: "@browserstack/mcp-server"
+  official_remote_url: "https://mcp.browserstack.com/mcp"
+  local_auth: username_access_key
+  remote_auth: oauth
+  notes: >
+    BrowserStack's official MCP server supports broad test execution, debugging,
+    Test Management, Live/App Live, Accessibility, Percy, and reporting workflows.
+    This connector uses REST for deterministic Automate build/session metadata and
+    narrowly scoped mutations where stable endpoint semantics and approval controls
+    are preferable.
+
+api:
+  base_url: "https://api.browserstack.com"
+  product: automate
+  version: v1
+
+auth:
+  type: basic
+  username_env: BROWSERSTACK_USERNAME
+  access_key_env: BROWSERSTACK_ACCESS_KEY
+  credential_isolation: connector-only
+
+capabilities:
+  - automate.plan.get
+  - automate.browser.list
+  - project.list
+  - project.get
+  - build.list
+  - session.list
+  - session.get
+  - session.logs.get
+  - session.console_logs.get
+  - session.network_logs.get
+  - session.update_status
+  - session.update_name
+  - session.delete
+  - build.delete
+
+risk:
+  default: READ
+  writes_require_approval: true
+  destructive_disabled_by_default: true
+
+rate_limits:
+  per_user: "1600 requests / 5 minutes"
+  per_ip: "160 requests / second"
+
+required_environment:
+  - BROWSERSTACK_USERNAME
+  - BROWSERSTACK_ACCESS_KEY
+optional_environment:
+  - BROWSERSTACK_API_BASE_URL
+  - BROWSERSTACK_TIMEOUT_MS
+  - BROWSERSTACK_MAX_RETRIES
+  - BROWSERSTACK_APPROVAL_SECRET
+  - BROWSERSTACK_ENABLE_DESTRUCTIVE
