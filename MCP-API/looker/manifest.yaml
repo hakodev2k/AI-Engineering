@@ -1,0 +1,54 @@
+id: looker
+name: Looker
+upstream:
+  - mcp
+  - rest
+official_mcp:
+  endpoint: "${LOOKER_BASE_URL}/mcp"
+  status: preview
+  auth: oauth2.1
+api:
+  base_url: "${LOOKER_BASE_URL}/api/4.0"
+  version: "4.0"
+auth:
+  type: api-credentials-or-oauth
+  environment:
+    - LOOKER_BASE_URL
+    - LOOKER_CLIENT_ID
+    - LOOKER_CLIENT_SECRET
+    - LOOKER_MCP_ACCESS_TOKEN
+capabilities:
+  - model.list
+  - explore.get
+  - query.run
+  - look.get
+  - dashboard.get
+  - content.search
+  - scheduled_plan.search
+  - scheduled_plan.get
+  - scheduled_plan.create
+  - scheduled_plan.run
+  - scheduled_plan.delete
+risk:
+  default: read
+  tools:
+    looker.model.list: READ
+    looker.explore.get: READ
+    looker.query.run: READ
+    looker.look.get: READ
+    looker.dashboard.get: READ
+    looker.content.search: READ
+    looker.scheduled_plan.search: READ
+    looker.scheduled_plan.get: READ
+    looker.scheduled_plan.create: HIGH_RISK
+    looker.scheduled_plan.run: HIGH_RISK
+    looker.scheduled_plan.delete: DESTRUCTIVE
+approval:
+  required:
+    - looker.scheduled_plan.create
+    - looker.scheduled_plan.run
+    - looker.scheduled_plan.delete
+notes:
+  - Official Looker-managed MCP is preferred for looker.query.run when configured and the looker_query tool is enabled.
+  - REST API 4.0 is the fallback and is used for content and scheduling operations.
+  - Managed MCP tools are disabled by default in Looker and must be explicitly enabled by an admin.
