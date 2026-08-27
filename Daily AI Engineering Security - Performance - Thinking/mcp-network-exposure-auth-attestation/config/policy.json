@@ -1,0 +1,9 @@
+{
+  "allowed_public_auth_modes": ["oauth2", "mtls"],
+  "require_tls_for_non_loopback": true,
+  "forbid_wildcard_without_auth": true,
+  "high_risk_capabilities": ["shell", "file_read", "file_write", "credential_read", "admin"],
+  "exfiltration_capabilities": ["outbound_network"],
+  "require_auth_for_high_risk_non_loopback": true,
+  "forbid_credential_plus_outbound_without_mtls": true
+}
