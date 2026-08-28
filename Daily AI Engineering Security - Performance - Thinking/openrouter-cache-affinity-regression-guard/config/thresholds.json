@@ -1,0 +1,9 @@
+{
+  "min_calls_for_enforcement": 4,
+  "min_cache_hit_ratio": 0.6,
+  "min_cached_token_share": 0.5,
+  "max_cold_streak": 2,
+  "require_stable_session_id": true,
+  "require_stable_prefix_hash": true,
+  "allow_provider_failover_cold_turns": 1
+}
