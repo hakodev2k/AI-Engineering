@@ -1,0 +1,47 @@
+id: databricks
+name: Databricks
+version: 1.0.0
+upstream:
+  - rest
+  - managed-mcp-available-for-selected-data-and-agent-capabilities
+transport_strategy:
+  compute: rest
+  jobs: rest
+  sql_warehouses: rest
+  statement_execution: rest
+auth:
+  preferred: oauth2_client_credentials
+  fallback: personal_access_token
+  credential_isolation: connector-only
+scopes:
+  - clusters
+  - jobs
+  - sql
+capabilities:
+  - cluster.list
+  - cluster.get
+  - cluster.start
+  - cluster.restart
+  - cluster.terminate
+  - job.list
+  - job.get
+  - job.run.list
+  - job.run.get
+  - job.run.start
+  - job.run.cancel
+  - warehouse.list
+  - warehouse.get
+  - warehouse.start
+  - warehouse.stop
+  - sql.statement.execute
+  - sql.statement.get
+  - sql.statement.cancel
+risk:
+  default: READ
+  writes_require_approval: true
+  destructive_disabled_by_default: true
+required_environment:
+  - DATABRICKS_HOST
+auth_environment_one_of:
+  - [DATABRICKS_CLIENT_ID, DATABRICKS_CLIENT_SECRET]
+  - [DATABRICKS_TOKEN]
