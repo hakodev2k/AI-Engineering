@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CompactionSnapshot",
+  "type": "object",
+  "required": ["context_window", "persisted_total_tokens", "latest_context_tokens", "snapshot_source", "cumulative_run_tokens"],
+  "properties": {
+    "context_window": {"type": "integer", "minimum": 1},
+    "persisted_total_tokens": {"type": "integer", "minimum": 0},
+    "latest_context_tokens": {"type": "integer", "minimum": 0},
+    "cumulative_run_tokens": {"type": "integer", "minimum": 0},
+    "transcript_estimate_tokens": {"type": ["integer", "null"], "minimum": 0},
+    "snapshot_source": {"type": "string"},
+    "compaction_requested": {"type": "boolean"}
+  },
+  "additionalProperties": true
+}
