@@ -1,0 +1,11 @@
+{
+  "signature_fields": ["thoughtSignature", "thought_signature", "textSignature"],
+  "required_active_part_types": ["functionCall", "function_call"],
+  "recent_turns": 4,
+  "max_recommended_signature_bytes": 65536,
+  "estimated_bytes_per_token": 4.0,
+  "reserved_context_tokens": 20000,
+  "retain_archival_hashes": true,
+  "fail_if_required_signature_missing": true,
+  "fail_if_required_signatures_exceed_reserved_tokens": true
+}
