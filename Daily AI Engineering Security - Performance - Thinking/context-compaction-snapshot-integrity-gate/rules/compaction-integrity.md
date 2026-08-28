@@ -1,0 +1,11 @@
+# Rules: Compaction Snapshot Integrity
+- Automatic compaction MUST use a token measurement explicitly typed as current-context snapshot.
+- Cumulative run/billing usage MUST NOT authorize context compaction.
+- A freshness flag MUST NOT substitute for measurement provenance.
+- If persisted and latest-context values exceed the configured drift tolerance, automatic compaction MUST be suppressed pending one recomputation.
+- Provider cache accounting MUST be interpreted according to provider semantics; cache counters MUST NOT be blindly added to context-window utilization.
+- Post-compaction metadata MUST be recounted or explicitly marked stale before later writers can persist it.
+- Compaction retries MUST be bounded; this package permits one recomputation before escalation.
+- Destructive summarization MUST NOT run when the trusted latest-context utilization is below policy threshold.
+- A compaction implementation SHOULD retain metrics for false-trigger rate and history-quality regression.
+- Thresholds MUST NOT be loosened merely to hide accounting defects.
