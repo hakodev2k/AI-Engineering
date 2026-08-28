@@ -1,0 +1,6 @@
+{
+  "max_buffer_bytes": 1048576,
+  "max_active_sessions": 1000,
+  "max_idle_session_seconds": 900,
+  "internet_exposed_requires_all_bounds": true
+}
