@@ -1,0 +1,26 @@
+const KEY = { type: "string", minLength: 1, maxLength: 4096 };
+const VALUE = { oneOf: [{ type: "string", maxLength: 1048576 }, { type: "number" }, { type: "integer" }, { type: "boolean" }] };
+const APPROVAL = { type: "string", minLength: 64, maxLength: 64, pattern: "^[a-f0-9]{64}$" };
+
+export const TOOL_DEFINITIONS = [
+  { name: "upstash.system.ping", description: "Check configured Upstash Redis reachability. Permission: READ. Approval: none.", inputSchema: { type: "object", additionalProperties: false, properties: {} } },
+  { name: "upstash.key.get", description: "Read one string key. Permission: READ. Approval: none.", inputSchema: { type: "object", additionalProperties: false, required: ["key"], properties: { key: KEY } } },
+  { name: "upstash.key.mget", description: "Read multiple string keys. Permission: READ. Approval: none.", inputSchema: { type: "object", additionalProperties: false, required: ["keys"], properties: { keys: { type: "array", minItems: 1, maxItems: 100, uniqueItems: true, items: KEY } } } },
+  { name: "upstash.key.exists", description: "Count supplied keys that exist. Permission: READ. Approval: none.", inputSchema: { type: "object", additionalProperties: false, required: ["keys"], properties: { keys: { type: "array", minItems: 1, maxItems: 100, uniqueItems: true, items: KEY } } } },
+  { name: "upstash.key.ttl", description: "Read key TTL in seconds. Permission: READ. Approval: none.", inputSchema: { type: "object", additionalProperties: false, required: ["key"], properties: { key: KEY } } },
+  { name: "upstash.key.type", description: "Read Redis type for one key. Permission: READ. Approval: none.", inputSchema: { type: "object", additionalProperties: false, required: ["key"], properties: { key: KEY } } },
+  { name: "upstash.key.scan", description: "Bounded cursor-based key discovery; read-only tokens may restrict SCAN. Permission: READ.", inputSchema: { type: "object", additionalProperties: false, properties: { cursor: { oneOf: [{ type: "string", pattern: "^\\d+$", maxLength: 40 }, { type: "integer", minimum: 0 }], default: "0" }, match: { type: "string", minLength: 1, maxLength: 4096 }, count: { type: "integer", minimum: 1, maximum: 1000, default: 100 } } } },
+  { name: "upstash.hash.get_all", description: "Read all fields of a Redis hash. Permission: READ. Approval: none.", inputSchema: { type: "object", additionalProperties: false, required: ["key"], properties: { key: KEY } } },
+  { name: "upstash.list.range", description: "Read a bounded list range. Permission: READ. Approval: none.", inputSchema: { type: "object", additionalProperties: false, required: ["key", "start", "stop"], properties: { key: KEY, start: { type: "integer", minimum: -1000000, maximum: 1000000 }, stop: { type: "integer", minimum: -1000000, maximum: 1000000 } } } },
+  { name: "upstash.sorted_set.range", description: "Read a bounded sorted-set rank range. Permission: READ. Approval: none.", inputSchema: { type: "object", additionalProperties: false, required: ["key", "start", "stop"], properties: { key: KEY, start: { type: "integer", minimum: -1000000, maximum: 1000000 }, stop: { type: "integer", minimum: -1000000, maximum: 1000000 }, withScores: { type: "boolean", default: false }, reverse: { type: "boolean", default: false } } } },
+  { name: "upstash.key.set", description: "Set one key with optional TTL/NX/XX. Permission: WRITE. Explicit approval required.", inputSchema: { type: "object", additionalProperties: false, required: ["key", "value", "approval_token"], properties: { key: KEY, value: VALUE, ttlSeconds: { type: "integer", minimum: 1, maximum: 315360000 }, onlyIf: { enum: ["NX", "XX"] }, approval_token: APPROVAL } } },
+  { name: "upstash.hash.set", description: "Set one or more hash fields. Permission: WRITE. Explicit approval required.", inputSchema: { type: "object", additionalProperties: false, required: ["key", "fields", "approval_token"], properties: { key: KEY, fields: { type: "object", minProperties: 1, maxProperties: 100, additionalProperties: VALUE }, approval_token: APPROVAL } } },
+  { name: "upstash.counter.increment", description: "Atomically increment an integer counter. Permission: WRITE. Explicit approval required.", inputSchema: { type: "object", additionalProperties: false, required: ["key", "approval_token"], properties: { key: KEY, amount: { type: "integer", minimum: -1000000000, maximum: 1000000000, default: 1 }, approval_token: APPROVAL } } },
+  { name: "upstash.key.expire", description: "Set key expiration. Permission: WRITE. Explicit approval required.", inputSchema: { type: "object", additionalProperties: false, required: ["key", "seconds", "approval_token"], properties: { key: KEY, seconds: { type: "integer", minimum: 1, maximum: 315360000 }, approval_token: APPROVAL } } },
+  { name: "upstash.key.delete", description: "Delete one or more keys. Permission: DESTRUCTIVE. Disabled by default and explicit approval required.", inputSchema: { type: "object", additionalProperties: false, required: ["keys", "approval_token"], properties: { keys: { type: "array", minItems: 1, maxItems: 100, uniqueItems: true, items: KEY }, approval_token: APPROVAL } } }
+];
+
+export function payloadWithoutApproval(args = {}) {
+  const { approval_token: _ignored, ...payload } = args;
+  return payload;
+}
