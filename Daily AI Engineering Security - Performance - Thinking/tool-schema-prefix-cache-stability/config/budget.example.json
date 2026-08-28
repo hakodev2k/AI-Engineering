@@ -1,0 +1,5 @@
+{
+  "min_cache_hit_ratio": 0.80,
+  "max_order_drift_groups": 0,
+  "min_quality_pass_rate": 1.0
+}
