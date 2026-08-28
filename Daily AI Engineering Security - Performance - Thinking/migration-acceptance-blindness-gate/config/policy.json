@@ -1,0 +1,16 @@
+{
+  "required_artifacts": [
+    "migration-plan",
+    "migration-audit",
+    "behavioral-tests",
+    "independent-verification"
+  ],
+  "forbidden_residual_patterns": [
+    "legacy-dependency",
+    "compatibility-shim",
+    "old-runtime-entrypoint"
+  ],
+  "max_repair_rounds": 2,
+  "min_behavioral_pass_rate": 1.0,
+  "require_independent_verifier": true
+}
