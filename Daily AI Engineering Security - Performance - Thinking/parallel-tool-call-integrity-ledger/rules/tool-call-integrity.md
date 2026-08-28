@@ -1,0 +1,12 @@
+# Rules: Tool Call Integrity
+- Every provider-emitted tool call MUST have a stable batch ID and call ID.
+- Tool names MUST NOT be the sole identity for parallel calls.
+- Every declared call MUST have exactly one terminal outcome before the next model turn unless explicitly awaiting approval.
+- Orphan results MUST block progression.
+- Multiple terminal outcomes MUST block progression.
+- A dispatched mutating call without terminal outcome MUST be treated as ambiguous.
+- Ambiguous mutating calls MUST NOT be replayed automatically.
+- Read-only/idempotent recovery MAY retry once only when prior execution is proven absent.
+- Approval resume MUST preserve original call identity.
+- Silent adapter drops MUST be surfaced as integrity violations.
+- High-risk recovery MUST have independent verification.
