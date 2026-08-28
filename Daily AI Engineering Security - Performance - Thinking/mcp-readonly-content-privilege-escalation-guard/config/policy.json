@@ -1,0 +1,23 @@
+{
+  "trusted_origins": [
+    "vendor-docs",
+    "workspace-owned"
+  ],
+  "deny_patterns": [
+    "ignore previous",
+    "read .env",
+    "send credentials",
+    "delete files",
+    "curl http"
+  ],
+  "max_untrusted_chars": 12000,
+  "privileged_tools": [
+    "shell",
+    "filesystem-write",
+    "network-write",
+    "git-push",
+    "deploy"
+  ],
+  "require_human_approval_for_untrusted_to_privileged": true,
+  "allow_untrusted_text_to_authorize_tools": false
+}
