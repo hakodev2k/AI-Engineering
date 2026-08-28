@@ -1,46 +1,41 @@
 # Quantum Algorithm Selection
 
 ## Purpose
-Select a quantum algorithm family only when problem structure, resource profile, and validation evidence make it a credible engineering choice.
+Select an appropriate quantum or hybrid algorithm based on problem structure, resource requirements, hardware maturity, and baseline performance.
 
 ## When to use
-Use for feasibility studies, architecture decisions, or replacing an unsuitable prototype. Do not use to rationalize a quantum decision already made without evidence.
+Use after problem formulation and before implementation commitment.
 
 ## Inputs
-Problem formulation, objective, constraints, input size, precision target, classical baselines, hardware limits, runtime budget, and success metric.
-
-## Preconditions
-The problem is mathematically defined and at least one competent classical baseline exists.
+Problem class, instance size, target accuracy, baseline metrics, available hardware, time and cost limits.
 
 ## Context to inspect
-Data-loading cost, oracle construction, sparsity, conditioning, symmetry, sampling needs, circuit depth, ancilla requirements, hardware connectivity, and optimization stability.
+Known classical methods, algorithmic assumptions, state-preparation cost, oracle construction, qubit/depth estimates, and expected sampling burden.
 
 ## Core knowledge
-Theoretical speedup is not practical advantage. State preparation, readout, fault-tolerance overhead, sampling complexity, and classical preprocessing can dominate. Near-term methods must be judged under realistic noise and optimizer behavior.
+A theoretical speedup is useful only if assumptions and end-to-end overhead are realistic. NISQ algorithms trade circuit depth for repeated sampling and classical optimization; fault-tolerant algorithms may require large logical-resource overhead.
 
 ## Procedure
-1. Formalize the computational problem and required output.
-2. Record strong classical baselines.
-3. Enumerate relevant quantum algorithm families and assumptions.
-4. Include state-preparation, oracle, ancilla, and measurement costs.
-5. Estimate logical qubits, depth, shots, and classical work.
-6. Check compatibility with available hardware.
-7. Define small known-answer test cases.
-8. Compare practical scaling and crossover assumptions.
-9. Reject candidates whose hidden overhead dominates.
-10. Document the selected algorithm and why alternatives were rejected.
+1. Classify the mathematical problem precisely.
+2. Establish the best practical classical baseline.
+3. Identify candidate quantum families and their assumptions.
+4. Estimate logical and physical resources.
+5. Include encoding, readout, repetitions, and classical-loop cost.
+6. Assess sensitivity to noise and parameter scaling.
+7. Compare expected value for near-term and fault-tolerant settings.
+8. Select an algorithm only with explicit success and abandonment criteria.
 
 ## Decision points
-Prefer exact algorithms for fault-tolerant planning; use variational or sampling methods only when near-term hardware can support meaningful instances. Use annealing only when formulation and embedding preserve the business objective.
+Use variational methods when shallow parameterized circuits fit the problem and optimization is tractable. Use amplitude-estimation/search-style methods only when oracle and fault-tolerant assumptions are credible.
 
 ## Common failure patterns
-Choosing by popularity, ignoring state preparation, comparing asymptotic quantum complexity with weak classical code, and claiming advantage from toy problems.
+Algorithm-by-popularity selection, ignoring input/output cost, comparing against weak classical baselines, and treating asymptotic complexity as deployable advantage.
 
 ## Verification
-Reproduce known small cases, compare against the classical baseline, and validate resource assumptions experimentally where possible.
+Produce a resource and baseline comparison that can be challenged independently.
 
 ## Expected output
-Algorithm decision record, assumptions, resource estimate, baseline comparison, validation plan, and rejected alternatives.
+A justified algorithm choice, alternatives considered, and measurable go/no-go criteria.
 
 ## Stop conditions
-Stop when no candidate has a credible resource path or classical methods dominate at relevant scales.
+Stop when all candidates require unsupported assumptions or fail to beat the baseline under plausible resources.

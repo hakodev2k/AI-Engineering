@@ -1,46 +1,41 @@
 # Quantum Simulation
 
 ## Purpose
-Design quantum-simulation workloads for physical systems with explicit model validity, encoding, Trotterization or alternative evolution methods, observables, and error budgets.
+Use statevector, density-matrix, tensor-network, stabilizer, and sampling simulators appropriately for correctness, scaling, and noise studies.
 
 ## When to use
-Use for chemistry, materials, spin systems, or dynamical simulation feasibility and implementation.
+Use before hardware execution, for debugging, and for controlled comparisons.
 
 ## Inputs
-Hamiltonian/model, initial state, observables, time horizon, precision target, symmetry information, hardware resources.
-
-## Preconditions
-The physical model and expected reference behavior are defined for tractable cases.
+Circuit family, qubit count, entanglement structure, noise needs, memory/compute limits, expected outputs.
 
 ## Context to inspect
-Encoding choice, term locality, commutation, state preparation, evolution method, measurement grouping, symmetry reduction, and classical reference solvers.
+Simulator method, numerical precision, parallelism, truncation settings, seed control, and noise support.
 
 ## Core knowledge
-Simulation error combines model error, discretization/algorithm error, sampling error, and hardware noise. Encoding and state preparation can dominate the circuit.
+Simulation complexity depends on circuit structure, not only qubit count. Approximate methods need explicit error controls.
 
 ## Procedure
-1. Validate the physical Hamiltonian/model.
-2. Choose an encoding and exploit conserved quantities.
-3. Define initial-state preparation.
-4. Select evolution or eigensolver method.
-5. Estimate depth, qubits, and measurement cost.
-6. Set separate algorithmic and statistical error budgets.
-7. Validate small systems against exact/classical references.
-8. Sweep time step or approximation order.
-9. Test under realistic noise.
-10. Report observables with uncertainty.
+1. Define the simulation question: correctness, noise, scaling, or sampling.
+2. Choose the least expensive valid simulator method.
+3. Estimate memory and compute before large runs.
+4. Validate small instances against an exact method.
+5. Set deterministic seeds and numerical precision.
+6. Record approximation/truncation parameters.
+7. Compare simulator outputs across methods for selected checkpoints.
+8. Profile runtime and memory as size increases.
 
 ## Decision points
-Choose product formulas for simplicity and local structure; use more advanced simulation methods when asymptotic benefits survive implementation overhead.
+Use statevector for exact pure-state studies within memory limits; density matrices for explicit mixed-state noise; tensor networks for suitable low-entanglement structure.
 
 ## Common failure patterns
-Conflating hardware noise with Trotter error, poor state preparation, ignoring symmetry, and validating only aggregate energy.
+Using exact simulation beyond resource limits, unreported approximation thresholds, and assuming simulator success predicts hardware success.
 
 ## Verification
-Check conserved quantities, convergence with approximation parameters, and agreement with reference observables.
+Cross-check small cases, monitor norm/probability consistency, and quantify approximation error where applicable.
 
 ## Expected output
-Model mapping, circuit strategy, resource estimate, error budget, and validation evidence.
+A reproducible simulation plan and validated results.
 
 ## Stop conditions
-Stop when model assumptions are unresolved or required resources exceed the target platform.
+Stop when estimated memory/compute exceeds limits or approximation error cannot be bounded.

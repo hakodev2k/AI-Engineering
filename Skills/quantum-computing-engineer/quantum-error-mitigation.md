@@ -1,46 +1,42 @@
 # Quantum Error Mitigation
 
 ## Purpose
-Apply error-mitigation techniques to noisy quantum experiments without overstating them as fault tolerance.
+Reduce bias from noisy quantum execution without claiming fault tolerance, while quantifying additional sampling and model assumptions.
 
 ## When to use
-Use on near-term noisy hardware when ideal simulation is insufficient and mitigation overhead is justified. Do not use mitigation to hide a fundamentally unsuitable circuit.
+Use on noisy hardware after baseline noise has been characterized and before interpreting small improvements as algorithmic signal.
 
 ## Inputs
-Target circuit, backend noise profile, observable, shot budget, baseline result, and acceptable uncertainty.
-
-## Preconditions
-The unmitigated result and ideal/reference result are measurable for representative cases.
+Circuit family, raw results, calibration data, noise characteristics, shot budget, observable targets.
 
 ## Context to inspect
-Readout error, circuit depth, noise scaling options, symmetries, repeated-measurement cost, and calibration freshness.
+Readout error, gate error, drift, circuit depth, symmetry constraints, and compatibility with techniques such as readout mitigation, ZNE, PEC, or symmetry verification.
 
 ## Core knowledge
-Mitigation trades additional experiments, assumptions, and estimator variance for lower bias. Techniques such as measurement mitigation, zero-noise extrapolation, symmetry verification, probabilistic cancellation, and randomized compiling have different applicability and cost.
+Mitigation trades bias for variance and cost. Techniques may fail under correlated, nonstationary, or model-mismatched noise.
 
 ## Procedure
-1. Measure the unmitigated baseline.
-2. Identify dominant error sources relevant to the observable.
-3. Select the least-complex applicable mitigation technique.
-4. Define extra circuit and shot overhead.
-5. Calibrate mitigation inputs in the same execution window.
-6. Run mitigated and control experiments.
-7. Compute uncertainty, not only point estimates.
-8. Check that mitigation improves error across multiple instances.
-9. Measure cost versus accuracy gain.
-10. Document assumptions and cases where mitigation worsens results.
+1. Measure an unmitigated baseline with uncertainty.
+2. Identify dominant error channels.
+3. Choose mitigation methods with explicit assumptions.
+4. Calibrate using time-adjacent measurements.
+5. Apply one method at a time before combining techniques.
+6. Track shot amplification and variance growth.
+7. Validate on circuits with known expected values.
+8. Compare mitigated and raw estimates with confidence intervals.
+9. Recalibrate when drift is detected.
 
 ## Decision points
-Use measurement mitigation for readout-dominated error; use noise extrapolation only when controllable noise scaling is credible; use symmetry checks when conserved quantities are valid for the algorithm.
+Use readout mitigation for measurable assignment bias; use extrapolation only when controllable noise scaling is credible. Avoid probabilistic cancellation when overhead is prohibitive.
 
 ## Common failure patterns
-Cherry-picking improved runs, omitting uncertainty, reusing stale calibration matrices, stacking techniques without isolating benefit, and calling mitigation error correction.
+Reporting mitigated values without raw results, ignoring uncertainty amplification, stale calibration, and tuning mitigation on the evaluation target.
 
 ## Verification
-Compare absolute/relative error and confidence intervals against unmitigated and ideal references across repeated instances.
+Demonstrate reduced error on held-out known circuits and report total sampling/cost overhead.
 
 ## Expected output
-Mitigation configuration, before/after metrics, overhead, uncertainty, limitations, and reproducible run metadata.
+A mitigation protocol with quantified assumptions, uncertainty, and benefit.
 
 ## Stop conditions
-Stop when mitigation overhead exceeds value, assumptions are violated, or confidence intervals do not show consistent improvement.
+Stop when mitigation increases uncertainty beyond usefulness or calibration drift invalidates the correction model.
