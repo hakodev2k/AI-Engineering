@@ -1,0 +1,49 @@
+id: klaviyo
+name: Klaviyo
+version: 1.0.0
+upstream:
+  - rest
+mcp:
+  official_server_checked: true
+  official_server_found: false
+api:
+  base_url: https://a.klaviyo.com
+  revision_env: KLAVIYO_REVISION
+auth:
+  type: private_api_key
+  header: Authorization
+  credential_env: KLAVIYO_API_KEY
+  credential_isolation: connector-only
+scopes:
+  read:
+    - profiles:read
+    - lists:read
+    - segments:read
+    - metrics:read
+    - events:read
+    - campaigns:read
+  write:
+    - events:write
+capabilities:
+  - profile.list
+  - profile.get
+  - list.list
+  - list.get
+  - segment.list
+  - segment.get
+  - metric.list
+  - metric.get
+  - event.list
+  - event.create
+  - campaign.list
+  - campaign.get
+risk:
+  default: READ
+  writes_require_approval: true
+required_environment:
+  - KLAVIYO_API_KEY
+optional_environment:
+  - KLAVIYO_REVISION
+  - KLAVIYO_TIMEOUT_MS
+  - KLAVIYO_MAX_RETRIES
+  - KLAVIYO_APPROVAL_SECRET
