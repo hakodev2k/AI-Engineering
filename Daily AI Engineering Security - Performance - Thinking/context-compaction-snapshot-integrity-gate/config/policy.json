@@ -1,0 +1,11 @@
+{
+  "auto_compact_utilization": 0.8,
+  "max_persisted_to_latest_ratio": 1.25,
+  "max_transcript_estimate_drift_ratio": 0.25,
+  "trusted_snapshot_sources": [
+    "latest-model-call",
+    "post-compaction-recount",
+    "transcript-estimate"
+  ],
+  "max_recompute_attempts": 1
+}
