@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "batch_id",
+    "call_id",
+    "tool",
+    "effect",
+    "event"
+  ],
+  "properties": {
+    "batch_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "call_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tool": {
+      "type": "string",
+      "minLength": 1
+    },
+    "effect": {
+      "enum": [
+        "read_only",
+        "idempotent",
+        "mutating"
+      ]
+    },
+    "event": {
+      "enum": [
+        "declared",
+        "dispatched",
+        "awaiting_approval",
+        "succeeded",
+        "failed",
+        "rejected"
+      ]
+    }
+  },
+  "additionalProperties": true
+}
