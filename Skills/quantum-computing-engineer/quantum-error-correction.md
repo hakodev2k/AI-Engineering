@@ -1,42 +1,46 @@
 # Quantum Error Correction
 
 ## Purpose
-Analyze and prototype quantum error-correcting schemes with explicit logical-error targets, code distance, syndrome behavior, and physical-resource overhead.
+Evaluate and design fault-tolerant error-correction strategies with explicit logical-qubit, code-distance, syndrome, and physical-resource assumptions.
 
 ## When to use
-Use for fault-tolerant architecture planning, code experiments, or logical-qubit resource studies; not as a substitute for near-term error mitigation.
+Use for fault-tolerant architecture, long-term resource planning, or code-level experiments. Do not use when near-term mitigation is the actual requirement.
 
 ## Inputs
-Physical error model, logical error target, candidate code, decoder, operation set, hardware constraints.
+Target logical circuit, physical error rates, connectivity, logical error target, code family candidates, and hardware constraints.
+
+## Preconditions
+Physical error assumptions and logical reliability targets are defined.
 
 ## Context to inspect
-Threshold assumptions, correlated errors, measurement cadence, leakage, decoder latency, lattice/connectivity, and logical-gate requirements.
+Threshold assumptions, code distance, syndrome cycle time, decoder performance, leakage, correlated errors, magic-state requirements, and routing overhead.
 
 ## Core knowledge
-Fault tolerance depends on complete syndrome extraction, decoding, logical operations, and physical error assumptions—not code distance alone.
+Fault tolerance replaces one physical qubit with many physical qubits plus continuous syndrome extraction and decoding. Resource cost depends strongly on physical error rate, target logical error rate, non-Clifford operations, and architecture.
 
 ## Procedure
-1. Define physical and logical error metrics.
-2. Choose a code compatible with hardware and operation needs.
-3. Model syndrome extraction and measurement faults.
-4. Select and benchmark a decoder.
-5. Simulate logical error rate across physical error regimes.
-6. Estimate distance and physical-qubit overhead for target reliability.
-7. Include magic-state or non-Clifford overhead where relevant.
-8. Test correlated-error sensitivity and decoder latency.
-9. Document assumptions separately from measured evidence.
+1. Define logical error budget for the workload.
+2. Characterize physical gate, measurement, and idle error assumptions.
+3. Compare suitable code families and architectural constraints.
+4. Estimate code distance and physical qubits per logical qubit.
+5. Account for syndrome extraction and decoder latency.
+6. Estimate logical gate and routing overhead.
+7. Include magic-state or equivalent non-Clifford resources.
+8. Model correlated faults and leakage handling.
+9. Run code-level simulations where feasible.
+10. Produce sensitivity analysis across physical error rates.
 
 ## Decision points
-Prefer codes aligned with native connectivity and measurement capabilities. Increase distance only when below-threshold behavior is demonstrated.
+Choose code families based on connectivity, measurement capability, decoder feasibility, and total system overhead—not code distance alone.
 
 ## Common failure patterns
-Threshold claims from unrealistic IID noise, excluding measurement errors, ignoring logical-gate overhead, and quoting logical qubits without physical resources.
+Ignoring non-Clifford cost, using threshold as expected operating error, omitting decoder latency, and presenting logical-qubit counts without physical assumptions.
 
 ## Verification
-Reproduce logical-error scaling under documented models and validate decoder correctness on injected faults.
+Reproduce code-capacity/circuit-level simulations or trusted estimates and show the logical error target is met under stated assumptions.
 
 ## Expected output
-A fault-tolerance resource and reliability analysis.
+Code choice, resource model, logical-error estimate, sensitivity analysis, decoder assumptions, and major risks.
 
 ## Stop conditions
-Stop when the physical model is unknown, error rates are above usable thresholds, or required overhead exceeds the architecture envelope.
+Stop when physical error assumptions are unsupported or resource requirements exceed plausible hardware by orders of magnitude without a credible roadmap.
