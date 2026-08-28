@@ -1,0 +1,17 @@
+{
+  "eligible_tools": [
+    "read_file",
+    "list_directory",
+    "lsp_diagnostics",
+    "search_repository"
+  ],
+  "max_reference_age_seconds": 300,
+  "require_dependency_fingerprint": true,
+  "deny_if_contains_secret_marker": true,
+  "secret_markers": [
+    "AKIA",
+    "BEGIN PRIVATE KEY",
+    "ghp_",
+    "sk-"
+  ]
+}
