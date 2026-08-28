@@ -1,0 +1,11 @@
+# Rules: Multimodal Resource Budget
+- A performance change MUST establish a before-change baseline.
+- Child agents MUST NOT inherit raw historical image payloads unless the child task requires those exact images.
+- Image-heavy fan-out MUST pass the configured deterministic budget gate.
+- Large image artifacts SHOULD be referenced by stable path/content hash where the runtime supports it.
+- Prompt-cache hit rate MUST NOT be treated as proof that context replay is inexpensive.
+- Required context MUST NOT be removed solely to improve token or latency metrics.
+- Destructive cleanup MUST NOT occur without explicit human approval.
+- Retry/fan-out loops MUST be bounded; this package permits at most two optimization retries.
+- Performance improvement MUST be claimed only from comparable before/after measurements.
+- Verification MUST include task-quality regression evidence, not resource metrics alone.
