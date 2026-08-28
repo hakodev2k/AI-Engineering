@@ -1,0 +1,59 @@
+id: upstash
+name: Upstash
+version: 1.0.0
+
+upstream:
+  - official-mcp-available
+  - rest
+
+transport_strategy:
+  selected: redis-rest
+  official_mcp:
+    package: "@upstash/redis-mcp"
+    transport: stdio_or_http
+    reason_not_proxied: >
+      The official dedicated Redis MCP exposes redis_run_commands, which intentionally permits
+      arbitrary Redis commands. This connector uses the official Upstash Redis REST API instead
+      so the external MCP surface can be narrowly allowlisted and risk-classified per operation.
+
+auth:
+  type: bearer_token
+  url_env: UPSTASH_REDIS_REST_URL
+  token_env: UPSTASH_REDIS_REST_TOKEN
+  credential_isolation: connector-only
+  least_privilege: >
+    Prefer an Upstash read-only REST token for read-only deployments. Write deployments require
+    a standard or ACL-scoped REST token limited to the commands needed by this connector.
+
+capabilities:
+  - system.ping
+  - key.get
+  - key.mget
+  - key.exists
+  - key.ttl
+  - key.type
+  - key.scan
+  - hash.get_all
+  - list.range
+  - sorted_set.range
+  - key.set
+  - hash.set
+  - counter.increment
+  - key.expire
+  - key.delete
+
+risk:
+  default: READ
+  writes_require_approval: true
+  destructive_disabled_by_default: true
+
+required_environment:
+  - UPSTASH_REDIS_REST_URL
+  - UPSTASH_REDIS_REST_TOKEN
+
+optional_environment:
+  - UPSTASH_REDIS_TIMEOUT_MS
+  - UPSTASH_REDIS_MAX_RETRIES
+  - UPSTASH_REDIS_APPROVAL_SECRET
+  - UPSTASH_REDIS_ENABLE_DESTRUCTIVE
+  - UPSTASH_REDIS_ALLOW_CUSTOM_HOST
