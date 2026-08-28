@@ -1,0 +1,9 @@
+{
+  "max_descendants": 12,
+  "max_inherited_image_bytes_per_child": 67108864,
+  "max_task_family_rollout_bytes": 1073741824,
+  "max_input_tokens_per_turn": 120000,
+  "max_image_payload_bytes_per_turn": 33554432,
+  "max_p95_latency_ms": 30000,
+  "minimum_cached_fraction_warning": 0.9
+}
