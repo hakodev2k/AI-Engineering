@@ -1,0 +1,9 @@
+{
+  "max_lease_seconds": 900,
+  "max_actions_per_lease": 40,
+  "max_side_effects_per_lease": 5,
+  "max_checkpoint_age_seconds": 300,
+  "max_evidence_age_seconds": 900,
+  "min_progress_delta_for_renewal": 1,
+  "max_renewals_without_human_review": 2
+}
