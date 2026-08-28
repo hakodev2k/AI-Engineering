@@ -1,0 +1,9 @@
+{
+  "history_window_hours": 24,
+  "max_session_resets_after_block": 1,
+  "high_risk_action_classes": ["credential_access", "privilege_escalation", "remote_execution", "persistence", "data_exfiltration", "destructive_write"],
+  "simulation_claim_requires_authorization": true,
+  "accepted_authorization_types": ["signed_engagement_id", "enterprise_ticket", "lab_target_attestation"],
+  "store_raw_targets": false,
+  "max_diagnostic_retries": 2
+}
