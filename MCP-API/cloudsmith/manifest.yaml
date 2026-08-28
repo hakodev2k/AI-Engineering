@@ -1,0 +1,54 @@
+id: cloudsmith
+name: Cloudsmith
+version: 1.0.0
+
+upstream:
+  - official-mcp
+  - rest
+
+transport_strategy:
+  official_mcp:
+    available: true
+    mode: local
+    source: Cloudsmith CLI
+    note: Cloudsmith CLI exposes a local MCP server for core repository and package management.
+  rest:
+    selected: true
+    base_url: https://api.cloudsmith.io/v1
+    reason: Stable reviewed tool contract, explicit approval gates, metrics support, bounded retries, and destructive-action controls.
+
+auth:
+  type: api_key
+  header: "Authorization: token <key>"
+  credential_env: CLOUDSMITH_API_KEY
+  credential_isolation: connector-only
+  note: Entitlement tokens cannot authenticate to the Cloudsmith API.
+
+capabilities:
+  - namespace.list
+  - repository.list
+  - package.list
+  - package.get
+  - package.dependencies
+  - package.vulnerabilities
+  - package.metrics
+  - package.copy
+  - package.move
+  - package.quarantine
+  - package.release
+  - package.delete
+
+risk:
+  default: READ
+  write_requires_approval: true
+  destructive_disabled_by_default: true
+
+required_environment:
+  - CLOUDSMITH_API_KEY
+
+optional_environment:
+  - CLOUDSMITH_API_BASE_URL
+  - CLOUDSMITH_TIMEOUT_MS
+  - CLOUDSMITH_MAX_RETRIES
+  - CLOUDSMITH_APPROVAL_SECRET
+  - CLOUDSMITH_ENABLE_DESTRUCTIVE
