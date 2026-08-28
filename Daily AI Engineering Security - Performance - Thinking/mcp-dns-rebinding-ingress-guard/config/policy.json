@@ -1,0 +1,9 @@
+{
+  "bind_host": "127.0.0.1",
+  "allowed_hosts": ["127.0.0.1", "localhost"],
+  "allowed_origins": ["http://localhost", "http://127.0.0.1"],
+  "require_request_auth": true,
+  "consequential_tools": ["shell", "filesystem_write", "pipeline_run", "workflow_rerun", "rollback", "deploy", "credential_read"],
+  "deny_wildcard_origin": true,
+  "deny_public_bind": true
+}
