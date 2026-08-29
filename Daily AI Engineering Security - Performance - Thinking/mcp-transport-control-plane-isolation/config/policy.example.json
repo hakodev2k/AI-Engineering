@@ -1,0 +1,15 @@
+{
+  "mcp_enabled": true,
+  "auth_required": true,
+  "max_sessions_per_client": 4,
+  "allowed_executables": ["node", "python3", "uvx"],
+  "user_servers": {
+    "enabled": false,
+    "allowed_urls": [],
+    "allowed_headers": ["Authorization", "Accept", "Content-Type"]
+  },
+  "named_servers": [
+    {"name": "local-tools", "transport": "stdio", "command": ["python3", "-m", "company_mcp_server"]},
+    {"name": "approved-remote", "transport": "streamable-http", "url": "https://mcp.example.com/api"}
+  ]
+}
