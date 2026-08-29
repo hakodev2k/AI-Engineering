@@ -1,0 +1,40 @@
+id: mailgun
+name: Mailgun
+version: 1.0.0
+
+upstream:
+  - rest
+
+transport_strategy:
+  selected: rest
+  official_mcp: none-found
+  rest:
+    us_base_url: https://api.mailgun.net
+    eu_base_url: https://api.eu.mailgun.net
+
+auth:
+  type: basic
+  username: api
+  credential_env: MAILGUN_API_KEY
+  credential_isolation: connector-only
+
+capabilities:
+  - domain.list
+  - domain.get
+  - logs.query
+  - metrics.query
+  - template.list
+  - template.get
+  - template.create
+  - mailing_list.list
+  - mailing_list.member.list
+  - route.list
+  - route.get
+  - suppression.bounce.list
+  - suppression.complaint.list
+  - message.send
+
+risk:
+  default: READ
+  write_requires_approval: true
+  high_risk_requires_approval: true
