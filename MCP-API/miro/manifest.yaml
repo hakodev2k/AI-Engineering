@@ -1,0 +1,66 @@
+id: miro
+name: Miro
+version: 1.0.0
+
+upstream:
+  - official-mcp
+  - rest
+
+transport:
+  external_mcp:
+    endpoint: https://mcp.miro.com/
+    status: official
+    auth: oauth2
+    usage: documented but not proxied by this service connector
+  selected: rest
+  api_base_url: https://api.miro.com
+  rationale: >
+    Miro's official remote MCP server is OAuth-user-session oriented. This reusable service connector
+    uses Miro REST API v2 so credentials stay isolated and write/destructive approval controls remain
+    enforceable inside the connector.
+
+auth:
+  type: oauth2
+  modes:
+    - non_expiring_access_token
+    - expiring_access_token_with_rotating_refresh_token_file
+  required_scopes:
+    read_only:
+      - boards:read
+    full_connector:
+      - boards:read
+      - boards:write
+
+capabilities:
+  - board.list
+  - board.get
+  - board.create
+  - board.items.list
+  - board.item.get
+  - board.members.list
+  - sticky_note.create
+  - sticky_note.update
+  - sticky_note.delete
+  - text.create
+  - text.update
+  - text.delete
+  - shape.create
+  - shape.update
+  - shape.delete
+
+risk:
+  default: READ
+  writes_require_approval: true
+  destructive_disabled_by_default: true
+
+environment:
+  required_one_of:
+    - MIRO_ACCESS_TOKEN
+    - MIRO_TOKEN_FILE
+  optional:
+    - MIRO_CLIENT_ID
+    - MIRO_CLIENT_SECRET
+    - MIRO_TIMEOUT_MS
+    - MIRO_MAX_RETRIES
+    - MIRO_APPROVAL_SECRET
+    - MIRO_ENABLE_DESTRUCTIVE
