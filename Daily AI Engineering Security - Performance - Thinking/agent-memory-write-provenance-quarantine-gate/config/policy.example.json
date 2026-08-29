@@ -1,0 +1,12 @@
+{
+  "allowed_trust_levels": ["trusted", "internal", "untrusted"],
+  "trusted_source_types": ["policy", "operator-approved", "signed-system-record"],
+  "quarantine_source_types": ["web", "email", "chat", "retrieved-document", "tool-output", "model-generated"],
+  "max_memory_age_days": 90,
+  "require_expiry_for_untrusted": true,
+  "block_secret_patterns": true,
+  "quarantine_instruction_language": true,
+  "privileged_memory_classes": ["policy", "authorization", "credential-reference", "tool-instruction"],
+  "require_human_approval_for_privileged_promotion": true,
+  "max_candidate_bytes": 65536
+}
