@@ -1,0 +1,45 @@
+id: pulumi
+name: Pulumi
+version: 1.0.0
+
+upstream:
+  - official-mcp
+  - rest
+
+transport_strategy:
+  selected: rest
+  official_mcp:
+    endpoint: https://mcp.ai.pulumi.com/mcp
+    auth: oauth
+    note: Official remote MCP is documented by Pulumi and is ideal for interactive MCP clients. This reusable non-interactive connector uses the official Cloud REST API because Pulumi Cloud access tokens are directly supported for automation and keep credentials inside the connector.
+  rest:
+    base_url_env: PULUMI_API_URL
+    default_base_url: https://api.pulumi.com
+
+auth:
+  type: access_token
+  header: "Authorization: token <access-token>"
+  credential_env: PULUMI_ACCESS_TOKEN
+  credential_isolation: connector-only
+  least_privilege: Use a team or organization token with access only to required stacks when available.
+
+capabilities:
+  - stack.get
+  - stack.activity.list
+  - stack.resource_count.get
+  - stack.resources.list
+  - stack.resource.get
+  - deployment.list
+  - deployment.get
+  - deployment.logs.get
+  - deployment.preview
+  - deployment.update
+  - deployment.refresh
+  - deployment.destroy
+  - deployment.cancel
+
+risk:
+  default: READ
+  write_requires_approval: true
+  high_risk_requires_approval: true
+  destructive_disabled_by_default: true
