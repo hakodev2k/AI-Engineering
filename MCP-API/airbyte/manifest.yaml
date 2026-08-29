@@ -1,0 +1,43 @@
+id: airbyte
+name: Airbyte
+version: 1.0.0
+upstream:
+  - official-mcp-knowledge
+  - rest
+transport_strategy:
+  operational: rest
+  official_mcp:
+    endpoint: https://airbyte.mcp.kapa.ai
+    role: knowledge-only
+    note: Official Airbyte Knowledge MCP indexes docs, API specs, GitHub, YouTube, and community content; it is not used for control-plane operations.
+  rest:
+    base_url_env: AIRBYTE_API_URL
+    default_base_url: https://api.airbyte.com/v1
+auth:
+  type: oauth2_client_credentials
+  token_url_env: AIRBYTE_TOKEN_URL
+  client_id_env: AIRBYTE_CLIENT_ID
+  client_secret_env: AIRBYTE_CLIENT_SECRET
+  bearer_token_lifetime_cloud: about 3 minutes
+  least_privilege: Application inherits the Airbyte user permissions that created it; use a dedicated least-privilege user/application.
+capabilities:
+  - workspace.list
+  - source.list
+  - source.get
+  - destination.list
+  - destination.get
+  - connection.list
+  - connection.get
+  - stream.list
+  - job.list
+  - job.get
+  - job.sync
+  - job.reset
+  - job.cancel
+risk:
+  default: READ
+  write_requires_approval: true
+  high_risk_requires_approval: true
+security:
+  connector_credentials_not_exposed_to_tools: true
+  source_destination_credential_mutation_not_exposed: true
