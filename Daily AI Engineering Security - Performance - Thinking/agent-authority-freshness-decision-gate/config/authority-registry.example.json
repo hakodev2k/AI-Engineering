@@ -1,0 +1,31 @@
+{
+  "sources": {
+    "desired-state": {
+      "authority_rank": 100,
+      "mutable": true,
+      "max_age_seconds": 300,
+      "required_for": ["configuration-change", "routing-change", "deployment"]
+    },
+    "live-runtime": {
+      "authority_rank": 90,
+      "mutable": true,
+      "max_age_seconds": 120,
+      "required_for": ["runtime-diagnosis", "deployment"]
+    },
+    "user-approval": {
+      "authority_rank": 100,
+      "mutable": true,
+      "max_age_seconds": 3600,
+      "required_for": ["scope-expansion", "irreversible-action"]
+    },
+    "persistent-memory": {
+      "authority_rank": 20,
+      "mutable": false,
+      "max_age_seconds": 86400,
+      "required_for": []
+    }
+  },
+  "minimum_authority_rank": 80,
+  "max_revalidation_attempts": 2,
+  "require_independent_verification_for_high_impact": true
+}
