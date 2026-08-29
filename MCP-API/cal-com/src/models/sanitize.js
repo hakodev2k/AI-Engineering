@@ -1,0 +1,1 @@
+const secret=/(token|secret|password|authorization|credential|api.?key)/i;export function sanitize(v){if(Array.isArray(v))return v.map(sanitize);if(!v||typeof v!=='object')return v;const o={};for(const[k,x]of Object.entries(v))o[k]=secret.test(k)?'[REDACTED]':sanitize(x);return o;}

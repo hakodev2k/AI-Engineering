@@ -1,0 +1,6 @@
+import crypto from 'node:crypto';
+const int=(v,d,min,max)=>{if(v==null||v==='')return d;const n=Number(v);if(!Number.isInteger(n)||n<min||n>max)throw new Error(`integer must be ${min}..${max}`);return n};
+const bool=(v,d=false)=>v==null||v===''?d:v==='true'?true:v==='false'?false:(()=>{throw new Error('boolean must be true or false')})();
+export function loadConfig(env=process.env){if(!env.CAL_API_KEY)throw new Error('CAL_API_KEY is required');const u=new URL(env.CAL_API_URL||'https://api.cal.com');if(u.protocol!=='https:'||u.username||u.password||u.search||u.hash)throw new Error('CAL_API_URL must be a clean HTTPS origin');return Object.freeze({baseUrl:u.origin,token:env.CAL_API_KEY,timeoutMs:int(env.CAL_TIMEOUT_MS,15000,1000,120000),maxRetries:int(env.CAL_MAX_RETRIES,3,0,5),approvalSecret:env.CAL_APPROVAL_SECRET||'',destructiveEnabled:bool(env.CAL_ENABLE_DESTRUCTIVE,false)});}
+function stable(v){if(v===null||typeof v!=='object')return JSON.stringify(v);if(Array.isArray(v))return `[${v.map(stable).join(',')}]`;return `{${Object.keys(v).sort().map(k=>`${JSON.stringify(k)}:${stable(v[k])}`).join(',')}}`;}
+export const approvalDigest=(secret,tool,payload)=>crypto.createHmac('sha256',secret).update(`${tool}\n${stable(payload)}`).digest('hex');

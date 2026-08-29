@@ -1,0 +1,39 @@
+id: cal-com
+name: Cal.com
+version: 1.0.0
+upstream:
+  - official-mcp
+  - rest
+transport_strategy:
+  selected: rest
+  official_mcp:
+    endpoint: https://mcp.cal.com/mcp
+    auth: oauth
+    note: Official remote MCP is suitable for interactive OAuth clients. This reusable service connector uses official API v2 with API-key/OAuth bearer authentication.
+  rest:
+    base_url: https://api.cal.com
+    api_version: mixed-per-endpoint
+auth:
+  type: bearer
+  credential_env: CAL_API_KEY
+  supported_credentials:
+    - api_key
+    - oauth_access_token
+  credential_isolation: connector-only
+capabilities:
+  - event_type.list
+  - event_type.get
+  - availability.slots
+  - booking.list
+  - booking.get
+  - booking.references
+  - booking.create
+  - booking.reschedule
+  - booking.request_reschedule
+  - booking.confirm
+  - booking.decline
+  - booking.cancel
+risk:
+  default: READ
+  write_requires_approval: true
+  destructive_disabled_by_default: true
