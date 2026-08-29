@@ -1,0 +1,23 @@
+{
+  "default_action": "review",
+  "sensitive_field_names": ["api_key", "token", "password", "secret", "authorization", "cookie", "ssn"],
+  "tools": {
+    "crm.search": {
+      "allowed_fields": ["query", "limit"],
+      "field_strategies": {
+        "query": "mask_pii",
+        "limit": "keep"
+      },
+      "max_string_length": 512
+    },
+    "analytics.aggregate": {
+      "allowed_fields": ["metric", "date_range", "segment"],
+      "field_strategies": {
+        "metric": "keep",
+        "date_range": "keep",
+        "segment": "truncate"
+      },
+      "max_string_length": 256
+    }
+  }
+}
