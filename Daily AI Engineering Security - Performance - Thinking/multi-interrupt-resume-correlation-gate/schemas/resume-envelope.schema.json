@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/schemas/resume-envelope.schema.json",
+  "title": "Canonical Resume Envelope",
+  "oneOf": [
+    {
+      "type": "object",
+      "required": ["mode", "value"],
+      "properties": {
+        "mode": {"const": "single"},
+        "value": true
+      },
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "required": ["mode", "responses"],
+      "properties": {
+        "mode": {"const": "by_id"},
+        "responses": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": false
+    }
+  ]
+}
