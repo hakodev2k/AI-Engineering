@@ -1,0 +1,44 @@
+id: inngest
+name: Inngest
+version: 1.0.0
+
+upstream:
+  - mcp
+  - rest
+
+transport:
+  primary:
+    type: official-mcp
+    endpoint: https://api.inngest.com/mcp
+  fallback:
+    type: official-rest-v2
+    base_url: https://api.inngest.com/v2
+    status: researched-not-required-for-selected-capabilities
+
+auth:
+  type: api-key
+  env: INNGEST_API_KEY
+  header: "Authorization: Bearer <api-key>"
+  least_privilege: Prefer an environment-scoped API key for automated agents.
+
+capabilities:
+  - app.list
+  - app.get
+  - function.list
+  - function.get
+  - run.list
+  - run.get
+  - run.trace.get
+  - event.runs.list
+  - environment.list
+  - insights.table.list
+  - event.send
+  - function.invoke
+  - run.rerun
+  - run.cancel
+
+risk:
+  default: READ
+  write_requires_approval: true
+  high_risk_requires_approval: true
+  destructive_tools: []
