@@ -1,0 +1,2 @@
+const SENSITIVE=/(stream[_-]?key|token[_-]?secret|token[_-]?id|authorization|private[_-]?key|signing[_-]?key|password|credential)/i;
+export function sanitize(value){if(Array.isArray(value))return value.map(sanitize);if(!value||typeof value!=='object')return value;const out={};for(const [k,v] of Object.entries(value)){if(SENSITIVE.test(k)){out[k]='[REDACTED]';continue;}out[k]=sanitize(v);}return out;}

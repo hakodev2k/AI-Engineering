@@ -1,0 +1,47 @@
+id: mux
+name: Mux
+version: 1.0.0
+
+upstream:
+  - rest
+  - official-sdk-available
+
+transport_strategy:
+  selected: rest
+  api_base_url: https://api.mux.com/video/v1
+  official_mcp: not_found_in_official_mux_documentation
+  notes: >
+    Mux publishes official Video APIs, OpenAPI specifications, official SDKs, webhook
+    specifications, and dedicated AI-agent guidance. No official Mux MCP server was
+    identified in the official documentation reviewed for this connector, so it uses
+    the official Video REST API behind a constrained MCP tool surface.
+
+auth:
+  type: basic_token_pair
+  token_id_env: MUX_TOKEN_ID
+  token_secret_env: MUX_TOKEN_SECRET
+  credential_isolation: connector-only
+  recommended_permissions:
+    read_only: Mux Video Read
+    write_tools: Mux Video Read and Write
+
+capabilities:
+  - asset.list
+  - asset.get
+  - asset.input_info.get
+  - asset.create
+  - asset.delete
+  - asset.playback_id.create
+  - asset.playback_id.delete
+  - asset.track.create
+  - asset.track.delete
+  - live_stream.list
+  - live_stream.get
+  - live_stream.enable
+  - live_stream.disable
+
+risk:
+  default: READ
+  write_requires_approval: true
+  public_access_changes_high_risk: true
+  destructive_disabled_by_default: true

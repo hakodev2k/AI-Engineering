@@ -1,0 +1,6 @@
+import crypto from 'node:crypto';
+function intValue(raw,fallback,min,max){if(raw==null||raw==='')return fallback;const n=Number(raw);if(!Number.isInteger(n)||n<min||n>max)throw new Error(`Integer environment value must be between ${min} and ${max}`);return n;}
+function boolValue(raw,fallback=false){if(raw==null||raw==='')return fallback;if(raw==='true')return true;if(raw==='false')return false;throw new Error('Boolean environment values must be true or false');}
+export function loadConfig(env=process.env){if(!env.MUX_TOKEN_ID)throw new Error('MUX_TOKEN_ID is required');if(!env.MUX_TOKEN_SECRET)throw new Error('MUX_TOKEN_SECRET is required');return Object.freeze({baseUrl:'https://api.mux.com/video/v1',tokenId:env.MUX_TOKEN_ID,tokenSecret:env.MUX_TOKEN_SECRET,timeoutMs:intValue(env.MUX_TIMEOUT_MS,10000,1000,120000),maxRetries:intValue(env.MUX_MAX_RETRIES,3,0,5),approvalSecret:env.MUX_APPROVAL_SECRET||'',destructiveEnabled:boolValue(env.MUX_ENABLE_DESTRUCTIVE,false)});}
+function stable(v){if(v===null||typeof v!=='object')return JSON.stringify(v);if(Array.isArray(v))return `[${v.map(stable).join(',')}]`;return `{${Object.keys(v).sort().map(k=>`${JSON.stringify(k)}:${stable(v[k])}`).join(',')}}`;}
+export function approvalDigest(secret,tool,payload){return crypto.createHmac('sha256',secret).update(`${tool}\n${stable(payload)}`).digest('hex');}
