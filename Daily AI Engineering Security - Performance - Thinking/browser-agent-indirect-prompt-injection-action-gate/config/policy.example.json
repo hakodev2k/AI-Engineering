@@ -1,0 +1,11 @@
+{
+  "allowed_domains": ["docs.example.com", "portal.example.com"],
+  "sensitive_destinations": ["portal.example.com"],
+  "high_risk_actions": ["send", "submit", "upload", "download", "delete", "purchase", "transfer", "read_sensitive"],
+  "side_effecting_actions": ["click", "fill", "send", "submit", "upload", "delete", "purchase", "transfer", "clipboard_write"],
+  "deny_untrusted_side_effects": true,
+  "require_approval_for_high_risk": true,
+  "deny_sensitive_data_to_unapproved_destination": true,
+  "deny_local_file_access_from_untrusted_source": true,
+  "fail_closed_on_unknown_action": true
+}
