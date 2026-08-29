@@ -1,0 +1,9 @@
+{
+  "max_empty_retries": 2,
+  "allow_explicit_no_reply": true,
+  "accepted_terminal_reasons": ["stop", "completed"],
+  "truncation_reasons": ["length", "max_tokens", "incomplete"],
+  "visible_fields": ["content", "text"],
+  "structured_fields": ["structured_output", "json_output"],
+  "tool_fields": ["tool_calls", "function_calls"]
+}
