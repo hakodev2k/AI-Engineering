@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "MCP tool origin policy input",
+  "type": "object",
+  "required": ["tool", "host_attested_origin"],
+  "properties": {
+    "host_attested_origin": {"enum": ["app", "model", "user", "host", "unknown"]},
+    "caller_claimed_origin": {"type": ["string", "null"]},
+    "tool": {
+      "type": "object",
+      "required": ["name", "visibility"],
+      "properties": {
+        "name": {"type": "string", "minLength": 1},
+        "visibility": {"type": "array", "items": {"enum": ["app", "model"]}, "uniqueItems": true},
+        "allowed_origins": {"type": "array", "items": {"enum": ["app", "model", "user", "host"]}, "uniqueItems": true},
+        "sensitive": {"type": "boolean"}
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}
