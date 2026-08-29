@@ -1,0 +1,35 @@
+id: convex
+name: Convex
+version: 1.0.0
+upstream:
+  - official-mcp
+  - rest
+transport_strategy:
+  official_mcp:
+    command: npx -y convex@latest mcp start
+    purpose: deployment data, functions, logs, insights, and environment-variable workflows
+    note: Checked and preferred for capabilities it supports; this connector intentionally exposes management-plane capabilities that the official MCP does not expose.
+  rest:
+    base_url: https://api.convex.dev/v1
+    purpose: project, deployment, team, region, class, and custom-domain management metadata
+auth:
+  type: bearer_token
+  env: CONVEX_MANAGEMENT_TOKEN
+  accepted_design: Team Access Token, Personal Access Token, or OAuth Application Token supported by Convex Management API
+  least_privilege: use a team/project-scoped token with only required role actions
+capabilities:
+  - project.list
+  - project.get
+  - deployment.list
+  - deployment.get
+  - deployment.team_list
+  - deployment.region_list
+  - deployment.class_list
+  - team.member_list
+  - deployment.custom_domain_list
+  - project.delete
+  - deployment.delete
+risk:
+  default: READ
+  destructive_disabled_by_default: true
+  destructive_requires_approval: true
