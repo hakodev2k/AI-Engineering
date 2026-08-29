@@ -1,0 +1,9 @@
+{
+  "max_total_steps": 40,
+  "max_exact_repeat_streak": 3,
+  "max_cycle_period": 3,
+  "max_cycle_repetitions": 3,
+  "max_stagnant_state_steps": 4,
+  "side_effecting_tools": ["send", "submit", "write", "delete", "deploy", "exec"],
+  "require_state_fingerprint_for_side_effecting_retries": true
+}
