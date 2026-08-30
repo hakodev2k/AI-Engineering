@@ -1,0 +1,14 @@
+{
+  "max_retries": 1,
+  "max_retry_token_multiplier": 1.5,
+  "false_abort_resume_success_window_seconds": 900,
+  "phase_timeout_seconds": {
+    "model_wait": 900,
+    "tool": 600,
+    "stream_reconnect": 120,
+    "unknown": 600
+  },
+  "heartbeat_grace_seconds": 90,
+  "minimum_samples_for_tuning": 30,
+  "p99_safety_multiplier": 1.25
+}
