@@ -1,0 +1,9 @@
+{
+  "reserve_tokens": 20000,
+  "trusted_occupancy_fields": ["last_call_prompt_tokens", "stored_context_tokens"],
+  "max_cumulative_to_current_ratio": 10,
+  "max_plausible_occupancy_ratio": 1.25,
+  "max_low_reclaim_before_break": 2,
+  "minimum_reclaim_ratio": 0.20,
+  "maximum_quality_regression_rate": 0.01
+}
