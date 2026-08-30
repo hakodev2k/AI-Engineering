@@ -1,0 +1,15 @@
+{
+  "max_text_chars": 4000,
+  "allowed_actions": ["read", "search"],
+  "approval_required_actions": ["write", "delete", "send", "execute", "permission.change"],
+  "risky_patterns": [
+    "ignore\\s+(all\\s+)?previous",
+    "system\\s*:",
+    "developer\\s*:",
+    "reveal.*(secret|token|key)",
+    "read.*(ssh|credential|\\.env)",
+    "disable.*(security|approval)",
+    "grant.*permission",
+    "send.*(secret|credential|key)"
+  ]
+}
