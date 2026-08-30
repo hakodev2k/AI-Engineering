@@ -1,0 +1,15 @@
+{
+  "name": "@ai-engineering/incident-io-mcp-connector",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "start": "node src/server/index.js",
+    "check": "node --check src/auth/config.js && node --check src/client/upstream.js && node --check src/tools/catalog.js && node --check src/tools/policy.js && node --check src/server/index.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.17.4"
+  }
+}
