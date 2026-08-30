@@ -1,0 +1,42 @@
+id: lago
+name: Lago
+version: 1.0.0
+upstream:
+  official_mcp:
+    repository: https://github.com/getlago/lago-agent-toolkit
+    docker_image: getlago/lago-mcp-server
+    status: available-but-not-proxied
+  rest:
+    us: https://api.getlago.com/api/v1
+    eu: https://api.eu.getlago.com/api/v1
+transport_strategy:
+  selected: rest
+  reason: The official MCP server exposes a broad multi-tool billing surface. This connector intentionally narrows capabilities and enforces connector-side approval on consequential financial writes while using the same official Lago API primitives.
+auth:
+  type: api_key
+  header: "Authorization: Bearer <LAGO_API_KEY>"
+  tenant_scope: API key determines organization scope server-side
+capabilities:
+  - customer.list
+  - customer.get
+  - invoice.list
+  - invoice.get
+  - subscription.list
+  - subscription.get
+  - wallet.list
+  - analytics.mrr.get
+  - analytics.gross_revenue.get
+  - analytics.overdue_balance.get
+  - event.ingest
+  - subscription.create
+  - invoice.payment_retry
+risk:
+  default: READ
+  write_requires_approval: true
+  high_risk_requires_approval: true
+env:
+  - LAGO_API_URL
+  - LAGO_API_KEY
+  - LAGO_TIMEOUT_MS
+  - LAGO_MAX_RETRIES
+  - LAGO_APPROVAL_SECRET
