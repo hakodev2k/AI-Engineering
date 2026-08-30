@@ -1,0 +1,10 @@
+{
+  "deny_by_default": true,
+  "case_sensitive_tool_names": true,
+  "max_policy_latency_ms": 25,
+  "sensitive_tools": ["admin.delete_user", "repo.force_merge", "payments.refund"],
+  "require_human_approval_for": ["admin.delete_user", "repo.force_merge"],
+  "aliases": {
+    "refund": "payments.refund"
+  }
+}
