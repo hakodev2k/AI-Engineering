@@ -1,43 +1,46 @@
 id: brevo
 name: Brevo
-provider: Brevo
+version: 1.0.0
+
 upstream:
-  available:
-    - mcp
-    - rest
-  implemented_transport:
-    - rest
-  mcp:
+  - official-mcp
+  - rest
+
+transport_strategy:
+  selected: rest
+  official_mcp:
     endpoint: https://mcp.brevo.com/v1/brevo/mcp
     auth: bearer_mcp_token
-    note: Official remote MCP exists; this connector uses scoped REST handlers for stable tool contracts and explicit approval enforcement.
+    note: Official MCP exists and exposes a broad auto-generated tool surface. This connector intentionally uses the official REST API for a smaller, stable, approval-gated contract suitable for non-interactive reusable agents.
   rest:
-    base_url: https://api.brevo.com/v3
+    base_url_env: BREVO_API_URL
+    default_base_url: https://api.brevo.com
+    version: v3
+
 auth:
   type: api_key
   header: api-key
-  required_env:
-    - BREVO_API_KEY
-permissions:
-  read: automatic
-  write: requires BREVO_ALLOW_WRITE=true and approval token
-  high_risk: requires BREVO_ALLOW_WRITE=true and approval token
-  destructive: requires BREVO_ALLOW_DESTRUCTIVE=true and approval token
+  credential_env: BREVO_API_KEY
+  credential_isolation: connector-only
+
 capabilities:
-  - account.read
+  - account.get
   - contact.list
-  - contact.read
+  - contact.get
   - contact.create
   - contact.update
-  - contact.delete
+  - contact_list.list
   - campaign.list
-  - campaign.read
-  - campaign.create_draft
+  - campaign.get
+  - campaign.create
+  - campaign.send
   - transactional_email.send
   - webhook.list
   - webhook.create
   - webhook.delete
+
 risk:
   default: READ
-  external_message: HIGH_RISK
-  delete: DESTRUCTIVE
+  write_requires_approval: true
+  high_risk_requires_approval: true
+  destructive_disabled_by_default: true

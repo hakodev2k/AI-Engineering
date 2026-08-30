@@ -1,20 +1,37 @@
-# Brevo connector workflows
+# Brevo connector examples
 
-## Contact review
-1. `brevo.contact.list` — READ — no approval.
-2. `brevo.contact.get` — READ — no approval.
+## Inspect contacts
+Tool: `brevo.contact.list` — READ — approval: no
+```json
+{"limit":50,"offset":0,"sort":"desc"}
+```
 
-Expected result: Brevo JSON contact objects wrapped as MCP text content.
+## Create a contact
+Tool: `brevo.contact.create` — WRITE — approval: required
+```json
+{"email":"person@example.com","attributes":{"FNAME":"Alex"},"listIds":[12],"approval_token":"<payload-bound-hmac>"}
+```
 
-## Prepare a campaign draft
-1. Inspect contacts with `brevo.contact.list`.
-2. Obtain a human-generated approval token bound to the exact `brevo.campaign.create` arguments.
-3. Call `brevo.campaign.create` — WRITE — approval required. It creates a draft only; it does not send the campaign.
+## Prepare a draft campaign
+Tool: `brevo.campaign.create` — WRITE — approval: required
+```json
+{"name":"Launch","sender":{"email":"news@example.com","name":"News"},"subject":"Launch","htmlContent":"<p>Hello</p>","recipients":{"listIds":[12]},"approval_token":"<payload-bound-hmac>"}
+```
 
-## Send a transactional message
-Call `brevo.email.send` with a verified sender, recipients, and either a template or message body. Permission: HIGH_RISK. Explicit argument-bound approval required because this sends an external message.
+## Send a campaign
+Tool: `brevo.campaign.send` — HIGH_RISK — approval: required
+```json
+{"campaignId":42,"approval_token":"<payload-bound-hmac>"}
+```
 
-## Webhook lifecycle
-- `brevo.webhook.list` — READ.
-- `brevo.webhook.create` — HIGH_RISK, approval required; URL must be HTTPS and cannot target obvious loopback/private addresses.
-- `brevo.webhook.delete` — DESTRUCTIVE, approval required and `BREVO_ALLOW_DESTRUCTIVE=true`.
+## Send a transactional email
+Tool: `brevo.transactional_email.send` — HIGH_RISK — approval: required
+```json
+{"to":[{"email":"person@example.com"}],"sender":{"email":"service@example.com","name":"Service"},"subject":"Receipt","textContent":"Your receipt is ready.","approval_token":"<payload-bound-hmac>"}
+```
+
+## Create a webhook
+Tool: `brevo.webhook.create` — HIGH_RISK — approval: required
+```json
+{"url":"https://hooks.example.com/brevo","events":["delivered","hardBounce"],"type":"transactional","approval_token":"<payload-bound-hmac>"}
+```
