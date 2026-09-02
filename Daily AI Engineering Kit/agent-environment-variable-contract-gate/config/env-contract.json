@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "allow_undocumented": false,
+  "variables": [
+    {
+      "name": "APP_ENV",
+      "description": "Runtime environment name.",
+      "required_in": ["development", "test", "staging", "production"],
+      "secret": false,
+      "allowed_values": ["development", "test", "staging", "production"]
+    },
+    {
+      "name": "APP_PORT",
+      "description": "Application listening port.",
+      "required_in": ["development", "staging", "production"],
+      "secret": false,
+      "pattern": "^[1-9][0-9]{1,4}$",
+      "default": "8080"
+    },
+    {
+      "name": "DATABASE_URL",
+      "description": "Database connection URL.",
+      "required_in": ["staging", "production"],
+      "secret": true,
+      "pattern": "^[a-zA-Z][a-zA-Z0-9+.-]*://.+$"
+    },
+    {
+      "name": "LOG_LEVEL",
+      "description": "Application log verbosity.",
+      "required_in": [],
+      "secret": false,
+      "allowed_values": ["debug", "info", "warning", "error"],
+      "default": "info"
+    }
+  ]
+}

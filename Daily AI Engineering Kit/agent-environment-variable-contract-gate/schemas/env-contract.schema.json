@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "env-contract.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "allow_undocumented", "variables"],
+  "properties": {
+    "version": {"const": 1},
+    "allow_undocumented": {"type": "boolean"},
+    "variables": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "required_in", "secret"],
+        "properties": {
+          "name": {"type": "string", "pattern": "^[A-Z][A-Z0-9_]*$"},
+          "description": {"type": "string"},
+          "required_in": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+          "secret": {"type": "boolean"},
+          "allowed_values": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+          "pattern": {"type": "string"},
+          "default": {"type": "string"}
+        }
+      }
+    }
+  }
+}
