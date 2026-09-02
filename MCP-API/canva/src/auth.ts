@@ -1,3 +1,4 @@
+import { chmod, readFile, writeFile } from 'node:fs/promises';
 import type { CanvaConfig } from './config.js';
 
 type TokenResponse = {
@@ -8,10 +9,17 @@ type TokenResponse = {
   scope?: string;
 };
 
+type TokenCache = {
+  access_token?: string;
+  refresh_token?: string;
+  expires_at?: number;
+};
+
 export class CanvaCredentialProvider {
   private accessToken?: string;
   private refreshToken?: string;
   private expiresAt = 0;
+  private cacheLoaded = false;
 
   constructor(private readonly config: CanvaConfig, private readonly fetchImpl: typeof fetch = fetch) {
     this.accessToken = config.accessToken;
@@ -19,7 +27,29 @@ export class CanvaCredentialProvider {
     if (config.accessToken) this.expiresAt = Number.POSITIVE_INFINITY;
   }
 
+  private async loadCache(): Promise<void> {
+    if (this.cacheLoaded) return;
+    this.cacheLoaded = true;
+    if (!this.config.tokenCacheFile) return;
+    try {
+      const cached = JSON.parse(await readFile(this.config.tokenCacheFile, 'utf8')) as TokenCache;
+      if (cached.access_token) this.accessToken = cached.access_token;
+      if (cached.refresh_token) this.refreshToken = cached.refresh_token;
+      if (cached.expires_at) this.expiresAt = cached.expires_at;
+    } catch (error: any) {
+      if (error?.code !== 'ENOENT') throw new Error(`Unable to read Canva token cache: ${error.message}`);
+    }
+  }
+
+  private async persistCache(): Promise<void> {
+    if (!this.config.tokenCacheFile) return;
+    const data: TokenCache = { access_token: this.accessToken, refresh_token: this.refreshToken, expires_at: this.expiresAt };
+    await writeFile(this.config.tokenCacheFile, JSON.stringify(data), { encoding: 'utf8', mode: 0o600 });
+    await chmod(this.config.tokenCacheFile, 0o600);
+  }
+
   async getAccessToken(): Promise<string> {
+    await this.loadCache();
     if (this.accessToken && Date.now() < this.expiresAt - 30_000) return this.accessToken;
     if (!this.refreshToken || !this.config.clientId || !this.config.clientSecret) throw new Error('Canva access token expired and refresh credentials are unavailable');
     const basic = Buffer.from(`${this.config.clientId}:${this.config.clientSecret}`).toString('base64');
@@ -37,6 +67,7 @@ export class CanvaCredentialProvider {
       this.accessToken = data.access_token;
       if (data.refresh_token) this.refreshToken = data.refresh_token;
       this.expiresAt = Date.now() + Math.max(60, data.expires_in ?? 14400) * 1000;
+      await this.persistCache();
       return this.accessToken;
     } finally {
       clearTimeout(timer);
@@ -44,7 +75,7 @@ export class CanvaCredentialProvider {
   }
 
   invalidateAccessToken(): void {
-    if (this.config.refreshToken) {
+    if (this.refreshToken || this.config.refreshToken || this.config.tokenCacheFile) {
       this.accessToken = undefined;
       this.expiresAt = 0;
     }
