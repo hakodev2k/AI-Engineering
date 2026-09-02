@@ -1,0 +1,37 @@
+id: gitbook
+name: GitBook
+upstream:
+  - mcp
+  - rest
+mcp:
+  management_endpoint: https://mcp.gitbook.com/mcp
+  published_endpoint_template: "{published-docs-url}/~gitbook/mcp"
+rest:
+  base_url: https://api.gitbook.com/v1
+auth:
+  type: personal_access_token
+  header: "Authorization: Bearer <token>"
+  scopes: "No independent PAT scopes documented; token inherits associated GitBook user permissions."
+environment:
+  required: [GITBOOK_TOKEN]
+  optional: [GITBOOK_API_BASE_URL, GITBOOK_MCP_URL, GITBOOK_PUBLISHED_MCP_URL, GITBOOK_TIMEOUT_MS, GITBOOK_MAX_RETRIES, GITBOOK_REQUIRE_WRITE_APPROVAL, GITBOOK_APPROVED_ACTIONS]
+capabilities:
+  - mcp.management_tools.list
+  - mcp.published_tools.list
+  - space.get
+  - space.list
+  - space.links.list
+  - space.git.get
+  - change_request.list
+  - change_request.get
+  - change_request.pdf.get
+  - site.ask
+  - change_request.create
+  - change_request.update
+  - change_request.sync
+  - change_request.merge
+risk:
+  default: READ
+  write_requires_approval_by_default: true
+  high_risk_requires_explicit_approval: true
+  destructive_tools: false
