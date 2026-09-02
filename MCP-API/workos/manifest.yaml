@@ -1,0 +1,40 @@
+id: workos
+name: WorkOS
+upstream:
+  - rest
+mcp:
+  official_docs_server:
+    package: "@workos/mcp-docs-server"
+    purpose: documentation_only
+    operational_transport: false
+rest:
+  base_url: https://api.workos.com
+auth:
+  type: api_key
+  header: "Authorization: Bearer <WORKOS_API_KEY>"
+  scopes: "Secret API keys can perform any API request in their WorkOS environment; no per-key scopes are documented."
+environment:
+  required: [WORKOS_API_KEY]
+  optional: [WORKOS_API_BASE_URL, WORKOS_TIMEOUT_MS, WORKOS_MAX_RETRIES, WORKOS_REQUIRE_WRITE_APPROVAL, WORKOS_APPROVED_ACTIONS]
+capabilities:
+  - organization.list
+  - organization.get
+  - organization.create
+  - organization.update
+  - user.list
+  - user.get
+  - membership.list
+  - membership.get
+  - membership.create
+  - membership.roles.update
+  - invitation.list
+  - invitation.get
+  - invitation.send
+  - invitation.revoke
+  - connection.list
+  - connection.get
+risk:
+  default: READ
+  write_requires_approval_by_default: true
+  high_risk_requires_explicit_approval: true
+  destructive_tools: false
