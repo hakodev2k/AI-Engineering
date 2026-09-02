@@ -1,0 +1,10 @@
+{
+  "repository_root": ".",
+  "pytest_args": ["tests"],
+  "victim": "tests/test_cache.py::test_cache_is_empty",
+  "candidates": [
+    "tests/test_settings.py::test_override_settings",
+    "tests/test_auth.py::test_login_sets_session"
+  ],
+  "evidence_output": ".ai-evidence/order-report.json"
+}

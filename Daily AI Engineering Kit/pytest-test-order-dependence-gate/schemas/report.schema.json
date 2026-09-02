@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "report.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["status", "generated_at", "seed", "baseline", "permutations", "victim_checks", "summary"],
+  "properties": {
+    "status": {"enum": ["baseline_pass", "baseline_fail", "order_dependent_failure", "victim_reproduced", "not_reproduced", "runner_error"]},
+    "generated_at": {"type": "string"},
+    "seed": {"type": "integer"},
+    "baseline": {"type": ["object", "null"]},
+    "permutations": {"type": "array", "items": {"type": "object"}},
+    "victim_checks": {"type": "array", "items": {"type": "object"}},
+    "summary": {"type": "object"}
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "investigation-request.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["repository_root", "pytest_args", "evidence_output"],
+  "properties": {
+    "repository_root": {"type": "string", "minLength": 1},
+    "pytest_args": {"type": "array", "items": {"type": "string"}},
+    "victim": {"type": ["string", "null"]},
+    "candidates": {"type": "array", "items": {"type": "string"}},
+    "evidence_output": {"type": "string", "minLength": 1}
+  }
+}

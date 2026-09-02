@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "permutations": 8,
+  "seed": 20260902,
+  "timeout_seconds": 900,
+  "max_reproduced_failures": 3,
+  "max_tests": 500,
+  "pytest_command": ["python", "-m", "pytest"],
+  "collection_args": ["--collect-only", "-q"],
+  "run_args": ["-q", "--maxfail=1"],
+  "environment": {
+    "PYTHONHASHSEED": "0"
+  }
+}
