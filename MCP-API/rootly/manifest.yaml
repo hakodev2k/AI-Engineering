@@ -1,0 +1,38 @@
+id: rootly
+name: Rootly
+upstream:
+  - mcp
+  - rest
+mcp:
+  endpoint: https://mcp.rootly.com/mcp?tool_profile=slim
+  transport: streamable-http
+  official: true
+rest:
+  base_url: https://api.rootly.com/v1
+  content_type: application/vnd.api+json
+auth:
+  type: api_token
+  header: "Authorization: Bearer <ROOTLY_API_TOKEN>"
+  least_privilege: "Prefer Team or Personal API Keys when organization-wide visibility is not required."
+environment:
+  required: [ROOTLY_API_TOKEN]
+  optional: [ROOTLY_API_BASE_URL, ROOTLY_MCP_URL, ROOTLY_TIMEOUT_MS, ROOTLY_MAX_RETRIES]
+capabilities:
+  - incident.list
+  - incident.get
+  - incident.events.list
+  - incident.alerts.list
+  - service.list
+  - team.list
+  - incident_type.list
+  - severity.list
+  - user.list
+  - schedule.list
+  - oncall.handoff.get
+  - oncall.metrics.get
+  - shift.incidents.get
+risk:
+  default: READ
+  write_tools: false
+  high_risk_tools: false
+  destructive_tools: false
