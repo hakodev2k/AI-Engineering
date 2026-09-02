@@ -3,6 +3,7 @@ export type CanvaConfig = {
   refreshToken?: string;
   clientId?: string;
   clientSecret?: string;
+  tokenCacheFile?: string;
   apiBaseUrl: string;
   mcpUrl: string;
   timeoutMs: number;
@@ -19,8 +20,12 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): CanvaConfig {
   const refreshToken = env.CANVA_REFRESH_TOKEN?.trim() || undefined;
   const clientId = env.CANVA_CLIENT_ID?.trim() || undefined;
   const clientSecret = env.CANVA_CLIENT_SECRET?.trim() || undefined;
-  if (!accessToken && !(refreshToken && clientId && clientSecret)) {
-    throw new Error('Provide CANVA_ACCESS_TOKEN or CANVA_REFRESH_TOKEN + CANVA_CLIENT_ID + CANVA_CLIENT_SECRET');
+  const tokenCacheFile = env.CANVA_TOKEN_CACHE_FILE?.trim() || undefined;
+  if (!accessToken && !(refreshToken && clientId && clientSecret) && !tokenCacheFile) {
+    throw new Error('Provide CANVA_ACCESS_TOKEN, CANVA_REFRESH_TOKEN + CANVA_CLIENT_ID + CANVA_CLIENT_SECRET, or a populated CANVA_TOKEN_CACHE_FILE');
+  }
+  if (tokenCacheFile && !(clientId && clientSecret) && !accessToken) {
+    throw new Error('CANVA_CLIENT_ID and CANVA_CLIENT_SECRET are required when relying on a token cache for refresh');
   }
   const timeoutMs = Number(env.CANVA_TIMEOUT_MS ?? 15000);
   const maxRetries = Number(env.CANVA_MAX_RETRIES ?? 2);
@@ -29,7 +34,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): CanvaConfig {
   const apiBaseUrl = new URL(env.CANVA_API_BASE_URL ?? 'https://api.canva.com/rest/v1').toString().replace(/\/$/, '');
   const mcpUrl = new URL(env.CANVA_MCP_URL ?? 'https://mcp.canva.com/mcp').toString();
   return {
-    accessToken, refreshToken, clientId, clientSecret, apiBaseUrl, mcpUrl, timeoutMs, maxRetries,
+    accessToken, refreshToken, clientId, clientSecret, tokenCacheFile, apiBaseUrl, mcpUrl, timeoutMs, maxRetries,
     requireWriteApproval: bool(env.CANVA_REQUIRE_WRITE_APPROVAL, true),
     approvedActions: new Set((env.CANVA_APPROVED_ACTIONS ?? '').split(',').map(x => x.trim()).filter(Boolean)),
   };
