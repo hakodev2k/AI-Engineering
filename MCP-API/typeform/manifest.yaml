@@ -1,0 +1,42 @@
+id: typeform
+name: Typeform
+upstream:
+  - mcp
+  - rest
+mcp:
+  endpoint: https://api.typeform.com/mcp
+  transport: streamable-http
+  auth: oauth2
+rest:
+  base_url: https://api.typeform.com
+auth:
+  mcp:
+    type: oauth2_bearer
+    note: Personal access tokens are not supported by Typeform MCP.
+  rest:
+    type: oauth2_or_personal_access_token
+scopes:
+  mcp: [accounts:read, workspaces:read, forms:read, forms:write, insights:read]
+  rest: [forms:read, responses:read, webhooks:read, webhooks:write]
+capabilities:
+  - account.list
+  - workspace.list
+  - form.capabilities.get
+  - form.get
+  - form.list
+  - form.create
+  - form.validate_patch
+  - form.patch
+  - form.publish
+  - insight.discover
+  - insight.aggregate
+  - response.list
+  - webhook.list
+  - webhook.upsert
+risk:
+  default: READ
+  write_requires_approval_by_default: true
+  high_risk_requires_explicit_approval: true
+environment:
+  required: [TYPEFORM_MCP_ACCESS_TOKEN, TYPEFORM_API_TOKEN]
+  optional: [TYPEFORM_API_BASE_URL, TYPEFORM_MCP_URL, TYPEFORM_TIMEOUT_MS, TYPEFORM_MAX_RETRIES, TYPEFORM_REQUIRE_WRITE_APPROVAL, TYPEFORM_APPROVED_ACTIONS]
