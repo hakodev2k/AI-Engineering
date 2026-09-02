@@ -1,0 +1,14 @@
+import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+import { loadConfig } from './config.js';
+import { GitBookRestClient } from './rest.js';
+import { GitBookMcpClient } from './upstream.js';
+import { registerTools } from './tools.js';
+const config=loadConfig();
+const api=new GitBookRestClient(config);
+const mcp=new GitBookMcpClient(config);
+const server=new McpServer({name:'gitbook-connector',version:'1.0.0'});
+registerTools(server,config,api,mcp);
+await server.connect(new StdioServerTransport());
+const stop=async()=>{await mcp.close();process.exit(0)};
+process.on('SIGINT',stop); process.on('SIGTERM',stop);
