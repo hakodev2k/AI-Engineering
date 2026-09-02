@@ -1,0 +1,57 @@
+id: customerio
+name: Customer.io
+upstream:
+  - mcp
+  - rest
+mcp:
+  official: true
+  transport: streamable-http
+  us_endpoint: https://mcp.customer.io/mcp
+  eu_endpoint: https://mcp-eu.customer.io/mcp
+  oauth_scopes:
+    - read
+    - read:sensitive
+    - write
+    - delete
+  exposed_connector_use:
+    - mcp.tools.list
+    - mcp.auth.status
+rest:
+  official: true
+  us_base_url: https://api.customer.io
+  eu_base_url: https://api-eu.customer.io
+auth:
+  app_api:
+    type: app_api_key
+    scheme: bearer
+    least_privilege: use an App API key scoped only to implemented operations
+  mcp:
+    type: oauth2
+    note: optional CUSTOMERIO_MCP_ACCESS_TOKEN is supplied by an OAuth-capable host; it is never accepted as a tool argument
+environment:
+  required: [CUSTOMERIO_APP_API_KEY]
+  optional: [CUSTOMERIO_REGION, CUSTOMERIO_API_BASE_URL, CUSTOMERIO_MCP_URL, CUSTOMERIO_MCP_ACCESS_TOKEN, CUSTOMERIO_TIMEOUT_MS, CUSTOMERIO_MAX_RETRIES, CUSTOMERIO_REQUIRE_WRITE_APPROVAL, CUSTOMERIO_APPROVED_ACTIONS]
+capabilities:
+  - mcp.tools.list
+  - mcp.auth.status
+  - segment.list
+  - segment.members.list
+  - customer.search
+  - customer.attributes.get
+  - customer.segments.get
+  - customer.activities.list
+  - customer.messages.list
+  - campaign.list
+  - campaign.actions.list
+  - broadcast.list
+  - broadcast.get
+  - broadcast.triggers.list
+  - transactional.get
+  - transactional.metrics.get
+  - transactional.email.send
+  - broadcast.trigger
+risk:
+  default: READ
+  write_requires_approval_by_default: true
+  high_risk_requires_explicit_approval: true
+  destructive_tools_exposed: false

@@ -1,0 +1,15 @@
+import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+import { loadConfig } from './config.js';
+import { CustomerIoClient } from './client.js';
+import { CustomerIoMcpClient } from './upstream.js';
+import { registerTools } from './tools.js';
+const config = loadConfig();
+const api = new CustomerIoClient(config);
+const upstream = new CustomerIoMcpClient(config);
+const server = new McpServer({ name:'customerio-connector', version:'1.0.0' });
+registerTools(server, config, api, upstream);
+await server.connect(new StdioServerTransport());
+const shutdown = async () => { await upstream.close(); process.exit(0); };
+process.on('SIGINT', shutdown);
+process.on('SIGTERM', shutdown);
