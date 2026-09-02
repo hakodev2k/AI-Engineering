@@ -1,0 +1,56 @@
+id: canva
+name: Canva
+upstream:
+  - mcp
+  - rest
+mcp:
+  endpoint: https://mcp.canva.com/mcp
+  note: Official remote Canva MCP; access can depend on Canva integration allowlisting and per-user OAuth.
+rest:
+  base_url: https://api.canva.com/rest/v1
+auth:
+  type: oauth2_authorization_code_pkce
+  token_endpoint: https://api.canva.com/rest/v1/oauth/token
+  supported_credentials:
+    - access_token
+    - refresh_token_with_client_credentials
+  scopes:
+    - profile:read
+    - design:meta:read
+    - design:content:read
+    - design:content:write
+    - asset:read
+    - asset:write
+environment:
+  required_one_of:
+    - [CANVA_ACCESS_TOKEN]
+    - [CANVA_REFRESH_TOKEN, CANVA_CLIENT_ID, CANVA_CLIENT_SECRET]
+  optional:
+    - CANVA_API_BASE_URL
+    - CANVA_MCP_URL
+    - CANVA_TIMEOUT_MS
+    - CANVA_MAX_RETRIES
+    - CANVA_REQUIRE_WRITE_APPROVAL
+    - CANVA_APPROVED_ACTIONS
+capabilities:
+  - mcp.tools.list
+  - user.profile.get
+  - user.capabilities.get
+  - design.list
+  - design.get
+  - design.pages.list
+  - design.export_formats.list
+  - design.dataset.get
+  - asset.get
+  - asset.upload_job.get
+  - design.export_job.get
+  - design.resize_job.get
+  - design.create
+  - asset.url_upload.create
+  - design.export.create
+  - design.resize.create
+risk:
+  default: READ
+  write_requires_approval_by_default: true
+  high_risk_requires_explicit_approval: true
+  destructive_tools: false
