@@ -1,11 +1,12 @@
 id: canva
 name: Canva
 upstream:
-  - mcp
   - rest
-mcp:
+official_mcp:
+  available: true
   endpoint: https://mcp.canva.com/mcp
-  note: Official remote Canva MCP; access can depend on Canva integration allowlisting and per-user OAuth.
+  transport: remote_mcp
+  integration_status: "Checked; Canva requires per-user authentication and currently controls third-party AI product access/allowlisting. This package therefore uses the official Connect REST API for its stable executable tool contracts instead of impersonating or bypassing the MCP OAuth flow."
 rest:
   base_url: https://api.canva.com/rest/v1
 auth:
@@ -13,7 +14,8 @@ auth:
   token_endpoint: https://api.canva.com/rest/v1/oauth/token
   supported_credentials:
     - access_token
-    - refresh_token_with_client_credentials
+    - rotating_refresh_token_with_client_credentials
+  token_cache: "Optional local secret cache with mode 0600 for rotated one-time refresh tokens."
   scopes:
     - profile:read
     - design:meta:read
@@ -25,6 +27,7 @@ environment:
   required_one_of:
     - [CANVA_ACCESS_TOKEN]
     - [CANVA_REFRESH_TOKEN, CANVA_CLIENT_ID, CANVA_CLIENT_SECRET]
+    - [CANVA_TOKEN_CACHE_FILE, CANVA_CLIENT_ID, CANVA_CLIENT_SECRET]
   optional:
     - CANVA_API_BASE_URL
     - CANVA_MCP_URL
@@ -33,7 +36,6 @@ environment:
     - CANVA_REQUIRE_WRITE_APPROVAL
     - CANVA_APPROVED_ACTIONS
 capabilities:
-  - mcp.tools.list
   - user.profile.get
   - user.capabilities.get
   - design.list
@@ -43,6 +45,7 @@ capabilities:
   - design.dataset.get
   - asset.get
   - asset.upload_job.get
+  - asset.url_upload_job.get
   - design.export_job.get
   - design.resize_job.get
   - design.create
