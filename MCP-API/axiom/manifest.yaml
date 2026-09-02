@@ -13,7 +13,6 @@ mcp:
     - monitor.list
     - monitor.create
     - monitor.update
-    - monitor.delete
 rest:
   base_url: https://api.axiom.co
   fallback_for:
@@ -26,7 +25,6 @@ rest:
     - monitor.history
     - monitor.create
     - monitor.update
-    - monitor.delete
 auth:
   api:
     type: advanced_api_token
@@ -39,7 +37,7 @@ permissions:
   guidance:
     - dataset query access for read/query tools
     - monitor read access for monitor reads
-    - monitor create/update/delete only for corresponding write tools
+    - monitor create/update only for corresponding write tools
 capabilities:
   - dataset.list
   - dataset.get
@@ -50,11 +48,10 @@ capabilities:
   - monitor.history
   - monitor.create
   - monitor.update
-  - monitor.delete
 risk:
   default: READ
   write_requires_approval_by_default: true
-  destructive_disabled_by_default: true
+  destructive_tools_exposed: false
 environment:
   required: [AXIOM_TOKEN]
   optional: [AXIOM_API_URL, AXIOM_ORG_ID, AXIOM_MCP_URL, AXIOM_MCP_PAT, AXIOM_TIMEOUT_MS, AXIOM_MAX_RETRIES, AXIOM_REQUIRE_WRITE_APPROVAL, AXIOM_ENABLE_DESTRUCTIVE, AXIOM_APPROVED_ACTIONS]
