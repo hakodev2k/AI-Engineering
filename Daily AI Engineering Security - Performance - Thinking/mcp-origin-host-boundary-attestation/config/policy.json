@@ -1,0 +1,13 @@
+{
+  "allowed_hosts": ["localhost", "127.0.0.1", "[::1]"],
+  "allowed_origins": [
+    "http://localhost",
+    "http://127.0.0.1",
+    "http://[::1]"
+  ],
+  "allow_missing_origin": true,
+  "require_authentication": true,
+  "allowed_bind_modes": ["loopback", "authenticated-private"],
+  "forbid_wildcard_origin": true,
+  "strict_port_matching": true
+}
