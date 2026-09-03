@@ -1,0 +1,8 @@
+[
+  {"name":"valid-loopback","host":"localhost","origin":"http://localhost","bind_mode":"loopback","authenticated":true,"expect":"allow"},
+  {"name":"foreign-host","host":"evil.example","origin":"http://localhost","bind_mode":"loopback","authenticated":true,"expect":"reject"},
+  {"name":"foreign-origin","host":"localhost","origin":"https://evil.example","bind_mode":"loopback","authenticated":true,"expect":"reject"},
+  {"name":"missing-origin-nonbrowser","host":"127.0.0.1","origin":null,"bind_mode":"loopback","authenticated":true,"expect":"allow"},
+  {"name":"unauthenticated","host":"localhost","origin":"http://localhost","bind_mode":"loopback","authenticated":false,"expect":"reject"},
+  {"name":"broad-bind","host":"localhost","origin":"http://localhost","bind_mode":"public","authenticated":true,"expect":"reject"}
+]
