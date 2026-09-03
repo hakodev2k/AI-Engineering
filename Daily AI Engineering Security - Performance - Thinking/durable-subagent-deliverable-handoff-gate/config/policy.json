@@ -1,0 +1,8 @@
+{
+  "accepted_terminal_states": ["completed", "success"],
+  "blocked_terminal_reasons": ["tool_deferred", "max_tokens", "cancelled", "stalled", "interrupted"],
+  "require_verification_evidence": true,
+  "require_sha256_for_artifact": true,
+  "min_inline_deliverable_chars": 20,
+  "allow_partial_checkpoint_on_failure": true
+}
