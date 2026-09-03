@@ -1,0 +1,12 @@
+{
+  "task": "Replace raw order URL metric label with route template",
+  "status": "executed",
+  "facts": ["The affected metric previously received a request-derived URL value.", "The changed producer now records the bounded route template dimension."],
+  "hypotheses": [],
+  "decisions": ["Use route_template instead of raw URL because exact resource identifiers are not required for the metric."],
+  "findings": [{"finding": "Raw URL created request-dependent metric cardinality", "evidence": ["source inspection at the metric producer", "focused test exercising multiple resource IDs"], "confidence": "high", "affected_component": "HTTP request metric", "risk": "high", "recommended_action": "Record normalized route_template only", "verification_status": "verified"}],
+  "commands": [{"command": "python3 scripts/scan-cardinality.py --repo . --config config/cardinality-policy.json --output /tmp/scan.json", "exit_code": 0, "output_artifact": "/tmp/scan.json"}, {"command": "project-specific focused tests", "exit_code": 0}],
+  "approvals": [],
+  "verification_status": "verified",
+  "remaining_risks": []
+}
