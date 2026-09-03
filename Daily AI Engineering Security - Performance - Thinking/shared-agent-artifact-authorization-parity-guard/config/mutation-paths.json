@@ -1,0 +1,35 @@
+{
+  "required_controls": [
+    "authenticated",
+    "resource_scope_check",
+    "shared_immutability_guard",
+    "downstream_reauthorization",
+    "audit_event"
+  ],
+  "paths": [
+    {
+      "name": "dedicated-mcp-edit",
+      "protected_resource": "shared-agent-template",
+      "mutates": true,
+      "controls": {
+        "authenticated": true,
+        "resource_scope_check": true,
+        "shared_immutability_guard": true,
+        "downstream_reauthorization": true,
+        "audit_event": true
+      }
+    },
+    {
+      "name": "full-agent-bundle-upload",
+      "protected_resource": "shared-agent-template",
+      "mutates": true,
+      "controls": {
+        "authenticated": true,
+        "resource_scope_check": true,
+        "shared_immutability_guard": true,
+        "downstream_reauthorization": true,
+        "audit_event": true
+      }
+    }
+  ]
+}
