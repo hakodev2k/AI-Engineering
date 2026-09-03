@@ -1,0 +1,7 @@
+{
+  "max_trace_bytes": 1048576,
+  "max_span_bytes": 65536,
+  "max_attribute_bytes": 16384,
+  "protected_fields": ["trace_id", "span_id", "parent_span_id", "name", "start_time", "end_time", "status", "error.type", "error.message"],
+  "max_regression_percent": 10.0
+}
