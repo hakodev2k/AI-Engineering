@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "denial_ttl_seconds": 3600,
+  "require_explicit_cross_zone_approval": true,
+  "fail_closed_on_missing_provenance": true,
+  "trust_zones": {
+    "local_sandbox": 1,
+    "local_unsandboxed": 3,
+    "mcp_local": 2,
+    "mcp_remote": 4,
+    "ssh_remote": 4,
+    "production": 5
+  },
+  "side_effect_levels": {
+    "read": 1,
+    "write": 2,
+    "execute": 3,
+    "deploy": 4,
+    "destructive": 5
+  }
+}
