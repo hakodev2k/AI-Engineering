@@ -1,0 +1,10 @@
+{
+  "backend": "example-sqlite",
+  "version": "1.0.0",
+  "invariants": {
+    "metadata_round_trip": true,
+    "latest_checkpoint": true,
+    "history_parent_completeness": true,
+    "ordering_parity": true
+  }
+}
