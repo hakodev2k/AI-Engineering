@@ -1,0 +1,56 @@
+id: gorgias
+name: Gorgias
+upstream:
+  - mcp
+  - rest
+mcp:
+  endpoint_template: "https://mcp.gorgias.com/mcp?gorgias_subdomain={subdomain}"
+  status: official_open_beta
+rest:
+  base_url_template: "https://{subdomain}.gorgias.com/api"
+auth:
+  supported:
+    - api_key_basic
+    - oauth2_bearer
+  api_key_basic:
+    username_env: GORGIAS_API_EMAIL
+    api_key_env: GORGIAS_API_KEY
+  oauth2:
+    access_token_env: GORGIAS_OAUTH_ACCESS_TOKEN
+    scopes:
+      - account:read
+      - users:read
+      - customers:read
+      - tickets:read
+      - tickets:write
+      - offline
+capabilities:
+  - account.read
+  - ticket.list
+  - ticket.read
+  - ticket.create
+  - ticket.update
+  - message.list
+  - message.read
+  - message.internal_note.create
+  - message.reply.send
+  - customer.list
+  - customer.read
+  - tag.list
+  - user.list
+risk:
+  default: READ
+  write_requires_approval_by_default: true
+  external_message_send: HIGH_RISK
+  destructive_tools: false
+environment:
+  required:
+    - GORGIAS_SUBDOMAIN
+  auth_one_of:
+    - [GORGIAS_API_EMAIL, GORGIAS_API_KEY]
+    - [GORGIAS_OAUTH_ACCESS_TOKEN]
+  optional:
+    - GORGIAS_TIMEOUT_MS
+    - GORGIAS_MAX_RETRIES
+    - GORGIAS_REQUIRE_WRITE_APPROVAL
+    - GORGIAS_APPROVED_ACTIONS
