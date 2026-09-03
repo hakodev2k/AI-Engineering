@@ -1,0 +1,9 @@
+{
+  "default_bind_host": "127.0.0.1",
+  "require_inbound_auth_for_non_loopback": true,
+  "require_distinct_inbound_and_downstream_credentials": true,
+  "require_host_validation_for_http": true,
+  "require_origin_validation_when_browser_reachable": true,
+  "require_dns_rebinding_protection_when_browser_reachable": true,
+  "fail_startup_on_policy_violation": true
+}
