@@ -1,0 +1,44 @@
+id: aiven
+name: Aiven
+upstream:
+  - mcp
+official_mcp:
+  remote_endpoint: https://mcp.aiven.live/mcp
+  local_package: mcp-aiven
+  transport_used: stdio
+api_base_url: https://api.aiven.io
+auth:
+  type: api_token
+  environment:
+    - AIVEN_TOKEN
+  notes: "Token is passed only to the official local Aiven MCP child process. Hosted Aiven MCP uses OAuth 2.0 with PKCE but is not used by this connector runtime."
+capabilities:
+  - project.list
+  - project.read
+  - cloud.list
+  - service.list
+  - service.read
+  - service.plan.list
+  - service.pricing.read
+  - service.metrics.read
+  - service.logs.read
+  - service.query_activity.read
+  - project.events.read
+  - service.create
+  - service.update
+risk:
+  default: READ
+  write_approval: required
+  high_risk_approval: required
+  destructive_enabled: false
+required_environment:
+  - AIVEN_TOKEN
+optional_environment:
+  - AIVEN_READ_ONLY
+  - AIVEN_ALLOW_WRITE
+  - AIVEN_APPROVAL_MODE
+  - AIVEN_TOOL_TIMEOUT_MS
+security:
+  credentials_exposed_to_agent: false
+  allow_connection_secrets: false
+  retrieved_content_is_untrusted: true
