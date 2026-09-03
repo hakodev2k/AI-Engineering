@@ -1,0 +1,41 @@
+id: heroku
+name: Heroku
+upstream:
+  - mcp
+  - rest
+mcp:
+  official_remote_endpoint: https://mcp.heroku.com/mcp
+  local_stdio_package: "@heroku/mcp-server"
+  note: "This connector launches Heroku's official STDIO MCP server with HEROKU_API_KEY; the remote server uses interactive OAuth 2.0 and is documented but not proxied by this stdio connector."
+rest:
+  base_url: https://api.heroku.com
+  version: 3
+auth:
+  type: bearer_token
+  environment: HEROKU_API_KEY
+  guidance: "Use a dedicated Heroku identity with only the app/team access needed; Heroku recommends OAuth for third-party services."
+environment:
+  required: [HEROKU_API_KEY]
+  optional: [HEROKU_API_BASE_URL, HEROKU_MCP_COMMAND, HEROKU_MCP_ARGS, HEROKU_USE_OFFICIAL_MCP, HEROKU_TIMEOUT_MS, HEROKU_MAX_RETRIES, HEROKU_REQUIRE_WRITE_APPROVAL, HEROKU_APPROVED_ACTIONS]
+capabilities:
+  - app.list
+  - app.get
+  - app.create
+  - dyno.list
+  - dyno.restart
+  - dyno.scale
+  - addon.list
+  - logs.get
+  - pipeline.list
+  - release.list
+  - release.get
+  - config.keys.list
+  - config.update
+  - maintenance.enable
+  - maintenance.disable
+  - rate_limit.get
+risk:
+  default: READ
+  write_requires_approval_by_default: true
+  high_risk_requires_explicit_approval: true
+  destructive_tools: false
