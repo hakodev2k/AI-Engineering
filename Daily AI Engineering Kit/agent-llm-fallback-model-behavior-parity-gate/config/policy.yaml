@@ -1,0 +1,18 @@
+version: 1
+primary_model: primary
+fallback_models:
+  - fallback
+required_scenarios:
+  - structured-output
+  - tool-selection
+  - refusal-boundary
+  - context-grounding
+thresholds:
+  min_pass_rate: 1.0
+  max_score_drop: 0.05
+  max_cost_multiplier: 1.50
+  max_latency_multiplier: 1.75
+approval_required_for:
+  - production-model-routing-change
+  - weaker-safety-policy
+  - public-contract-change
