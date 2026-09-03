@@ -1,0 +1,4 @@
+{
+  "max_incomplete_frame_bytes": 64,
+  "max_stream_bytes": 1024
+}
