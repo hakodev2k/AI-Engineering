@@ -1,0 +1,12 @@
+{
+  "transport": "streamable-http",
+  "bind_host": "127.0.0.1",
+  "auth_enabled": false,
+  "authorization_enabled": false,
+  "origin_validation_enabled": true,
+  "behind_authenticated_proxy": false,
+  "backend_directly_reachable": false,
+  "server_side_credentials": true,
+  "write_capable_tools": true,
+  "allow_remote_without_origin_validation": false
+}
