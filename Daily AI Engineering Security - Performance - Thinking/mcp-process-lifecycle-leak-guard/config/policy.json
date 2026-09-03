@@ -1,0 +1,9 @@
+{
+  "max_active_per_identity": 1,
+  "orphan_grace_seconds": 30,
+  "max_orphans": 0,
+  "max_duplicate_identities": 0,
+  "require_owner_for_mcp": true,
+  "mcp_command_markers": ["mcp", "modelcontextprotocol"],
+  "ignore_command_substrings": ["mcp_process_audit.py"]
+}
