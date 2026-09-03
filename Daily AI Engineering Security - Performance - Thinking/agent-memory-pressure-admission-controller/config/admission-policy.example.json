@@ -1,0 +1,7 @@
+{
+  "minimum_free_bytes_after_spawn": 536870912,
+  "reserve_fraction": 0.15,
+  "estimated_worker_bytes": 402653184,
+  "max_projected_utilization": 0.90,
+  "max_reclaim_retries": 1
+}
