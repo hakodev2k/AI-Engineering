@@ -1,0 +1,8 @@
+{
+  "max_recovery_attempts": 2,
+  "require_dependency_manifest": true,
+  "require_completed_task_result_evidence": true,
+  "block_on_missing_required_runtime_input": true,
+  "require_side_effect_idempotency_for_replay": true,
+  "require_uninterrupted_resume_equivalence_test": true
+}
