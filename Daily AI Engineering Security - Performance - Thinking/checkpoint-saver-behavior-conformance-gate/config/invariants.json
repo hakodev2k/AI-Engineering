@@ -1,0 +1,12 @@
+{
+  "profile_version": 1,
+  "required": [
+    "metadata_round_trip",
+    "latest_checkpoint",
+    "history_parent_completeness",
+    "ordering_parity"
+  ],
+  "metadata_paths": ["run_id", "trace.route", "trace.tags"],
+  "require_sync_async_parity": true,
+  "max_remediation_cycles": 2
+}
