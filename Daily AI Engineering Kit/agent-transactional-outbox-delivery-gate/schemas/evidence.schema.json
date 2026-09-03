@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["task", "status", "findings", "checks", "changed_files", "verification_status", "remaining_risks"],
+  "properties": {
+    "task": {"type": "string", "minLength": 1},
+    "status": {"enum": ["investigating", "implemented", "blocked", "failed", "verified"]},
+    "findings": {"type": "array", "items": {"type": "object", "required": ["finding", "evidence", "confidence"], "properties": {"finding": {"type": "string"}, "evidence": {"type": "array", "items": {"type": "string"}}, "confidence": {"enum": ["low", "medium", "high"]}, "affected_component": {"type": "string"}, "risk": {"type": "string"}, "recommended_action": {"type": "string"}}}},
+    "checks": {"type": "array", "items": {"type": "object", "required": ["name", "result"], "properties": {"name": {"type": "string"}, "command": {"type": "string"}, "result": {"enum": ["passed", "failed", "blocked", "not_applicable"]}, "evidence": {"type": "string"}}}},
+    "changed_files": {"type": "array", "items": {"type": "string"}},
+    "approvals": {"type": "array", "items": {"type": "string"}},
+    "verification_status": {"enum": ["pending", "verified", "failed", "blocked"]},
+    "remaining_risks": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,22 @@
+{
+  "task": "Repair dispatcher retry state after publish failure",
+  "status": "verified",
+  "findings": [
+    {
+      "finding": "Publish failure previously marked the row completed in a finally block",
+      "evidence": ["src/Workers/OutboxDispatcher.cs: publish and completion path", "focused failure test"],
+      "confidence": "high",
+      "affected_component": "outbox dispatcher",
+      "risk": "message loss",
+      "recommended_action": "record completion only after successful publish"
+    }
+  ],
+  "checks": [
+    {"name": "config", "command": "python3 scripts/validate-config.py --config config/outbox-gate.json", "result": "passed", "evidence": "configuration valid"},
+    {"name": "focused failure test", "command": "repository-specific test command", "result": "passed", "evidence": "failed publish leaves row pending"}
+  ],
+  "changed_files": ["src/Workers/OutboxDispatcher.cs", "tests/OutboxDispatcherTests.cs"],
+  "approvals": [],
+  "verification_status": "verified",
+  "remaining_risks": ["transport can still redeliver; consumer idempotency remains required"]
+}

@@ -1,0 +1,11 @@
+{
+  "source_roots": ["src", "app", "services", "workers"],
+  "exclude_dirs": [".git", "node_modules", "bin", "obj", "dist", "build", ".venv", "vendor"],
+  "extensions": [".cs", ".java", ".kt", ".py", ".js", ".ts", ".go", ".rb", ".php"],
+  "outbox_terms": ["outbox", "integrationevent", "domain_event", "domain event", "eventpublisher", "messagepublisher"],
+  "transaction_terms": ["transaction", "begintransaction", "commit", "savechanges", "unitofwork"],
+  "dispatcher_terms": ["backgroundservice", "worker", "scheduler", "dispatch", "publish", "send", "claim", "lease", "lock"],
+  "retry_terms": ["retry", "attempt", "nextattempt", "deadletter", "failed", "error"],
+  "blocking_severities": ["high"],
+  "max_high_findings": 0
+}
