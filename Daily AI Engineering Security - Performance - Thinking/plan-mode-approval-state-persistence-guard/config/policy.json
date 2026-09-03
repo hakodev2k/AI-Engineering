@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "fail_closed_on_resume": true,
+  "approval_bindings": ["session_epoch", "plan_hash", "approval_id"],
+  "invalidate_approval_on_plan_change": true,
+  "mutating_actions": ["write", "edit", "delete", "commit", "push", "deploy", "tool_mutation"],
+  "non_authoritative_events": ["notice", "question", "question_failed", "resume"]
+}
