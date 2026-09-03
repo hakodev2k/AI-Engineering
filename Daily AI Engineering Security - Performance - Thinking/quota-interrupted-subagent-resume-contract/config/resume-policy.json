@@ -1,0 +1,8 @@
+{
+  "max_resume_attempts": 2,
+  "require_input_fingerprint": true,
+  "require_side_effect_ledger": true,
+  "require_verifier": true,
+  "allowed_checkpoint_states": ["interrupted", "paused", "recoverable"],
+  "blocking_unknown_effect_outcome": true
+}
