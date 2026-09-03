@@ -1,0 +1,7 @@
+{
+  "required_attestations": ["sandbox_enabled", "network_policy_active", "monitor_external", "kill_path_active"],
+  "forbidden_event_types": ["sandbox_bypass", "unauthorized_network", "credential_access", "policy_mutation", "monitor_disabled"],
+  "allowed_network_hosts": [],
+  "max_preflight_retries": 2,
+  "fail_closed": true
+}
