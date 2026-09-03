@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/schemas/resume-envelope.schema.json",
+  "title": "Explicit interrupt resume envelope",
+  "oneOf": [
+    {
+      "type": "object",
+      "required": ["kind", "value"],
+      "additionalProperties": false,
+      "properties": {
+        "kind": {"const": "scalar"},
+        "value": {}
+      }
+    },
+    {
+      "type": "object",
+      "required": ["kind", "values"],
+      "additionalProperties": false,
+      "properties": {
+        "kind": {"const": "by_id"},
+        "values": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": true
+        }
+      }
+    }
+  ]
+}
