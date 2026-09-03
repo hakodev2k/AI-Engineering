@@ -24,6 +24,11 @@ class GateTests(unittest.TestCase):
             repo=Path(td)/"repo"; repo.mkdir(); (repo/"app.py").write_text('meter.counter("requests").record(1, {"method": method})\n', encoding="utf-8")
             out=Path(td)/"scan.json"; cp=self.run_cmd(SCAN,"--repo",repo,"--config",CONFIG,"--output",out); self.assertEqual(cp.returncode,0,cp.stderr)
 
+    def test_scanner_excludes_gate_package_itself(self):
+        with tempfile.TemporaryDirectory() as td:
+            out=Path(td)/"scan.json"; cp=self.run_cmd(SCAN,"--repo",ROOT,"--config",CONFIG,"--output",out)
+            self.assertEqual(cp.returncode,0,cp.stderr); report=json.loads(out.read_text()); self.assertEqual(report["blocking_count"],0)
+
     def test_sample_analyzer_blocks_unique_request_ids(self):
         with tempfile.TemporaryDirectory() as td:
             sample=Path(td)/"sample.jsonl"; sample.write_text("".join(json.dumps({"attributes":{"request_id":f"r-{i}","method":"GET"}})+"\n" for i in range(25)),encoding="utf-8")
