@@ -1,0 +1,8 @@
+{
+  "trusted_origins": ["https://example.internal"],
+  "sensitive_actions": ["submit_form", "send_message", "purchase", "delete", "upload", "run_javascript", "download_private_data"],
+  "require_human_approval_for_authenticated_sensitive_actions": true,
+  "block_untrusted_cross_origin_sensitive_actions": true,
+  "block_unknown_actions": true,
+  "max_rechecks": 1
+}
