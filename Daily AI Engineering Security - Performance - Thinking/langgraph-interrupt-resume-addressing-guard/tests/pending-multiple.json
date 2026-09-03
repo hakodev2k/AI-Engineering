@@ -1,0 +1,6 @@
+{
+  "interrupts": [
+    {"id": "left-approval", "value": "approve left branch"},
+    {"id": "right-approval", "value": "approve right branch"}
+  ]
+}
