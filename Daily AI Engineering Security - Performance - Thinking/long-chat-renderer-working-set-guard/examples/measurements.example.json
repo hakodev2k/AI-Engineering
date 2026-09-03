@@ -1,0 +1,10 @@
+{
+  "baseline": [
+    {"messages": 50, "renderer_rss_mb": 410, "rendered_nodes": 1800, "p95_frame_ms": 24.0},
+    {"messages": 250, "renderer_rss_mb": 760, "rendered_nodes": 4100, "p95_frame_ms": 31.0}
+  ],
+  "candidate": [
+    {"messages": 50, "renderer_rss_mb": 390, "rendered_nodes": 1500, "p95_frame_ms": 22.0},
+    {"messages": 250, "renderer_rss_mb": 590, "rendered_nodes": 1900, "p95_frame_ms": 27.0}
+  ]
+}

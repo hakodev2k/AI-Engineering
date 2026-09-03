@@ -1,0 +1,8 @@
+{
+  "max_renderer_rss_mb": 1200,
+  "max_rendered_nodes": 5000,
+  "max_p95_frame_ms": 33.4,
+  "max_rss_growth_mb_per_100_messages": 120,
+  "max_node_growth_per_100_messages": 250,
+  "max_regression_percent": 10
+}
