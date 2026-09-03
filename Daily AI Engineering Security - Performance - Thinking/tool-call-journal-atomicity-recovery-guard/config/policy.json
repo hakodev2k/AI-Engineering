@@ -1,0 +1,8 @@
+{
+  "block_resume_on_orphan_call": true,
+  "max_reconciliation_attempts": 2,
+  "default_unknown_side_effect_class": "non_idempotent",
+  "require_external_reconciliation_for": ["non_idempotent", "unknown"],
+  "allow_synthetic_success": false,
+  "allow_explicit_aborted_marker_after_proven_not_executed": true
+}
