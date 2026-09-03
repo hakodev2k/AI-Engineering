@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "source_roots": ["src", "app", "services", "workers"],
+  "exclude_dirs": [".git", "node_modules", "bin", "obj", "dist", "build", "vendor", ".venv", "venv"],
+  "extensions": [".cs", ".ts", ".js", ".py", ".java", ".go", ".rs"],
+  "boundary_patterns": [
+    "HttpClient", "fetch(", "axios", "requests.", "http.Client", "Kafka", "RabbitMQ", "ServiceBus", "SQS", "publish", "consume", "worker", "background", "queue"
+  ],
+  "propagation_patterns": [
+    "traceparent", "tracestate", "Activity.Current", "ActivityContext", "OpenTelemetry", "TextMapPropagator", "Inject", "Extract", "propagate.inject", "propagate.extract", "context.with", "SpanContext"
+  ],
+  "blocking_severities": ["high"],
+  "max_high_findings": 0
+}

@@ -1,0 +1,34 @@
+{
+  "task": "Repair trace propagation from API request to order queue worker",
+  "status": "verified",
+  "boundaries": [
+    {
+      "name": "orders-api-to-queue",
+      "kind": "message-producer",
+      "entry": "active server span",
+      "exit": "message application properties",
+      "evidence": ["tests prove traceparent is injected before publish"]
+    },
+    {
+      "name": "orders-worker-consume",
+      "kind": "message-consumer",
+      "entry": "message application properties",
+      "exit": "consumer activity parent context",
+      "evidence": ["integration test proves worker span shares trace id with producer"]
+    }
+  ],
+  "findings": [
+    {
+      "finding": "consumer previously started an unrelated root activity",
+      "evidence": ["focused test failed before fix and passed after fix"],
+      "confidence": "high",
+      "affected_component": "orders-worker",
+      "risk": "high",
+      "recommended_action": "extract validated context and start consumer activity from it",
+      "verification_status": "verified"
+    }
+  ],
+  "commands": ["python3 scripts/scan-trace-propagation.py --repo . --config config/trace-gate.json --output /tmp/trace-scan.json", "dotnet test"],
+  "verification_status": "verified",
+  "remaining_risks": []
+}
