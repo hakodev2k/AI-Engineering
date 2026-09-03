@@ -1,0 +1,9 @@
+{
+  "cpu_threshold_percent": 85.0,
+  "required_consecutive_high_cpu_samples": 3,
+  "max_progress_age_seconds": 30,
+  "post_resume_grace_seconds": 15,
+  "sample_interval_seconds": 5,
+  "max_restart_attempts": 2,
+  "restart_requires_stale_progress": true
+}
