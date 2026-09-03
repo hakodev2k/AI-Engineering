@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "aiven-safe-connector": {
+      "command": "node",
+      "args": ["/absolute/path/to/MCP-API/aiven/dist/src/server.js"],
+      "env": {
+        "AIVEN_TOKEN": "${AIVEN_TOKEN}",
+        "AIVEN_READ_ONLY": "true",
+        "AIVEN_ALLOW_WRITE": "false",
+        "AIVEN_APPROVAL_MODE": "required"
+      }
+    }
+  }
+}
