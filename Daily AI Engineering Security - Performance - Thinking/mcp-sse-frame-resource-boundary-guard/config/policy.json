@@ -1,0 +1,8 @@
+{
+  "max_incomplete_frame_bytes": 1048576,
+  "max_stream_bytes": 16777216,
+  "max_idle_seconds": 30,
+  "overflow_action": "abort",
+  "require_structured_overflow_event": true,
+  "max_probe_rss_delta_bytes": 8388608
+}
