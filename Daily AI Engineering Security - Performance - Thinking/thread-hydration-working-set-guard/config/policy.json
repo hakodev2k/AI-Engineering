@@ -1,0 +1,8 @@
+{
+  "max_rss_mb": 2048,
+  "max_resume_ms": 3000,
+  "max_loaded_items_per_thread": 5000,
+  "max_parallel_hydrations": 2,
+  "required_modes": ["lazy_resume", "pagination_or_windowing"],
+  "block_on_budget_violation": true
+}
