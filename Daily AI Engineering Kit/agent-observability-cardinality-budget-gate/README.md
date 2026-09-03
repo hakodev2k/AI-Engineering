@@ -90,7 +90,7 @@ python3 -m unittest tests/test-gate.py
 ## Usage
 
 ```bash
-./scripts/run-gate.sh --repo /path/to/repo --sample /path/to/sample.jsonl --evidence /path/to/evidence.json
+sh scripts/run-gate.sh --repo /path/to/repo --sample /path/to/sample.jsonl --evidence /path/to/evidence.json
 ```
 
 The source scanner is heuristic. A static finding is a lead, not proof of a defect. Confirm material risk using call-site context, tests, telemetry samples, or backend evidence before claiming root cause.
