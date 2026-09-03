@@ -1,0 +1,14 @@
+{
+  "environment": "staging",
+  "queue": "orders-dead-letter",
+  "plan_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "attempted_message_ids": ["msg-101", "msg-102"],
+  "receipts": [
+    {"message_id": "msg-101", "status": "accepted", "provider_receipt": "receipt-101", "detail": null},
+    {"message_id": "msg-102", "status": "accepted", "provider_receipt": "receipt-102", "detail": null}
+  ],
+  "approval_reference": null,
+  "post_replay_checks": ["consumer processed both messages", "no duplicate business keys observed"],
+  "verification_status": "verified",
+  "remaining_risks": []
+}
