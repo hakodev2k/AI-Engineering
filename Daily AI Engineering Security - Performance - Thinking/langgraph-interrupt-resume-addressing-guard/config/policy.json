@@ -1,0 +1,8 @@
+{
+  "require_discriminated_envelope": true,
+  "allow_scalar_only_when_single_pending": true,
+  "require_all_pending_for_by_id": true,
+  "reject_unknown_interrupt_ids": true,
+  "reject_duplicate_pending_ids": true,
+  "maximum_pending_interrupts": 128
+}
