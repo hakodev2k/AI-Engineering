@@ -1,0 +1,4 @@
+{"name":"http.server.duration","attributes":{"method":"GET","route_template":"/orders/{id}","status_code":"200"}}
+{"name":"http.server.duration","attributes":{"method":"GET","route_template":"/orders/{id}","status_code":"200"}}
+{"name":"http.server.duration","attributes":{"method":"POST","route_template":"/orders","status_code":"201"}}
+{"name":"ai.tool.duration","attributes":{"provider":"openai","model":"example-model","tool_name":"search","outcome":"success"}}
