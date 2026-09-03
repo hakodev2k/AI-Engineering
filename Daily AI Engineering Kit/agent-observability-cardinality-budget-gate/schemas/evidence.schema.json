@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Observability Cardinality Gate Evidence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["task", "status", "facts", "findings", "commands", "verification_status", "remaining_risks"],
+  "properties": {
+    "task": {"type": "string", "minLength": 1},
+    "status": {"enum": ["executed", "blocked", "failed"]},
+    "facts": {"type": "array", "items": {"type": "string"}},
+    "hypotheses": {"type": "array", "items": {"type": "string"}},
+    "decisions": {"type": "array", "items": {"type": "string"}},
+    "findings": {"type": "array", "items": {"type": "object", "required": ["finding", "evidence", "confidence", "affected_component", "risk", "recommended_action", "verification_status"], "properties": {"finding": {"type": "string"}, "evidence": {"type": "array", "minItems": 1, "items": {"type": "string"}}, "confidence": {"enum": ["low", "medium", "high"]}, "affected_component": {"type": "string"}, "risk": {"enum": ["low", "medium", "high", "critical"]}, "recommended_action": {"type": "string"}, "verification_status": {"enum": ["unverified", "verified", "rejected", "blocked"]}}}},
+    "commands": {"type": "array", "items": {"type": "object", "required": ["command", "exit_code"], "properties": {"command": {"type": "string"}, "exit_code": {"type": "integer"}, "output_artifact": {"type": "string"}}}},
+    "approvals": {"type": "array", "items": {"type": "object", "required": ["action", "approved"], "properties": {"action": {"type": "string"}, "approved": {"type": "boolean"}, "evidence": {"type": "string"}}}},
+    "verification_status": {"enum": ["verified", "unverified", "blocked", "failed"]},
+    "remaining_risks": {"type": "array", "items": {"type": "string"}}
+  }
+}
