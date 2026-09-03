@@ -1,0 +1,8 @@
+{
+  "allowed_hosts": ["127.0.0.1:8000", "localhost:8000", "[::1]:8000"],
+  "allowed_origins": ["http://localhost:3000", "https://mcp.example.internal"],
+  "allow_missing_origin": true,
+  "allowed_bind_addresses": ["127.0.0.1", "::1"],
+  "trust_forwarded_headers": false,
+  "trusted_proxy_ips": []
+}
