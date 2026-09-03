@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "require_id_map_when_pending_gt": 1,
+  "allow_partial_addressed_resume": true,
+  "reject_unknown_resume_ids": true,
+  "reject_duplicate_pending_ids": true,
+  "reject_empty_resume_map_for_multi_interrupt": true
+}
