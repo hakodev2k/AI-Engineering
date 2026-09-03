@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Heuristically scan source files for potentially unbounded telemetry dimensions.
 Exit codes: 0 pass, 2 policy-blocking findings, 3 invalid input/config.
+The gate package itself is excluded automatically when it lives under the scanned repository.
 """
 from __future__ import annotations
 import argparse, json, sys
@@ -19,7 +20,7 @@ def load_config(path: Path) -> dict:
     return data
 
 
-def scan(repo: Path, config: dict) -> list[dict]:
+def scan(repo: Path, config: dict, gate_root: Path | None = None) -> list[dict]:
     extensions = {str(x).lower() for x in config["source_extensions"]}
     excluded = {str(x) for x in config["excluded_paths"]}
     dangerous = [str(x).lower() for x in config["dangerous_dimensions"]]
@@ -27,6 +28,8 @@ def scan(repo: Path, config: dict) -> list[dict]:
     findings = []
     for path in repo.rglob("*"):
         if not path.is_file() or path.suffix.lower() not in extensions:
+            continue
+        if gate_root is not None and gate_root.is_relative_to(repo) and path.is_relative_to(gate_root):
             continue
         rel = path.relative_to(repo)
         if any(part in excluded for part in rel.parts):
@@ -59,7 +62,8 @@ def main() -> int:
         cfg = load_config(cfg_path)
     except ValueError as exc:
         print(str(exc), file=sys.stderr); return 3
-    findings = scan(repo, cfg)
+    gate_root = cfg_path.parent.parent
+    findings = scan(repo, cfg, gate_root=gate_root)
     blocking = [f for f in findings if f["severity"] in set(cfg["blocking_severities"])]
     report = {"repository": str(repo), "finding_count": len(findings), "blocking_count": len(blocking), "findings": findings, "note": "Static findings are investigation leads and require contextual confirmation."}
     output.parent.mkdir(parents=True, exist_ok=True)
