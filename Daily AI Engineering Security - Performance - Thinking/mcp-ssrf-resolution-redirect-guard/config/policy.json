@@ -1,0 +1,16 @@
+{
+  "allowed_schemes": ["http", "https"],
+  "max_redirects": 5,
+  "reject_address_classes": [
+    "loopback",
+    "private",
+    "link_local",
+    "multicast",
+    "reserved",
+    "unspecified"
+  ],
+  "reject_ipv4_mapped_ipv6_if_mapped_target_unsafe": true,
+  "require_revalidation_each_redirect": true,
+  "strip_sensitive_headers_on_cross_origin_redirect": true,
+  "sensitive_headers": ["authorization", "cookie", "proxy-authorization", "x-api-key"]
+}
