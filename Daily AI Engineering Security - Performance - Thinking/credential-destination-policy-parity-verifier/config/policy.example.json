@@ -1,0 +1,8 @@
+{
+  "required_controls": [
+    "destination_allowlist",
+    "canonical_host_validation",
+    "redirect_revalidation",
+    "enforce_before_secret_materialization"
+  ]
+}

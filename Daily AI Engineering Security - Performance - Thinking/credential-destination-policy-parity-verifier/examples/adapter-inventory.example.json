@@ -1,0 +1,23 @@
+{
+  "adapters": [
+    {
+      "name": "example-ai-connector",
+      "uses_credential": true,
+      "user_configurable_endpoint": true,
+      "supports_shared_use_only_credentials": true,
+      "controls": {
+        "destination_allowlist": true,
+        "canonical_host_validation": true,
+        "redirect_revalidation": true,
+        "enforce_before_secret_materialization": true
+      },
+      "negative_tests": [
+        {
+          "case": "disallowed_destination",
+          "passed": true,
+          "evidence": "synthetic test rejects attacker.invalid before authorization header construction"
+        }
+      ]
+    }
+  ]
+}
