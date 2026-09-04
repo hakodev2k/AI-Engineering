@@ -1,0 +1,8 @@
+{
+  "require_lease_for_mutation": true,
+  "require_monotonic_epoch": true,
+  "require_unique_operation_id": true,
+  "allow_read_only_without_lease": true,
+  "block_stale_epoch": true,
+  "max_reconciliation_retries": 2
+}
