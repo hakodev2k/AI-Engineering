@@ -1,0 +1,23 @@
+{
+  "id": "REV-001",
+  "title": "Null dereference reported for guarded value",
+  "severity": "medium",
+  "status": "rejected",
+  "confidence": 0.96,
+  "location": {"path": "src/example.py", "line": 42},
+  "claim": "value may be null when dereferenced on line 42",
+  "evidence": [
+    {
+      "type": "repository-proof",
+      "description": "All paths reaching the dereference pass through an earlier null-return guard; focused path inspection contradicts the claim.",
+      "command": null,
+      "artifact": "src/example.py",
+      "exit_code": null
+    }
+  ],
+  "verification": {
+    "independent": true,
+    "result": "verified",
+    "notes": "Independent verifier traced both callers and confirmed the guard dominates the dereference."
+  }
+}
