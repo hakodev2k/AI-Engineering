@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AI Code Review Finding Triage Record",
+  "type": "object",
+  "required": ["id", "title", "severity", "status", "confidence", "location", "claim", "evidence", "verification"],
+  "properties": {
+    "id": {"type": "string", "minLength": 1},
+    "title": {"type": "string", "minLength": 1},
+    "severity": {"enum": ["critical", "high", "medium", "low", "info"]},
+    "status": {"enum": ["confirmed", "rejected", "needs-human-review"]},
+    "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+    "location": {
+      "type": "object",
+      "required": ["path"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "line": {"type": ["integer", "null"], "minimum": 1}
+      },
+      "additionalProperties": false
+    },
+    "claim": {"type": "string", "minLength": 1},
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["type", "description"],
+        "properties": {
+          "type": {"enum": ["test", "build", "static-analysis", "runtime-reproduction", "repository-proof", "specification"]},
+          "description": {"type": "string", "minLength": 1},
+          "command": {"type": ["string", "null"]},
+          "artifact": {"type": ["string", "null"]},
+          "exit_code": {"type": ["integer", "null"]}
+        },
+        "additionalProperties": false
+      }
+    },
+    "verification": {
+      "type": "object",
+      "required": ["independent", "result", "notes"],
+      "properties": {
+        "independent": {"type": "boolean"},
+        "result": {"enum": ["verified", "failed", "blocked"]},
+        "notes": {"type": "string"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
