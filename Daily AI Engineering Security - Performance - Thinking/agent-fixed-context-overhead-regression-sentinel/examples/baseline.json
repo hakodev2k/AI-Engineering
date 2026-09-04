@@ -1,0 +1,17 @@
+{
+  "profile": "coding-agent-default",
+  "harness_version": "1.0.0",
+  "model": "example-model",
+  "context_limit_tokens": 200000,
+  "fixed_tokens": 30000,
+  "components": {
+    "system": 7000,
+    "tools": 9000,
+    "rules": 2000,
+    "skills": 4000,
+    "mcp": 3000,
+    "subagents": 2000,
+    "memory_attachments": 2000,
+    "other": 1000
+  }
+}
