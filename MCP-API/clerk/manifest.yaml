@@ -1,51 +1,45 @@
 id: clerk
 name: Clerk
-version: 1.0.0
-runtime: node>=20
 upstream:
-  official_mcp:
-    endpoint: https://mcp.clerk.com/mcp
-    transport: streamable-http
-    usage: documentation-and-sdk-snippets-only
-    proxied: false
-  rest:
-    base_url: https://api.clerk.com/v1
-    usage: identity-and-organization-management
+  - rest
+official_mcp:
+  available: true
+  purpose: "Clerk's beta remote MCP server provides current SDK snippets and implementation patterns; it is not used for tenant administration in this connector."
+api_base_url: https://api.clerk.com/v1
 auth:
-  type: secret-key
-  environment_variable: CLERK_SECRET_KEY
-  note: Clerk Secret Keys are instance-scoped backend credentials; this connector narrows effective access with a fixed tool allowlist and approval policy.
+  type: bearer_secret_key
+  environment:
+    - CLERK_SECRET_KEY
+capabilities:
+  - user.list
+  - user.read
+  - user.update
+  - organization.list
+  - organization.read
+  - organization.update
+  - organization.membership.list
+  - organization.invitation.list
+  - organization.invitation.create
+  - session.list
+  - session.read
+  - session.revoke
+  - invitation.create
+risk:
+  default: READ
+  write_approval: required
+  high_risk_approval: required
+  destructive_enabled: false
 required_environment:
   - CLERK_SECRET_KEY
 optional_environment:
   - CLERK_API_BASE_URL
+  - CLERK_API_VERSION
+  - CLERK_READ_ONLY
+  - CLERK_ALLOW_WRITE
+  - CLERK_APPROVAL_MODE
   - CLERK_TIMEOUT_MS
-  - CLERK_APPROVAL_SECRET
-  - CLERK_REQUIRE_WRITE_APPROVAL
-  - CLERK_ALLOW_DESTRUCTIVE
-capabilities:
-  - user.list
-  - user.get
-  - user.create
-  - user.update
-  - user.delete
-  - organization.list
-  - organization.get
-  - organization.create
-  - organization.update
-  - organization.delete
-  - organization.membership.list
-  - organization.membership.create
-  - organization.membership.update
-  - organization.membership.delete
-  - organization.invitation.list
-  - organization.invitation.create
-  - organization.invitation.revoke
-risk:
-  default: READ
-  write_requires_approval_by_default: true
-  destructive_disabled_by_default: true
+  - CLERK_MAX_RETRIES
 security:
-  credentials_exposed_to_model: false
+  credentials_exposed_to_agent: false
   arbitrary_http_requests: false
-  retrieved_content_untrusted: true
+  retrieved_content_is_untrusted: true

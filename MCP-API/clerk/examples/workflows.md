@@ -1,41 +1,26 @@
-# Workflow examples
+# Clerk connector workflow examples
 
-## Inspect a user
+## Investigate account access
 
-Tool: `clerk.user.get`  
-Input: `{ "userId": "user_123" }`  
-Permission: READ  
-Approval: no  
-Expected output: Clerk User JSON serialized as MCP text content.
+1. Call `clerk.user.list` with `{ "query": "person@example.com", "limit": 10, "offset": 0 }`.
+2. Call `clerk.user.get` for the selected user.
+3. Call `clerk.session.list` with the selected `userId`.
 
-## Create a user
+All three are READ operations and require no approval.
 
-Tool: `clerk.user.create`  
-Input: `{ "emailAddress": ["person@example.com"], "firstName": "Example", "approval": "<trusted HMAC approval>" }`  
-Permission: WRITE  
-Approval: yes by default  
-Expected output: created Clerk User JSON.
+## Invite an organization member
 
-## Add an existing user to an organization
+1. Call `clerk.organization.get`.
+2. Call `clerk.organization.membership.list` to avoid duplicate membership.
+3. Prepare `clerk.organization.invitation.create`.
+4. Execute only after a human supplies `approval.confirmed=true` plus a reason.
 
-Tool: `clerk.organization.membership.create`  
-Input: `{ "organizationId": "org_123", "userId": "user_123", "role": "org:member", "approval": "<trusted HMAC approval>" }`  
-Permission: HIGH_RISK  
-Approval: yes  
-Expected output: created OrganizationMembership JSON.
+The final action sends an external email and is HIGH_RISK.
 
-## Invite a user to an organization
+## Revoke a compromised session
 
-Tool: `clerk.organization.invitation.create`  
-Input: `{ "organizationId": "org_123", "emailAddress": "invitee@example.com", "role": "org:member", "approval": "<trusted HMAC approval>" }`  
-Permission: HIGH_RISK  
-Approval: yes because Clerk sends an external invitation email  
-Expected output: created OrganizationInvitation JSON.
+1. Use `clerk.session.list` to identify the exact session.
+2. Present the session and consequence to the human operator.
+3. Execute `clerk.session.revoke` only with explicit approval.
 
-## Destructive removal
-
-Tool: `clerk.organization.membership.delete`  
-Input: `{ "organizationId": "org_123", "userId": "user_123", "approval": "<trusted HMAC approval>" }`  
-Permission: DESTRUCTIVE  
-Approval: yes and `CLERK_ALLOW_DESTRUCTIVE=true` must be configured outside the agent  
-Expected output: deleted OrganizationMembership JSON.
+Revocation is HIGH_RISK because it immediately changes user access.

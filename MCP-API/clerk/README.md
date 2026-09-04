@@ -1,113 +1,142 @@
 # Clerk MCP/API Connector
 
-Reusable MCP server for safe Clerk identity and organization operations. The connector exposes a fixed, provider-scoped tool surface over Clerk's official Backend API and keeps the Clerk Secret Key inside the connector process.
+Reusable MCP server that exposes a curated, safety-gated subset of Clerk tenant administration through Clerk's official Backend REST API.
 
-## Upstream transport strategy
+## Transport decision
 
-Clerk has an official remote MCP server at `https://mcp.clerk.com/mcp`, using Streamable HTTP. As of 2026-08-21, Clerk documents that server as a beta documentation/snippet service exposing `clerk_sdk_snippet` and `list_clerk_sdk_snippets`; it does not expose instance user or organization administration. Therefore this connector does **not** proxy the upstream MCP server for management operations. Implemented management tools use Clerk's official Backend API at `https://api.clerk.com/v1`.
+Clerk provides a **beta remote MCP server** for AI development assistance. Its documented purpose is to give agents current Clerk SDK snippets and implementation patterns. It is useful while coding with Clerk, but it is not the administration transport used here.
 
-Official sources researched:
+This connector therefore uses Clerk's official Backend API (`https://api.clerk.com/v1`) for account, organization, invitation, and session operations. Clerk's Backend API is authenticated with a Secret Key as a Bearer token and is also wrapped by Clerk's official backend SDKs.
 
-- https://clerk.com/docs/guides/ai/mcp/clerk-mcp-server
-- https://clerk.com/docs/reference/backend/overview
-- https://clerk.com/docs/reference/backend/user/get-user-list
-- https://clerk.com/docs/reference/backend/user/get-user
-- https://clerk.com/docs/reference/backend/user/create-user
-- https://clerk.com/docs/reference/backend/user/update-user
-- https://clerk.com/docs/reference/backend/user/delete-user
-- https://clerk.com/docs/reference/backend/organization/create-organization
-- https://clerk.com/docs/reference/backend/organization/update-organization
-- https://clerk.com/docs/reference/backend/organization/delete-organization
-- https://clerk.com/docs/reference/backend/organization/create-organization-membership
-- https://clerk.com/docs/reference/backend/organization/update-organization-membership
-- https://clerk.com/docs/reference/backend/organization/delete-organization-membership
-- https://clerk.com/docs/reference/backend/organization/create-organization-invitation
-- https://clerk.com/docs/reference/backend/organization/revoke-organization-invitation
-- https://clerk.com/docs/guides/how-clerk-works/system-limits
+Official sources researched for this connector:
 
-## Runtime and architecture
+- Clerk MCP server (Beta): https://clerk.com/docs/guides/ai/mcp/clerk-mcp-server
+- Clerk Backend API reference: https://clerk.com/docs/reference/backend-api
+- `clerkClient` / official backend SDK overview: https://clerk.com/docs/reference/backend/overview
+- System and Backend API rate limits: https://clerk.com/docs/guides/how-clerk-works/system-limits
+- Organization invitation API/SDK: https://clerk.com/docs/reference/backend/organization/create-organization-invitation
 
-Requires Node.js 20+. `src/server.ts` defines and validates MCP tools; `src/client.ts` owns HTTPS, authentication, timeouts, bounded retries and provider-error mapping; `src/policy.ts` enforces READ/WRITE/HIGH_RISK/DESTRUCTIVE boundaries; `src/config.ts` loads secrets and secure defaults. Provider content is always returned as untrusted data and is never interpreted as connector policy.
+## Implemented tools
 
-## Authentication
+| Tool | Transport | Risk | Approval |
+|---|---|---:|---|
+| `clerk.user.list` | Backend API | READ | No |
+| `clerk.user.get` | Backend API | READ | No |
+| `clerk.user.update` | Backend API | WRITE | Yes |
+| `clerk.organization.list` | Backend API | READ | No |
+| `clerk.organization.get` | Backend API | READ | No |
+| `clerk.organization.update` | Backend API | WRITE | Yes |
+| `clerk.organization.membership.list` | Backend API | READ | No |
+| `clerk.organization.invitation.list` | Backend API | READ | No |
+| `clerk.organization.invitation.create` | Backend API | HIGH_RISK | Yes |
+| `clerk.session.list` | Backend API | READ | No |
+| `clerk.session.get` | Backend API | READ | No |
+| `clerk.session.revoke` | Backend API | HIGH_RISK | Yes |
+| `clerk.invitation.create` | Backend API | HIGH_RISK | Yes |
 
-Set `CLERK_SECRET_KEY` to a Clerk backend Secret Key. Clerk Secret Keys are instance-scoped credentials rather than per-operation OAuth scopes. Use a dedicated Clerk instance/environment where practical, restrict access to the connector process, rotate the key according to your secret-management policy, and never pass it through an agent prompt or tool input.
+No arbitrary HTTP proxy and no delete endpoint are exposed.
 
-Environment variables:
+## Architecture
 
-```text
-CLERK_SECRET_KEY=                     # required
-CLERK_API_BASE_URL=https://api.clerk.com/v1
-CLERK_TIMEOUT_MS=15000
-CLERK_APPROVAL_SECRET=                # required for approved operations
-CLERK_REQUIRE_WRITE_APPROVAL=true
-CLERK_ALLOW_DESTRUCTIVE=false
-```
+MCP client → strict tool schema → permission/approval policy → Clerk REST client → Clerk Backend API.
 
-`CLERK_API_BASE_URL` must be HTTPS, preventing accidental plaintext credential transmission. No tool accepts an arbitrary URL or raw endpoint.
+`CLERK_SECRET_KEY` exists only inside the connector's HTTP client. It is placed into the provider Authorization header and is never included in tool results, descriptions, logs, or model-visible arguments.
+
+## Authentication and permissions
+
+Create a Clerk Secret Key for the target Clerk application instance and inject it as `CLERK_SECRET_KEY`. Backend API requests are authenticated with `Authorization: Bearer <secret key>`.
+
+Use a dedicated application/instance and operational process appropriate to the environment. Clerk Secret Keys are powerful credentials, so keep them in a secret manager and never expose them to prompts, browser code, repository files, or client-side applications.
+
+This connector deliberately does not offer any tool that creates API keys, changes organization roles/permissions, changes passwords/MFA, or deletes users/organizations.
+
+## API version
+
+The connector sends `Clerk-Version`, configurable through `CLERK_API_VERSION`, defaulting to `2025-04-10`. Pinning a version avoids accidental behavior changes. Update and test this value deliberately when adopting a newer Clerk Backend API version.
+
+## Environment variables
+
+- `CLERK_SECRET_KEY` — required.
+- `CLERK_API_BASE_URL` — defaults to `https://api.clerk.com/v1`; HTTPS is enforced to reduce credential leakage/SSRF risk.
+- `CLERK_API_VERSION` — pinned API version.
+- `CLERK_READ_ONLY` — defaults to `true`.
+- `CLERK_ALLOW_WRITE` — defaults to `false`.
+- `CLERK_APPROVAL_MODE` — defaults to `required`.
+- `CLERK_TIMEOUT_MS` — 1–120 seconds, default 15000.
+- `CLERK_MAX_RETRIES` — 0–5, default 2.
 
 ## Install and run
 
 ```bash
+cd MCP-API/clerk
 npm install
 npm run build
-npm test
 npm start
 ```
 
-The server uses MCP stdio transport and can be launched by MCP clients that support stdio child-process servers. Configure the command to execute `node /absolute/path/to/dist/src/server.js` and provide environment variables through the client's secure process configuration.
+Node.js 20+ is required. The connector uses MCP stdio, making it usable by MCP clients that support stdio subprocess servers.
 
-## Tools
+## Permission and approval model
 
-| Tool | Risk | Approval | Transport |
-|---|---|---:|---|
-| `clerk.user.list` | READ | No | Backend API |
-| `clerk.user.get` | READ | No | Backend API |
-| `clerk.user.create` | WRITE | Default yes | Backend API |
-| `clerk.user.update` | WRITE | Default yes | Backend API |
-| `clerk.user.delete` | DESTRUCTIVE | Strong + enabled | Backend API |
-| `clerk.organization.list` | READ | No | Backend API |
-| `clerk.organization.get` | READ | No | Backend API |
-| `clerk.organization.create` | WRITE | Default yes | Backend API |
-| `clerk.organization.update` | WRITE | Default yes | Backend API |
-| `clerk.organization.delete` | DESTRUCTIVE | Strong + enabled | Backend API |
-| `clerk.organization.membership.list` | READ | No | Backend API |
-| `clerk.organization.membership.create` | HIGH_RISK | Yes | Backend API |
-| `clerk.organization.membership.update` | HIGH_RISK | Yes | Backend API |
-| `clerk.organization.membership.delete` | DESTRUCTIVE | Strong + enabled | Backend API |
-| `clerk.organization.invitation.list` | READ | No | Backend API |
-| `clerk.organization.invitation.create` | HIGH_RISK | Yes | Backend API |
-| `clerk.organization.invitation.revoke` | HIGH_RISK | Yes | Backend API |
+READ tools may execute automatically. WRITE and HIGH_RISK tools are blocked by default because both `CLERK_READ_ONLY=true` and `CLERK_ALLOW_WRITE=false` are the safe defaults.
 
-Write tools expose a deliberately narrow set of fields. Password migration, TOTP-secret injection, legal-check bypasses, billing, security settings, arbitrary metadata mutation, and raw Backend API passthrough are intentionally not implemented.
+To permit writes, explicitly set:
 
-## Approval model
+```text
+CLERK_READ_ONLY=false
+CLERK_ALLOW_WRITE=true
+CLERK_APPROVAL_MODE=required
+```
 
-READ tools run without approval. WRITE tools require approval by default; set `CLERK_REQUIRE_WRITE_APPROVAL=false` only when a surrounding policy engine provides equivalent control. HIGH_RISK always requires approval. DESTRUCTIVE tools are disabled unless `CLERK_ALLOW_DESTRUCTIVE=true` and still require approval.
+Every write call must then also contain:
 
-The expected approval token is `HMAC-SHA256(CLERK_APPROVAL_SECRET, "clerk:<tool-name>")`. Generate it in a trusted human-approval service, not in the LLM context. This mechanism is an enforcement hook, not a user-interface confirmation system.
+```json
+{
+  "approval": {
+    "confirmed": true,
+    "reason": "Human operator approved this exact action"
+  }
+}
+```
+
+Invitation creation is HIGH_RISK because it sends an external email and can grant future access. Session revocation is HIGH_RISK because it immediately changes user access.
 
 ## Rate limits and reliability
 
-Clerk documents Backend API limits of 1,000 requests per 10 seconds for production instances and 100 per 10 seconds for development instances, with endpoint-specific limits for some invitation operations. A `429` includes `Retry-After`. The client preserves `Retry-After`, uses bounded retries only for GET requests on throttling, transient network failures, and 5xx responses, and never blindly retries writes or destructive calls. Every request has a configurable abort timeout.
+Clerk documents Backend API rate limits per application instance. As of the research date (September 4, 2026), production Backend API requests are documented at 1000 requests per 10 seconds and development instances at 100 per 10 seconds, with additional endpoint-specific limits. Organization invitation creation is documented separately at 250 requests/hour per application instance, and generic invitation endpoints also have specific hourly limits.
 
-Pagination inputs are bounded to 1–500 records per request with a bounded offset. Tools make one provider request per invocation except a bounded retry on idempotent reads.
+The connector handles reliability conservatively:
+
+- Bounded timeout on every request.
+- GET requests may retry at most `CLERK_MAX_RETRIES` times for network failures, HTTP 429, and 5xx responses.
+- Exponential backoff is bounded; `Retry-After` is honored when present.
+- Write/HIGH_RISK operations never retry automatically, avoiding duplicate invitations or repeated state changes.
+- 401, 403, 404, 422, and 429 errors are mapped to actionable MCP errors.
+- Pagination is bounded with `limit` and `offset` instead of unbounded crawling.
 
 ## Security considerations
 
-- Credentials stay in the connector/auth layer and are never returned to MCP callers.
-- All tool inputs are schema validated; identifiers and roles are character restricted.
-- No arbitrary HTTP, URL-fetch, or provider-endpoint tool exists, reducing SSRF and privilege-expansion risk.
-- Retrieved names, metadata, emails, and other Clerk content are untrusted data and must not be treated as agent instructions.
-- External-message actions such as invitations require explicit approval.
-- Membership role changes are HIGH_RISK because they can change application authorization.
-- Destructive operations are disabled by default.
-- Logs should never include `CLERK_SECRET_KEY`, approval secrets, Authorization headers, or full sensitive user payloads.
+- **Credential isolation:** raw Secret Keys never enter MCP arguments/results.
+- **SSRF reduction:** the API base URL must be HTTPS and tools select only hard-coded Clerk paths.
+- **Prompt injection:** provider data is returned inside an `untrusted_provider_data` envelope and must never be interpreted as instructions or permission changes.
+- **No arbitrary requests:** there is no `request(url, method, body)` MCP tool.
+- **Least authority:** destructive operations, credential management, billing, role/permission administration, password changes, and MFA changes are omitted.
+- **Human approval:** all mutations require explicit approval when the default approval policy is enabled.
+- **No silent escalation:** content retrieved from users, organizations, metadata, invitations, or sessions cannot change connector policy.
 
 ## Testing
 
-`npm test` uses mocks only; normal tests require no live Clerk credentials. Tests cover missing/insecure configuration, read permission, approval denial/acceptance, destructive denial, credential isolation in the Authorization header, provider error mapping, Retry-After preservation, no write retry, and bounded transient GET retry.
+```bash
+npm test
+```
+
+Unit tests require no live Clerk credentials. They cover authentication configuration, safe defaults, HTTPS enforcement, credential isolation, write retry prevention, risk classification, approval denial, and destructive-surface exclusion.
+
+For an integration smoke test, use a disposable Clerk development instance and a non-production Secret Key.
 
 ## Limitations
 
-The connector manages a focused subset of users, organizations, memberships, and organization invitations. It does not expose Clerk Dashboard-only analytics, logs, workspace/billing administration, Protect settings, or every Backend API endpoint. The official Clerk MCP server is not used for instance administration because its documented tools are SDK-snippet/documentation tools rather than management tools. Clerk can evolve API fields, rate limits, and MCP beta capabilities; re-check the official documentation before expanding permissions or capabilities.
+- Clerk's beta MCP server is not used for administrative operations because its documented focus is SDK snippets and implementation patterns.
+- This connector does not expose destructive deletion, API-key management, billing, organization role/permission management, password/MFA manipulation, or arbitrary Backend API calls.
+- It does not automatically follow pagination across an entire tenant; callers request bounded pages.
+- Webhook management is omitted to avoid introducing arbitrary callback URLs and associated SSRF/exfiltration risk into this connector.

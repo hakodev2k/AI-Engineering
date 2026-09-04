@@ -1,48 +1,69 @@
-import type { Config } from './config.js';
+import type { Config } from "./config.js";
 
 export class ClerkApiError extends Error {
-  constructor(public status: number, message: string, public retryAfter?: number, public body?: unknown) { super(message); }
+  constructor(public readonly status: number, message: string, public readonly retryAfter?: number) {
+    super(message);
+    this.name = "ClerkApiError";
+  }
 }
 
 export class ClerkClient {
-  constructor(private config: Config, private fetchImpl: typeof fetch = fetch) {}
+  constructor(private readonly cfg: Config, private readonly fetchImpl: typeof fetch = fetch) {}
 
-  async request<T>(method: string, path: string, body?: unknown, query?: Record<string,string|number|boolean|undefined>, signal?: AbortSignal): Promise<T> {
-    const url = new URL(this.config.baseUrl + path);
-    for (const [k,v] of Object.entries(query || {})) if (v !== undefined) url.searchParams.set(k, String(v));
-    const maxAttempts = method === 'GET' ? 3 : 1;
-    let last: unknown;
-    for (let attempt=0; attempt<maxAttempts; attempt++) {
+  async request<T>(method: string, path: string, options: { query?: Record<string, string | number | boolean | undefined>; body?: unknown; retryable?: boolean } = {}): Promise<T> {
+    if (!path.startsWith("/")) throw new Error("Clerk API path must be absolute and provider-scoped.");
+    const url = new URL(this.cfg.apiBaseUrl + path);
+    for (const [key, value] of Object.entries(options.query ?? {})) if (value !== undefined) url.searchParams.set(key, String(value));
+
+    const canRetry = options.retryable ?? method === "GET";
+    let attempt = 0;
+    while (true) {
       const controller = new AbortController();
-      const timer = setTimeout(() => controller.abort(new Error('timeout')), this.config.timeoutMs);
-      const onAbort = () => controller.abort(signal?.reason);
-      signal?.addEventListener('abort', onAbort, { once: true });
+      const timer = setTimeout(() => controller.abort(), this.cfg.timeoutMs);
       try {
-        const res = await this.fetchImpl(url, {
+        const response = await this.fetchImpl(url, {
           method,
-          headers: { Authorization: `Bearer ${this.config.secretKey}`, Accept: 'application/json', ...(body !== undefined ? {'Content-Type':'application/json'} : {}) },
-          body: body === undefined ? undefined : JSON.stringify(body),
-          signal: controller.signal,
+          headers: {
+            Authorization: `Bearer ${this.cfg.secretKey}`,
+            "Content-Type": "application/json",
+            "Clerk-Version": this.cfg.apiVersion,
+            "User-Agent": "ai-engineering-clerk-mcp/1.0"
+          },
+          body: options.body === undefined ? undefined : JSON.stringify(options.body),
+          signal: controller.signal
         });
-        const text = await res.text();
-        const parsed = text ? (() => { try { return JSON.parse(text); } catch { return text; } })() : null;
-        if (res.ok) return parsed as T;
-        const retryAfter = Number(res.headers.get('retry-after') || '') || undefined;
-        const err = new ClerkApiError(res.status, `Clerk API ${res.status} ${method} ${path}`, retryAfter, parsed);
-        if (method === 'GET' && (res.status === 429 || res.status >= 500) && attempt + 1 < maxAttempts) {
-          const delay = Math.min((retryAfter ?? 2 ** attempt) * 1000, 10000);
-          await new Promise(r => setTimeout(r, delay));
-          last = err; continue;
+        if (response.ok) {
+          if (response.status === 204) return undefined as T;
+          return await response.json() as T;
         }
-        throw err;
-      } catch (e) {
-        last = e;
-        if (method !== 'GET' || attempt + 1 >= maxAttempts || e instanceof ClerkApiError) throw e;
-        await new Promise(r => setTimeout(r, Math.min(500 * 2 ** attempt, 2000)));
+        const retryAfterHeader = response.headers.get("retry-after");
+        const retryAfter = retryAfterHeader ? Number(retryAfterHeader) : undefined;
+        const raw = await response.text();
+        let message = raw;
+        try {
+          const parsed = JSON.parse(raw) as { errors?: Array<{ message?: string; long_message?: string }> };
+          message = parsed.errors?.map(e => e.long_message ?? e.message).filter(Boolean).join("; ") || raw;
+        } catch {}
+        const retryableStatus = response.status === 429 || response.status >= 500;
+        if (canRetry && retryableStatus && attempt < this.cfg.maxRetries) {
+          const waitMs = Number.isFinite(retryAfter) ? Math.max(0, retryAfter! * 1000) : Math.min(4000, 250 * 2 ** attempt);
+          await new Promise(resolve => setTimeout(resolve, waitMs));
+          attempt++;
+          continue;
+        }
+        throw new ClerkApiError(response.status, message || `Clerk API error ${response.status}`, retryAfter);
+      } catch (error) {
+        if (error instanceof ClerkApiError) throw error;
+        if (error instanceof DOMException && error.name === "AbortError") throw new Error(`Clerk API request timed out after ${this.cfg.timeoutMs}ms`);
+        if (canRetry && attempt < this.cfg.maxRetries) {
+          await new Promise(resolve => setTimeout(resolve, Math.min(4000, 250 * 2 ** attempt)));
+          attempt++;
+          continue;
+        }
+        throw error;
       } finally {
-        clearTimeout(timer); signal?.removeEventListener('abort', onAbort);
+        clearTimeout(timer);
       }
     }
-    throw last instanceof Error ? last : new Error('Clerk request failed');
   }
 }
