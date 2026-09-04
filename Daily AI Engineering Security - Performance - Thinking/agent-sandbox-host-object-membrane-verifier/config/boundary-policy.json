@@ -1,0 +1,22 @@
+{
+  "mode": "fail_closed",
+  "allow_primitives": true,
+  "allow_plain_json_objects": true,
+  "max_depth": 32,
+  "forbidden_type_markers": [
+    "function",
+    "constructor",
+    "prototype",
+    "error",
+    "class-instance",
+    "accessor",
+    "symbol",
+    "weakmap",
+    "weakset",
+    "proxy",
+    "host-bridge"
+  ],
+  "high_risk_execution_requires_process_isolation": true,
+  "require_error_path_probe": true,
+  "max_automatic_remediation_attempts": 2
+}
