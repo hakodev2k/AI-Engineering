@@ -1,0 +1,46 @@
+id: beehiiv
+name: beehiiv
+upstream:
+  - rest
+official_mcp:
+  available: false
+api_base_url: https://api.beehiiv.com/v2
+auth:
+  type: bearer_api_key_or_oauth2
+  environment:
+    - BEEHIIV_API_KEY
+  oauth_scopes:
+    - identify:read
+    - publications:read
+    - posts:read
+    - subscriptions:read
+    - subscriptions:write
+    - automations:read
+    - automations:write
+    - segments:read
+    - webhooks:read
+    - webhooks:write
+capabilities:
+  - workspace.permissions.read
+  - publication.list
+  - publication.engagements.read
+  - post.list
+  - post.preview.read
+  - subscription.list
+  - subscription.read_by_email
+  - subscription.create
+  - automation.list
+  - automation.enroll
+  - segment.members.list
+  - webhook.list
+  - webhook.create
+risk:
+  default: READ
+  write_approval: required
+  destructive_enabled: false
+rate_limit:
+  requests_per_minute_per_organization: 180
+security:
+  credentials_exposed_to_agent: false
+  arbitrary_http_requests: false
+  retrieved_content_is_untrusted: true

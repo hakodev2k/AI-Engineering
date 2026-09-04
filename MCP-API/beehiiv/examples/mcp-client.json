@@ -1,0 +1,1 @@
+{"mcpServers":{"beehiiv":{"command":"node","args":["/absolute/path/MCP-API/beehiiv/dist/src/server.js"],"env":{"BEEHIIV_API_KEY":"${BEEHIIV_API_KEY}","BEEHIIV_READ_ONLY":"true","BEEHIIV_ALLOW_WRITE":"false","BEEHIIV_APPROVAL_MODE":"required"}}}}

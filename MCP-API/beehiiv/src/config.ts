@@ -1,0 +1,4 @@
+import { z } from 'zod';
+const E=z.object({BEEHIIV_API_KEY:z.string().min(1),BEEHIIV_READ_ONLY:z.enum(['true','false']).default('true'),BEEHIIV_ALLOW_WRITE:z.enum(['true','false']).default('false'),BEEHIIV_APPROVAL_MODE:z.enum(['required','disabled']).default('required'),BEEHIIV_TIMEOUT_MS:z.coerce.number().int().min(1000).max(120000).default(30000),BEEHIIV_MAX_RETRIES:z.coerce.number().int().min(0).max(5).default(3)});
+export type Config={apiKey:string;readOnly:boolean;allowWrite:boolean;approvalMode:'required'|'disabled';timeoutMs:number;maxRetries:number};
+export function loadConfig(env:NodeJS.ProcessEnv=process.env):Config{const x=E.parse(env);return{apiKey:x.BEEHIIV_API_KEY,readOnly:x.BEEHIIV_READ_ONLY==='true',allowWrite:x.BEEHIIV_ALLOW_WRITE==='true',approvalMode:x.BEEHIIV_APPROVAL_MODE,timeoutMs:x.BEEHIIV_TIMEOUT_MS,maxRetries:x.BEEHIIV_MAX_RETRIES};}
