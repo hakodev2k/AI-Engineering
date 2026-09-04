@@ -1,0 +1,9 @@
+{
+  "max_fixed_tokens": 60000,
+  "max_context_utilization_pct": 30.0,
+  "max_absolute_increase_tokens": 10000,
+  "max_relative_increase_pct": 20.0,
+  "max_component_relative_increase_pct": 30.0,
+  "require_component_breakdown": true,
+  "require_quality_verification_after_reduction": true
+}
