@@ -1,0 +1,30 @@
+{
+  "allowed_event_kinds": [
+    "subagent_started",
+    "subagent_progress",
+    "subagent_completed",
+    "subagent_failed",
+    "status_request",
+    "wait_request",
+    "interrupted",
+    "resumed",
+    "auto_continue"
+  ],
+  "terminal_states": ["completed", "failed", "cancelled"],
+  "control_event_roles": ["runtime", "scheduler", "tool", "ui"],
+  "forbid_synthetic_user_role": true,
+  "require_causal_id": true,
+  "require_result_ref_on_completion": true,
+  "routing_classes": {
+    "status_request": ["collaboration", "lifecycle"],
+    "wait_request": ["collaboration", "lifecycle"],
+    "subagent_started": ["lifecycle"],
+    "subagent_progress": ["lifecycle"],
+    "subagent_completed": ["lifecycle"],
+    "subagent_failed": ["lifecycle"],
+    "interrupted": ["lifecycle"],
+    "resumed": ["lifecycle"],
+    "auto_continue": ["lifecycle"]
+  },
+  "max_repair_attempts": 2
+}
