@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["status", "affected_path", "facts", "failure_windows", "verification", "risks"],
+  "properties": {
+    "status": {"enum": ["investigating", "implemented", "blocked", "verified", "failed"]},
+    "affected_path": {"type": "string", "minLength": 1},
+    "facts": {"type": "array", "items": {"type": "object", "required": ["finding", "evidence"], "properties": {"finding": {"type": "string"}, "evidence": {"type": "string"}, "confidence": {"enum": ["high", "medium", "low"]}}}},
+    "hypotheses": {"type": "array", "items": {"type": "string"}},
+    "failure_windows": {"type": "array", "items": {"type": "object", "required": ["window", "mitigation"], "properties": {"window": {"type": "string"}, "mitigation": {"type": "string"}, "verified": {"type": "boolean"}}}},
+    "commands": {"type": "array", "items": {"type": "object", "required": ["command", "exit_code"], "properties": {"command": {"type": "string"}, "exit_code": {"type": "integer"}, "summary": {"type": "string"}}}},
+    "verification": {"type": "object", "required": ["atomic_persistence", "retry_behavior", "duplicate_tolerance", "independent_review", "verification_status"], "properties": {"atomic_persistence": {"type": "boolean"}, "retry_behavior": {"type": "boolean"}, "duplicate_tolerance": {"type": "boolean"}, "independent_review": {"type": "boolean"}, "verification_status": {"enum": ["pending", "verified", "failed", "blocked"]}}},
+    "approvals": {"type": "array", "items": {"type": "string"}},
+    "risks": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": false
+}

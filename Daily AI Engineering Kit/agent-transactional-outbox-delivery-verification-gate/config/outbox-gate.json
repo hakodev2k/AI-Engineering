@@ -1,0 +1,10 @@
+{
+  "source_roots": ["src", "app", "services"],
+  "exclude_dirs": [".git", "node_modules", "bin", "obj", "dist", "build", "vendor"],
+  "transaction_patterns": ["transaction", "savechanges", "commit", "unitofwork"],
+  "publish_patterns": ["publish", "produce", "enqueue", "dispatch"],
+  "outbox_patterns": ["outbox", "outboxmessage", "integrationevent"],
+  "dispatcher_patterns": ["backgroundservice", "worker", "poll", "dispatcher"],
+  "max_unexplained_high_findings": 0,
+  "max_file_bytes": 1000000
+}

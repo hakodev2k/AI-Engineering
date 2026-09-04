@@ -1,0 +1,23 @@
+{
+  "status": "verified",
+  "affected_path": "orders/create-order -> database transaction -> outbox -> dispatcher -> broker",
+  "facts": [
+    {"finding": "Order state and outbox record are persisted by the same transaction boundary.", "evidence": "integration test: create_order_persists_outbox_atomically", "confidence": "high"}
+  ],
+  "hypotheses": [],
+  "failure_windows": [
+    {"window": "dispatcher crashes after broker accepts message but before local completion marker", "mitigation": "consumer idempotency keyed by event id", "verified": true}
+  ],
+  "commands": [
+    {"command": "dotnet test", "exit_code": 0, "summary": "relevant unit and integration tests passed"}
+  ],
+  "verification": {
+    "atomic_persistence": true,
+    "retry_behavior": true,
+    "duplicate_tolerance": true,
+    "independent_review": true,
+    "verification_status": "verified"
+  },
+  "approvals": [],
+  "risks": ["broker outage behavior depends on configured retention and retry policy"]
+}
