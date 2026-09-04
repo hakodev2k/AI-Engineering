@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "clickhouse-cloud-safe": {
+      "command": "node",
+      "args": ["/absolute/path/to/MCP-API/clickhouse-cloud/dist/src/server.js"],
+      "env": {
+        "CLICKHOUSE_CLOUD_API_KEY": "${CLICKHOUSE_CLOUD_API_KEY}",
+        "CLICKHOUSE_CLOUD_API_SECRET": "${CLICKHOUSE_CLOUD_API_SECRET}",
+        "CLICKHOUSE_CLOUD_ORG_ID": "${CLICKHOUSE_CLOUD_ORG_ID}",
+        "CLICKHOUSE_HOST": "${CLICKHOUSE_HOST}",
+        "CLICKHOUSE_PASSWORD": "${CLICKHOUSE_PASSWORD}"
+      }
+    }
+  }
+}

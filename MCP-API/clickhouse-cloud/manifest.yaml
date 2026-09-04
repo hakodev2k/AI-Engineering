@@ -1,0 +1,47 @@
+id: clickhouse-cloud
+name: ClickHouse Cloud
+upstream:
+  - mcp
+  - rest
+official_mcp:
+  package: mcp-clickhouse
+  repository: https://github.com/ClickHouse/mcp-clickhouse
+  transport: stdio
+  cloud_remote_mcp: https://mcp.clickhouse.cloud
+api:
+  base_url: https://api.clickhouse.cloud
+  version: v1
+auth:
+  control_plane:
+    type: basic
+    username_env: CLICKHOUSE_CLOUD_API_KEY
+    password_env: CLICKHOUSE_CLOUD_API_SECRET
+    organization_env: CLICKHOUSE_CLOUD_ORG_ID
+  database_mcp:
+    type: clickhouse_user_password
+    credential_envs:
+      - CLICKHOUSE_HOST
+      - CLICKHOUSE_PORT
+      - CLICKHOUSE_USER
+      - CLICKHOUSE_PASSWORD
+capabilities:
+  - database.list
+  - table.list
+  - query.run_readonly
+  - service.list
+  - service.read
+  - clickpipe.list
+  - clickpipe.read
+  - backup.list
+  - backup.read
+  - backup.configuration.read
+  - clickstack.source.list
+  - clickstack.webhook.list
+risk:
+  default: READ
+  write_tools: none
+  destructive_tools: none
+security:
+  credentials_exposed_to_agent: false
+  retrieved_content_is_untrusted: true
+  arbitrary_http_requests: false
