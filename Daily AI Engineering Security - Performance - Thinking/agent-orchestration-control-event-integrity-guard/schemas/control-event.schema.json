@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Agent orchestration control event",
+  "type": "object",
+  "required": ["event_id", "kind", "source_role", "synthetic", "causal_id", "state"],
+  "properties": {
+    "event_id": {"type": "string", "minLength": 1},
+    "kind": {"type": "string", "minLength": 1},
+    "source_role": {"type": "string", "enum": ["runtime", "scheduler", "tool", "ui"]},
+    "synthetic": {"type": "boolean"},
+    "causal_id": {"type": "string", "minLength": 1},
+    "state": {"type": "string", "enum": ["pending", "running", "completed", "failed", "cancelled", "interrupted"]},
+    "result_ref": {"type": ["string", "null"]},
+    "routing_class": {"type": ["string", "null"]},
+    "model_summary": {"type": ["string", "null"]}
+  },
+  "additionalProperties": true
+}
