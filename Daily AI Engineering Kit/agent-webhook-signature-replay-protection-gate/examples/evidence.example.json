@@ -1,0 +1,25 @@
+{
+  "topic": "agent-webhook-signature-replay-protection-gate",
+  "status": "verified",
+  "boundaries": [
+    {
+      "component": "payments-webhook",
+      "entry_point": "src/webhooks/payment.ts",
+      "provider_contract_evidence": "Provider docs require HMAC-SHA256 over timestamp.rawBody and a 300-second tolerance."
+    }
+  ],
+  "checks": [
+    {"name": "raw-body", "status": "pass", "evidence": "Integration test signs exact bytes and rejects re-serialized payload."},
+    {"name": "signature", "status": "pass", "evidence": "Provider SDK verification executes before handler side effects."},
+    {"name": "freshness", "status": "pass", "evidence": "Stale timestamp fixture at +301 seconds is rejected."},
+    {"name": "replay", "status": "pass", "evidence": "Atomic event-id reservation allows first delivery and rejects duplicate."},
+    {"name": "secret-hygiene", "status": "pass", "evidence": "Secret comes from configured secret provider and is absent from logs."},
+    {"name": "host-tests", "status": "pass", "evidence": "Webhook integration test suite passes."}
+  ],
+  "commands": ["python3 scripts/scan-webhook-security.py --repo . --config config/gate.json --output /tmp/scan.json"],
+  "changed_files": ["src/webhooks/payment.ts", "tests/payment-webhook.test.ts"],
+  "verification_status": "verified",
+  "verifier": "verification-agent",
+  "risks": [],
+  "approvals": []
+}

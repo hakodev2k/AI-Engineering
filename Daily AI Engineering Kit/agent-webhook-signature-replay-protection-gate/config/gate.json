@@ -1,0 +1,12 @@
+{
+  "source_roots": ["src", "app", "server", "api", "services"],
+  "exclude_dirs": [".git", "node_modules", "bin", "obj", "dist", "build", "coverage", "vendor"],
+  "extensions": [".cs", ".py", ".js", ".ts", ".tsx", ".java", ".go", ".rb", ".php"],
+  "boundary_patterns": ["webhook", "callback", "signature", "event-handler", "event_handler"],
+  "signature_patterns": ["hmac", "signature", "verify", "digest", "timingSafeEqual", "fixedTimeEquals", "compare_digest", "CryptographicOperations.FixedTimeEquals"],
+  "raw_body_patterns": ["rawBody", "raw_body", "request.body", "BodyReader", "EnableBuffering", "request.get_data", "bodyBytes", "body_bytes"],
+  "freshness_patterns": ["timestamp", "tolerance", "maxAge", "max_age", "clockSkew", "clock_skew", "window"],
+  "replay_patterns": ["eventId", "event_id", "messageId", "message_id", "idempot", "replay", "dedup", "setnx", "putIfAbsent", "TryAdd"],
+  "secret_risk_patterns": ["console.log", "logger.debug", "logger.info", "print(", "Console.WriteLine"],
+  "max_unresolved_high_findings": 0
+}

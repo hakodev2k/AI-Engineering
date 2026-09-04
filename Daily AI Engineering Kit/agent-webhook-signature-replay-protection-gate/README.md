@@ -1,36 +1,52 @@
 # Agent Webhook Signature Replay Protection Gate
 
-Reusable implementation gate for verifying webhook authenticity, freshness, replay resistance, duplicate-delivery safety, and signing-secret rotation without relying on ad-hoc agent judgment.
+Reusable implementation kit for AI-assisted webhook security work. It turns webhook verification into an evidence-based workflow with deterministic checks for raw-body signing, timestamp freshness, constant-time comparison, replay protection, secret hygiene, and independent verification.
 
 ## Problem
-Webhook endpoints frequently fail at boundaries that normal happy-path tests miss: middleware consumes or mutates the body before verification, signatures are compared unsafely, timestamps are accepted indefinitely, authenticated events can be replayed, provider redeliveries duplicate side effects, or secret rotation causes outages. A handler returning `2xx` is not proof that the webhook security contract is correct.
 
-## Purpose
-This package gives an AI coding agent and a human reviewer a bounded, evidence-based workflow that combines deterministic scanning and fixture tooling with explicit investigation, implementation, independent verification, recovery, approval, and output contracts.
+Webhook handlers often look correct while remaining exploitable or unreliable. Common defects include verifying a parsed/re-serialized body instead of the original bytes, accepting stale signed messages, comparing signatures with ordinary equality, omitting replay protection, using the wrong secret scope, logging credentials, or returning success before durable processing semantics are established.
 
-## When to use
-Use when adding or changing an inbound webhook, changing HTTP middleware/body parsing, upgrading a provider SDK, modifying signature verification, adding replay/dedup storage, rotating signing secrets, investigating duplicate or forged webhook effects, or preparing a release that touches webhook security.
+AI coding agents can worsen this by copying provider snippets without checking the host framework's request-body behavior or by treating a successful signature test as proof of replay safety.
 
-## When not to use
-Do not use it to invent provider signing semantics. Obtain the provider contract from authoritative documentation or an already-established repository contract. Do not use it to rotate production secrets, weaken production controls, replay real production requests, deploy changes, or mutate production data without explicit human approval.
+## Trigger
+
+Use this kit when adding, changing, reviewing, or debugging an inbound webhook endpoint, signature middleware, replay cache, provider SDK integration, queue handoff, or incident involving duplicate or forged webhook delivery.
+
+## Inputs
+
+- Repository root.
+- Webhook route or handler path.
+- Provider signing contract: algorithm, signed payload format, header names, timestamp rules, and retry behavior.
+- Host framework/runtime.
+- Existing tests and request-body middleware.
+- Optional incident evidence such as duplicate event IDs or signature failures.
+
+## Outputs
+
+- Boundary inventory and evidence report.
+- Deterministic source scan output.
+- Replay simulation results.
+- Repository changes and tests when repair is required.
+- Machine-checkable verification evidence matching `schemas/evidence.schema.json`.
 
 ## Architecture
 
 ```mermaid
-flowchart LR
-  T[Webhook endpoint] --> I[Webhook Investigator]
-  I --> S[Static Scanner]
-  S --> C[Signing Contract + Threat Scenarios]
-  C --> A{Approval Required?}
-  A -->|yes| H[Human Approval]
-  A -->|no| E[Safe Implementation]
-  H --> E
-  E --> N[Negative / Replay / Rotation Tests]
-  N --> V[Independent Webhook Verifier]
-  V --> R[Assessment Validator]
-  R --> D{Verified?}
-  D -->|yes| P[Pass]
-  D -->|no| F[Fail / Block / Needs Approval]
+flowchart TD
+    T[Webhook change or incident] --> E[Repository Explorer]
+    E --> P[Security Planner]
+    P --> I[Implementation Agent]
+    I --> S[Static Scan]
+    I --> R[Replay Simulation]
+    I --> B[Host Build and Tests]
+    S --> V[Verification Agent]
+    R --> V
+    B --> V
+    V --> D{Verified?}
+    D -- yes --> C[Complete]
+    D -- retryable --> I
+    D -- approval required --> A[Stop for Human Approval]
+    D -- blocked --> X[Preserve Evidence and Stop]
 ```
 
 ## Package tree
@@ -39,105 +55,107 @@ flowchart LR
 agent-webhook-signature-replay-protection-gate/
 ├── README.md
 ├── config/
-│   └── webhook-security-policy.json
-├── schemas/
-│   └── assessment.schema.json
-├── scripts/
-│   ├── scan-webhook-security.py
-│   ├── verify-signature-fixture.py
-│   └── validate-assessment.py
-├── skills/
-│   └── webhook-security-assessment.md
-├── rules/
-│   └── webhook-security-rules.md
-├── subagents/
-│   ├── webhook-investigator.md
-│   └── webhook-verifier.md
-├── workflows/
-│   └── webhook-security-gate.md
-├── hooks/
-│   └── lifecycle-hooks.md
+│   └── gate.json
 ├── examples/
-│   └── assessment.json
-└── tests/
-    └── self-test.py
+│   └── evidence.example.json
+├── hooks/
+│   ├── post-edit.md
+│   └── pre-task.md
+├── rules/
+│   └── webhook-security.md
+├── schemas/
+│   └── evidence.schema.json
+├── scripts/
+│   ├── run-gate.sh
+│   ├── scan-webhook-security.py
+│   ├── simulate-replay-window.py
+│   └── validate-evidence.py
+├── skills/
+│   ├── investigate-webhook-boundary.md
+│   ├── repair-signature-replay.md
+│   └── verify-webhook-security.md
+├── subagents/
+│   ├── implementation-agent.md
+│   ├── repository-explorer.md
+│   └── verification-agent.md
+├── tests/
+│   └── test-scripts.py
+└── workflows/
+    └── end-to-end.md
 ```
 
-## Component responsibilities
+## Dependencies
 
-`skills/webhook-security-assessment.md` defines the reusable investigation procedure. `rules/webhook-security-rules.md` contains enforceable MUST/MUST NOT/SHOULD constraints. `subagents/webhook-investigator.md` owns context and evidence collection, while `subagents/webhook-verifier.md` independently challenges the result. `workflows/webhook-security-gate.md` defines the bounded end-to-end process and failure paths. `hooks/lifecycle-hooks.md` specifies deterministic lifecycle checks.
-
-`scripts/scan-webhook-security.py` scans supported source files for suspicious verification patterns such as ordinary signature equality and hard-coded webhook secrets. Scanner findings are hypotheses, not vulnerability proof. `scripts/verify-signature-fixture.py` provides a dependency-free HMAC-SHA256 fixture implementation for providers whose signed material is `timestamp.body`; it must not be assumed to match every provider. `scripts/validate-assessment.py` enforces the final output contract. `tests/self-test.py` validates the bundled scripts without external dependencies.
+Python 3.10+ is required for deterministic scripts. They use only the Python standard library. `run-gate.sh` requires a POSIX shell. Host build/test dependencies remain repository-specific.
 
 ## Installation
 
-Copy this directory into a repository or agent-instruction directory and preserve relative paths. Python 3.9+ is sufficient for all bundled scripts. No third-party Python packages are required.
+Copy this directory into the target repository without changing its internal layout. Then review `config/gate.json`.
+
+```bash
+python3 scripts/scan-webhook-security.py --repo /path/to/repo --config config/gate.json --output /tmp/webhook-scan.json
+python3 scripts/simulate-replay-window.py --timestamp 1700000000 --now 1700000100 --window-seconds 300
+python3 -m unittest tests/test-scripts.py
+```
 
 ## Configuration
 
-Review `config/webhook-security-policy.json`. The default freshness window is 300 seconds and automated transient retries are capped at two. Tighten these values when repository or provider policy requires stricter behavior. Do not relax organization-level controls through this package.
-
-## Permissions
-
-Default operation requires only repository read access plus local non-destructive test/build execution. Read-only sanitized logs may be used when available. Explicit human approval is required before production signing-secret changes, production configuration changes, production deployment, breaking webhook contracts, weakening security controls, destructive data operations, or other repository-defined dangerous actions.
+`config/gate.json` defines source roots, excludes, signature/timestamp/replay evidence patterns, and the maximum allowed count of unresolved high-confidence findings. Patterns are deliberately heuristic. A scanner hit is a lead, not a confirmed defect.
 
 ## Usage
 
-Run the static scanner:
+Run the complete deterministic portion:
 
 ```bash
-python3 scripts/scan-webhook-security.py /path/to/repository --output scan.json
+./scripts/run-gate.sh --repo /path/to/repo --output-dir /tmp/webhook-gate
 ```
 
-Exit code `0` means no heuristic findings, `1` means findings require contextual review, and `2` means invalid input or invocation.
+The agent workflow then inspects the generated scan, runs repository-specific tests, and creates evidence JSON for independent verification.
 
-For HMAC-SHA256 providers using `timestamp.body`, generate a local fixture:
+## Core security contract
 
-```bash
-python3 scripts/verify-signature-fixture.py \
-  --secret test-secret \
-  --body-file ./payload.json \
-  --timestamp 1700000000
-```
+A verified handler must demonstrate all applicable properties:
 
-Validate an assessment:
-
-```bash
-python3 scripts/validate-assessment.py assessment.json
-```
-
-Run the package self-test:
-
-```bash
-python3 tests/self-test.py
-```
-
-## Example invocation for an AI coding agent
-
-> Assess the webhook endpoint using `skills/webhook-security-assessment.md`, obey `rules/webhook-security-rules.md`, run the deterministic scanner, map the exact signed bytes and replay boundary, implement only the smallest safe in-scope fix, execute valid/invalid/stale/replay/rotation tests, hand verification to `subagents/webhook-verifier.md`, and produce a validated assessment matching `schemas/assessment.schema.json`. Stop before any approval-required action.
-
-## Workflow
-
-The investigator first traces the raw request bytes and middleware ordering, then extracts the exact provider signing contract. Threat scenarios are defined before implementation. The workflow stops at any dangerous action requiring approval. After safe changes, the endpoint is tested for a valid request, body/signature tampering, stale timestamps, exact replay, legitimate duplicate delivery, and current/previous secret rotation. An independent verifier repeats critical checks before the assessment can become `pass`.
+1. Signature verification uses the exact provider-defined bytes and canonical signed components.
+2. The signing secret is retrieved through approved configuration and is not logged.
+3. Cryptographic comparison is constant-time or delegated to a provider SDK that guarantees equivalent behavior.
+4. Timestamp or freshness validation is enforced when the provider protocol supports it.
+5. Replay protection uses a stable provider event/message identifier or a cryptographic replay key with atomic first-use semantics.
+6. Duplicate delivery is handled idempotently and distinguishable from malicious replay where the provider contract allows.
+7. Verification happens before business side effects.
+8. Failure responses do not disclose secrets or verification internals.
+9. Tests prove valid, invalid, stale, duplicate, and malformed cases.
 
 ## Approval boundaries
 
-Agents must stop before production secret rotation, production configuration or deployment, breaking webhook contract changes, weakening authentication/freshness/replay controls, destructive data changes, or permission escalation. Approval must be explicit and scoped to the specific action. The package never silently expands permissions.
+Stop for explicit human approval before production deployment, secret rotation, production configuration changes, disabling signature/freshness checks, changing public webhook contracts, destructive data changes, infrastructure modifications, force push/history rewrite, or weakening any security control.
 
 ## Failure and recovery
 
-Transient tool or test-environment failures may be retried at most twice. Preserve sanitized request metadata, command output, failing scenario, and attempt number. Deterministic failures require diagnosis or code/config change before rerun. Missing provider signing semantics, permission failures, or production-only verification requirements produce `blocked`. Dangerous remediation produces `needs-approval`. A failed security scenario remains `fail` until evidence shows it is fixed.
+- Configuration or schema validation failure: stop immediately.
+- Static scan failure: preserve JSON and stop if the scanner itself errors.
+- Host test/build failure: diagnose once, then allow at most two implementation retries.
+- Transient tool failure: retry once.
+- Permission failure: never increase privileges automatically.
+- Missing provider contract: do not invent signing semantics; mark verification blocked.
+- Replay store unavailable: do not silently fall back to no replay protection.
 
 ## Verification
 
-Execution is not verification. A `pass` assessment requires all of the following evidence: a valid signature is accepted; an invalid or tampered signature is rejected; a stale timestamp is rejected; replay is rejected or safely idempotent according to the established contract; and bounded secret rotation is tested. Tests should pass through production-equivalent middleware where possible so raw-body handling is actually exercised.
+`Task executed` means edits/scripts were run. `Task verified successfully` requires evidence from tests and code inspection plus independent verification.
 
-The verifier must also inspect the diff for bypass paths, secret leakage, weakened freshness windows, unbounded historical secret acceptance, and duplicate protected side effects. The final JSON must pass `scripts/validate-assessment.py`.
+The verifier must confirm the evidence schema, inspect affected boundaries, and ensure no unresolved high-risk finding remains. The implementation agent cannot self-approve.
 
 ## Definition of Done
 
-The provider signing contract is established; exact signed material and middleware ordering are known; scanner findings were reviewed; constant-time comparison and freshness enforcement are verified; replay and duplicate-delivery behavior are tested; secret rotation overlap is bounded and tested; no secret leakage is present in evidence; independent verification completed; the assessment contract validates; required approvals exist; remaining risks are documented; and no blocking failure remains for a `pass` verdict.
-
-## Customization
-
-Adapt the fixture signer only when the provider uses a different canonical signing format. Keep the core rules unchanged: authenticate the correct bytes, verify freshness, resist replay, protect business effects from duplicates, rotate secrets safely, redact sensitive evidence, and stop at dangerous actions. Additional scanners are useful only when their findings remain deterministic enough to review and do not masquerade as proof.
+- Affected webhook boundaries and signing inputs are mapped.
+- Provider contract assumptions are explicit and evidenced.
+- Raw-body behavior is proven.
+- Signature, freshness, and replay behavior are tested.
+- Replay state uses atomic first-use semantics or a documented equivalent.
+- Static scan findings are resolved or explained.
+- Host build/tests pass where applicable.
+- Evidence JSON validates.
+- Independent verifier records `verified`.
+- No approval-required action is pending.
+- Remaining risks are documented.
