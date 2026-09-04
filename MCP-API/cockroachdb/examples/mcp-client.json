@@ -1,0 +1,3 @@
+{
+  "mcpServers":{"cockroachdb-safe":{"command":"node","args":["/absolute/path/to/MCP-API/cockroachdb/dist/src/server.js"],"env":{"COCKROACHDB_CLOUD_API_KEY":"${COCKROACHDB_CLOUD_API_KEY}","COCKROACHDB_CLUSTER_ID":"${COCKROACHDB_CLUSTER_ID}","COCKROACHDB_READ_ONLY":"true","COCKROACHDB_ALLOW_WRITE":"false","COCKROACHDB_APPROVAL_MODE":"required"}}}
+}

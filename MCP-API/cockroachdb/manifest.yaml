@@ -1,0 +1,45 @@
+id: cockroachdb
+name: CockroachDB Cloud
+upstream:
+  - mcp
+official_mcp:
+  endpoint: https://cockroachlabs.cloud/mcp
+  transport: streamable_http
+  official: true
+auth:
+  type: service_account_api_key
+  header: Authorization
+  cluster_header: mcp-cluster-id
+  oauth_alternative:
+    version: "2.1"
+    flow: authorization_code_pkce
+    scopes:
+      - mcp:read
+      - mcp:write
+required_environment:
+  - COCKROACHDB_CLOUD_API_KEY
+  - COCKROACHDB_CLUSTER_ID
+capabilities:
+  - cluster.read
+  - database.list
+  - table.list
+  - table.schema.read
+  - sql_user.list
+  - node.list
+  - query.running.list
+  - query.select
+  - query.explain
+  - statement.show
+  - database.create
+  - table.create
+  - row.insert
+  - row.update
+risk:
+  default: READ
+  write_approval: required
+  destructive_enabled: false
+security:
+  credentials_exposed_to_agent: false
+  system_tables_restricted_upstream: true
+  arbitrary_tool_forwarding: false
+  retrieved_content_is_untrusted: true
