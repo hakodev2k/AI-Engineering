@@ -1,0 +1,8 @@
+{
+  "required_runtime_identity_fields": ["provider", "model", "toolset_hash", "renderer_version"],
+  "require_nonempty_prefix": true,
+  "require_segment_order_match": true,
+  "same_runtime_requires_exact_bytes": true,
+  "changed_runtime_requires_rebaseline": true,
+  "emit_content": false
+}
