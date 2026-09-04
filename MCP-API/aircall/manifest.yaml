@@ -1,0 +1,43 @@
+id: aircall
+name: Aircall
+upstream:
+  - rest
+official_mcp:
+  available: false
+  checked: 2026-09-04
+  note: "Aircall documents MCP registration for third-party MCP servers and states it does not currently offer an Aircall MCP server."
+api_base_url: https://api.aircall.io/v1
+auth:
+  supported:
+    - basic_api_key
+    - oauth2_bearer
+  private_app:
+    environment: [AIRCALL_API_ID, AIRCALL_API_TOKEN]
+  public_app:
+    environment: [AIRCALL_ACCESS_TOKEN]
+capabilities:
+  - call.list
+  - call.read
+  - user.list
+  - user.read
+  - user.availability.list
+  - team.list
+  - number.list
+  - tag.list
+  - dial.prepare
+  - webhook.list
+  - webhook.create
+  - webhook.delete
+risk:
+  default: READ
+  write_approval: required
+  destructive_approval: strong
+  destructive_enabled_by_default: false
+required_environment:
+  any_of:
+    - [AIRCALL_API_ID, AIRCALL_API_TOKEN]
+    - [AIRCALL_ACCESS_TOKEN]
+security:
+  credentials_exposed_to_agent: false
+  arbitrary_http_requests: false
+  retrieved_content_is_untrusted: true

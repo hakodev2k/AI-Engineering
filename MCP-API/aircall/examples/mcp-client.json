@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "aircall": {
+      "command": "node",
+      "args": ["/absolute/path/to/MCP-API/aircall/dist/src/server.js"],
+      "env": {
+        "AIRCALL_API_ID": "${AIRCALL_API_ID}",
+        "AIRCALL_API_TOKEN": "${AIRCALL_API_TOKEN}",
+        "AIRCALL_READ_ONLY": "true",
+        "AIRCALL_ALLOW_WRITE": "false",
+        "AIRCALL_ALLOW_DESTRUCTIVE": "false",
+        "AIRCALL_APPROVAL_MODE": "required"
+      }
+    }
+  }
+}
