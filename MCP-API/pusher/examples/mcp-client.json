@@ -1,0 +1,17 @@
+{
+  "mcpServers": {
+    "pusher-safe-connector": {
+      "command": "node",
+      "args": ["/absolute/path/to/MCP-API/pusher/dist/src/server.js"],
+      "env": {
+        "PUSHER_APP_ID": "${PUSHER_APP_ID}",
+        "PUSHER_KEY": "${PUSHER_KEY}",
+        "PUSHER_SECRET": "${PUSHER_SECRET}",
+        "PUSHER_CLUSTER": "${PUSHER_CLUSTER}",
+        "PUSHER_READ_ONLY": "true",
+        "PUSHER_ALLOW_WRITE": "false",
+        "PUSHER_APPROVAL_MODE": "required"
+      }
+    }
+  }
+}
