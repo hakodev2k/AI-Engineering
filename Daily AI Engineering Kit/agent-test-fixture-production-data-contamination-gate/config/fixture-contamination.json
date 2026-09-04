@@ -1,0 +1,69 @@
+{
+  "version": 1,
+  "fixture_globs": [
+    "**/fixtures/**",
+    "**/fixture/**",
+    "**/snapshots/**",
+    "**/__snapshots__/**",
+    "**/test-data/**",
+    "**/testdata/**",
+    "**/seeds/**",
+    "**/mocks/**",
+    "**/cassettes/**",
+    "**/*.har",
+    "**/*.snap",
+    "**/*.cassette",
+    "**/*.fixture.json"
+  ],
+  "exclude_dirs": [
+    ".git",
+    "node_modules",
+    "bin",
+    "obj",
+    "dist",
+    "build",
+    ".venv",
+    "venv",
+    "vendor"
+  ],
+  "production_domain_patterns": [
+    "(^|\\.)prod\\.",
+    "(^|\\.)production\\.",
+    "(^|\\.)live\\."
+  ],
+  "allowed_synthetic_domains": [
+    "example.com",
+    "example.org",
+    "example.net",
+    "localhost",
+    "test",
+    "invalid"
+  ],
+  "sensitive_key_patterns": [
+    "password",
+    "passwd",
+    "secret",
+    "api[_-]?key",
+    "access[_-]?token",
+    "refresh[_-]?token",
+    "authorization",
+    "private[_-]?key",
+    "connection[_-]?string"
+  ],
+  "blocking_patterns": {
+    "private_key": "-----BEGIN (RSA |EC |OPENSSH |DSA )?PRIVATE KEY-----",
+    "bearer_token": "(?i)bearer\\s+[A-Za-z0-9._~+/-]{20,}={0,2}",
+    "jwt": "eyJ[A-Za-z0-9_-]{10,}\\.[A-Za-z0-9_-]{10,}\\.[A-Za-z0-9_-]{10,}"
+  },
+  "review_patterns": {
+    "email": "(?i)\\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,}\\b",
+    "ipv4": "\\b(?:\\d{1,3}\\.){3}\\d{1,3}\\b"
+  },
+  "high_entropy": {
+    "enabled": true,
+    "min_length": 24,
+    "min_shannon_entropy": 4.2
+  },
+  "max_file_bytes": 2097152,
+  "block_on_review_findings": false
+}

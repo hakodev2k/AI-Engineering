@@ -1,0 +1,17 @@
+{
+  "task_status": "executed",
+  "verification_status": "verified",
+  "repository": "/workspace/example-service",
+  "findings": [
+    {"path": "tests/fixtures/order.json", "rule": "production_domain", "severity": "blocking", "status": "remediated", "evidence": "Replaced prod.internal.example with api.example.test and focused test passes."}
+  ],
+  "provenance": [
+    {"path": "tests/fixtures/order.json", "classification": "synthetic", "evidence": "All identifiers and domains are reserved synthetic values after remediation."}
+  ],
+  "checks": [
+    {"name": "fixture-scan", "status": "passed", "command": "python3 scripts/scan-fixtures.py ...", "evidence": "0 blocking findings"},
+    {"name": "focused-tests", "status": "passed", "command": "project-specific test command", "evidence": "affected tests passed"}
+  ],
+  "remaining_risks": [],
+  "approvals": [{"action": "production-access", "status": "not_required"}]
+}
