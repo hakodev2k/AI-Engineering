@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "minimum_blocking_confidence": 0.8,
+  "require_reproduction_for_blocking": true,
+  "require_code_location": true,
+  "require_independent_verification": true,
+  "max_retries": 2,
+  "blocking_severities": ["critical", "high"],
+  "accepted_statuses": ["confirmed", "rejected", "needs-human-review"],
+  "evidence_types": ["test", "build", "static-analysis", "runtime-reproduction", "repository-proof", "specification"]
+}
