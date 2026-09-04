@@ -1,0 +1,46 @@
+id: google-drive
+name: Google Drive
+upstream:
+  - mcp
+  - rest
+official_mcp:
+  endpoint: https://drivemcp.googleapis.com/mcp/v1
+  status: developer-preview
+api_base_url: https://www.googleapis.com/drive/v3
+auth:
+  type: oauth2
+  recommended_scopes:
+    read_only: https://www.googleapis.com/auth/drive.readonly
+    full: https://www.googleapis.com/auth/drive
+capabilities:
+  - file.search
+  - file.recent.list
+  - file.metadata.get
+  - file.content.read
+  - file.content.download
+  - file.permissions.list
+  - file.create
+  - file.copy
+  - file.update
+  - permission.create
+  - shared_drive.list
+risk:
+  default: READ
+  write_approval: required
+  high_risk_approval: required
+  destructive_enabled: false
+security:
+  credentials_exposed_to_agent: false
+  arbitrary_requests: false
+  public_sharing_default: false
+required_environment: []
+optional_environment:
+  - GOOGLE_DRIVE_ACCESS_TOKEN
+  - GOOGLE_CLIENT_ID
+  - GOOGLE_CLIENT_SECRET
+  - GOOGLE_REFRESH_TOKEN
+  - GOOGLE_DRIVE_READ_ONLY
+  - GOOGLE_DRIVE_ALLOW_WRITE
+  - GOOGLE_DRIVE_ALLOW_PUBLIC_SHARING
+  - GOOGLE_DRIVE_APPROVAL_MODE
+  - GOOGLE_DRIVE_TIMEOUT_MS

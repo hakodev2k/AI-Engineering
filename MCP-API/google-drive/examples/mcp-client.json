@@ -1,0 +1,1 @@
+{"mcpServers":{"google-drive-safe":{"command":"node","args":["/absolute/path/MCP-API/google-drive/dist/src/server.js"],"env":{"GOOGLE_DRIVE_ACCESS_TOKEN":"${GOOGLE_DRIVE_ACCESS_TOKEN}","GOOGLE_DRIVE_READ_ONLY":"true","GOOGLE_DRIVE_ALLOW_WRITE":"false","GOOGLE_DRIVE_ALLOW_PUBLIC_SHARING":"false"}}}}

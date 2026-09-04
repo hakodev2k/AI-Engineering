@@ -1,0 +1,7 @@
+import {accessToken,config,request} from './core.js';
+const MCP='https://drivemcp.googleapis.com/mcp/v1', REST='https://www.googleapis.com/drive/v3';
+const ALLOWED=new Set(['search_files','list_recent_files','get_file_metadata','read_file_content','download_file_content','get_file_permissions','create_file','copy_file']);
+let id=1;
+function parseSse(s:string){const chunks=s.split(/\n\n+/).flatMap(b=>b.split('\n').filter(x=>x.startsWith('data:')).map(x=>x.slice(5).trim())).filter(Boolean);for(let i=chunks.length-1;i>=0;i--){try{return JSON.parse(chunks[i])}catch{}}throw new Error('Invalid MCP SSE response.');}
+export async function mcp(tool:string,args:Record<string,unknown>,isRead:boolean){if(!ALLOWED.has(tool))throw new Error('Unapproved upstream MCP tool.');const c=config(),token=await accessToken();const body={jsonrpc:'2.0',id:id++,method:'tools/call',params:{name:tool,arguments:args}};const out=await request(MCP,{method:'POST',headers:{authorization:`Bearer ${token}`,'content-type':'application/json',accept:'application/json, text/event-stream'},body:JSON.stringify(body)},c,isRead);const msg=typeof out==='string'?parseSse(out):out;if(msg.error)throw new Error(`Google Drive MCP error: ${JSON.stringify(msg.error).slice(0,500)}`);return msg.result;}
+export async function rest(path:string,method='GET',body?:unknown,isRead=true){const c=config(),token=await accessToken();return request(`${REST}${path}`,{method,headers:{authorization:`Bearer ${token}`,'content-type':'application/json'},body:body===undefined?undefined:JSON.stringify(body)},c,isRead);}
