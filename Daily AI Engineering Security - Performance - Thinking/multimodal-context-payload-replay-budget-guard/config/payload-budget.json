@@ -1,0 +1,9 @@
+{
+  "max_inline_bytes_per_artifact": 1048576,
+  "max_replays_per_artifact_per_thread": 1,
+  "max_inherited_inline_bytes_per_child": 2097152,
+  "max_total_inline_bytes_per_thread": 8388608,
+  "require_hash_for_payload_bytes": 65536,
+  "fail_closed_on_missing_lineage": true,
+  "allow_reference_rehydration": true
+}
