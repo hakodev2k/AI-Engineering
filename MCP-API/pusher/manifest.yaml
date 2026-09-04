@@ -1,0 +1,48 @@
+id: pusher
+name: Pusher Channels
+upstream:
+  - sdk
+  - rest
+official_mcp:
+  available: false
+  checked_sources:
+    - https://pusher.com/docs/channels/
+    - https://github.com/pusher/pusher-http-node
+api_base_url: https://api-{cluster}.pusher.com/apps/{app_id}
+auth:
+  type: app_credentials
+  environment:
+    - PUSHER_APP_ID
+    - PUSHER_KEY
+    - PUSHER_SECRET
+    - PUSHER_CLUSTER
+  notes: "Credentials stay inside the connector and official Pusher server SDK."
+capabilities:
+  - channel.list
+  - channel.read
+  - presence.users.list
+  - event.publish
+  - event.publish_batch
+  - user.event.publish
+  - user.connections.terminate
+  - webhook.verify
+risk:
+  default: READ
+  write_approval: required
+  high_risk_approval: required
+  destructive_enabled: false
+required_environment:
+  - PUSHER_APP_ID
+  - PUSHER_KEY
+  - PUSHER_SECRET
+  - PUSHER_CLUSTER
+optional_environment:
+  - PUSHER_USE_TLS
+  - PUSHER_TIMEOUT_MS
+  - PUSHER_READ_ONLY
+  - PUSHER_ALLOW_WRITE
+  - PUSHER_APPROVAL_MODE
+security:
+  credentials_exposed_to_agent: false
+  arbitrary_http_requests: false
+  retrieved_content_is_untrusted: true
