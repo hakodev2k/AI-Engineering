@@ -1,0 +1,55 @@
+id: loops
+name: Loops
+upstream:
+  - rest
+official_mcp:
+  endpoint: https://mcp.loops.so
+  transport: streamable-http
+  auth: oauth
+  tools:
+    - search
+    - describe
+    - execute
+    - teams
+  note: "Official MCP exists and is preferred for interactive OAuth clients. This reusable headless connector uses the official REST API to expose a fixed allowlisted tool surface and avoid forwarding generic execute operations."
+api:
+  base_url: https://app.loops.so/api
+  version: v1
+auth:
+  type: bearer_api_key
+  environment:
+    - LOOPS_API_KEY
+capabilities:
+  - contact.find
+  - contact.create
+  - contact.update
+  - contact.delete
+  - mailing_list.list
+  - event.send
+  - transactional_email.list
+  - transactional_email.read
+  - transactional_email.send
+  - workflow.list
+  - workflow.read
+  - workflow.create
+  - workflow.update
+risk:
+  default: READ
+  write_approval: required
+  high_risk_approval: required
+  destructive_enabled_by_default: false
+rate_limits:
+  team_requests_per_second: 10
+security:
+  credentials_exposed_to_agent: false
+  arbitrary_http_disabled: true
+  retrieved_content_is_untrusted: true
+required_environment:
+  - LOOPS_API_KEY
+optional_environment:
+  - LOOPS_API_BASE_URL
+  - LOOPS_ALLOW_WRITE
+  - LOOPS_ALLOW_DESTRUCTIVE
+  - LOOPS_APPROVAL_MODE
+  - LOOPS_TIMEOUT_MS
+  - LOOPS_MAX_READ_RETRIES

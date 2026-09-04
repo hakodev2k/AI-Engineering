@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "loops-safe": {
+      "command": "node",
+      "args": ["/absolute/path/to/MCP-API/loops/dist/src/server.js"],
+      "env": {
+        "LOOPS_API_KEY": "${LOOPS_API_KEY}",
+        "LOOPS_ALLOW_WRITE": "false",
+        "LOOPS_ALLOW_DESTRUCTIVE": "false",
+        "LOOPS_APPROVAL_MODE": "required"
+      }
+    }
+  }
+}
