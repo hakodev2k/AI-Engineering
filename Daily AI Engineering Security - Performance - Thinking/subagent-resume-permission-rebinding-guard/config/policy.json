@@ -1,0 +1,11 @@
+{
+  "required_fields": ["approval_policy", "sandbox_policy", "role", "policy_version"],
+  "permission_order": {
+    "sandbox_policy": ["read-only", "workspace-write", "full-access"],
+    "approval_policy": ["always", "on-request", "never"]
+  },
+  "block_on_missing_provenance": true,
+  "block_on_broadening": true,
+  "block_on_restrictive_drift": true,
+  "ignored_fields": ["observed_at", "transition_id"]
+}
