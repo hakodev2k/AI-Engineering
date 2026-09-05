@@ -1,0 +1,7 @@
+{
+  "version": 1,
+  "ignored_schema_keys": ["description","title","$comment","examples","default"],
+  "max_transient_tool_retries": 2,
+  "max_implementation_retries": 2,
+  "require_human_approval_for_breaking_changes": true
+}

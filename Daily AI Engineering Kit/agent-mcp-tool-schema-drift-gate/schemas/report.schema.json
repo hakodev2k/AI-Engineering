@@ -1,0 +1,13 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "type":"object",
+  "additionalProperties":false,
+  "required":["status","summary","findings"],
+  "properties":{
+    "status":{"enum":["pass","fail"]},
+    "summary":{"type":"object","required":["breaking","non_breaking","total"],
+      "properties":{"breaking":{"type":"integer","minimum":0},"non_breaking":{"type":"integer","minimum":0},"total":{"type":"integer","minimum":0}}},
+    "findings":{"type":"array","items":{"type":"object","required":["severity","kind","component"],
+      "properties":{"severity":{"enum":["breaking","non_breaking"]},"kind":{"type":"string"},"component":{"type":"string"},"path":{"type":"string"},"before":{},"after":{}}}}
+  }
+}

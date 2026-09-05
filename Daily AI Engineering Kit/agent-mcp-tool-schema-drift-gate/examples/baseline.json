@@ -1,0 +1,1 @@
+{"tools":[{"name":"search_repo","inputSchema":{"type":"object","additionalProperties":false,"properties":{"query":{"type":"string"},"limit":{"type":"integer","maximum":100}},"required":["query"]}}],"resources":[{"name":"readme","uri":"repo://README.md"}],"prompts":[{"name":"review","arguments":[{"name":"diff","required":true}]}]}
