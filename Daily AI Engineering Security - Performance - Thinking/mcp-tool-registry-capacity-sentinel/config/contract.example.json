@@ -1,0 +1,19 @@
+{
+  "advertised_tools": [
+    "github.search_code",
+    "github.read_file",
+    "github.create_issue",
+    "calendar.list_events"
+  ],
+  "visible_tools": [
+    "github.search_code",
+    "github.read_file",
+    "github.create_issue",
+    "calendar.list_events"
+  ],
+  "required_tools": [
+    "github.search_code",
+    "github.read_file"
+  ],
+  "documented_capacity": 80
+}
