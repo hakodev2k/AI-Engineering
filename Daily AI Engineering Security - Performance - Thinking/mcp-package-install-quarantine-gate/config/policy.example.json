@@ -1,0 +1,7 @@
+{
+  "allowed_publishers": ["example-trusted-publisher"],
+  "blocked_packages": [
+    ["mcp-server-git", "0.0.0-malicious-fixture"],
+    ["mcp-real-chrome", "0.0.0-malicious-fixture"]
+  ]
+}
