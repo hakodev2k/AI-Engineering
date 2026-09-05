@@ -1,0 +1,52 @@
+id: plausible
+name: Plausible Analytics
+upstream:
+  - rest
+official_mcp:
+  status: unavailable
+  checked: 2026-09-06
+api:
+  base_url: https://plausible.io
+  stats: /api/v2/query
+  sites: /api/v1/sites
+  events: /api/event
+auth:
+  stats:
+    type: bearer_api_key
+    env: PLAUSIBLE_STATS_API_KEY
+  sites:
+    type: bearer_api_key
+    env: PLAUSIBLE_SITES_API_KEY
+  events:
+    type: none
+    safeguards: [allowed_site_list, explicit_high_risk_approval]
+capabilities:
+  - stats.query
+  - site.list
+  - site.get
+  - team.list
+  - goal.list
+  - custom_property.list
+  - guest.list
+  - site.create
+  - site.update
+  - goal.ensure
+  - custom_property.ensure
+  - guest.invite
+  - event.track
+  - site.delete
+  - goal.delete
+  - custom_property.delete
+  - guest.remove
+risk:
+  default: READ
+  write_approval: configurable
+  high_risk_approval: required
+  destructive_enabled: false
+plans:
+  stats_api: Business
+  sites_api: Enterprise
+security:
+  credentials_exposed_to_agent: false
+  retrieved_content_is_untrusted: true
+  arbitrary_http_tool: false
