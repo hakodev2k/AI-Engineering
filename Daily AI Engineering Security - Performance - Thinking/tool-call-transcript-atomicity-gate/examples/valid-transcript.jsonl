@@ -1,0 +1,5 @@
+{"type":"call","call_id":"call_001","tool":"read_file"}
+{"type":"result","call_id":"call_001","status":"ok","summary":"read completed"}
+{"type":"call","call_id":"call_002","tool":"run_tests"}
+{"type":"cancel","call_id":"call_002","reason":"operator_interrupt_before_result_persisted"}
+{"type":"note","message":"Task checkpoint after explicit tool lifecycle closure"}
