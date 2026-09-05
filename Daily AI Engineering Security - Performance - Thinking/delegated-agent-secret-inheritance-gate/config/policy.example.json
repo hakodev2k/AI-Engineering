@@ -1,0 +1,10 @@
+{
+  "inheritance_mode": "allowlist",
+  "child_can_read_parent_process_environment": false,
+  "parent_env_names": ["PATH", "LANG", "GITHUB_TOKEN", "SERVICE_API_KEY"],
+  "child_requested_env_names": ["PATH", "LANG", "GITHUB_TOKEN"],
+  "child_allowed_env_names": ["PATH", "LANG"],
+  "brokered_sensitive_env_names": ["GITHUB_TOKEN"],
+  "approved_readable_sensitive_env_names": [],
+  "sensitive_name_patterns": []
+}
