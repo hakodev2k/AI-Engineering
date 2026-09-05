@@ -1,0 +1,24 @@
+{
+  "surfaces": [
+    {
+      "name": "agent-control-api",
+      "auth_mode": "required",
+      "route_match": "exact",
+      "critical": true,
+      "directly_reachable": true,
+      "exposed": true,
+      "anonymous_exemption": false,
+      "fail_open": false
+    },
+    {
+      "name": "public-health",
+      "auth_mode": "none",
+      "route_match": "exact",
+      "critical": false,
+      "directly_reachable": true,
+      "exposed": true,
+      "anonymous_exemption": true,
+      "fail_open": false
+    }
+  ]
+}
