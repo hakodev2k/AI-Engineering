@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "task_id": "TASK-123",
+  "scope_hash": "3f1d6d47b1328e70a14f6cf875e6f0f1e185259a0dcf84e88f18c22f380f5a4c",
+  "repo_head": "2222222222222222222222222222222222222222",
+  "working_tree_clean": true,
+  "diff_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "environment_fingerprint": "linux-python-3.12"
+}

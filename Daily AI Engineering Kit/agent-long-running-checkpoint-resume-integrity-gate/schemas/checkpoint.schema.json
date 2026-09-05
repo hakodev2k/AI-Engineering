@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Long Running Agent Checkpoint",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version","task_id","scope_hash","repo_head","working_tree_clean","diff_hash","stage","next_action","created_at","approvals"],
+  "properties": {
+    "version": {"const": 1},
+    "task_id": {"type":"string","minLength":1},
+    "scope_hash": {"type":"string","pattern":"^[a-f0-9]{64}$"},
+    "repo_head": {"type":"string","pattern":"^[a-f0-9]{40,64}$"},
+    "working_tree_clean": {"type":"boolean"},
+    "diff_hash": {"type":"string","pattern":"^[a-f0-9]{64}$"},
+    "stage": {"type":"string","minLength":1},
+    "next_action": {"type":"string","minLength":1},
+    "created_at": {"type":"string","format":"date-time"},
+    "environment_fingerprint": {"type":"string"},
+    "approvals": {"type":"array","items":{"type":"object","required":["action","approved_by","expires_at"],"properties":{"action":{"type":"string"},"approved_by":{"type":"string"},"expires_at":{"type":"string","format":"date-time"}}}},
+    "evidence_paths": {"type":"array","items":{"type":"string"}}
+  }
+}

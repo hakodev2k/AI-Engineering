@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "max_checkpoint_age_minutes": 240,
+  "require_same_head": true,
+  "require_clean_state_match": true,
+  "require_diff_hash_match": true,
+  "require_scope_hash_match": true,
+  "require_environment_fingerprint_match": false,
+  "require_unexpired_approvals": true,
+  "max_transient_tool_retries": 2,
+  "max_post_resume_fix_cycles": 2
+}
