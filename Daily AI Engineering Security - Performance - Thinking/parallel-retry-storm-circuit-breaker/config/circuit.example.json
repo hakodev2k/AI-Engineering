@@ -1,0 +1,8 @@
+{
+  "window_events": 8,
+  "max_retryable_failures": 4,
+  "max_total_attempts": 24,
+  "open_failure_ratio": 0.5,
+  "minimum_retry_delay_ms": 1000,
+  "half_open_probe_concurrency": 1
+}
