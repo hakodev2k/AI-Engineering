@@ -1,0 +1,9 @@
+{
+  "required_path_names": ["single", "sequential", "parallel", "remote-mcp"],
+  "execution_paths": [
+    {"name":"single","hard_timeout_seconds":120,"idle_timeout_seconds":30,"owns_cancellable_resource":true,"cancellation_supported":true,"timeout_disposition":"tool_timeout","max_timeout_retries":1,"non_idempotent":false,"retry_safety_approved":false},
+    {"name":"sequential","hard_timeout_seconds":120,"idle_timeout_seconds":30,"owns_cancellable_resource":true,"cancellation_supported":true,"timeout_disposition":"tool_timeout","max_timeout_retries":1,"non_idempotent":false,"retry_safety_approved":false},
+    {"name":"parallel","hard_timeout_seconds":120,"idle_timeout_seconds":30,"owns_cancellable_resource":true,"cancellation_supported":true,"timeout_disposition":"tool_timeout","max_timeout_retries":1,"non_idempotent":false,"retry_safety_approved":false},
+    {"name":"remote-mcp","hard_timeout_seconds":300,"idle_timeout_seconds":60,"owns_cancellable_resource":true,"cancellation_supported":true,"timeout_disposition":"tool_timeout","max_timeout_retries":0,"non_idempotent":true,"retry_safety_approved":false}
+  ]
+}
