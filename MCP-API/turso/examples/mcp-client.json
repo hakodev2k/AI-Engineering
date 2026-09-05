@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "turso-platform": {
+      "command": "node",
+      "args": ["/absolute/path/to/MCP-API/turso/dist/src/server.js"],
+      "env": {
+        "TURSO_PLATFORM_TOKEN": "${TURSO_PLATFORM_TOKEN}",
+        "TURSO_ORG": "${TURSO_ORG}",
+        "TURSO_ALLOW_WRITE": "false",
+        "TURSO_APPROVAL_MODE": "required"
+      }
+    }
+  }
+}
