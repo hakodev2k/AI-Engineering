@@ -1,0 +1,6 @@
+{
+  "trusted_server_ids": ["corp-registry-mcp"],
+  "public_endpoints": ["server/version"],
+  "forbidden_shared_fields": ["instructions", "tools", "prompts", "resources", "secrets", "user_data"],
+  "allow_authenticated_shared_cache": false
+}
