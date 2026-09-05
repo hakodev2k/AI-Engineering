@@ -1,0 +1,10 @@
+{
+  "approval_id": "approval-example-001",
+  "operation": "delete",
+  "targets": ["tmp/generated-a.txt"],
+  "target_fingerprints": {"tmp/generated-a.txt": "sha256:example-current-state"},
+  "approved_by_type": "human",
+  "intent_evidence": "user-request-id-or-audit-reference",
+  "expires_at": 1893456000,
+  "nonce": "example-nonce-20260906"
+}

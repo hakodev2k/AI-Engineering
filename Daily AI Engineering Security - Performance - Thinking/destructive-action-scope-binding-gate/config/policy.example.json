@@ -1,0 +1,5 @@
+{
+  "destructive_operations": ["delete", "overwrite", "archive", "reset", "terminate"],
+  "human_required": ["delete", "reset", "terminate"],
+  "protected_roots": [".git", "production", "secrets"]
+}
