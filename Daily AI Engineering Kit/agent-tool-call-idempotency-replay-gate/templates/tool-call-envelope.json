@@ -1,0 +1,12 @@
+{
+  "tool": "create-ticket",
+  "operation": "create",
+  "side_effecting": true,
+  "risk": "medium",
+  "idempotency_key": "ticket:create:incident-123",
+  "request_fingerprint": "sha256:replace-with-canonical-request-hash",
+  "arguments": {
+    "title": "Example incident",
+    "severity": "high"
+  }
+}

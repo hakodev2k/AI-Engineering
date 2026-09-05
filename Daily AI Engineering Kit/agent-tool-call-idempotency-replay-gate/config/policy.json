@@ -1,0 +1,8 @@
+{
+  "version": 1,
+  "max_transient_retries": 2,
+  "max_fix_cycles": 2,
+  "block_on_unknown_high_risk": true,
+  "risk_levels": ["low", "medium", "high", "critical"],
+  "approval_required_risk_levels": ["high", "critical"]
+}

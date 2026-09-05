@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["event_id","timestamp","tool","operation","idempotency_key","request_fingerprint","status","side_effecting","risk"],
+  "properties": {
+    "event_id": {"type":"string","minLength":1},
+    "timestamp": {"type":"string","minLength":1},
+    "tool": {"type":"string","minLength":1},
+    "operation": {"type":"string","minLength":1},
+    "idempotency_key": {"type":"string","minLength":1},
+    "request_fingerprint": {"type":"string","minLength":1},
+    "status": {"enum":["started","committed","failed","unknown","returned_cached"]},
+    "side_effecting": {"type":"boolean"},
+    "risk": {"enum":["low","medium","high","critical"]},
+    "result_ref": {"type":"string"}
+  }
+}

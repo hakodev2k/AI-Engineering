@@ -1,0 +1,3 @@
+{"event_id":"e1","timestamp":"2026-09-05T12:00:00Z","tool":"create-ticket","operation":"create","idempotency_key":"ticket:inc-1","request_fingerprint":"sha256:aaa","status":"started","side_effecting":true,"risk":"medium"}
+{"event_id":"e2","timestamp":"2026-09-05T12:00:01Z","tool":"create-ticket","operation":"create","idempotency_key":"ticket:inc-1","request_fingerprint":"sha256:aaa","status":"committed","side_effecting":true,"risk":"medium","result_ref":"TCK-100"}
+{"event_id":"e3","timestamp":"2026-09-05T12:00:02Z","tool":"create-ticket","operation":"create","idempotency_key":"ticket:inc-1","request_fingerprint":"sha256:aaa","status":"returned_cached","side_effecting":true,"risk":"medium","result_ref":"TCK-100"}

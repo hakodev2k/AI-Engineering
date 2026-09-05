@@ -1,0 +1,5 @@
+{"event_id":"e1","timestamp":"2026-09-05T12:00:00Z","tool":"charge-card","operation":"charge","idempotency_key":"charge:order-1","request_fingerprint":"sha256:bbb","status":"started","side_effecting":true,"risk":"critical"}
+{"event_id":"e2","timestamp":"2026-09-05T12:00:01Z","tool":"charge-card","operation":"charge","idempotency_key":"charge:order-1","request_fingerprint":"sha256:bbb","status":"unknown","side_effecting":true,"risk":"critical"}
+{"event_id":"e3","timestamp":"2026-09-05T12:00:02Z","tool":"charge-card","operation":"charge","idempotency_key":"charge:order-1","request_fingerprint":"sha256:bbb","status":"started","side_effecting":true,"risk":"critical"}
+{"event_id":"e4","timestamp":"2026-09-05T12:00:03Z","tool":"charge-card","operation":"charge","idempotency_key":"charge:order-1","request_fingerprint":"sha256:bbb","status":"committed","side_effecting":true,"risk":"critical","result_ref":"PAY-1"}
+{"event_id":"e5","timestamp":"2026-09-05T12:00:04Z","tool":"charge-card","operation":"charge","idempotency_key":"charge:order-1","request_fingerprint":"sha256:bbb","status":"committed","side_effecting":true,"risk":"critical","result_ref":"PAY-2"}
