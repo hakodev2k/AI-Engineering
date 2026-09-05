@@ -1,0 +1,11 @@
+{
+  "max_instruction_chars": 4096,
+  "destination_context_class": "untrusted_server_data",
+  "blocked_patterns": [
+    "ignore\\s+(all\\s+)?(previous|prior|system)",
+    "override\\s+(the\\s+)?(system|developer|safety|policy)",
+    "do\\s+not\\s+(ask|require).*(approval|permission)",
+    "reveal|exfiltrat|send.*(secret|credential|token|password)",
+    "disable.*(guard|safety|approval|permission)"
+  ]
+}
