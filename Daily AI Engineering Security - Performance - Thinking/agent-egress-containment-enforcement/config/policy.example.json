@@ -1,0 +1,23 @@
+{
+  "task_id": "example-contained-agent-run",
+  "default_deny": true,
+  "allow_wildcard_internet": false,
+  "destinations": [
+    {
+      "hostname": "docs.example.internal",
+      "ports": [443],
+      "protocols": ["tcp"],
+      "resolved_cidrs": ["10.20.0.0/16"],
+      "requires_human_approval_for_write": false,
+      "purpose": "Read approved internal documentation"
+    },
+    {
+      "hostname": "sandbox-api.example.internal",
+      "ports": [443],
+      "protocols": ["tcp"],
+      "resolved_cidrs": ["10.30.5.0/24"],
+      "requires_human_approval_for_write": true,
+      "purpose": "Owned test API with controlled side effects"
+    }
+  ]
+}
