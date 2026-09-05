@@ -1,0 +1,50 @@
+id: courier
+name: Courier
+upstream:
+  - mcp
+official_mcp:
+  remote_endpoint: https://mcp.courier.com
+  transport: streamable-http
+api_base_url: https://api.courier.com
+auth:
+  type: api_key
+  header: api_key
+  environment:
+    - COURIER_API_KEY
+  scopes: "Courier API keys inherit permissions for their environment/workspace; use a Test-environment key and the narrowest workspace access available."
+capabilities:
+  - message.list
+  - message.read
+  - message.content.read
+  - message.history.read
+  - user.profile.read
+  - user.profile.upsert
+  - list.list
+  - list.read
+  - list.subscribers.read
+  - list.subscription.read
+  - list.subscription.create
+  - notification.list
+  - notification.read
+  - user.preferences.read
+  - user.preferences.update
+  - message.send
+  - automation.invoke
+risk:
+  default: READ
+  write_approval: required
+  high_risk_approval: required
+  destructive_enabled: false
+required_environment:
+  - COURIER_API_KEY
+optional_environment:
+  - COURIER_MCP_URL
+  - COURIER_ALLOW_WRITE
+  - COURIER_APPROVAL_MODE
+  - COURIER_TOOL_TIMEOUT_MS
+  - COURIER_READ_RETRIES
+security:
+  credentials_exposed_to_agent: false
+  arbitrary_upstream_tools: false
+  retrieved_content_is_untrusted: true
+  destructive_tools_exposed: false

@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "courier-safe-connector": {
+      "command": "node",
+      "args": ["/absolute/path/to/MCP-API/courier/dist/src/server.js"],
+      "env": {
+        "COURIER_API_KEY": "${COURIER_API_KEY}",
+        "COURIER_ALLOW_WRITE": "false",
+        "COURIER_APPROVAL_MODE": "required"
+      }
+    }
+  }
+}
