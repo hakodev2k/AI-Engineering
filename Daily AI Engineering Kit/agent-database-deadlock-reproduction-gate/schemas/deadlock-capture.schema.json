@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["runs"],
+  "properties": {
+    "runs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["run_id", "transactions", "wait_edges"],
+        "properties": {
+          "run_id": {"type": "string", "minLength": 1},
+          "transactions": {"type": "array", "items": {"type": "object", "required": ["id"], "properties": {"id": {"type": "string"}, "label": {"type": "string"}}}},
+          "wait_edges": {"type": "array", "items": {"type": "object", "required": ["waiter", "holder", "resource"], "properties": {"waiter": {"type": "string"}, "holder": {"type": "string"}, "resource": {"type": "string"}, "lock_mode": {"type": "string"}}}}
+        }
+      }
+    }
+  }
+}

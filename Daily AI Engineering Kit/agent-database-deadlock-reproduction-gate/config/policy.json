@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "min_baseline_deadlock_runs": 1,
+  "min_candidate_clean_runs": 3,
+  "max_transient_retries": 2,
+  "max_fix_cycles": 2,
+  "require_independent_verification": true,
+  "approval_required_for": [
+    "production_query",
+    "schema_change",
+    "index_change",
+    "isolation_level_change",
+    "deployment",
+    "destructive_sql",
+    "secret_change",
+    "infrastructure_change"
+  ]
+}

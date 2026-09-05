@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["status", "baseline", "candidate", "findings"],
+  "properties": {
+    "status": {"enum": ["pass", "fail"]},
+    "baseline": {"type": "object"},
+    "candidate": {"type": "object"},
+    "findings": {"type": "array"}
+  }
+}

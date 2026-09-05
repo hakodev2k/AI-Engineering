@@ -1,0 +1,7 @@
+{
+  "runs": [
+    {"run_id": "candidate-1", "transactions": [{"id": "tx-order"},{"id": "tx-stock"}], "wait_edges": []},
+    {"run_id": "candidate-2", "transactions": [{"id": "tx-order"},{"id": "tx-stock"}], "wait_edges": []},
+    {"run_id": "candidate-3", "transactions": [{"id": "tx-order"},{"id": "tx-stock"}], "wait_edges": []}
+  ]
+}

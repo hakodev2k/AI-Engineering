@@ -1,75 +1,92 @@
 # Agent Database Deadlock Reproduction Gate
 
-A reusable evidence-first AI engineering kit for turning intermittent database deadlocks into deterministic reproduction, a minimal cycle-breaking fix, and independent verification.
+Reusable evidence-first kit for proving that a database deadlock is reproducible before a fix and absent across bounded post-fix runs.
 
 ## Problem
-Deadlocks are easy to misdiagnose from a victim exception alone. Agents may add retries, increase timeouts, or alter transaction/isolation behavior without proving which transactions formed the cycle. This package requires both sides of the cycle, a non-production reproduction, bounded fix attempts, and independent verification.
+Database deadlocks are often declared fixed after code inspection or a single passing test. That is weak evidence because timing-dependent lock cycles may disappear temporarily without the underlying lock-order inversion being removed.
 
-## When to use
-Use for application/database deadlock incidents, concurrency regressions, ORM transaction changes, or PRs suspected of introducing cyclic lock acquisition. Do not use it as a generic slow-query optimizer or for ordinary lock waits without deadlock evidence.
+## Trigger
+Use after a deadlock incident, when changing transaction boundaries/lock order, after EF Core or SQL changes affecting concurrent writes, or before closing a deadlock-related bug.
+
+## Inputs
+- normalized baseline deadlock capture
+- normalized candidate reproduction capture
+- repository paths for affected transaction code
+- host build/test evidence
+- optional human approval for schema/index/production changes
 
 ## Architecture
 ```mermaid
 flowchart LR
-  T[Deadlock evidence] --> I[Investigator]
-  I --> R[Deterministic reproduction]
-  R -->|max 3| P[Minimal fix plan]
-  P --> A{Approval needed?}
-  A -->|yes| H[Human approval]
-  A -->|no| E[Implement]
-  H --> E
-  E -->|max 2 fixes| V[Independent verifier]
-  V --> G[Evidence validator]
-  G --> D[Verified]
+A[Capture baseline] --> B[Detect wait-for cycles]
+B --> C[Map transactions and lock order]
+C --> D[Plan smallest fix]
+D --> E[Implement]
+E --> F[Run bounded reproductions]
+F --> G[Deadlock gate]
+G --> H[Independent verification]
 ```
 
 ## Package tree
 ```text
-agent-database-deadlock-reproduction-gate/
-├── README.md
-├── config/gate.json
-├── hooks/lifecycle.md
-├── rules/safety.md
-├── schemas/evidence.schema.json
-├── scripts/scan-lock-order.py
-├── scripts/validate-evidence.py
-├── skills/deadlock-investigation.md
-├── skills/fix-and-verify.md
-├── subagents/investigator.md
-├── subagents/verifier.md
-├── templates/evidence.json
-├── tests/test_validate_evidence.py
-└── workflows/deadlock-fix.md
+README.md
+config/policy.json
+schemas/deadlock-capture.schema.json
+schemas/deadlock-report.schema.json
+scripts/deadlock_gate.py
+scripts/verify_package.py
+skills/reproduce-deadlock.md
+skills/plan-lock-order-fix.md
+rules/database-deadlock-safety.md
+subagents/deadlock-investigator.md
+subagents/fix-planner.md
+subagents/verification-agent.md
+workflows/deadlock-reproduction.md
+hooks/pre-change.md
+hooks/post-change.md
+examples/baseline-deadlock.json
+examples/candidate-clean.json
+tests/test_deadlock_gate.py
 ```
 
-## Installation and dependencies
-Copy this directory into a repository. Runtime scripts require Python 3.9+ and only the standard library. The JSON Schema is provided for external validators; `validate-evidence.py` performs the mandatory portable checks without third-party dependencies. Tests use `pytest` if you want to run the included test module.
+## Requirements
+Python 3.10+. Executable scripts use only the standard library.
 
-## Configuration
-`config/gate.json` fixes the safety defaults: three reproduction attempts, two fix attempts, independent verification, and approval for schema or production actions. Host projects may make policy stricter but must not silently weaken approval boundaries.
-
-## Permissions
-Default to repository read/write and non-production database/test access. Production database writes, destructive SQL, schema/index changes, isolation-level changes, production configuration, secret/permission changes, force pushes, and irreversible operations require explicit human approval.
+## Capture format
+A capture contains one or more runs. Each run contains transactions and wait edges. A wait edge means `waiter` is blocked by `holder` on a resource. The gate detects directed cycles in the wait-for graph.
 
 ## Usage
-1. Copy `templates/evidence.json` to a run-specific evidence path.
-2. Preserve sanitized database deadlock diagnostics and repository revision.
-3. Run `python scripts/scan-lock-order.py <repository-root>` for heuristic discovery.
-4. Follow `skills/deadlock-investigation.md` and `workflows/deadlock-fix.md`.
-5. After an evidenced fix, use a separate verifier following `subagents/verifier.md`.
-6. Finish with `python scripts/validate-evidence.py <evidence.json>`.
-7. Optional package tests: `pytest tests/test_validate_evidence.py`.
+```bash
+python scripts/deadlock_gate.py --baseline examples/baseline-deadlock.json --candidate examples/candidate-clean.json --output deadlock-report.json --min-candidate-runs 3
+python scripts/verify_package.py
+```
 
-Example agent invocation: `Investigate this deadlock using workflows/deadlock-fix.md. Treat the supplied deadlock graph as evidence, use non-production reproduction only, preserve each attempt, and stop at every approval boundary.`
+Exit codes: `0` verified clean candidate, `1` failed gate, `2` invalid input.
 
-## Workflow and recovery
-Investigation must identify both participating transactions and their resource order. Reproduction is limited to three attempts. A fix is attempted only after `reproduction_before=true`; at most two distinct fix hypotheses are allowed, reverting a failed hypothesis before the next. Transient environment/tool failures may consume/retry within those limits. Permission failures never justify broader permissions. Repeated failure becomes `blocked` with evidence preserved.
+## Safety and approval
+The workflow is read-only by default. Explicit human approval is required before destructive SQL, schema/index changes, production diagnostics that increase risk, transaction isolation changes in production, deployment, secret/config changes, force push/history rewrite, or security weakening.
+
+## Failure and recovery
+- invalid capture: stop; do not infer success
+- transient reproduction tool failure: retry at most twice
+- deadlock still present after fix: at most two implementation cycles
+- candidate has too few runs: fail verification
+- baseline does not reproduce a cycle: classify as not yet reproduced, not fixed
+- unknown transaction/resource mapping: stop and escalate with evidence
 
 ## Verification
-A verified result requires: original cycle evidence; successful pre-fix reproduction; relevant build/tests passing; post-fix harness unable to reproduce the target deadlock in three independent verifier runs; business invariants and rollback behavior intact; scoped diff; and `validate-evidence.py` exit code 0. The scanner is heuristic and never constitutes proof.
+A task is verified only when the baseline demonstrates at least one cycle, candidate contains the configured minimum clean runs, host tests/build pass, changed transaction ordering is reviewed, and an independent verifier confirms the evidence.
 
 ## Definition of Done
-The task is done only when evidence identifies the cycle, the pre-fix harness reproduces it, the smallest safe fix is applied, independent verification succeeds, required approvals exist, evidence status is `verified`, and no blocking risk remains. Execution without this evidence is not verification.
+- incident path and transactions identified
+- baseline deadlock cycle reproduced
+- lock-order hypothesis backed by evidence
+- smallest safe fix implemented
+- configured candidate reproduction runs contain zero cycles
+- relevant tests/build pass
+- no unapproved database/production action remains
+- independent verification status is `verified`
+- remaining concurrency risks documented
 
-## Customization
-Adapt the reproduction harness to the host database/ORM and use engine-native deadlock diagnostics. Keep the core contracts tool-neutral. Agent-specific adapters may be added outside this package, but must preserve retry limits, approval boundaries, evidence schema, and independent verification.
+## Portability
+Core procedures are agent-neutral and work with Codex, Claude Code, Cursor, ChatGPT, Copilot, OpenCode, or other agents. Database-specific capture adapters can normalize SQL Server deadlock graphs, PostgreSQL lock-wait evidence, MySQL/InnoDB diagnostics, or application-level tracing into the JSON contract used here.

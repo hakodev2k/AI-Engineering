@@ -1,0 +1,15 @@
+{
+  "runs": [
+    {
+      "run_id": "baseline-1",
+      "transactions": [
+        {"id": "tx-order", "label": "update order then inventory"},
+        {"id": "tx-stock", "label": "update inventory then order"}
+      ],
+      "wait_edges": [
+        {"waiter": "tx-order", "holder": "tx-stock", "resource": "inventory:sku-42", "lock_mode": "X"},
+        {"waiter": "tx-stock", "holder": "tx-order", "resource": "orders:1001", "lock_mode": "X"}
+      ]
+    }
+  ]
+}
