@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["observations"],
+  "properties": {
+    "observations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["test", "status", "run_id"],
+        "properties": {
+          "test": {"type": "string", "minLength": 1},
+          "status": {"enum": ["passed", "failed"]},
+          "run_id": {"type": "string", "minLength": 1},
+          "commit": {"type": "string"},
+          "attempt": {"type": "integer", "minimum": 1},
+          "duration_ms": {"type": "number", "minimum": 0}
+        }
+      }
+    }
+  }
+}

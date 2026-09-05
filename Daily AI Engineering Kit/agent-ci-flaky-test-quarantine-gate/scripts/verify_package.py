@@ -1,26 +1,28 @@
 #!/usr/bin/env python3
-import json, sys
+from __future__ import annotations
+import json, subprocess, sys
 from pathlib import Path
-ROOT = Path(__file__).resolve().parents[1]
-REQUIRED = [
-"README.md","skills/investigate-flaky-test.md","skills/recover-quarantined-test.md","rules/flaky-test-safety.md","subagents/failure-investigator.md","subagents/verification-agent.md","workflows/flaky-test-quarantine.md","hooks/pre-quarantine.md","hooks/final-verification.md","scripts/flaky_gate.py","scripts/verify_package.py","config/policy.json","schemas/evidence.schema.json","templates/evidence.json","examples/evidence-pass.json","tests/test_flaky_gate.py"]
+ROOT=Path(__file__).resolve().parents[1]
+REQUIRED=[
+"README.md","config/flaky-test-policy.json","config/quarantine.json","schemas/history.schema.json","schemas/quarantine.schema.json",
+"scripts/flaky_test_gate.py","scripts/verify_package.py","skills/classify-flakiness.md","skills/root-cause-flaky-test.md","skills/plan-quarantine.md",
+"rules/flaky-test-safety.md","subagents/test-investigator.md","subagents/quarantine-reviewer.md","subagents/verification-agent.md",
+"workflows/flaky-test-quarantine.md","hooks/pre-change.md","hooks/post-change.md","examples/history.json","examples/quarantine.example.json","tests/test_flaky_test_gate.py"]
 
-def main():
+def main()->int:
     missing=[p for p in REQUIRED if not (ROOT/p).is_file()]
     if missing:
-        print("Missing files: " + ", ".join(missing)); return 1
-    try:
-        policy=json.loads((ROOT/"config/policy.json").read_text())
-        schema=json.loads((ROOT/"schemas/evidence.schema.json").read_text())
-        example=json.loads((ROOT/"examples/evidence-pass.json").read_text())
-    except Exception as e:
-        print(f"JSON validation failed: {e}"); return 2
-    if schema.get("type") != "object" or policy.get("max_test_reruns",0) < 1 or not example.get("observations"):
-        print("Structured files failed semantic validation"); return 3
-    for p in REQUIRED:
-        text=(ROOT/p).read_text(encoding="utf-8")
-        if not text.strip(): print(f"Empty file: {p}"); return 4
-        if "implementation omitted" in text.lower() or "remaining files omitted" in text.lower(): print(f"Omission marker: {p}"); return 5
-    print(f"Package verified: {len(REQUIRED)} required files present")
-    return 0
-if __name__ == "__main__": sys.exit(main())
+        print("missing files:\n"+"\n".join(missing),file=sys.stderr); return 1
+    for p in ["config/flaky-test-policy.json","config/quarantine.json","schemas/history.schema.json","schemas/quarantine.schema.json","examples/history.json","examples/quarantine.example.json"]:
+        json.loads((ROOT/p).read_text(encoding="utf-8"))
+    t=subprocess.run([sys.executable,"-m","unittest","discover","-s","tests","-p","test_*.py"],cwd=ROOT,check=False)
+    if t.returncode: return t.returncode
+    out=ROOT/".verify-report.json"
+    g=subprocess.run([sys.executable,str(ROOT/"scripts/flaky_test_gate.py"),"--history",str(ROOT/"examples/history.json"),"--quarantine",str(ROOT/"config/quarantine.json"),"--policy",str(ROOT/"config/flaky-test-policy.json"),"--output",str(out),"--now","2026-09-06T00:00:00+07:00"],cwd=ROOT,check=False)
+    if g.returncode != 0:
+        return g.returncode
+    report=json.loads(out.read_text(encoding="utf-8")); out.unlink(missing_ok=True)
+    if report["summary"]["review"] < 1:
+        print("example should identify at least one flaky candidate for review",file=sys.stderr); return 1
+    print("Package verification passed."); return 0
+if __name__=="__main__": raise SystemExit(main())

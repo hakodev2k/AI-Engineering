@@ -1,81 +1,101 @@
-# Agent CI Flaky-Test Quarantine Gate
+# Agent CI Flaky Test Quarantine Gate
 
-A reusable, evidence-driven workflow for detecting nondeterministic CI tests, distinguishing flaky behavior from deterministic regressions, applying bounded quarantine only when policy allows it, and proving recovery before quarantine removal.
+A reusable AI engineering kit for diagnosing flaky tests, deciding whether quarantine is justified, enforcing bounded quarantine, and preventing a coding agent from hiding deterministic failures behind retries or permanent skips.
 
 ## Problem
-Intermittent tests waste CI capacity and train agents to rerun failures blindly. Blind retries can also hide real regressions. This kit makes retry evidence explicit and treats quarantine as a controlled, reversible exception.
+Intermittent CI failures waste developer time and can destabilize autonomous coding workflows. Blind retries make the build look green without proving correctness, while permanent skips silently reduce coverage. This kit provides evidence-based classification, temporary quarantine with expiry, deterministic policy enforcement, and independent verification.
 
-## Use when
-Use after a test fails in CI and the same revision can be rerun safely. It is suitable for unit, integration, API, and E2E suites where individual test identities can be extracted.
+## Trigger
+Use when a test fails intermittently across CI runs, passes on rerun without a code change, exhibits timing/order/environment sensitivity, or when an agent proposes retry/skip/quarantine logic.
 
-Do not use to suppress deterministic failures, security checks, migration checks, compliance gates, or tests whose failure may indicate data loss.
+## Inputs
+- CI test history exported as JSON
+- repository and test code
+- `config/flaky-test-policy.json`
+- optional `config/quarantine.json`
+- host build/test commands
 
 ## Architecture
 ```mermaid
 flowchart LR
-  A[CI failure] --> B[Collect evidence]
-  B --> C[Classify]
-  C -->|deterministic| D[Block and fix]
-  C -->|suspected flaky| E[Bounded reruns]
-  E --> F[Policy gate]
-  F -->|eligible| G[Quarantine proposal]
-  F -->|ineligible| D
-  G --> H[Human approval if required]
-  H --> I[Quarantine]
-  I --> J[Recovery verification]
-  J --> K[Remove quarantine]
+A[Collect run history] --> B[Classify evidence]
+B --> C{Flaky threshold met?}
+C -- no --> D[Fix deterministic failure]
+C -- yes --> E[Root-cause investigation]
+E --> F{Temporary quarantine justified?}
+F -- no --> G[Implement fix]
+F -- yes --> H[Human approval + bounded quarantine]
+H --> I[Gate expiry + owner + issue]
+G --> J[Test-fix-retest]
+I --> J
+J --> K[Independent verification]
 ```
 
 ## Package tree
-- `skills/investigate-flaky-test.md`
-- `skills/recover-quarantined-test.md`
-- `rules/flaky-test-safety.md`
-- `subagents/failure-investigator.md`
-- `subagents/verification-agent.md`
-- `workflows/flaky-test-quarantine.md`
-- `hooks/pre-quarantine.md`
-- `hooks/final-verification.md`
-- `scripts/flaky_gate.py`
-- `scripts/verify_package.py`
-- `config/policy.json`
-- `schemas/evidence.schema.json`
-- `templates/evidence.json`
-- `examples/evidence-pass.json`
-- `tests/test_flaky_gate.py`
+```text
+README.md
+config/flaky-test-policy.json
+config/quarantine.json
+schemas/history.schema.json
+schemas/quarantine.schema.json
+scripts/flaky_test_gate.py
+scripts/verify_package.py
+skills/classify-flakiness.md
+skills/root-cause-flaky-test.md
+skills/plan-quarantine.md
+rules/flaky-test-safety.md
+subagents/test-investigator.md
+subagents/quarantine-reviewer.md
+subagents/verification-agent.md
+workflows/flaky-test-quarantine.md
+hooks/pre-change.md
+hooks/post-change.md
+examples/history.json
+examples/quarantine.example.json
+tests/test_flaky_test_gate.py
+```
 
-## Installation
-Requires Python 3.10+. Copy this directory into a repository. No third-party Python packages are required.
+## Requirements
+Python 3.10+. Executable scripts use only the standard library.
 
 ## Configuration
-Edit `config/policy.json`. Protected test patterns are never quarantine-eligible. The default evidence threshold requires at least 3 observations with both pass and fail outcomes, and caps automated reruns at 3.
+`config/flaky-test-policy.json` controls minimum observations, minimum pass/fail counts, flaky-rate bounds, maximum quarantine duration, and retry limits. `config/quarantine.json` is the active quarantine registry and should be committed when used.
+
+## History format
+Each observation contains `test`, `status`, `run_id`, and optional `commit`, `attempt`, and `duration_ms`. Valid statuses are `passed` and `failed`. Observations for the same test must represent actual executions; synthetic duplication is forbidden.
 
 ## Usage
-Record observations in an evidence JSON file, then run:
+```bash
+python scripts/flaky_test_gate.py \
+  --history examples/history.json \
+  --quarantine config/quarantine.json \
+  --policy config/flaky-test-policy.json \
+  --output flaky-report.json
 
-`python scripts/flaky_gate.py evaluate --evidence evidence.json --policy config/policy.json`
+python scripts/verify_package.py
+```
 
-Validate the package itself with:
-
-`python scripts/verify_package.py`
-
-Run unit tests with:
-
-`python -m unittest discover -s tests -v`
-
-## Workflow
-The Failure Investigator owns evidence collection and classification. The implementing agent may repair the test or product code, but the Verification Agent independently verifies the final state. Reruns are bounded and always use the same revision and materially equivalent environment.
+Exit codes: `0` policy satisfied, `1` blocking flaky/quarantine finding, `2` invalid input/configuration.
 
 ## Approval boundaries
-The workflow stops for approval before disabling or skipping a protected test, changing CI required checks, weakening assertions/security controls, changing production configuration, destructive database operations, or merging a quarantine that policy marks as approval-required.
+Explicit human approval is required before adding a test to quarantine, increasing quarantine duration, converting a failing test into skip/ignore behavior, weakening coverage, or changing CI policy. Production deployment, destructive data/file operations, secret changes, infrastructure changes, force push/history rewrite, breaking public APIs, or security weakening also require explicit approval.
 
-## Failure handling
-Transient runner/tool failures may be retried up to 2 times and are not counted as test observations. Test reruns are capped by `max_test_reruns`. Repeated infrastructure failures stop with preserved evidence. A deterministic repeated failure is never converted into a flaky classification merely to unblock CI.
+## Failure and recovery
+Transient CI/log retrieval failures may retry twice. Invalid history does not retry blindly. Implementation test-fix-retest loops are limited to two cycles. Expired quarantine always blocks. Unknown ownership or missing issue reference blocks quarantine approval.
 
 ## Verification
-A quarantine decision is valid only when the evidence schema is valid, revision identity is stable, minimum observations are met, both pass and fail outcomes exist, protected-pattern checks pass, and the gate returns `quarantine_eligible`. Recovery requires the configured consecutive passing observations on the same candidate fix revision.
+Task execution is not verification. Verification requires deterministic gate success, host build/tests, no expired quarantine, every active quarantine having owner/issue/expiry/reason, independent review, and evidence that deterministic failures were not mislabeled as flaky.
 
 ## Definition of Done
-Evidence is preserved; classification is explicit; retry limits were respected; no protected test was silently disabled; any required approval exists; the final verification agent reviewed results; quarantine has an owner/reason when used; and the gate/test/package verification commands pass.
+- failing test history is collected and valid
+- flakiness classification is evidence-based
+- root-cause hypotheses are tested individually
+- deterministic failures are fixed rather than quarantined
+- any quarantine is approved, owned, issue-linked, and unexpired
+- relevant tests/build pass under defined policy
+- independent verifier signs off
+- residual risks are documented
+- no blocking failure remains
 
-## Customization
-Change thresholds and protected patterns in `config/policy.json`. Adapt CI-specific test-result parsing outside the core gate; keep the evidence contract unchanged so the workflow remains portable across coding agents and CI systems.
+## Portability
+The workflow is agent-neutral and can be used with Codex, Claude Code, Cursor, ChatGPT, GitHub Copilot, OpenCode, or other coding agents. CI-specific history adapters can feed the normalized JSON format without changing core policy logic.

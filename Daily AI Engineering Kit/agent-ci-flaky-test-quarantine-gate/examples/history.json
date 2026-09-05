@@ -1,0 +1,16 @@
+{
+  "observations": [
+    {"test":"tests.test_checkout::test_parallel_reservation","status":"passed","run_id":"101","attempt":1},
+    {"test":"tests.test_checkout::test_parallel_reservation","status":"failed","run_id":"102","attempt":1},
+    {"test":"tests.test_checkout::test_parallel_reservation","status":"passed","run_id":"103","attempt":1},
+    {"test":"tests.test_checkout::test_parallel_reservation","status":"failed","run_id":"104","attempt":1},
+    {"test":"tests.test_checkout::test_parallel_reservation","status":"passed","run_id":"105","attempt":1},
+    {"test":"tests.test_checkout::test_parallel_reservation","status":"passed","run_id":"106","attempt":1},
+    {"test":"tests.test_total::test_tax_rounding","status":"passed","run_id":"201","attempt":1},
+    {"test":"tests.test_total::test_tax_rounding","status":"passed","run_id":"202","attempt":1},
+    {"test":"tests.test_total::test_tax_rounding","status":"passed","run_id":"203","attempt":1},
+    {"test":"tests.test_total::test_tax_rounding","status":"passed","run_id":"204","attempt":1},
+    {"test":"tests.test_total::test_tax_rounding","status":"passed","run_id":"205","attempt":1},
+    {"test":"tests.test_total::test_tax_rounding","status":"passed","run_id":"206","attempt":1}
+  ]
+}

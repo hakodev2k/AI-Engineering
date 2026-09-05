@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "minimum_observations": 6,
+  "minimum_passes": 2,
+  "minimum_failures": 2,
+  "minimum_failure_rate": 0.10,
+  "maximum_failure_rate": 0.90,
+  "maximum_quarantine_days": 14,
+  "max_transient_retries": 2,
+  "max_fix_retries": 2,
+  "require_owner": true,
+  "require_issue": true,
+  "require_expiry": true
+}

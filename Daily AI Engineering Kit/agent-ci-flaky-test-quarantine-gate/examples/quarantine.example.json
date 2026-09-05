@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "entries": [
+    {
+      "test": "tests.test_checkout::test_parallel_reservation",
+      "owner": "checkout-team",
+      "issue": "ENG-1234",
+      "reason": "Confirmed race in shared reservation fixture; quarantine while isolation fix is reviewed.",
+      "approved_by": "test-infrastructure-owner",
+      "created_at": "2026-09-06T00:00:00+07:00",
+      "expires_at": "2026-09-13T00:00:00+07:00"
+    }
+  ]
+}
