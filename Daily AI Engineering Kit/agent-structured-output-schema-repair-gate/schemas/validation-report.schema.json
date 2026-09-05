@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["status", "input_sha256", "errors"],
+  "properties": {
+    "status": {"enum": ["valid", "invalid"]},
+    "input_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "errors": {"type": "array", "items": {"type": "object"}}
+  }
+}

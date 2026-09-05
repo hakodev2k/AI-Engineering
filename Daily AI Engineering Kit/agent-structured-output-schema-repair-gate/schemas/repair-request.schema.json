@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["raw_sha256", "errors", "instructions"],
+  "properties": {
+    "raw_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "errors": {"type": "array", "items": {"type": "object"}},
+    "instructions": {"type": "array", "items": {"type": "string"}}
+  }
+}
