@@ -1,0 +1,9 @@
+{
+  "min_trials_per_task": 5,
+  "min_run_pass_rate": 0.90,
+  "min_all_runs_success_task_rate": 0.75,
+  "max_flaky_task_rate": 0.20,
+  "max_never_pass_task_rate": 0.05,
+  "block_on_any_collateral_effect": true,
+  "max_harness_error_rate": 0.02
+}

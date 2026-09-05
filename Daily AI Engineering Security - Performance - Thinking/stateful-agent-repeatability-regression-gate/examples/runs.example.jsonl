@@ -1,0 +1,5 @@
+{"task_id":"reset-password","trial":1,"passed":true,"collateral_effect":false,"harness_error":false,"recovery_attempted":false,"evidence":"state-check:001"}
+{"task_id":"reset-password","trial":2,"passed":true,"collateral_effect":false,"harness_error":false,"recovery_attempted":true,"evidence":"state-check:002"}
+{"task_id":"reset-password","trial":3,"passed":true,"collateral_effect":false,"harness_error":false,"recovery_attempted":false,"evidence":"state-check:003"}
+{"task_id":"reset-password","trial":4,"passed":true,"collateral_effect":false,"harness_error":false,"recovery_attempted":false,"evidence":"state-check:004"}
+{"task_id":"reset-password","trial":5,"passed":true,"collateral_effect":false,"harness_error":false,"recovery_attempted":false,"evidence":"state-check:005"}
