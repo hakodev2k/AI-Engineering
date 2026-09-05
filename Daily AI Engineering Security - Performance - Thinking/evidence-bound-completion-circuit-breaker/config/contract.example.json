@@ -1,0 +1,1 @@
+{"target":"staging-service","max_evidence_age_minutes":60,"criteria":[{"id":"unit-tests","required_for":"validated-local"},{"id":"target-health","required_for":"validated-target"},{"id":"release-visible","required_for":"released"}],"circuit_breaker":{"tool_calls_without_evidence_advance":40,"repeated_failures":5,"elapsed_minutes_without_evidence_advance":45}}
