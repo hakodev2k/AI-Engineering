@@ -23,7 +23,11 @@ class RetryStormGuardTests(unittest.TestCase):
         self.assertEqual("CLOSED", guard.evaluate(CFG, events)["state"])
 
     def test_some_transient_failure_half_open(self):
-        events = [{"outcome": "success", "retry_delay_ms": 0}, {"outcome": "429", "retry_delay_ms": 1500}]
+        events = [
+            {"outcome": "success", "retry_delay_ms": 0},
+            {"outcome": "success", "retry_delay_ms": 0},
+            {"outcome": "429", "retry_delay_ms": 1500},
+        ]
         self.assertEqual("HALF_OPEN", guard.evaluate(CFG, events)["state"])
 
     def test_correlated_rate_limits_open(self):
