@@ -1,0 +1,3 @@
+export type Risk="READ"|"WRITE"|"HIGH_RISK";
+export function fingerprint(tool:string,args:Record<string,unknown>){if(tool==="sonarqube.issue.status.change")return `${tool}:${String(args.key??"")}:${String(args.status??"")}`;if(tool==="sonarqube.security_hotspot.status.change")return `${tool}:${String(args.hotspotKey??"")}:${String(args.status??"")}:${String(args.resolution??"")}`;return tool;}
+export function assertAllowed(risk:Risk,tool:string,args:Record<string,unknown>,c:{requireWriteApproval:boolean;approvedActions:Set<string>}){if(risk==="READ")return;if(risk==="WRITE"&&!c.requireWriteApproval)return;const fp=fingerprint(tool,args);if(!c.approvedActions.has(fp))throw new Error(`Human approval required. Add exact fingerprint to SONARQUBE_APPROVED_ACTIONS: ${fp}`);}

@@ -1,0 +1,35 @@
+id: sonarqube
+name: SonarQube
+upstream: [mcp]
+official_mcp:
+  provider: SonarSource
+  package: sonarsource/sonarqube-mcp
+  pinned_image: sonarsource/sonarqube-mcp:1.26.0.4269
+auth:
+  type: user_token
+  env: [SONARQUBE_TOKEN]
+capabilities:
+  - project.search
+  - branch.list
+  - pull_request.list
+  - issue.search
+  - issue.status.change
+  - security_hotspot.search
+  - security_hotspot.read
+  - security_hotspot.status.change
+  - measure.read
+  - metric.search
+  - quality_gate.read
+  - quality_gate.list
+  - rule.read
+  - language.list
+  - duplication.search
+  - duplication.read
+risk:
+  default: READ
+  write_approval: configurable
+  high_risk_approval: required
+security:
+  credentials_exposed_to_agent: false
+  upstream_tools_allowlisted: true
+  retrieved_content_is_untrusted: true
