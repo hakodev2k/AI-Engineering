@@ -1,0 +1,9 @@
+{
+  "environment": "production",
+  "values": {
+    "API_BASE_URL": {"type": "url", "required": true, "value": "https://api.example.invalid"},
+    "AUTH_AUDIENCE": {"type": "string", "required": true, "value": "engineering-api"},
+    "PROTOCOL_VERSION": {"type": "integer", "required": true, "value": 2},
+    "SERVICE_API_KEY": {"type": "secret", "required": true, "value": "real-looking-example-key"}
+  }
+}

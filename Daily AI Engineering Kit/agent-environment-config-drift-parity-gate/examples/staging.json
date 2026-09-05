@@ -1,0 +1,10 @@
+{
+  "environment": "staging",
+  "values": {
+    "API_BASE_URL": {"type": "url", "required": true, "value": "https://staging.example.invalid"},
+    "AUTH_AUDIENCE": {"type": "string", "required": true, "value": "engineering-api"},
+    "PROTOCOL_VERSION": {"type": "string", "required": true, "value": "2"},
+    "CACHE_TTL_SECONDS": {"type": "integer", "required": true, "value": 60},
+    "SERVICE_API_KEY": {"type": "secret", "required": true, "value": "<redacted>"}
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "required_environments": ["dev", "staging", "production"],
+  "ignore_keys": ["BUILD_ID", "DEPLOYMENT_TIMESTAMP"],
+  "must_match_values": ["AUTH_AUDIENCE", "PROTOCOL_VERSION"],
+  "secret_name_patterns": ["SECRET", "PASSWORD", "TOKEN", "API_KEY", "PRIVATE_KEY"],
+  "allowed_secret_placeholders": ["<redacted>", "<secret>", "${SECRET}", ""],
+  "max_remediation_retries": 2,
+  "max_transient_retries": 2
+}
