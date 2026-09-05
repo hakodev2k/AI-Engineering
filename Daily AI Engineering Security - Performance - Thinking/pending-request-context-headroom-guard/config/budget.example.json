@@ -1,0 +1,6 @@
+{
+  "context_window": 128000,
+  "reserved_output_tokens": 12000,
+  "uncertainty_margin_tokens": 6000,
+  "compact_at_utilization": 0.85
+}
