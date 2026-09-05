@@ -1,0 +1,5 @@
+{"worker":"a","outcome":"429","retry_delay_ms":0,"tokens":12000}
+{"worker":"b","outcome":"429","retry_delay_ms":0,"tokens":11000}
+{"worker":"c","outcome":"429","retry_delay_ms":100,"tokens":13000}
+{"worker":"d","outcome":"429","retry_delay_ms":100,"tokens":9000}
+{"worker":"e","outcome":"success","retry_delay_ms":0,"tokens":8000}
