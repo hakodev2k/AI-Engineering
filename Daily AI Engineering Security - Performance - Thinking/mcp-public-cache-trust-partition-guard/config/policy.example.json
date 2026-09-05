@@ -1,0 +1,31 @@
+{
+  "required_private_partition_fields": ["server_id", "tenant_id", "principal_id", "authz_fingerprint"],
+  "entries": [
+    {
+      "name": "tenant-tool-discovery",
+      "scope": "private",
+      "ttl_ms": 30000,
+      "sensitivity_known": true,
+      "authenticated": true,
+      "tenant_scoped": true,
+      "user_scoped": true,
+      "permission_sensitive": true,
+      "contains_instructions": false,
+      "globally_invariant_approved": false,
+      "cache_key_fields": ["server_id", "tenant_id", "principal_id", "authz_fingerprint"]
+    },
+    {
+      "name": "global-static-capability-version",
+      "scope": "public",
+      "ttl_ms": 10000,
+      "sensitivity_known": true,
+      "authenticated": false,
+      "tenant_scoped": false,
+      "user_scoped": false,
+      "permission_sensitive": false,
+      "contains_instructions": false,
+      "globally_invariant_approved": true,
+      "cache_key_fields": ["server_id", "protocol_version"]
+    }
+  ]
+}
