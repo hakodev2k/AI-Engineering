@@ -1,0 +1,10 @@
+{
+  "test_id": "tests.integration.test_cache::test_concurrent_refresh",
+  "environment": "linux-x64-python3.12-ci",
+  "runs": [
+    {"run": 1, "status": "pass", "seed": 101},
+    {"run": 2, "status": "fail", "seed": 101},
+    {"run": 3, "status": "pass", "seed": 101},
+    {"run": 4, "status": "fail", "seed": 101}
+  ]
+}

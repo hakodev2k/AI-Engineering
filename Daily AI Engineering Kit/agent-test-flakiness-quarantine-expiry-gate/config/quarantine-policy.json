@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "max_quarantine_days": 14,
+  "min_flaky_failures": 2,
+  "min_flaky_passes": 2,
+  "max_transient_retries": 2,
+  "max_remediation_cycles": 2,
+  "allowed_statuses": ["active", "resolved"],
+  "require_owner": true,
+  "require_evidence": true,
+  "require_explicit_approval_for_expired_extension": true
+}
