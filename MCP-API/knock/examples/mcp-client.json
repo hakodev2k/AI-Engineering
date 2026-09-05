@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "knock-safe": {
+      "command": "node",
+      "args": ["/absolute/path/to/MCP-API/knock/src/server.js"],
+      "env": {
+        "KNOCK_API_KEY": "${KNOCK_API_KEY}",
+        "KNOCK_REQUIRE_WRITE_APPROVAL": "true"
+      }
+    }
+  }
+}

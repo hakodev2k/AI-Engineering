@@ -1,0 +1,14 @@
+{
+  "name": "knock.workflow.trigger",
+  "arguments": {
+    "workflow_key": "comment-created",
+    "recipients": ["user_123"],
+    "data": { "comment_id": "comment_456" },
+    "cancellation_key": "comment_456:user_123",
+    "idempotency_key": "2c45e30c-58ee-4a1d-80dc-67f57f8f9671",
+    "approval": {
+      "confirmed": true,
+      "reason": "Operator approved sending this notification to user_123"
+    }
+  }
+}

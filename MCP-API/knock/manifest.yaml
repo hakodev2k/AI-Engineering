@@ -1,0 +1,35 @@
+id: knock
+name: Knock
+upstream:
+  - rest
+official_mcp:
+  available: true
+  endpoint: https://mcp.knock.app/mcp
+  auth: oauth
+  note: "Knock's official remote MCP is preferred for interactive human sign-in. This reusable headless connector uses Knock's official REST API because the remote MCP does not support service-token authentication for CI/headless use."
+api_base_url: https://api.knock.app/v1
+auth:
+  type: secret_api_key
+  header: Authorization
+  environment:
+    - KNOCK_API_KEY
+capabilities:
+  - user.get
+  - user.list
+  - user.identify
+  - user.preferences.list
+  - user.preferences.get
+  - user.preferences.set
+  - user.messages.list
+  - user.subscriptions.list
+  - workflow.trigger
+  - workflow.cancel
+risk:
+  default: READ
+  write_approval: configurable
+  high_risk_approval: required
+  destructive_enabled: false
+security:
+  credentials_exposed_to_agent: false
+  arbitrary_http_proxy: false
+  retrieved_content_is_untrusted: true
