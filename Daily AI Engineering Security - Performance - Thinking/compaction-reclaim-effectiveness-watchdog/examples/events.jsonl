@@ -1,0 +1,2 @@
+{"turn":20,"context_window":200000,"reserved_tokens":20000,"tokens_before":170000,"tokens_after":110000,"next_turn_tokens":116000,"new_tokens_before_next_turn":6000}
+{"turn":27,"context_window":200000,"reserved_tokens":20000,"tokens_before":168000,"tokens_after":108000,"next_turn_tokens":112000,"new_tokens_before_next_turn":4000}

@@ -1,0 +1,6 @@
+{
+  "min_reclaim_ratio": 0.15,
+  "max_post_utilization": 0.85,
+  "min_turns_between_compactions": 2,
+  "max_unexplained_rebound_tokens": 1024
+}
