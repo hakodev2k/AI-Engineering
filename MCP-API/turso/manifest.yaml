@@ -1,0 +1,42 @@
+id: turso
+name: Turso
+upstream:
+  - rest
+official_mcp:
+  available: true
+  scope: database operations
+  note: "Official Turso Database MCP is designed for database-level operations; this connector implements platform-management capabilities through the official Platform API."
+api_base_url: https://api.turso.tech
+auth:
+  type: bearer_api_token
+  required_environment:
+    - TURSO_PLATFORM_TOKEN
+    - TURSO_ORG
+  least_privilege: "Prefer an API token scoped to exactly one organization."
+capabilities:
+  - organization.list
+  - organization.members.list
+  - organization.member.read
+  - organization.plans.list
+  - locations.list
+  - group.list
+  - group.configuration.read
+  - group.create
+  - database.list
+  - database.read
+  - database.usage.read
+  - database.create
+  - audit_logs.list
+risk:
+  default: READ
+  write_approval: required
+  destructive_enabled: false
+environment:
+  TURSO_ALLOW_WRITE: "false by default"
+  TURSO_APPROVAL_MODE: required
+  TURSO_TIMEOUT_MS: 30000
+security:
+  credentials_exposed_to_agent: false
+  arbitrary_http_requests_exposed: false
+  destructive_tools_exposed: false
+  retrieved_content_is_untrusted: true
