@@ -1,0 +1,12 @@
+{
+  "service": "orders-worker",
+  "stop_accepting_new_work": false,
+  "readiness_removed_before_drain": false,
+  "cancellation_propagated": false,
+  "drain_timeout_seconds": 10,
+  "max_handler_seconds": 30,
+  "termination_grace_period_seconds": 12,
+  "force_termination_after_timeout": false,
+  "work_sources": ["http", "queue"],
+  "checkpoint_or_ack_safe": false
+}

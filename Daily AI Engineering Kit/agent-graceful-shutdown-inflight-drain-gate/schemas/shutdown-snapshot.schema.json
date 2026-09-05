@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "service",
+    "stop_accepting_new_work",
+    "readiness_removed_before_drain",
+    "cancellation_propagated",
+    "drain_timeout_seconds",
+    "max_handler_seconds",
+    "termination_grace_period_seconds",
+    "force_termination_after_timeout",
+    "work_sources",
+    "checkpoint_or_ack_safe"
+  ],
+  "properties": {
+    "service": {"type": "string", "minLength": 1},
+    "stop_accepting_new_work": {"type": "boolean"},
+    "readiness_removed_before_drain": {"type": "boolean"},
+    "cancellation_propagated": {"type": "boolean"},
+    "drain_timeout_seconds": {"type": "number", "minimum": 0},
+    "max_handler_seconds": {"type": "number", "minimum": 0},
+    "termination_grace_period_seconds": {"type": "number", "minimum": 0},
+    "force_termination_after_timeout": {"type": "boolean"},
+    "work_sources": {"type": "array", "items": {"enum": ["http", "queue", "scheduler", "background"]}, "minItems": 1},
+    "checkpoint_or_ack_safe": {"type": "boolean"}
+  }
+}

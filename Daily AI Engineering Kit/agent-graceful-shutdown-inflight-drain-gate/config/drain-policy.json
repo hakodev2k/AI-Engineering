@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "minimum_drain_margin_seconds": 5,
+  "minimum_termination_margin_seconds": 5,
+  "require_readiness_removed_before_drain": true,
+  "require_stop_accepting_new_work": true,
+  "require_cancellation_propagation": true,
+  "require_safe_checkpoint_or_ack_for_non_http_work": true,
+  "require_bounded_force_termination": true,
+  "max_transient_retries": 2,
+  "max_implementation_retries": 2
+}

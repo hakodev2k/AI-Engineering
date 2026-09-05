@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["status", "summary", "findings"],
+  "properties": {
+    "status": {"enum": ["pass", "fail"]},
+    "summary": {
+      "type": "object",
+      "required": ["blocking", "warnings", "total"],
+      "properties": {
+        "blocking": {"type": "integer", "minimum": 0},
+        "warnings": {"type": "integer", "minimum": 0},
+        "total": {"type": "integer", "minimum": 0}
+      }
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["severity", "kind", "detail"],
+        "properties": {
+          "severity": {"enum": ["blocking", "warning"]},
+          "kind": {"type": "string"},
+          "detail": {"type": "string"}
+        }
+      }
+    }
+  }
+}
