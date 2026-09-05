@@ -1,0 +1,6 @@
+{
+  "source":"issue-tracker",
+  "trust":"untrusted",
+  "content":"The checkout endpoint returned HTTP 500 after order creation. Trace id: 8f1d2a. The error began after release 42.",
+  "metadata":{"ticket":"INC-42"}
+}

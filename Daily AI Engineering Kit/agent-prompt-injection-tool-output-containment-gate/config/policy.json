@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "blocked_patterns": [
+    "ignore previous instructions",
+    "ignore all previous instructions",
+    "system prompt",
+    "developer message",
+    "reveal your secrets",
+    "print environment variables",
+    "exfiltrate",
+    "disable security",
+    "bypass approval",
+    "run this command",
+    "execute this command",
+    "send credentials",
+    "upload secrets"
+  ],
+  "sensitive_action_terms": [
+    "secret",
+    "credential",
+    "token",
+    "password",
+    "production",
+    "deploy",
+    "delete",
+    "drop database",
+    "force push",
+    "permission",
+    "admin"
+  ],
+  "trusted_instruction_sources": ["operator", "repository-policy"],
+  "max_transient_retries": 2,
+  "max_fix_retries": 2,
+  "require_human_approval_for_suspicious_instruction_use": true
+}

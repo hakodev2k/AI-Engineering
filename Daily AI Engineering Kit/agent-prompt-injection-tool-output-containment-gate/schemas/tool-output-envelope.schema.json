@@ -1,0 +1,12 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "type":"object",
+  "additionalProperties":true,
+  "required":["source","trust","content"],
+  "properties":{
+    "source":{"type":"string","minLength":1},
+    "trust":{"enum":["trusted","untrusted","unknown"]},
+    "content":{"type":"string"},
+    "metadata":{"type":"object"}
+  }
+}
