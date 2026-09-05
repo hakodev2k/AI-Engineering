@@ -1,0 +1,5 @@
+{
+  "max_parallel_calls": 4,
+  "require_terminal_result": true,
+  "terminal_statuses": ["success", "error", "denied", "cancelled"]
+}
