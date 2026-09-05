@@ -1,0 +1,35 @@
+id: bamboohr
+name: BambooHR
+upstream:
+  - mcp
+official_mcp:
+  endpoint: "https://{subdomain}.bamboohr.com/api/mcp"
+  transport: streamable-http
+  status: closed-beta
+auth:
+  type: oauth2_bearer
+  token_ttl_seconds: 3600
+capabilities:
+  - employee.directory.read
+  - employee.read
+  - employee.list
+  - field.list
+  - report.list
+  - report.run
+  - time_off.whos_out.list
+  - time_off.request.list
+  - time_off.balance.read
+  - time_off.request.create
+  - goal.list
+  - goal.comment.create
+risk:
+  default: READ
+  write_approval: configurable
+security:
+  credentials_exposed_to_agent: false
+  upstream_tool_allowlist: true
+  dynamic_tool_discovery_trusted_only_from_official_host: true
+environment:
+  required:
+    - BAMBOOHR_SUBDOMAIN
+    - BAMBOOHR_MCP_ACCESS_TOKEN
