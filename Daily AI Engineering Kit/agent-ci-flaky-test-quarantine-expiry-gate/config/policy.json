@@ -1,0 +1,9 @@
+{
+  "max_quarantine_days": 14,
+  "max_active_quarantines": 20,
+  "max_investigation_retries": 2,
+  "max_transient_retries": 2,
+  "require_owner": true,
+  "require_evidence_url": true,
+  "require_approval_for_renewal": true
+}

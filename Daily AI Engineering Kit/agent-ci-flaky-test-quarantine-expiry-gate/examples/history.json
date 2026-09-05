@@ -1,0 +1,9 @@
+{
+  "test_id": "tests/test_api.py::test_retry",
+  "runs": [
+    {"run":"1001","result":"pass","seed":"42","environment":"ci-linux"},
+    {"run":"1002","result":"fail","seed":"42","environment":"ci-linux","error":"timeout waiting for retry timer"},
+    {"run":"1003","result":"pass","seed":"42","environment":"ci-linux"}
+  ],
+  "suspected_factor": "wall-clock scheduling"
+}
