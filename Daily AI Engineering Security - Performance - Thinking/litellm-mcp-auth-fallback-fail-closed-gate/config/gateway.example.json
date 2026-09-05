@@ -1,0 +1,25 @@
+{
+  "litellm_version": "1.84.0",
+  "mcp_exposed": true,
+  "mcp_routes_blocked": false,
+  "routes": [
+    {
+      "name": "oauth-upstream",
+      "public": false,
+      "public_path_prefix": "",
+      "oauth_passthrough": true,
+      "all_targets_oauth2": true,
+      "anonymous_tool_access": false,
+      "capabilities": ["filesystem-read"]
+    },
+    {
+      "name": "discovery",
+      "public": true,
+      "public_path_prefix": "/.well-known/",
+      "oauth_passthrough": false,
+      "all_targets_oauth2": false,
+      "anonymous_tool_access": false,
+      "capabilities": []
+    }
+  ]
+}
