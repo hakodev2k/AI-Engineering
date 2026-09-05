@@ -1,0 +1,5 @@
+{
+  "max_redundant_write_ratio": 0.25,
+  "max_stable_prefix_resets": 1,
+  "quality_regression_tolerance": 0.0
+}
