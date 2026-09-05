@@ -1,0 +1,3 @@
+export type Risk="READ"|"WRITE"|"HIGH_RISK"|"DESTRUCTIVE";
+export function fingerprint(tool:string,a:Record<string,unknown>){return `${tool}:${String(a.vaultId??"")}:${String(a.itemId??a.title??"")}`;}
+export function assertAllowed(r:Risk,tool:string,a:Record<string,unknown>,c:{requireWriteApproval:boolean;allowDestructive:boolean;approvedActions:Set<string>}){if(r==="READ")return;const fp=fingerprint(tool,a);if(r==="DESTRUCTIVE"&&!c.allowDestructive)throw new Error("Destructive 1Password operations are disabled.");if(r==="HIGH_RISK"||r==="DESTRUCTIVE"||c.requireWriteApproval)if(!c.approvedActions.has(fp))throw new Error(`Human approval required: ${fp}`);}

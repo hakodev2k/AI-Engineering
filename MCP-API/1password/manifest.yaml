@@ -1,0 +1,32 @@
+id: 1password
+name: 1Password
+upstream:
+  - mcp
+  - rest
+official_mcp:
+  name: 1Password Environments MCP Server
+  role: runtime secret injection without exposing values to model context
+api:
+  name: 1Password Connect Server API
+  version: 1.8.1
+auth:
+  type: bearer_token
+  environment_variables: [ONEPASSWORD_CONNECT_HOST, ONEPASSWORD_CONNECT_TOKEN]
+capabilities:
+  - vault.list
+  - vault.read
+  - item.list
+  - item.read_redacted
+  - item.create
+  - item.replace
+  - item.archive
+  - file.list
+  - activity.list
+  - server.health
+risk:
+  default: READ
+  write_approval: configurable
+  destructive_enabled: false
+security:
+  credentials_exposed_to_agent: false
+  secret_values_redacted_on_read: true
