@@ -1,0 +1,34 @@
+id: docusign
+name: Docusign
+upstream:
+  - rest
+official_mcp:
+  status: global-open-beta
+  note: "Official Docusign MCP is available for IAM/eSignature agent workflows; this connector uses eSignature REST API v2.1 for deterministic strongly-gated execution."
+api:
+  version: v2.1
+auth:
+  type: oauth2_bearer
+  required_scopes: [signature]
+  jwt_additional_scopes: [impersonation]
+capabilities:
+  - user.info.read
+  - envelope.list
+  - envelope.read
+  - envelope.recipients.read
+  - envelope.documents.read
+  - template.list
+  - template.read
+  - template.recipients.read
+  - envelope.draft.create
+  - envelope.template_draft.create
+  - envelope.send
+  - envelope.void
+risk:
+  default: READ
+  write_approval: configurable
+  high_risk_approval: required
+  destructive_enabled: false
+security:
+  credentials_exposed_to_agent: false
+  retrieved_content_is_untrusted: true
