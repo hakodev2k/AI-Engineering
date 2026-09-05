@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "goal_id": "daily-run-2026-09-05",
+  "goal": "Generate and persist verified engineering topic packages",
+  "status": "in_progress",
+  "completion_criteria": [
+    "selected topics have current independent evidence",
+    "all manifest files are persisted",
+    "verification checks pass"
+  ],
+  "pending_work": [
+    "persist remaining package files",
+    "verify repository paths"
+  ],
+  "evidence": [
+    "research-snapshot-1",
+    "manifest-snapshot-1"
+  ],
+  "resume_mode": "autonomous",
+  "external_handles": []
+}
