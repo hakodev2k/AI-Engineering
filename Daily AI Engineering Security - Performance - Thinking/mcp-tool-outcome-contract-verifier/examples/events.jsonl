@@ -1,0 +1,3 @@
+{"tool":"read_status","isError":false,"runtime_status":"completed","output":"ok","thrown":false,"consequential":false,"verified":false}
+{"tool":"write_record","isError":false,"runtime_status":"completed","output":"saved","thrown":false,"consequential":true,"verified":true}
+{"tool":"denied_write","isError":true,"runtime_status":"failed","output":"Permission denied","thrown":false,"consequential":true,"verified":false}

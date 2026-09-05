@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "tool": {"type": "string"},
+    "isError": {"type": ["boolean", "null"]},
+    "runtime_status": {"type": "string"},
+    "output": {"type": "string"},
+    "thrown": {"type": "boolean"},
+    "consequential": {"type": "boolean"},
+    "verified": {"type": "boolean"}
+  },
+  "required": ["tool", "runtime_status"]
+}
