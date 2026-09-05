@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "enabled_detectors": ["email", "bearer_token", "authorization_header", "ipv4", "long_digit_sequence"],
+  "sensitive_field_names": ["password", "passwd", "secret", "access_token", "refresh_token", "authorization", "cookie", "set-cookie", "session_id", "api_key"],
+  "allowlist_literals": ["example.com", "127.0.0.1", "0.0.0.0"],
+  "max_findings": 200,
+  "max_transient_retries": 2,
+  "max_fix_cycles": 2
+}

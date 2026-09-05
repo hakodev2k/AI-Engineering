@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Log Redaction Gate Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["status", "summary", "findings"],
+  "properties": {
+    "status": {"enum": ["pass", "fail"]},
+    "summary": {
+      "type": "object",
+      "required": ["total", "by_detector"],
+      "properties": {
+        "total": {"type": "integer", "minimum": 0},
+        "by_detector": {"type": "object", "additionalProperties": {"type": "integer", "minimum": 0}}
+      }
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["detector", "line", "column", "evidence"],
+        "properties": {
+          "detector": {"type": "string"},
+          "line": {"type": "integer", "minimum": 1},
+          "column": {"type": "integer", "minimum": 1},
+          "evidence": {"type": "string"}
+        }
+      }
+    }
+  }
+}

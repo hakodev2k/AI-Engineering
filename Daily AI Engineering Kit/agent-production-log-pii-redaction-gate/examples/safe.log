@@ -1,0 +1,2 @@
+2026-09-05T10:00:00Z level=INFO request_id=req_7f12 user_id=u_482 action=checkout status=accepted
+2026-09-05T10:00:01Z level=WARN authorization=<redacted> session_id=<redacted> client_ip=<redacted>
