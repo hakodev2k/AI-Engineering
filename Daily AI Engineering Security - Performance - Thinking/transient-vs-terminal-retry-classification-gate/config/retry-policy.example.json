@@ -1,0 +1,19 @@
+{
+  "max_attempts": 3,
+  "max_same_fingerprint": 2,
+  "max_elapsed_seconds": 120,
+  "retryable_classes": [
+    "timeout",
+    "rate_limit",
+    "server_5xx",
+    "connection"
+  ],
+  "non_retryable_classes": [
+    "auth",
+    "validation",
+    "permission",
+    "policy"
+  ],
+  "backoff_base_seconds": 1,
+  "backoff_max_seconds": 8
+}
