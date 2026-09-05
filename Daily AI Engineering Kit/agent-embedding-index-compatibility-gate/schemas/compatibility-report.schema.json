@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type":"object",
+  "additionalProperties":false,
+  "required":["status","breaking_changes","generation_changed","rebuild_complete"],
+  "properties":{
+    "status":{"enum":["pass","fail"]},
+    "breaking_changes":{"type":"array","items":{"type":"object"}},
+    "generation_changed":{"type":"boolean"},
+    "rebuild_complete":{"type":"boolean"}
+  }
+}

@@ -1,8 +1,0 @@
-{
-  "status": "ok",
-  "summary": "Repository validation completed successfully.",
-  "confidence": 0.98,
-  "evidence": [
-    {"source": "unit-tests", "detail": "All relevant tests passed."}
-  ]
-}

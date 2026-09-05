@@ -1,0 +1,17 @@
+{
+  "max_transient_retries": 2,
+  "max_reindex_fix_cycles": 2,
+  "norm_tolerance": 0.02,
+  "breaking_fields": [
+    "provider",
+    "model",
+    "model_revision",
+    "dimensions",
+    "normalization",
+    "distance_metric",
+    "chunking_fingerprint",
+    "index_namespace"
+  ],
+  "require_new_generation_for_breaking_change": true,
+  "require_human_approval_for_production_reindex": true
+}

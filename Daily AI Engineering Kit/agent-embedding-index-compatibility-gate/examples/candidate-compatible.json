@@ -1,0 +1,12 @@
+{
+  "provider":"example-provider",
+  "model":"embed-v1",
+  "model_revision":"2026-01",
+  "dimensions":3,
+  "normalization":"unit",
+  "distance_metric":"cosine",
+  "chunking_fingerprint":"sha256:chunk-v3",
+  "index_namespace":"docs-prod",
+  "index_generation":"gen-17",
+  "rebuild_complete":true
+}
