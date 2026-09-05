@@ -1,0 +1,1 @@
+{"listeners":[{"name":"local-readonly-mcp","host":"127.0.0.1","auth_required":true,"directly_reachable":true,"proxy_auth":false,"capabilities":["filesystem-read"]},{"name":"remote-ops-mcp","host":"10.0.0.15","auth_required":true,"directly_reachable":false,"proxy_auth":true,"capabilities":["command-exec","repo-write"]}]}
