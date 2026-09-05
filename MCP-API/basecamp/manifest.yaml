@@ -1,0 +1,39 @@
+id: basecamp
+name: Basecamp
+upstream:
+  - rest
+official_mcp:
+  status: coming-soon
+  note: "Basecamp advertises official ChatGPT/Claude connectors and full MCP support as coming soon. Current stable implementation uses the official Basecamp REST API."
+api:
+  base_url: https://3.basecampapi.com/{account_id}
+  docs: https://github.com/basecamp/bc-api
+  sdk: https://github.com/basecamp/basecamp-sdk
+auth:
+  type: oauth2_bearer
+  scopes: provider_managed
+capabilities:
+  - profile.read
+  - project.list
+  - project.read
+  - people.list
+  - project.people.list
+  - todolist.read
+  - todo.list
+  - todo.read
+  - todo.create
+  - todo.complete
+  - todo.uncomplete
+  - message.list
+  - message.read
+  - message.draft.create
+  - message.publish
+  - comment.list
+  - comment.create
+risk:
+  default: READ
+  write_approval: configurable
+  high_risk_approval: required
+security:
+  credentials_exposed_to_agent: false
+  retrieved_content_is_untrusted: true
