@@ -1,0 +1,4 @@
+{
+  "min_completeness_rate": 1.0,
+  "max_p95_latency_ms": 5000
+}
