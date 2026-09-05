@@ -1,0 +1,4 @@
+# Example planned repository-relative paths
+README.md
+config/policy.json
+scripts/path_boundary_gate.py

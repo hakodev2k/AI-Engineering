@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["status", "root", "summary", "findings"],
+  "properties": {
+    "status": {"enum": ["pass", "fail"]},
+    "root": {"type": "string"},
+    "summary": {
+      "type": "object",
+      "required": ["checked", "violations", "links"],
+      "properties": {
+        "checked": {"type": "integer", "minimum": 0},
+        "violations": {"type": "integer", "minimum": 0},
+        "links": {"type": "integer", "minimum": 0}
+      }
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["path", "safe", "kind"],
+        "properties": {
+          "path": {"type": "string"},
+          "safe": {"type": "boolean"},
+          "kind": {"type": "string"},
+          "resolved": {"type": ["string", "null"]},
+          "evidence": {"type": "array", "items": {"type": "string"}}
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "allow_internal_links": true,
+  "block_external_links": true,
+  "block_broken_links": true,
+  "max_transient_retries": 2,
+  "require_post_edit_scan": true,
+  "require_independent_verification": true,
+  "approval_required_for_boundary_change": true
+}
