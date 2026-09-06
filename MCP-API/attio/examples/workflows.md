@@ -7,7 +7,7 @@ These examples use connector tool names, not raw Attio MCP tool names. Provider-
 Tool: `attio.record.search`
 
 ```json
-{"query":"Acme"}
+{"object":"companies","query":"Acme","limit":20}
 ```
 
 Permission: `READ`. Approval: no.
@@ -22,21 +22,21 @@ Then inspect available company attributes:
 
 ```text
 Tool: attio.attribute.list
-Input: {"object":"companies"}
+Input: {"object":"companies","limit":50}
 Permission: READ
 Approval: no
 ```
 
 ## Create or update a company safely
 
-Prefer `attio.record.upsert` when a stable matching attribute such as a domain is available.
+Prefer `attio.record.upsert` when a stable matching attribute such as a domain is available. Inspect `attio.attribute.list` first so the values match the workspace schema.
 
 ```json
 {
   "object":"companies",
   "matching_attribute":"domains",
   "values":{"domains":["acme.example"],"name":"Acme"},
-  "approvalId":"<64-hex HMAC supplied by the approval system>"
+  "approvalId":"<64-lowercase-hex HMAC supplied by the approval system>"
 }
 ```
 
@@ -46,10 +46,11 @@ Permission: `WRITE`. Approval: required by default. The connector strips `approv
 
 ```json
 {
+  "parent_object":"companies",
   "parent_record_id":"<record-id>",
   "title":"Discovery call",
   "content":"Customer asked for security review and pricing follow-up.",
-  "approvalId":"<64-hex HMAC supplied by the approval system>"
+  "approvalId":"<64-lowercase-hex HMAC supplied by the approval system>"
 }
 ```
 
@@ -60,9 +61,10 @@ Tool: `attio.note.create`. Permission: `WRITE`. Approval: required by default.
 ```json
 {
   "content":"Send security documentation",
-  "deadline":"2026-09-09T09:00:00Z",
+  "deadline_at":"2026-09-09T09:00:00Z",
+  "linked_record_object":"companies",
   "linked_record_id":"<record-id>",
-  "approvalId":"<64-hex HMAC supplied by the approval system>"
+  "approvalId":"<64-lowercase-hex HMAC supplied by the approval system>"
 }
 ```
 
@@ -72,16 +74,16 @@ Tool: `attio.task.create`. Permission: `WRITE`. Approval: required by default.
 
 ```text
 Tool: attio.email.search
-Input: {"domain":"acme.example","start":"2026-09-01T00:00:00Z","limit":20}
+Input: {"domain":"acme.example","sent_at_gt":"2026-09-01T00:00:00Z","limit":20}
 Permission: READ
 Approval: no
 ```
 
-After selecting an email ID:
+After selecting both IDs from a search result:
 
 ```text
 Tool: attio.email.get
-Input: {"email_id":"<email-id>"}
+Input: {"mailbox_id":"<mailbox-id>","email_id":"<email-id>"}
 Permission: READ
 Approval: no
 ```
