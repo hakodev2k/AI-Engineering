@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { assertAllowed } from "../src/policy.js";
 import type { Config } from "../src/config.js";
 
-const base: Config = { apiKey:"x", siteSubdomain:"demo", apiVersion:"2021-02-25", permission:"read", requireWriteApproval:true, requireHighRiskApproval:true, timeoutMs:1000, maxRetries:0 };
+const base: Config = { apiKey:"x", apiVersion:"2021-02-25", permission:"read", requireWriteApproval:true, requireHighRiskApproval:true, timeoutMs:1000, maxRetries:0 };
 
 test("read is allowed by default", () => assert.doesNotThrow(() => assertAllowed("READ", "read", {}, base)));
 test("write is denied without permission", () => assert.throws(() => assertAllowed("WRITE", "write", { approved:true }, base)));
