@@ -1,0 +1,49 @@
+id: gusto
+name: Gusto
+upstream:
+  - rest
+official_mcp:
+  available: true
+  endpoint: https://mcp.api.gusto.com
+  transport: remote
+  note: "Official Gusto MCP exists for user data access, but its public tool contract is not stable enough to safely allowlist here; this connector uses official REST API v2026-06-15 for deterministic scoped operations."
+auth:
+  type: oauth2
+  access: company_scoped
+  access_token_ttl_seconds: 7200
+  refresh_token_rotation: true
+api:
+  base_url_demo: https://api.gusto-demo.com
+  base_url_production: https://api.gusto.com
+  version_header: X-Gusto-API-Version
+  version: 2026-06-15
+required_scopes:
+  - companies:read
+  - employees:read
+  - employees:manage
+  - employees:write
+  - payrolls:read
+  - payrolls:write
+  - employee_time_off_activities:read
+  - pay_stubs:read
+capabilities:
+  - company.read
+  - company.locations.list
+  - employee.list
+  - employee.read
+  - employee.home_addresses.list
+  - employee.time_off_activities.list
+  - employee.pay_stubs.list
+  - payroll.list
+  - payroll.read
+  - employee.create
+  - employee.update
+  - payroll.prepare
+risk:
+  default: READ
+  write_approval: configurable
+  high_risk_approval: required
+security:
+  credentials_exposed_to_agent: false
+  retrieved_content_is_untrusted: true
+  arbitrary_http_requests: false
