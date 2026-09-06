@@ -1,50 +1,52 @@
-# Skill: Investigate a Dead-Letter Queue
+# Skill: Investigate Dead-Letter Queue
 
 ## Purpose
-Determine why messages were dead-lettered and whether replay is technically and semantically safe.
+Build an evidence-backed picture of why selected messages were dead-lettered and whether replay can ever be safe.
 
 ## When to use
-After a production incident, consumer fix, dependency recovery, schema rollout, or queue backlog alert when a DLQ contains messages that may need reprocessing.
+At the start of every replay request, before creating a replay plan.
 
 ## Inputs
-Queue/DLQ identity, exported message sample or JSONL snapshot, consumer source revision, recent deployment/incidence context, observability evidence, replay policy.
+Queue/topic name, environment, candidate message IDs, incident context, logs, handler code, broker metadata, schema/routing configuration.
 
 ## Preconditions
-The investigator has read access to repository and exported evidence. Production queue mutation is not required.
+Read-only access to repository and enough message metadata to identify the failed set.
 
 ## Required context
-1. Consumer entry point and message contract.
-2. Retry/dead-letter configuration.
-3. Idempotency/deduplication behavior.
-4. Relevant database or external side-effect boundaries.
-5. Logs/traces for representative failures.
+1. Consumer/handler entry point.
+2. Dead-letter policy and retry policy.
+3. Schema/version handling.
+4. Routing and tenant boundaries.
+5. Idempotency/deduplication mechanism.
+6. Relevant logs/tests for the original failure.
 
 ## Allowed tools
-Repository read/search, log/query read tools, message export readers, `scripts/dlq_replay_gate.py plan`, tests.
+Repository read/search, log queries, broker read/peek/export operations, test execution, schema/config inspection.
 
 ## Constraints
-Do not mutate the queue, delete messages, change retry policy, or expose secrets.
+Do not replay, delete, purge, mutate payloads, change broker configuration, or retrieve unnecessary secret/personal-data fields.
 
 ## Procedure
-1. Identify the consumer entry point and deserialize/validate path.
-2. Trace the message from receipt through validation, state changes, external calls, acknowledgment, and exception handling.
-3. Locate retry and dead-letter thresholds; determine which failures are retried automatically.
-4. Establish the idempotency key and where duplicate suppression is enforced.
-5. Sample failures by class, not only by most recent timestamp.
-6. Separate confirmed facts from hypotheses. Link each failure class to log/trace/repository evidence.
-7. Determine whether the original cause is still present.
-8. Export candidate messages without modifying queue state.
-9. Run the deterministic planner and inspect all `blocked`/`needs-review` reasons.
-10. Produce a replay recommendation per failure class: replayable, requires code/data repair first, or permanently quarantined.
+1. Freeze the candidate set by explicit message ID.
+2. Record environment, source queue, destination/handler, tenant/account scope, enqueue/dead-letter timestamps, delivery count, correlation ID, and failure reason where available.
+3. Trace the handler from transport entry point to external/database side effects.
+4. Identify the exact failure class: transient dependency, code defect, schema mismatch, routing/config error, business-rule rejection, permission failure, poison payload, or unknown.
+5. Collect evidence for the cause from logs, exceptions, tests, or broker reason metadata.
+6. Determine what changed since failure: code commit, schema adapter, configuration correction, dependency recovery, credentials, or nothing.
+7. Identify idempotency boundaries and all side effects that could repeat.
+8. Check whether payload schema and routing semantics remain compatible with the current handler.
+9. Check tenant/destination mapping independently from payload-provided claims where possible.
+10. Classify each fact, hypothesis, open question, and blocking risk.
+11. Hand only the bounded selected set and evidence to Replay Planner.
 
 ## Expected output
-An evidence-backed investigation note and machine-readable replay plan.
+An investigation record containing selected message IDs, failure cause, fix/recovery evidence, idempotency evidence, compatibility state, tenant scope, unresolved risks, and recommended next action.
 
 ## Verification
-Every replay recommendation must point to the consumer behavior, failure evidence, and idempotency boundary that justifies it.
+Every replay-relevant claim links to repository, log, broker, test, schema, or configuration evidence. Unknown cause, unknown tenant scope, or unknown side-effect semantics remains blocking.
 
 ## Failure handling
-If message bodies cannot be safely exported, use metadata and controlled representative samples. If idempotency cannot be proven, classify affected messages `needs-review` or `blocked`.
+Tool/permission failures preserve partial evidence and stop. Transient log/broker read failures may be retried twice. Missing evidence is never replaced with assumption.
 
 ## Stop conditions
-Stop before production replay, data mutation, policy changes, or any operation that requires increased privileges.
+Stop before replay if the original failure remains active, message scope is unbounded, idempotency cannot be established for material side effects, tenant scope is ambiguous, or replay would require a dangerous action without approval.

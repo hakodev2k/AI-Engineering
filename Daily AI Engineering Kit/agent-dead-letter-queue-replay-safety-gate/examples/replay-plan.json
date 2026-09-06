@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "plan_id": "replay-2026-09-06-orders-001",
+  "environment": "staging",
+  "queue": "orders-dlq",
+  "message_ids": ["msg-1001", "msg-1002"],
+  "tenant_scope": ["tenant-a"],
+  "failure_cause": "Handler rejected version 3 payloads before schema adapter deployment.",
+  "fix_evidence": ["commit:abc1234", "test:order-v3-adapter-passes"],
+  "idempotency_evidence": ["order-handler uses message_id uniqueness constraint", "duplicate-delivery integration test passes"],
+  "schema_compatibility": "verified",
+  "routing_compatibility": "verified",
+  "batch_size": 2,
+  "execution_retry_limit": 1,
+  "expected_outcome": "Each selected message is accepted once by the order handler without duplicate order creation.",
+  "status": "planned",
+  "approval": null
+}

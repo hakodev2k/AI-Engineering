@@ -1,20 +1,17 @@
-# Hook: Pre-Replay Gate
+# Hook: Pre-replay Safety Gate
 
-**Trigger:** before any external replay/redrive command is authorized.
+**Trigger:** immediately before any dry-run or real replay execution.
 
-**Preconditions:** immutable JSONL export exists; replay policy exists; target environment is known.
+**Preconditions:** replay plan exists and references the exact intended message set.
 
 **Action:**
+
 ```bash
-python scripts/dlq_replay_gate.py plan \
-  --input .dlq/messages.jsonl \
-  --policy config/replay-policy.json \
-  --environment staging \
-  --out .dlq/replay-plan.json
+python scripts/replay_guard.py --plan <plan.json> --policy config/replay-policy.json --out .dlq-replay/guard.json
 ```
 
-**Expected result:** exit code `0`, plan status `ready`, and all intended messages status `eligible`.
+**Expected result:** exit code 0 and `status: pass`.
 
-**Failure behavior:** preserve the plan; resolve missing evidence or root cause. Do not manually edit statuses to bypass the gate.
+**Failure behavior:** block replay, preserve guard output, and return findings to Replay Planner. Do not widen message scope or increase retry limits automatically.
 
 **Blocks execution:** yes.

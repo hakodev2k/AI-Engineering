@@ -1,41 +1,44 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.invalid/dlq-replay-plan.schema.json",
-  "title": "Dead-letter queue replay plan",
+  "title": "DLQ Replay Plan",
   "type": "object",
-  "required": ["status", "generated_at", "environment", "source", "summary", "messages"],
+  "required": [
+    "version", "plan_id", "environment", "queue", "message_ids", "tenant_scope",
+    "failure_cause", "fix_evidence", "idempotency_evidence", "schema_compatibility",
+    "routing_compatibility", "batch_size", "execution_retry_limit", "expected_outcome", "status", "approval"
+  ],
   "properties": {
-    "status": {"enum": ["ready", "blocked"]},
-    "generated_at": {"type": "string", "format": "date-time"},
-    "environment": {"type": "string"},
-    "source": {"type": "string"},
-    "summary": {
-      "type": "object",
-      "required": ["total", "eligible", "blocked", "needs_review"],
-      "properties": {
-        "total": {"type": "integer", "minimum": 0},
-        "eligible": {"type": "integer", "minimum": 0},
-        "blocked": {"type": "integer", "minimum": 0},
-        "needs_review": {"type": "integer", "minimum": 0}
-      },
-      "additionalProperties": false
-    },
-    "messages": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "required": ["message_id", "status", "reasons"],
-        "properties": {
-          "message_id": {"type": "string"},
-          "idempotency_key": {"type": ["string", "null"]},
-          "status": {"enum": ["eligible", "blocked", "needs-review"]},
-          "reasons": {"type": "array", "items": {"type": "string"}},
-          "failure_class": {"type": "string"},
-          "failed_at": {"type": "string"}
-        },
-        "additionalProperties": true
-      }
+    "version": {"const": 1},
+    "plan_id": {"type": "string", "minLength": 3},
+    "environment": {"type": "string", "minLength": 1},
+    "queue": {"type": "string", "minLength": 1},
+    "message_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "tenant_scope": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "failure_cause": {"type": "string", "minLength": 10},
+    "fix_evidence": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 3}},
+    "idempotency_evidence": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 3}},
+    "schema_compatibility": {"enum": ["verified", "not-applicable"]},
+    "routing_compatibility": {"enum": ["verified", "not-applicable"]},
+    "batch_size": {"type": "integer", "minimum": 1},
+    "execution_retry_limit": {"type": "integer", "minimum": 0},
+    "expected_outcome": {"type": "string", "minLength": 10},
+    "status": {"enum": ["planned", "approved"]},
+    "approval": {
+      "oneOf": [
+        {"type": "null"},
+        {
+          "type": "object",
+          "required": ["approved_by", "approved_at", "plan_fingerprint"],
+          "properties": {
+            "approved_by": {"type": "string", "minLength": 1},
+            "approved_at": {"type": "string", "format": "date-time"},
+            "plan_fingerprint": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+          },
+          "additionalProperties": false
+        }
+      ]
     }
   },
-  "additionalProperties": true
+  "additionalProperties": false
 }

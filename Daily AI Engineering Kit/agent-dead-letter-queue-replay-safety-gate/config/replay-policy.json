@@ -1,16 +1,16 @@
 {
   "version": 1,
-  "policy": {
-    "max_batch_size": 50,
-    "max_attempts_per_message": 1,
-    "require_idempotency_key": true,
-    "require_original_message_id": true,
-    "require_failure_reason": true,
-    "require_non_expired_message": true,
-    "max_message_age_hours": 168,
-    "block_failure_classes": ["schema-invalid", "authorization", "poison-message", "business-rule"],
-    "require_approval_for_environment": ["production"],
-    "require_receipt_reconciliation": true,
-    "allowed_statuses": ["eligible", "blocked", "needs-review"]
-  }
+  "max_batch_size": 100,
+  "max_execution_retries": 2,
+  "require_explicit_message_ids": true,
+  "forbid_wildcard_scope": true,
+  "require_tenant_scope": true,
+  "require_failure_cause": true,
+  "require_fix_evidence": true,
+  "require_idempotency_evidence": true,
+  "production_requires_approval": true,
+  "approval_max_age_minutes": 120,
+  "allowed_environments": ["development", "test", "staging", "production"],
+  "allowed_statuses": ["planned", "approved"],
+  "receipt_success_statuses": ["accepted", "processed", "already-processed"]
 }
