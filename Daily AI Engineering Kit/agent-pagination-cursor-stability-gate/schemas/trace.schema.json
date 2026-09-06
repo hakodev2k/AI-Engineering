@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Pagination cursor trace",
+  "type": "object",
+  "required": [
+    "pages"
+  ],
+  "properties": {
+    "expected_ids": {
+      "type": "array",
+      "items": {
+        "type": [
+          "string",
+          "number"
+        ]
+      }
+    },
+    "pages": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "cursor_in",
+          "cursor_out",
+          "items"
+        ],
+        "properties": {
+          "cursor_in": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "cursor_out": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "id",
+                "sort_key"
+              ],
+              "properties": {
+                "id": {
+                  "type": [
+                    "string",
+                    "number"
+                  ]
+                },
+                "sort_key": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": [
+                      "string",
+                      "number",
+                      "integer"
+                    ]
+                  }
+                }
+              },
+              "additionalProperties": true
+            }
+          }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": true
+}

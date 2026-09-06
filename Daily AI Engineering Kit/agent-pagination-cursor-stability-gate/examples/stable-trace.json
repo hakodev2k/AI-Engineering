@@ -1,0 +1,50 @@
+{
+  "expected_ids": [
+    "a",
+    "b",
+    "c",
+    "d"
+  ],
+  "pages": [
+    {
+      "cursor_in": null,
+      "cursor_out": "c1",
+      "items": [
+        {
+          "id": "a",
+          "sort_key": [
+            "2026-09-07T00:00:01Z",
+            "a"
+          ]
+        },
+        {
+          "id": "b",
+          "sort_key": [
+            "2026-09-07T00:00:01Z",
+            "b"
+          ]
+        }
+      ]
+    },
+    {
+      "cursor_in": "c1",
+      "cursor_out": null,
+      "items": [
+        {
+          "id": "c",
+          "sort_key": [
+            "2026-09-07T00:00:02Z",
+            "c"
+          ]
+        },
+        {
+          "id": "d",
+          "sort_key": [
+            "2026-09-07T00:00:02Z",
+            "d"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "max_pages": 1000,
+  "require_unique_ids": true,
+  "require_cursor_continuity": true,
+  "require_strict_monotonic_order": true,
+  "require_terminal_null_cursor": true,
+  "required_sort_key_fields": [
+    "updated_at",
+    "id"
+  ]
+}
