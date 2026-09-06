@@ -1,0 +1,45 @@
+id: recurly
+name: Recurly
+version: 1.0.0
+runtime: nodejs>=20
+upstream:
+  - rest
+  - mcp-documentation-only
+auth:
+  type: api-key-basic-auth
+  credential_env: RECURLY_API_KEY
+  site_env: RECURLY_SITE_SUBDOMAIN
+  notes: "API key is used as the HTTP Basic username with an empty password. Recurly Compass MCP is official but exposes documentation/coding agents rather than billing data operations, so billing tools use the official REST API."
+api:
+  base_url_template: "https://{site}.recurly.com"
+  version_header: "application/vnd.recurly.v2021-02-25"
+official_mcp:
+  endpoint: "https://mcp.recurly.com/mcp"
+  usage: "Documentation and API coding knowledge only; not used for billing operations."
+capabilities:
+  - account.list
+  - account.get
+  - account.create
+  - account.update
+  - subscription.list
+  - subscription.get
+  - subscription.cancel
+  - subscription.pause
+  - invoice.list
+  - invoice.get
+  - plan.list
+  - transaction.list
+risk:
+  default: READ
+  write_requires_configurable_approval: true
+  high_risk_requires_explicit_approval: true
+  destructive_tools_exposed: false
+environment:
+  - RECURLY_API_KEY
+  - RECURLY_SITE_SUBDOMAIN
+  - RECURLY_API_VERSION
+  - RECURLY_PERMISSIONS
+  - RECURLY_REQUIRE_WRITE_APPROVAL
+  - RECURLY_REQUIRE_HIGH_RISK_APPROVAL
+  - RECURLY_TIMEOUT_MS
+  - RECURLY_MAX_RETRIES
