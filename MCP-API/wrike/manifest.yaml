@@ -1,0 +1,58 @@
+id: wrike
+name: Wrike
+
+upstream:
+  - mcp
+
+mcp:
+  endpoint: https://mcp.wrike.com/v2
+  transport: streamable-http
+  official: true
+
+auth:
+  type: bearer
+  recommended: oauth2
+  alternatives:
+    - permanent_access_token
+  credential_env: WRIKE_ACCESS_TOKEN
+  credential_isolation: connector-only
+
+capabilities:
+  - space.search
+  - item.children.read
+  - inbox.read
+  - item.search
+  - user.search
+  - user.get
+  - item.read
+  - item.comments.read
+  - task.create
+  - project_folder.create
+  - item.update
+  - item.comment.create
+  - workflow.search
+  - custom_item_type.search
+  - custom_field.search
+  - approval.read
+  - approval.search
+
+risk:
+  default: READ
+  write_requires_permission: true
+  write_requires_human_approval: true
+  destructive_tools_exposed: false
+
+required_env:
+  - WRIKE_ACCESS_TOKEN
+optional_env:
+  - WRIKE_MCP_URL
+  - WRIKE_ALLOWED_RISKS
+  - WRIKE_APPROVAL_TOKEN
+  - WRIKE_TIMEOUT_MS
+  - WRIKE_MAX_INPUT_BYTES
+
+security:
+  allowed_upstream_tools: fixed_allowlist
+  dynamic_tool_discovery: validate_against_allowlist
+  credentials_forwarded_to_model: false
+  provider_content_trusted_as_instructions: false
