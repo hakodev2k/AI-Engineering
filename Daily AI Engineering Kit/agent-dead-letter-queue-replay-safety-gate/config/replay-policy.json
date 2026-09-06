@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "policy": {
+    "max_batch_size": 50,
+    "max_attempts_per_message": 1,
+    "require_idempotency_key": true,
+    "require_original_message_id": true,
+    "require_failure_reason": true,
+    "require_non_expired_message": true,
+    "max_message_age_hours": 168,
+    "block_failure_classes": ["schema-invalid", "authorization", "poison-message", "business-rule"],
+    "require_approval_for_environment": ["production"],
+    "require_receipt_reconciliation": true,
+    "allowed_statuses": ["eligible", "blocked", "needs-review"]
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/dlq-replay-plan.schema.json",
+  "title": "Dead-letter queue replay plan",
+  "type": "object",
+  "required": ["status", "generated_at", "environment", "source", "summary", "messages"],
+  "properties": {
+    "status": {"enum": ["ready", "blocked"]},
+    "generated_at": {"type": "string", "format": "date-time"},
+    "environment": {"type": "string"},
+    "source": {"type": "string"},
+    "summary": {
+      "type": "object",
+      "required": ["total", "eligible", "blocked", "needs_review"],
+      "properties": {
+        "total": {"type": "integer", "minimum": 0},
+        "eligible": {"type": "integer", "minimum": 0},
+        "blocked": {"type": "integer", "minimum": 0},
+        "needs_review": {"type": "integer", "minimum": 0}
+      },
+      "additionalProperties": false
+    },
+    "messages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["message_id", "status", "reasons"],
+        "properties": {
+          "message_id": {"type": "string"},
+          "idempotency_key": {"type": ["string", "null"]},
+          "status": {"enum": ["eligible", "blocked", "needs-review"]},
+          "reasons": {"type": "array", "items": {"type": "string"}},
+          "failure_class": {"type": "string"},
+          "failed_at": {"type": "string"}
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": true
+}

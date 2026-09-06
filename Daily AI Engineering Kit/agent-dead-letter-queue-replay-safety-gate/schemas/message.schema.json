@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/dlq-message.schema.json",
+  "title": "Dead-letter queue export message",
+  "type": "object",
+  "required": ["message_id", "failed_at", "failure_class", "failure_reason", "payload"],
+  "properties": {
+    "message_id": {"type": "string", "minLength": 1},
+    "idempotency_key": {"type": ["string", "null"]},
+    "failed_at": {"type": "string", "format": "date-time"},
+    "failure_class": {"type": "string", "minLength": 1},
+    "failure_reason": {"type": "string", "minLength": 1},
+    "attempts": {"type": "integer", "minimum": 0},
+    "payload": {},
+    "attributes": {"type": "object"}
+  },
+  "additionalProperties": true
+}

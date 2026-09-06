@@ -1,191 +1,163 @@
 # Agent Dead-Letter Queue Replay Safety Gate
 
-A reusable AI-engineering package for investigating and safely replaying dead-lettered messages without creating duplicate side effects, violating tenant boundaries, replaying stale commands, or turning a local recovery task into an uncontrolled production incident.
+A reusable implementation kit for investigating failed queue messages, proving replay safety, generating bounded replay batches, enforcing approval boundaries, and reconciling every replay outcome before completion.
 
 ## Problem
+A DLQ is not simply a backlog to resend. Messages may have failed because of schema defects, business rules, authorization errors, poison payloads, duplicate side effects, or transient infrastructure faults. Blind redrive can double-charge customers, duplicate orders, overwrite newer state, or create an infinite poison-message loop.
 
-Dead-letter queues are operationally useful but dangerous. A message can fail because of a transient dependency outage, a permanent schema mismatch, a poison payload, a business-rule violation, or code that is no longer compatible with the original event. Blind replay can double-charge customers, resend notifications, duplicate writes, trigger obsolete commands, or repeatedly poison the queue.
+## Purpose
+Turn DLQ recovery into an evidence-driven workflow: investigate → classify → prove idempotency → plan deterministic batches → approve dangerous execution → reconcile receipts → verify.
 
-This package gives coding and operations agents a bounded, evidence-first workflow with deterministic validation, explicit replay plans, approval boundaries, replay receipts, and independent verification.
+## When to use
+Use after a consumer bug fix, upstream outage recovery, queue backlog incident, deployment rollback, or when historical dead-lettered messages may need reprocessing.
 
-## Trigger
-
-Use this package when one or more dead-lettered messages need investigation or replay, when replay tooling is being implemented or changed, or when a production incident includes DLQ accumulation.
-
-Do not use it to bypass an existing incident process, message-retention policy, or production change-control requirement.
-
-## Inputs
-
-- repository root;
-- DLQ evidence exported to a local JSON file;
-- replay target environment;
-- queue/topic/subscription identifier;
-- optional message IDs or selection criteria;
-- repository-specific build/test commands;
-- `config/dlq-replay-gate.json`.
+## When not to use
+Do not use this kit as a queue vendor SDK, automatic production redrive daemon, message schema migration engine, or replacement for application-level idempotency. It intentionally does not send, delete, purge, or replay queue messages.
 
 ## Architecture
-
 ```mermaid
 flowchart TD
-    A[Trigger] --> B[Repository Explorer]
-    B --> C[DLQ Investigator]
-    C --> D[Replay Plan]
-    D --> E{Approval required?}
-    E -- yes --> F[Human approval]
-    E -- no --> G[Implementation / tooling]
-    F --> G
-    G --> H[Deterministic preflight]
-    H --> I[Bounded replay]
-    I --> J[Replay receipts]
-    J --> K[Independent verification]
-    K --> L{Verified?}
-    L -- yes --> M[Complete]
-    L -- retryable --> N[One bounded correction]
-    N --> H
-    L -- blocked --> O[Stop with evidence]
+  A[DLQ trigger] --> B[DLQ Investigator]
+  B --> C[Root cause + idempotency evidence]
+  C --> D[Deterministic planner]
+  D -->|blocked / needs-review| E[Repair evidence or consumer]
+  E --> D
+  D -->|eligible| F[Replay Planner]
+  F --> G{Production?}
+  G -->|yes| H[Human approval]
+  G -->|no| I[Approved external replay tool]
+  H --> I
+  I --> J[Receipts + observability]
+  J --> K[Independent Verification Agent]
+  K -->|verified| L[Next bounded batch / complete]
+  K -->|failed| M[Stop and investigate]
 ```
 
 ## Package tree
-
 ```text
 agent-dead-letter-queue-replay-safety-gate/
 ├── README.md
-├── config/
-│   └── dlq-replay-gate.json
-├── examples/
-│   └── replay-evidence.example.json
-├── hooks/
-│   ├── post-replay-verification.md
-│   └── pre-replay-validation.md
-├── rules/
-│   └── dlq-replay-safety.md
-├── schemas/
-│   └── replay-evidence.schema.json
-├── scripts/
-│   ├── analyze-dlq.py
-│   ├── validate-replay-plan.py
-│   └── verify-replay-evidence.py
-├── skills/
-│   ├── dlq-investigation.md
-│   ├── replay-planning.md
-│   └── replay-verification.md
-├── subagents/
-│   ├── dlq-investigator.md
-│   ├── replay-implementation-agent.md
-│   └── verification-agent.md
-├── tests/
-│   └── test-replay-gate.py
-└── workflows/
-    └── safe-dlq-replay.md
+├── config/replay-policy.json
+├── examples/messages.jsonl
+├── examples/replay-receipts.jsonl
+├── hooks/post-replay.md
+├── hooks/pre-replay.md
+├── rules/dlq-replay-rules.md
+├── schemas/message.schema.json
+├── schemas/replay-plan.schema.json
+├── scripts/check_changed_files.py
+├── scripts/dlq_replay_gate.py
+├── skills/investigate-dlq.md
+├── skills/prepare-replay.md
+├── subagents/dlq-investigator.md
+├── subagents/replay-planner.md
+├── subagents/verification-agent.md
+├── tests/test_dlq_replay_gate.py
+└── workflows/dlq-replay-workflow.md
 ```
 
-## Dependencies
-
-Python 3.10+ is required for the deterministic scripts. They use only the standard library. Provider-specific queue clients are intentionally not included because replay execution must remain an explicit host integration, not a hidden default action.
+## Component responsibilities
+- **Investigation skill/agent:** traces consumer behavior, failure classes, and idempotency without queue mutation.
+- **Replay planner:** turns evidence into a bounded plan and approval packet.
+- **Rules:** prohibit blind redrive, unbounded retries, destructive queue actions, and silent permission escalation.
+- **`dlq_replay_gate.py`:** deterministic message classifier, batch planner, and receipt reconciler. It never replays a message.
+- **`check_changed_files.py`:** optional repository safety check for sensitive file classes during consumer remediation.
+- **Verification Agent:** independently checks that every intended replay has an acceptable receipt and no unintended message was executed.
 
 ## Installation
+Copy this directory into a repository. Requirements are Python 3.9+ for the scripts and Git for `check_changed_files.py`. The core planner/reconciler uses only the Python standard library.
 
-Copy the directory into a repository and review `config/dlq-replay-gate.json`. Keep replay execution outside these scripts unless a repository-specific adapter is added with equivalent approval and evidence controls.
-
-Run the package self-test:
-
+On Unix, make scripts executable if needed:
 ```bash
-python3 -m unittest tests/test-replay-gate.py
+chmod +x scripts/dlq_replay_gate.py scripts/check_changed_files.py
 ```
 
 ## Configuration
+Edit `config/replay-policy.json` to match your operational policy. Safe defaults require message IDs, idempotency keys, failure reasons, non-expired messages, bounded batches, and production approval. The default permanently blocks schema-invalid, authorization, poison-message, and business-rule failures from automatic eligibility.
 
-The configuration defines:
+Policy weakening is itself an approval-required change. Do not store queue credentials, tokens, connection strings, or message secrets in configuration.
 
-- maximum messages allowed per replay batch;
-- maximum age allowed without explicit override approval;
-- fields treated as message identity and tenant identity;
-- required replay-plan fields;
-- statuses considered permanent/non-retryable;
-- whether unknown failure classifications block replay.
+## Input contract
+The planner reads JSONL. Each line should contain at least:
+```json
+{"message_id":"m-1","idempotency_key":"order-42","failed_at":"2026-09-06T10:00:00Z","failure_class":"transient-upstream","failure_reason":"HTTP 503","payload":{}}
+```
+
+The package does not require payload content for classification; if payload contains sensitive data, export only the minimum needed evidence.
 
 ## Usage
-
-Analyze an exported DLQ sample:
-
+Generate a plan for staging:
 ```bash
-python3 scripts/analyze-dlq.py \
-  --input /tmp/dlq.json \
-  --config config/dlq-replay-gate.json \
-  --output /tmp/dlq-analysis.json
+python scripts/dlq_replay_gate.py plan \
+  --input examples/messages.jsonl \
+  --policy config/replay-policy.json \
+  --environment staging \
+  --out .dlq/replay-plan.json
 ```
 
-Validate a replay plan before any queue write occurs:
-
+Generate a production plan. The output is intentionally `blocked` until the workflow records explicit approval:
 ```bash
-python3 scripts/validate-replay-plan.py \
-  --plan /tmp/replay-plan.json \
-  --config config/dlq-replay-gate.json
+python scripts/dlq_replay_gate.py plan \
+  --input .dlq/messages.jsonl \
+  --policy config/replay-policy.json \
+  --environment production \
+  --out .dlq/replay-plan.json
 ```
 
-Verify the final evidence bundle:
-
+After an approved external replay tool exports receipts, reconcile them:
 ```bash
-python3 scripts/verify-replay-evidence.py \
-  --evidence /tmp/replay-evidence.json
+python scripts/dlq_replay_gate.py reconcile \
+  --plan .dlq/replay-plan.json \
+  --receipts .dlq/replay-receipts.jsonl \
+  --approved \
+  --out .dlq/verification.json
 ```
 
-## Agent invocation
+A valid receipt is expected to carry `message_id`, matching `idempotency_key`, status `succeeded` or `deduplicated`, and an `external_receipt` reference.
 
-> Investigate the DLQ backlog using `workflows/safe-dlq-replay.md`. Do not replay anything until failure causes, idempotency behavior, message age, tenant scope, and batch size are evidenced. Production replay requires explicit human approval. Preserve replay receipts and have the Verification Agent independently verify outcomes.
+## Workflow
+Follow `workflows/dlq-replay-workflow.md`. The core sequence is:
+
+```text
+Context → investigate → classify → plan → approve → execute bounded batch → reconcile → independently verify
+```
+
+No retry loop is infinite. Tool/export transient failures are capped at 2 retries. Planning is capped at 2 retries after evidence/root-cause correction. A failed or ambiguous replay result has zero automatic replay retries.
+
+## Permissions
+Planning requires repository read access and access to an exported message snapshot. Consumer remediation may require normal repository edit/test permissions. Production queue mutation must be performed separately by an approved least-privilege operator/tool. The package never requires force-push, infrastructure administration, secrets-management writes, or database mutation.
 
 ## Approval boundaries
+Explicit human approval is required before production replay, destructive queue operations, message deletion/purge, schema or database changes, production config/infrastructure changes, secret changes, breaking API changes, security-control weakening, irreversible migrations, or large dependency upgrades.
 
-Explicit human approval is mandatory before:
+Agents stop before these operations and never expand permissions to unblock themselves.
 
-- any production replay;
-- replaying messages older than the configured age threshold;
-- replaying a message whose handler is not proven idempotent or deduplicated;
-- changing message schema, consumer compatibility behavior, infrastructure, secrets, queue retention, or production configuration;
-- replaying more than the configured batch limit;
-- deleting or purging DLQ messages;
-- bypassing tenant, authorization, or security validation;
-- destructive database work, deployment, force push, or history rewrite.
-
-The workflow stops before these actions.
-
-## Failure and recovery
-
-- Validation failure blocks replay immediately.
-- Unknown failure classification blocks replay by default.
-- Transient tooling failures may be retried once with the same immutable plan.
-- Replay execution itself is never automatically retried by this package.
-- A failed replay batch is preserved as evidence and escalated; do not widen the batch.
-- Permission errors never trigger automatic privilege escalation.
-- If receipts cannot establish what happened, status is `reconciliation-required`, not `verified`.
+## Failure handling
+- **Transient export/log/tool failure:** retry at most twice and preserve each failure.
+- **Validation failure:** block affected messages; do not bypass planner output.
+- **Build/test failure:** repair the consumer before replay planning continues.
+- **Schema/business-rule/authorization failure:** quarantine until the underlying approved change is complete.
+- **Ambiguous replay outcome:** reconcile actual downstream state before any retry.
+- **Verification failure:** stop subsequent batches and preserve plan, receipts, and observability evidence.
 
 ## Verification
+`Task executed` means a replay command ran. `Task verified successfully` requires all of the following:
+- root cause is fixed or evidenced as transient;
+- idempotency/deduplication is proven;
+- every replayed message was `eligible` in the immutable plan;
+- required approval was recorded;
+- every attempted message has exactly one acceptable success/deduplication receipt;
+- no receipt exists for a non-eligible message;
+- relevant consumer tests pass;
+- remaining blocked messages and risks are documented.
 
-Execution and verification are separate states. A replay is verified only when:
-
-- the exact approved plan hash is known;
-- attempted message IDs are recorded;
-- replay receipts record accepted/rejected/unknown outcomes;
-- no unapproved message was replayed;
-- idempotency/deduplication evidence exists for side-effecting handlers;
-- host tests/builds required by the repository pass;
-- post-replay queue and application evidence is checked;
-- independent verification sets `verification_status` to `verified`.
+Run package tests:
+```bash
+python -m unittest tests/test_dlq_replay_gate.py
+```
 
 ## Definition of Done
+The investigation is evidence-backed; the replay plan is deterministic; dangerous actions were explicitly approved; bounded batches were used; all replayed messages were independently reconciled; no unresolved blocking failure remains; and the final verification artifact has status `verified`.
 
-- DLQ messages are classified by failure cause.
-- Permanent failures are not silently replayed.
-- Replay scope is explicit and bounded.
-- Required approval exists.
-- Replay execution matches the approved message set.
-- Receipts exist for every attempted message.
-- Unknown outcomes are reconciled or explicitly blocked.
-- Independent verification is complete.
-- Remaining risk is documented.
-- No blocking failure remains.
-
-## Portability
-
-Core instructions and scripts are provider-neutral. Repository-specific Azure Service Bus, AWS SQS/SNS, Kafka, RabbitMQ, Google Pub/Sub, or custom queue adapters should be isolated in host tooling and must consume the validated replay plan rather than re-derive scope independently.
+## Customization
+Adapt failure-class names, maximum message age, batch size, and approval environments in `config/replay-policy.json`. Keep vendor-specific queue commands outside the core planner so the workflow remains portable across SQS, Azure Service Bus, RabbitMQ, Kafka retry/DLQ patterns, Pub/Sub dead-letter topics, and other messaging systems.
