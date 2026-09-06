@@ -1,0 +1,1 @@
+{"semantic_timeout_ms":30000,"transport_timeout_ms":15000,"overall_timeout_ms":300000,"max_recovery_attempts":2,"semantic_kinds":["text_delta","tool_call","tool_result","completion"],"transport_only_kinds":["heartbeat","ping","metadata"]}
