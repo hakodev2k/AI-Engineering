@@ -10,10 +10,10 @@ export class StoryblokApiError extends Error {
 export class StoryblokClient {
   constructor(private c: Config, private f: typeof fetch = fetch) {}
 
-  async request(method: string, path: string, body?: unknown, query?: Record<string, string | undefined>) {
+  async request(method: string, path: string, body?: unknown, query?: Record<string, string | undefined>, retrySafe?: boolean) {
     const url = new URL(this.c.baseUrl + path);
     for (const [k, v] of Object.entries(query ?? {})) if (v !== undefined) url.searchParams.set(k, v);
-    const retryableMethod = method === "GET";
+    const retryableMethod = retrySafe ?? method === "GET";
     let attempt = 0;
     while (true) {
       const ac = new AbortController();
