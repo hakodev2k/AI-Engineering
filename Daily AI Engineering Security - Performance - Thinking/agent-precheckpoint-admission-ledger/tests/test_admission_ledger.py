@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import sqlite3
 import subprocess
 import sys
 import tempfile
@@ -35,11 +36,21 @@ def main() -> int:
         illegal = call(db, "checkpoint", "--run-id", "r1", "--checkpoint-id", "cp-2")
         tests.append(("terminal run cannot regress", illegal.returncode == 2))
 
-        lost = call(db, "admit", "--run-id", "r-lost", "--idempotency-key", "k-lost", "--input-hash", "sha256:lost")
-        tests.append(("second admission", lost.returncode == 0))
-        reconcile = call(db, "reconcile", "--lost-after-seconds", "1")
-        # The new admission is younger than one second and must not be falsely marked lost.
-        tests.append(("fresh run not falsely lost", reconcile.returncode == 0 and json.loads(reconcile.stdout)["lost_count"] == 0))
+        fresh = call(db, "admit", "--run-id", "r-fresh", "--idempotency-key", "k-fresh", "--input-hash", "sha256:fresh")
+        tests.append(("second admission", fresh.returncode == 0))
+        reconcile_fresh = call(db, "reconcile", "--lost-after-seconds", "3600")
+        tests.append(("fresh run not falsely lost", reconcile_fresh.returncode == 0 and json.loads(reconcile_fresh.stdout)["lost_count"] == 0))
+
+        old = call(db, "admit", "--run-id", "r-lost", "--idempotency-key", "k-lost", "--input-hash", "sha256:lost")
+        tests.append(("lost candidate admission", old.returncode == 0))
+        with sqlite3.connect(db) as conn:
+            conn.execute("UPDATE admissions SET accepted_at='2026-01-01T00:00:00+00:00' WHERE run_id='r-lost'")
+            conn.commit()
+        reconcile_lost = call(db, "reconcile", "--lost-after-seconds", "1")
+        lost_report = json.loads(reconcile_lost.stdout)
+        tests.append(("stale accepted run becomes lost", reconcile_lost.returncode == 2 and "r-lost" in lost_report["lost_run_ids"]))
+        lost_row = call(db, "get", "--run-id", "r-lost")
+        tests.append(("lost state is durable", lost_row.returncode == 0 and json.loads(lost_row.stdout)["status"] == "lost"))
 
         for name, ok in tests:
             print(("PASS" if ok else "FAIL") + " - " + name)
