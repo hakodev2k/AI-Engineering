@@ -8,10 +8,9 @@ upstream:
 auth:
   type: api-key-basic-auth
   credential_env: RECURLY_API_KEY
-  site_env: RECURLY_SITE_SUBDOMAIN
-  notes: "API key is used as the HTTP Basic username with an empty password. Recurly Compass MCP is official but exposes documentation/coding agents rather than billing data operations, so billing tools use the official REST API."
+  notes: "API key is used as the HTTP Basic username with an empty password. Recurly Compass MCP is official but currently exposes documentation/coding agents rather than billing data operations, so billing tools use the official REST API."
 api:
-  base_url_template: "https://{site}.recurly.com"
+  base_url: "https://v3.recurly.com"
   version_header: "application/vnd.recurly.v2021-02-25"
 official_mcp:
   endpoint: "https://mcp.recurly.com/mcp"
@@ -36,7 +35,6 @@ risk:
   destructive_tools_exposed: false
 environment:
   - RECURLY_API_KEY
-  - RECURLY_SITE_SUBDOMAIN
   - RECURLY_API_VERSION
   - RECURLY_PERMISSIONS
   - RECURLY_REQUIRE_WRITE_APPROVAL
