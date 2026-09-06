@@ -12,7 +12,7 @@ Commands:
   list
 
 The ledger intentionally stores hashes/identifiers, not prompt bodies or secrets.
-Exit codes: 0 success; 2 state/validation conflict; 3 storage/config error.
+Exit codes: 0 success; 2 state/validation conflict or lost run detected; 3 storage error.
 """
 from __future__ import annotations
 
@@ -47,6 +47,7 @@ def now() -> str:
 
 def connect(path: Path) -> sqlite3.Connection:
     try:
+        path.parent.mkdir(parents=True, exist_ok=True)
         conn = sqlite3.connect(path)
         conn.row_factory = sqlite3.Row
         conn.execute("PRAGMA journal_mode=WAL")
@@ -54,7 +55,7 @@ def connect(path: Path) -> sqlite3.Connection:
         conn.executescript(SCHEMA)
         conn.commit()
         return conn
-    except sqlite3.Error as exc:
+    except (OSError, sqlite3.Error) as exc:
         print(json.dumps({"status": "error", "message": str(exc)}), file=sys.stderr)
         raise SystemExit(3)
 
@@ -133,9 +134,12 @@ def transition(conn: sqlite3.Connection, run_id: str, target: str, *, checkpoint
 
 
 def cmd_reconcile(conn: sqlite3.Connection, lost_after: int) -> int:
+    if lost_after < 1:
+        print(json.dumps({"status": "error", "message": "lost-after-seconds must be >= 1"}), file=sys.stderr)
+        return 2
     rows = conn.execute("SELECT * FROM admissions WHERE status='accepted'").fetchall()
     current = datetime.now(timezone.utc)
-    lost = []
+    lost: list[str] = []
     for row in rows:
         accepted = datetime.fromisoformat(row["accepted_at"].replace("Z", "+00:00"))
         age = (current - accepted).total_seconds()
@@ -150,62 +154,60 @@ def cmd_reconcile(conn: sqlite3.Connection, lost_after: int) -> int:
     return 2 if lost else 0
 
 
-def main() -> int:
-    p = argparse.ArgumentParser()
-    p.add_argument("--db", type=Path, required=True)
-    sub = p.add_subparsers(dest="command", required=True)
-    sub.add_parser("init")
-    a = sub.add_parser("admit")
-    a.add_argument("--run-id", required=True)
-    a.add_argument("--idempotency-key", required=True)
-    a.add_argument("--input-hash", required=True)
-    a.add_argument("--side-effect-free", action="store_true")
-    c = sub.add_parser("checkpoint")
-    c.add_argument("--run-id", required=True)
-    c.add_argument("--checkpoint-id", required=True)
-    d = sub.add_parser("complete")
-    d.add_argument("--run-id", required=True)
-    f = sub.add_parser("fail")
-    f.add_argument("--run-id", required=True)
-    f.add_argument("--reason", required=True)
-    r = sub.add_parser("reconcile")
-    r.add_argument("--lost-after-seconds", type=int, default=120)
-    g = sub.add_parser("get")
-    g.add_argument("--run-id", required=True)
-    sub.add_parser("list")
-
-    conn = connect(p.parse_args.__self__ if False else p.parse_args())
-    return 0
-
-
-if __name__ == "__main__":
-    # Parse once here to keep command dispatch explicit and auditable.
+def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser()
     parser.add_argument("--db", type=Path, required=True)
     subs = parser.add_subparsers(dest="command", required=True)
     subs.add_parser("init")
-    admit = subs.add_parser("admit"); admit.add_argument("--run-id", required=True); admit.add_argument("--idempotency-key", required=True); admit.add_argument("--input-hash", required=True); admit.add_argument("--side-effect-free", action="store_true")
-    checkpoint = subs.add_parser("checkpoint"); checkpoint.add_argument("--run-id", required=True); checkpoint.add_argument("--checkpoint-id", required=True)
-    complete = subs.add_parser("complete"); complete.add_argument("--run-id", required=True)
-    fail = subs.add_parser("fail"); fail.add_argument("--run-id", required=True); fail.add_argument("--reason", required=True)
-    reconcile = subs.add_parser("reconcile"); reconcile.add_argument("--lost-after-seconds", type=int, default=120)
-    get = subs.add_parser("get"); get.add_argument("--run-id", required=True)
+    admit = subs.add_parser("admit")
+    admit.add_argument("--run-id", required=True)
+    admit.add_argument("--idempotency-key", required=True)
+    admit.add_argument("--input-hash", required=True)
+    admit.add_argument("--side-effect-free", action="store_true")
+    checkpoint = subs.add_parser("checkpoint")
+    checkpoint.add_argument("--run-id", required=True)
+    checkpoint.add_argument("--checkpoint-id", required=True)
+    complete = subs.add_parser("complete")
+    complete.add_argument("--run-id", required=True)
+    fail = subs.add_parser("fail")
+    fail.add_argument("--run-id", required=True)
+    fail.add_argument("--reason", required=True)
+    reconcile = subs.add_parser("reconcile")
+    reconcile.add_argument("--lost-after-seconds", type=int, default=120)
+    get = subs.add_parser("get")
+    get.add_argument("--run-id", required=True)
     subs.add_parser("list")
-    args = parser.parse_args()
+    return parser
+
+
+def main() -> int:
+    args = build_parser().parse_args()
     conn = connect(args.db)
     try:
         if args.command == "init":
-            print(json.dumps({"status": "ok", "db": str(args.db)})); rc = 0
-        elif args.command == "admit": rc = cmd_admit(conn, args)
-        elif args.command == "checkpoint": rc = transition(conn, args.run_id, "checkpointed", checkpoint_id=args.checkpoint_id)
-        elif args.command == "complete": rc = transition(conn, args.run_id, "completed")
-        elif args.command == "fail": rc = transition(conn, args.run_id, "failed", reason=args.reason)
-        elif args.command == "reconcile": rc = cmd_reconcile(conn, args.lost_after_seconds)
-        elif args.command == "get": emit(require_run(conn, args.run_id)); rc = 0
-        elif args.command == "list":
-            for row in conn.execute("SELECT * FROM admissions ORDER BY accepted_at"): emit(row)
-            rc = 0
-        else: rc = 3
+            print(json.dumps({"status": "ok", "db": str(args.db)}))
+            return 0
+        if args.command == "admit":
+            return cmd_admit(conn, args)
+        if args.command == "checkpoint":
+            return transition(conn, args.run_id, "checkpointed", checkpoint_id=args.checkpoint_id)
+        if args.command == "complete":
+            return transition(conn, args.run_id, "completed")
+        if args.command == "fail":
+            return transition(conn, args.run_id, "failed", reason=args.reason)
+        if args.command == "reconcile":
+            return cmd_reconcile(conn, args.lost_after_seconds)
+        if args.command == "get":
+            emit(require_run(conn, args.run_id))
+            return 0
+        if args.command == "list":
+            for row in conn.execute("SELECT * FROM admissions ORDER BY accepted_at"):
+                emit(row)
+            return 0
+        return 3
     finally:
         conn.close()
-    raise SystemExit(rc)
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
