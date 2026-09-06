@@ -1,0 +1,8 @@
+{
+  "secret": "test-secret-only",
+  "timestamp": 1700000000,
+  "now": 1700000100,
+  "webhook_id": "evt_demo_001",
+  "raw_body": "{\"type\":\"demo.created\",\"id\":\"123\"}",
+  "signature": "29dd1efc2fcf30b12ac870b25f3d5d8975294cf52ac56865e71b9f6708062bfa"
+}

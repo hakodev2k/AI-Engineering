@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "provider": "generic-hmac-sha256",
+  "signature_header": "X-Webhook-Signature",
+  "timestamp_header": "X-Webhook-Timestamp",
+  "replay_id_header": "X-Webhook-Id",
+  "algorithm": "hmac-sha256",
+  "timestamp_tolerance_seconds": 300,
+  "signature_encoding": "hex",
+  "signed_payload_format": "{timestamp}.{raw_body}",
+  "require_replay_id": true,
+  "require_constant_time_compare": true,
+  "require_verification_before_side_effects": true,
+  "max_implementation_cycles": 3,
+  "max_transient_retries": 2
+}

@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Webhook safety evidence",
+  "type": "object",
+  "required": ["status", "provider", "endpoint", "findings", "verification"],
+  "properties": {
+    "status": {"enum": ["executed", "verified", "blocked", "failed"]},
+    "provider": {"type": "string", "minLength": 1},
+    "endpoint": {"type": "string", "minLength": 1},
+    "findings": {"type": "array", "items": {"type": "object", "required": ["finding", "evidence", "confidence", "risk"], "properties": {"finding": {"type": "string"}, "evidence": {"type": "string"}, "confidence": {"enum": ["low", "medium", "high"]}, "risk": {"enum": ["low", "medium", "high", "critical"]}}}},
+    "verification": {"type": "object", "required": ["signature", "freshness", "replay", "negative_tests"], "properties": {"signature": {"type": "boolean"}, "freshness": {"type": "boolean"}, "replay": {"type": "boolean"}, "negative_tests": {"type": "boolean"}}},
+    "remaining_risks": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": false
+}
