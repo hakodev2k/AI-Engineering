@@ -1,0 +1,10 @@
+import test from "node:test"; import assert from "node:assert/strict";
+import { ChargebeeClient,ChargebeeApiError } from "../src/client.js"; import { assertAllowed } from "../src/policy.js"; import { TOOLS,TOOL_MAP } from "../src/tools.js";
+const cfg={site:"demo",apiKey:"test",timeoutMs:50,maxRetries:0,allowWrites:false,approvalToken:"approve123",mcpUrl:"https://mcp.chargebee.com/data-lookup"};
+test("registers useful scoped tools",()=>{assert.equal(TOOLS.length,14);assert.ok(TOOL_MAP.has("chargebee.subscription.cancel"));});
+test("strict validation rejects unknown fields",()=>{assert.throws(()=>TOOL_MAP.get("chargebee.customer.get")!.schema.parse({customerId:"c1",url:"https://evil"}));});
+test("write denied by default",()=>assert.throws(()=>assertAllowed("WRITE","x",{approvalToken:"approve123"},cfg),/ALLOW_WRITES/));
+test("approval token required",()=>assert.throws(()=>assertAllowed("HIGH_RISK","x",{approvalToken:"bad"},{...cfg,allowWrites:true}),/explicit human approval/));
+test("read operation uses Basic auth and query pagination",async()=>{let seen:any;const f=async(input:any,init:any)=>{seen={input:String(input),init};return new Response(JSON.stringify({list:[]}),{status:200,headers:{"content-type":"application/json"}})};const c=new ChargebeeClient(cfg,f as any);await c.request("GET","/customers",{limit:10});assert.match(seen.input,/limit=10/);assert.match(seen.init.headers.Authorization,/^Basic /);});
+test("API errors are mapped",async()=>{const f=async()=>new Response(JSON.stringify({message:"bad"}),{status:422});const c=new ChargebeeClient(cfg,f as any);await assert.rejects(()=>c.request("GET","/customers"),(e:any)=>e instanceof ChargebeeApiError&&e.status===422);});
+test("timeout is surfaced",async()=>{const f=async(_i:any,init:any)=>new Promise<Response>((_r,reject)=>init.signal.addEventListener("abort",()=>reject(Object.assign(new Error("abort"),{name:"AbortError"}))));const c=new ChargebeeClient({...cfg,timeoutMs:5},f as any);await assert.rejects(()=>c.request("GET","/customers"),/timed out/);});
