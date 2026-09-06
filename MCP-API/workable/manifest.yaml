@@ -1,0 +1,44 @@
+id: workable
+name: Workable
+upstream:
+  - mcp
+mcp:
+  endpoint: https://mcp.workable.com/mcp
+  transport: streamable-http
+  auth: oauth2-bearer
+auth:
+  type: oauth2
+  environment:
+    - WORKABLE_MCP_ACCESS_TOKEN
+    - WORKABLE_ACCOUNT
+capabilities:
+  - account.list
+  - job.list
+  - job.search
+  - job.read
+  - job.stages
+  - candidate.list
+  - candidate.read
+  - candidate.create
+  - candidate.update
+  - candidate.move
+  - candidate.comment
+  - requisition.list
+  - timeoff.list
+risk:
+  default: READ
+  tools:
+    workable.candidate.create: WRITE
+    workable.candidate.update: WRITE
+    workable.candidate.move: HIGH_RISK
+    workable.candidate.comment: WRITE
+approval:
+  write: configurable
+  high_risk: required
+environment:
+  WORKABLE_MCP_ACCESS_TOKEN: required
+  WORKABLE_ACCOUNT: optional
+  WORKABLE_PERMISSIONS: optional
+  WORKABLE_REQUIRE_WRITE_APPROVAL: optional
+  WORKABLE_TIMEOUT_MS: optional
+  WORKABLE_MAX_RETRIES: optional
