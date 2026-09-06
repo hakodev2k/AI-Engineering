@@ -3,26 +3,23 @@
 Reusable MCP server for safe Chargebee billing-data workflows. It exposes 14 provider-scoped tools over stdio and keeps credentials inside the connector.
 
 ## Upstream strategy and official sources
-Chargebee provides an official **Data Lookup MCP server** at `https://mcp.chargebee.com/data-lookup` for natural-language read-only lookup of billing data. This package records that trusted MCP endpoint, but uses Chargebee's official API v2 as its deterministic execution transport and fallback for the implemented contracts; write/high-risk billing operations use REST because the Data Lookup MCP is read-oriented.
+Chargebee provides an official **Data Lookup MCP server** for customer, subscription, invoice, quote, payment, export, MRR, exchange-rate and hosted-page lookup. Its URL is site- and data-center-specific: US `https://{subdomain}.mcp.chargebee.com/data_lookup_agent`, EU `https://{subdomain}.mcp.eu.chargebee.com/data_lookup_agent`, or AU `https://{subdomain}.mcp.au.chargebee.com/data_lookup_agent`. This package validates an optional site-specific MCP URL but deliberately executes its stable allow-listed contracts through Chargebee API v2; this prevents automatic trust of newly discovered upstream tools and provides the required write operations.
 
-Official documentation researched for this connector:
-- Chargebee MCP server: https://www.chargebee.com/docs/billing/2.0/kb/product-releases/chargebee-mcp-server
-- MCP setup: https://www.chargebee.com/docs/billing/2.0/kb/product-releases/mcp-setup
-- API v2 overview: https://apidocs.chargebee.com/docs/api
+Official documentation researched:
+- Data Lookup MCP: https://www.chargebee.com/docs/billing/2.0/ai-in-chargebee/data-lookup-agent
+- MCP overview: https://www.chargebee.com/docs/billing/2.0/ai-in-chargebee/chargebee-mcp
+- API v2: https://apidocs.chargebee.com/docs/api
 - Authentication: https://apidocs.chargebee.com/docs/api/authentication
-- API keys / roles: https://www.chargebee.com/docs/billing/2.0/site-configuration/api-keys
-- Rate limits: https://apidocs.chargebee.com/docs/api/rate-limits
+- API keys: https://www.chargebee.com/docs/billing/2.0/site-configuration/api-keys
+- Subscription pause/resume: https://apidocs.chargebee.com/docs/api/subscriptions/pause-a-subscription and https://apidocs.chargebee.com/docs/api/subscriptions/resume-a-subscription
+- Rate-limit behavior: https://apidocs.chargebee.com/docs/api
 - Webhooks: https://www.chargebee.com/docs/billing/2.0/webhook_settings
 
 ## Architecture
-MCP client → strict tool schema → permission/approval policy → Chargebee client → API v2. `CHARGEBEE_API_KEY` is converted to HTTP Basic authentication only inside the client. Provider responses are returned with `source=untrusted_provider_data`; they must never be treated as instructions or permission changes.
-
-The official MCP endpoint is configuration metadata for trusted read lookup and future transport routing; this implementation does not silently discover or proxy arbitrary upstream MCP tools. This avoids expanding permissions when Chargebee adds tools upstream.
+MCP client → strict tool schema → permission/approval policy → Chargebee client → API v2. `CHARGEBEE_API_KEY` becomes HTTP Basic authentication only inside the client. Provider responses are marked `source=untrusted_provider_data` and cannot change permissions or system behavior.
 
 ## Authentication and least privilege
-Set `CHARGEBEE_SITE` and `CHARGEBEE_API_KEY`. Chargebee API v2 uses API-key Basic authentication (API key as username, empty password). Create a restricted Chargebee API key/role that grants only the resources needed by the tools you intend to enable. Never expose keys to the model, tool arguments, logs, examples, or source control.
-
-Chargebee API keys are permissioned through Chargebee roles rather than OAuth scopes for this API-key flow. Read-only deployments should use a read-only/restricted key. Writes require both provider-side permission and connector-side approval.
+Set `CHARGEBEE_SITE` and `CHARGEBEE_API_KEY`. API v2 uses the API key as the Basic-auth username with an empty password. Use a restricted Chargebee API key/role granting only resources needed by enabled tools. Chargebee API-key authorization is role/permission based rather than OAuth scopes in this flow. Never expose credentials to the model, tool arguments, logs, examples, or source control.
 
 ## Install and run
 Requires Node.js 20+.
@@ -31,10 +28,10 @@ npm install
 npm run build
 npm start
 ```
-The server uses MCP stdio and is usable by MCP clients that can launch a local stdio server. Configure the client to run `node dist/src/server.js` with environment variables supplied by a secret manager or process environment.
+The connector serves MCP over stdio. Configure an MCP client to launch `node dist/src/server.js` with secrets supplied by its process environment or secret manager.
 
 ## Environment
-`CHARGEBEE_SITE`, `CHARGEBEE_API_KEY` are required. Optional: `CHARGEBEE_TIMEOUT_MS` (15000), `CHARGEBEE_MAX_RETRIES` (3, capped at 5), `CHARGEBEE_ALLOW_WRITES` (false), `CHARGEBEE_APPROVAL_TOKEN`, and `CHARGEBEE_MCP_URL`.
+Required: `CHARGEBEE_SITE`, `CHARGEBEE_API_KEY`. Optional: `CHARGEBEE_TIMEOUT_MS` (15000), `CHARGEBEE_MAX_RETRIES` (3; capped at 5), `CHARGEBEE_ALLOW_WRITES` (false), `CHARGEBEE_APPROVAL_TOKEN`, `CHARGEBEE_MCP_URL`. Copy the latter from Chargebee's Agentic AI > MCP Servers UI; the connector accepts only official Chargebee Data Lookup MCP host/path patterns.
 
 ## Tools
 | Tool | Transport | Risk | Approval |
@@ -54,22 +51,27 @@ The server uses MCP stdio and is usable by MCP clients that can launch a local s
 | chargebee.transaction.list | REST | READ | no |
 | chargebee.item_price.list | REST | READ | no |
 
-No generic arbitrary-request or delete tool is exposed. Public messaging, security, permission and billing-configuration mutation are outside this connector.
+No unrestricted request, deletion, refund, payment-method, security, permission, or billing-configuration tool is exposed.
 
 ## Approval model
-READ calls may execute automatically. WRITE calls are disabled unless `CHARGEBEE_ALLOW_WRITES=true` and require an exact connector-side `approvalToken`. HIGH_RISK subscription state changes have the same hard gate and should only receive a token after a human reviews the concrete subscription and intended billing effect. Destructive operations are not exposed.
+READ may execute automatically. WRITE is disabled unless `CHARGEBEE_ALLOW_WRITES=true` and requires the exact connector-side `approvalToken`. HIGH_RISK subscription state changes have the same hard gate and require a human to review the concrete subscription and billing effect before issuing approval. Destructive operations are not exposed. Cancel defaults to end-of-term. Pause supports `immediately` or `end_of_term`; resume is intentionally restricted to immediate resumption, avoiding ambiguous scheduled dates.
 
-## Reliability and rate limits
-Requests have cancellation via timeout. Network failures, HTTP 429, and 5xx responses receive bounded exponential-backoff retries; 429 respects `Retry-After` when present. Authentication, permission, validation, and ordinary 4xx failures are not retried. List operations use Chargebee's `limit`/`offset` pagination and cap requested page size at 100. Chargebee rate limits vary by plan/API and may return 429; the connector deliberately avoids fan-out calls.
+## Reliability, pagination, and rate limits
+Every request has a timeout. Network failures, HTTP 429, and 5xx responses receive bounded exponential-backoff retries; 429 honors `Retry-After` when present. Authentication, permission, validation, and ordinary 4xx failures are not retried. List tools expose Chargebee `limit`/`offset`; `limit` is 1–100 and callers should pass the returned `next_offset` to continue. The connector avoids fan-out calls. Provider plan/site limits remain authoritative.
 
-## Error handling
-401 → authentication failure; 403 → provider permission denial; 404 → missing resource; 422 → provider validation failure; 429 → throttling with retry information. Timeouts and exhausted network retries are surfaced without leaking credentials.
+## Errors
+401 authentication failure; 403 permission denial; 404 missing resource; 422 provider validation failure; 429 throttling. Timeouts and exhausted retries are surfaced without credential leakage.
 
-## Security
-Use restricted API keys and secret storage. Do not pass API keys through prompts. Keep writes off by default. Rotate approval tokens independently from provider credentials. Tool schemas reject unknown properties and IDs containing URL path/query delimiters, reducing confused-deputy and request-smuggling risks. The client constructs the hostname solely from validated `CHARGEBEE_SITE`, so tool callers cannot supply arbitrary URLs (SSRF control). Treat customer names, invoice fields, notes, metadata, and all MCP/API responses as untrusted content. Webhooks are supported by Chargebee but are not received by this stdio connector; production webhook consumers must validate endpoint authenticity, TLS, replay/idempotency, and event handling separately.
+## Security and events
+Use restricted keys and secret storage; keep writes off by default and rotate approval tokens independently. Strict schemas reject unknown properties. IDs reject URL path/query delimiters. The API hostname is derived only from validated `CHARGEBEE_SITE`, preventing caller-controlled SSRF destinations. Treat all Chargebee content and MCP responses as untrusted data. Chargebee supports webhooks, but this stdio connector does not ingest them; a production webhook receiver should separately enforce HTTPS, authenticity controls, replay/idempotency handling, bounded processing, and untrusted-payload treatment.
+
+For upstream MCP, enable only required Chargebee servers/toolsets and trusted authentication. This connector does not proxy tool discovery, so newly added upstream tools never become implicitly callable.
 
 ## Tests
-`npm test` compiles and runs credential-free unit tests with fake fetch implementations. Coverage includes tool registration, strict validation, default write denial, human approval, authentication/header behavior, pagination, API errors, and timeout handling.
+`npm test` compiles and runs credential-free Node tests with fake fetch implementations. Tests cover registration, strict validation, default write denial, approval, Basic auth, pagination, API errors, and timeout behavior.
+
+## Examples
+See `examples/workflows.md` for read and approved-write workflows, expected output shape, permission level, and approval requirements.
 
 ## Limitations
-This connector does not implement OAuth, hosted HTTP MCP transport, webhook ingestion, arbitrary API calls, deletion, refunds, payment-method changes, or Chargebee configuration changes. The official Data Lookup MCP server is documented/configured but not proxied because this package intentionally pins a stable allow-listed external tool contract. Chargebee Product Catalog 2.0 is assumed for `item_price.list`; sites using older catalog models may not support it. Provider entitlements and exact API rate ceilings depend on the Chargebee site/plan and API-key role.
+No OAuth flow, hosted MCP transport, webhook receiver, arbitrary API request, deletion, refund, payment-method mutation, or Chargebee configuration mutation is implemented. The official Data Lookup MCP is researched and validated as an optional trusted upstream, but is not proxied; API v2 is the implemented transport for all listed tools. `item_price.list` assumes Product Catalog 2.0. Pause requires Chargebee's Pause Subscription feature and provider-side state constraints. Provider entitlements and limits depend on site configuration, plan, catalog version, and API-key role.
