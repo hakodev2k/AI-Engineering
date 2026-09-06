@@ -12,23 +12,22 @@ export interface Config {
   maxReadRetries: number;
 }
 
-const bool = (name: string, fallback: boolean) => {
-  const value = process.env[name];
-  if (value === undefined) return fallback;
-  if (value === "true") return true;
-  if (value === "false") return false;
-  throw new Error(`${name} must be true or false.`);
-};
+export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
+  const bool = (name: string, fallback: boolean) => {
+    const value = env[name];
+    if (value === undefined) return fallback;
+    if (value === "true") return true;
+    if (value === "false") return false;
+    throw new Error(`${name} must be true or false.`);
+  };
+  const integer = (name: string, fallback: number, min: number, max: number) => {
+    const raw = env[name];
+    if (raw === undefined) return fallback;
+    const value = Number(raw);
+    if (!Number.isInteger(value) || value < min || value > max) throw new Error(`${name} must be an integer from ${min} to ${max}.`);
+    return value;
+  };
 
-const integer = (name: string, fallback: number, min: number, max: number) => {
-  const raw = process.env[name];
-  if (raw === undefined) return fallback;
-  const value = Number(raw);
-  if (!Number.isInteger(value) || value < min || value > max) throw new Error(`${name} must be an integer from ${min} to ${max}.`);
-  return value;
-};
-
-export function loadConfig(env = process.env): Config {
   const apiKey = env.CLOSE_API_KEY?.trim();
   if (!apiKey) throw new Error("CLOSE_API_KEY is required.");
 
