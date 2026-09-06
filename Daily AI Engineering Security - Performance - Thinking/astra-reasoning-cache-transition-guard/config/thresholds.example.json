@@ -1,0 +1,9 @@
+{
+  "minimum_baseline_turns": 3,
+  "minimum_post_change_turns": 2,
+  "max_cache_hit_ratio_drop": 0.10,
+  "max_input_token_increase_ratio": 0.20,
+  "max_latency_increase_ratio": 0.25,
+  "require_configuration_update": true,
+  "quality_regression_allowed": false
+}
