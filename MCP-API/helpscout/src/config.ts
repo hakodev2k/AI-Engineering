@@ -23,13 +23,13 @@ function validateApiBase(value: string): string {
 
 export function loadConfig(env: NodeJS.ProcessEnv = process.env) {
   const parsed = EnvSchema.parse(env);
+  if (Boolean(parsed.HELPSCOUT_APP_ID) !== Boolean(parsed.HELPSCOUT_APP_SECRET)) {
+    throw new Error("HELPSCOUT_APP_ID and HELPSCOUT_APP_SECRET must be configured together.");
+  }
   const hasStatic = Boolean(parsed.HELPSCOUT_ACCESS_TOKEN);
   const hasClientCredentials = Boolean(parsed.HELPSCOUT_APP_ID && parsed.HELPSCOUT_APP_SECRET);
   if (!hasStatic && !hasClientCredentials) {
     throw new Error("Configure HELPSCOUT_ACCESS_TOKEN or both HELPSCOUT_APP_ID and HELPSCOUT_APP_SECRET.");
-  }
-  if (Boolean(parsed.HELPSCOUT_APP_ID) !== Boolean(parsed.HELPSCOUT_APP_SECRET)) {
-    throw new Error("HELPSCOUT_APP_ID and HELPSCOUT_APP_SECRET must be configured together.");
   }
   return {
     accessToken: parsed.HELPSCOUT_ACCESS_TOKEN,
