@@ -57,7 +57,7 @@ export class HelpScoutClient {
           headers: {
             Authorization: `Bearer ${token}`,
             Accept: "application/json, application/hal+json",
-            ...(body === undefined ? {} : { "Content-Type": method === "PATCH" ? "application/json-patch+json" : "application/json" })
+            ...(body === undefined ? {} : { "Content-Type": "application/json" })
           },
           body: body === undefined ? undefined : JSON.stringify(body)
         });
