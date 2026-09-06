@@ -15,7 +15,6 @@ import argparse
 import fnmatch
 import hashlib
 import json
-import os
 import shlex
 import subprocess
 import sys
@@ -44,6 +43,24 @@ def git(repo: Path, *args: str) -> str:
     if rc:
         raise RuntimeError(err.strip() or f"git {' '.join(args)} failed")
     return out.strip()
+
+
+def status_path(line: str) -> str:
+    path = line[3:] if len(line) > 3 else ""
+    return path.split(" -> ")[-1]
+
+
+def filtered_status(repo: Path, ignored_roots: Iterable[str]) -> list[str]:
+    roots = [r.strip("/") for r in ignored_roots if r.strip("/")]
+    result = []
+    for line in git(repo, "status", "--porcelain").splitlines():
+        if not line:
+            continue
+        path = status_path(line).strip("/")
+        if any(path == root or path.startswith(root + "/") for root in roots):
+            continue
+        result.append(line)
+    return result
 
 
 def sha256_file(path: Path) -> str:
@@ -99,11 +116,12 @@ def cmd_snapshot(args: argparse.Namespace) -> int:
     if not specs:
         raise ValueError("no configured OpenAPI spec exists")
     revision = git(repo, "rev-parse", "HEAD")
-    dirty = bool(git(repo, "status", "--porcelain"))
+    effective_status = filtered_status(repo, cfg.get("evidence_dirs", [".openapi-drift"]))
     payload = {
         "status": "snapshotted",
         "revision": revision,
-        "dirty": dirty,
+        "dirty": bool(effective_status),
+        "git_status": effective_status,
         "spec": fingerprint(repo, specs),
         "generated": fingerprint(repo, generated),
         "generated_roots": cfg["generated_roots"],
@@ -115,14 +133,12 @@ def cmd_snapshot(args: argparse.Namespace) -> int:
 
 
 def changed_generated(repo: Path, roots: list[str]) -> list[str]:
-    lines = git(repo, "status", "--porcelain").splitlines()
     roots_norm = [r.rstrip("/") + "/" for r in roots]
     result = []
-    for line in lines:
+    for line in git(repo, "status", "--porcelain").splitlines():
         if not line:
             continue
-        path = line[3:] if len(line) > 3 else ""
-        path = path.split(" -> ")[-1]
+        path = status_path(line)
         if any(path == r.rstrip("/") or path.startswith(r) for r in roots_norm):
             result.append(line)
     return result
@@ -132,9 +148,9 @@ def cmd_regenerate(args: argparse.Namespace) -> int:
     repo = Path(args.repo).resolve()
     cfg = load_config(Path(args.config))
     if cfg.get("require_clean_worktree_before_regeneration", True):
-        status = git(repo, "status", "--porcelain")
+        status = filtered_status(repo, cfg.get("evidence_dirs", [".openapi-drift"]))
         if status:
-            write_json(Path(args.out), {"status": "blocked", "reason": "worktree-not-clean", "git_status": status.splitlines()})
+            write_json(Path(args.out), {"status": "blocked", "reason": "worktree-not-clean", "git_status": status})
             return 2
     commands = cfg.get("generator_commands", [])
     if not commands:
