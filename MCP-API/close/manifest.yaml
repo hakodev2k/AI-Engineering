@@ -1,0 +1,65 @@
+id: close
+name: Close
+version: 1.0.0
+runtime: nodejs>=20
+
+upstream:
+  - transport: mcp
+    type: remote-http-streamable
+    official: true
+    endpoint: https://mcp.close.com/mcp
+    docs: https://developer.close.com/mcp
+  - transport: rest
+    official: true
+    endpoint: https://api.close.com/api/v1
+    docs: https://developer.close.com/api/overview
+    usage: documented fallback surface; this connector currently routes implemented capabilities through official MCP
+
+auth:
+  type: api_key
+  header: Close-API-Key
+  credential_env: CLOSE_API_KEY
+  supported_upstream_scopes:
+    - mcp.read
+    - mcp.write_safe
+    - mcp.write_destructive
+
+capabilities:
+  - organization.read
+  - lead.search
+  - lead.read
+  - contact.read
+  - activity.search
+  - opportunity.search
+  - task.search
+  - contact.create
+  - note.create
+  - task.create
+  - opportunity.create
+  - lead.update
+  - task.update
+
+risk:
+  default: READ
+  classes:
+    READ: automatic when locally permitted
+    WRITE: configurable human approval
+    HIGH_RISK: disabled by default and requires explicit approval
+  destructive_delete_tools: not_exposed
+
+environment:
+  required:
+    - CLOSE_API_KEY
+  optional:
+    - CLOSE_MCP_SCOPE
+    - CLOSE_PERMISSIONS
+    - CLOSE_REQUIRE_WRITE_APPROVAL
+    - CLOSE_ALLOW_HIGH_RISK
+    - CLOSE_TIMEOUT_MS
+    - CLOSE_MAX_READ_RETRIES
+
+security:
+  credentials_visible_to_llm: false
+  upstream_tool_discovery: allowlist_only
+  retrieved_content_trust: untrusted_data
+  arbitrary_api_request_tool: false
