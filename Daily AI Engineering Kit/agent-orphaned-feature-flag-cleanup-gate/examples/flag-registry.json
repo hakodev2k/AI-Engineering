@@ -1,0 +1,11 @@
+{
+  "flags": [
+    {
+      "key": "checkout-v2",
+      "state": "retired",
+      "owner": "payments",
+      "retired_at": "2026-09-01",
+      "expected_behavior": "enabled"
+    }
+  ]
+}
