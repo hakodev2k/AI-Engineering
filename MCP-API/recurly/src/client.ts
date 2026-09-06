@@ -7,10 +7,8 @@ export class RecurlyApiError extends Error {
 export type FetchLike = typeof fetch;
 
 export class RecurlyClient {
-  private baseUrl: string;
-  constructor(private config: Config, private fetchImpl: FetchLike = fetch) {
-    this.baseUrl = `https://${config.siteSubdomain}.recurly.com`;
-  }
+  private readonly baseUrl = "https://v3.recurly.com";
+  constructor(private config: Config, private fetchImpl: FetchLike = fetch) {}
 
   async request(method: "GET" | "POST" | "PUT", path: string, body?: unknown, query?: Record<string, string | undefined>): Promise<unknown> {
     if (!path.startsWith("/") || path.includes("..")) throw new Error("Invalid Recurly path.");
