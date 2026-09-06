@@ -4,7 +4,7 @@ Reusable MCP server for scoped Recurly subscription-billing operations. It expos
 
 ## Transport strategy
 
-- **Billing data and actions:** official Recurly Subscriptions REST API at `https://{site}.recurly.com`.
+- **Billing data and actions:** official Recurly Subscriptions REST API at `https://v3.recurly.com`.
 - **Official Recurly Compass MCP:** `https://mcp.recurly.com/mcp` exists, but its currently documented public agents are Knowledge Agent and Coding Agent for documentation/API guidance. It is not used as the upstream transport for the billing-data operations exposed here.
 - **SDK:** Recurly maintains official client libraries, including Node.js, but this connector uses the documented REST contract directly so its MCP boundary, retry rules, approval checks, and credential isolation remain explicit.
 
@@ -26,14 +26,14 @@ MCP client
   -> permission/approval policy
   -> Recurly REST client
   -> HTTP Basic auth using API key
-  -> Recurly site
+  -> https://v3.recurly.com
 ```
 
 Provider content is treated as untrusted data. The connector does not interpret returned text as instructions and does not expose an unrestricted HTTP passthrough.
 
 ## Authentication
 
-Recurly API v3 uses HTTP Basic authentication with the site API key as the username and an empty password. The credential never appears in an MCP tool schema or tool result.
+Recurly API v3 uses HTTP Basic authentication with the site API key as the username and an empty password. The API host is fixed to `https://v3.recurly.com`; the API key identifies the Recurly site/account context. The credential never appears in an MCP tool schema or tool result.
 
 Create a dedicated Recurly API key for this integration and prefer the least-privileged key type that supports the enabled operations. Test and production sites use different credentials.
 
@@ -41,7 +41,6 @@ Environment variables:
 
 ```text
 RECURLY_API_KEY=
-RECURLY_SITE_SUBDOMAIN=
 RECURLY_API_VERSION=2021-02-25
 RECURLY_PERMISSIONS=read
 RECURLY_REQUIRE_WRITE_APPROVAL=true
@@ -50,7 +49,7 @@ RECURLY_TIMEOUT_MS=15000
 RECURLY_MAX_RETRIES=2
 ```
 
-`RECURLY_SITE_SUBDOMAIN` accepts only a simple site subdomain. Arbitrary base URLs are intentionally unsupported to reduce SSRF risk.
+No caller-controlled base URL is accepted, reducing SSRF exposure.
 
 ## API version
 
@@ -108,9 +107,10 @@ WRITE operations require `approved: true` when `RECURLY_REQUIRE_WRITE_APPROVAL=t
 - Resource identifiers are length-bounded and restricted to Recurly-compatible identifier characters.
 - Pagination limits are capped at 200 records per call.
 - Account creation deliberately excludes billing/payment credentials.
-- Subscription pause is capped at 12 billing cycles by connector policy even though provider capabilities can vary.
+- Subscription pause is capped at 12 billing cycles by connector policy.
 - Cancellation requires an explicit supported timeframe: `bill_date` or `term_end`.
 - Destructive actions are not registered.
+- The upstream hostname is fixed in code.
 - Provider credentials are added only inside the HTTP client.
 - Returned provider content is serialized as data and must not be treated as trusted instructions by the caller.
 
@@ -139,7 +139,7 @@ List tools accept `limit` and `cursor`. Pass the provider cursor from a prior pa
 
 ## Webhooks and events
 
-Recurly supports subscription/billing webhooks, but Recurly's documented subscription webhooks are configured through the Admin UI rather than through the API. Therefore this connector does **not** expose webhook create/update/delete tools.
+Recurly supports subscription/billing webhooks, but Recurly documents these webhooks as Admin-UI configuration rather than API-managed resources. Therefore this connector does **not** expose webhook create/update/delete tools.
 
 Treat webhook deliveries as notifications, not commands. Recurly recommends re-reading current state through the API because webhook deliveries may be duplicated, retried, or arrive out of order.
 
@@ -174,7 +174,7 @@ Tests use fakes/mocks and do not require live Recurly credentials.
 npm test
 ```
 
-Coverage includes configuration validation, SSRF-resistant site validation, credential/header construction, read retry behavior, non-retry of writes, path validation, permission denial, high-risk approval enforcement, destructive-action denial, tool registration, and strict schemas.
+Coverage includes configuration validation, credential/header construction, fixed-host routing, read retry behavior, non-retry of writes, path validation, permission denial, high-risk approval enforcement, destructive-action denial, tool registration, and strict schemas.
 
 Before production use, validate the connector against a Recurly sandbox with a dedicated API key and verify the exact account plan/features enabled on that site.
 
