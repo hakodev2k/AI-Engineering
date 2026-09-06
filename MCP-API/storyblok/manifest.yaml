@@ -1,0 +1,32 @@
+id: storyblok
+name: Storyblok
+upstream:
+  - official-mcp
+  - rest
+official_mcp:
+  endpoint: https://mcp.labs.storyblok.com/mcp
+  auth: bearer personal-access-token
+  mode: exploratory
+rest:
+  management_api: https://mapi.storyblok.com/v1
+  regions: [eu, us, ca, ap, cn]
+auth:
+  type: personal_access_token_or_oauth
+capabilities:
+  - story.list
+  - story.read
+  - story.create
+  - story.update
+  - story.publish
+  - story.delete
+  - component.list
+  - component.read
+  - tag.list
+risk:
+  default: READ
+  write_approval: configurable
+  publish_approval: required
+  destructive_enabled: false
+security:
+  credentials_exposed_to_agent: false
+  retrieved_content_is_untrusted: true
