@@ -2,17 +2,17 @@
 
 Reusable, provider-scoped MCP wrapper for Attio CRM. The connector exposes a stable set of Attio tools over stdio while routing implemented capabilities to Attio's **official hosted MCP server** at `https://mcp.attio.com/mcp`.
 
-Research verified on 2026-09-06 against Attio's official MCP and developer documentation.
+Research verified on 2026-09-06 against Attio's official MCP and developer documentation. Tool names were checked against Attio's official supported-tool catalog; exposed argument contracts were also cross-checked against current MCP connector metadata.
 
 ## Upstream strategy
 
-Attio provides an official hosted MCP server. It supports OAuth-authenticated access to records, objects, lists, notes, tasks, meetings, email content, comments, workspace metadata, reporting, and other CRM capabilities. Because the capabilities implemented here are all supported by official MCP, this package uses MCP rather than duplicating them through REST.
+Attio provides an official hosted MCP server. It supports OAuth-authenticated access to records, lists, notes, tasks, meetings, email content, workspace metadata, reporting, and other CRM capabilities. Because every capability implemented here is supported by the official MCP server, this package uses MCP rather than duplicating those operations through REST.
 
-Attio also provides an official REST API at `https://api.attio.com/v2`. REST fallback was reviewed but is not required for the implemented tool surface. No unofficial MCP implementation is used.
+Attio also provides an official REST API at `https://api.attio.com/v2`. REST fallback was reviewed but is not required for the implemented tool surface. No unofficial MCP server is used as an upstream dependency.
 
 Official sources:
 
-- MCP overview and supported tools: https://docs.attio.com/mcp/overview
+- MCP overview, supported tools, security, and rate limits: https://docs.attio.com/mcp/overview
 - Hosted MCP endpoint: https://mcp.attio.com/mcp
 - Attio MCP product integration: https://attio.com/apps/mcp
 - Developer/API documentation: https://developers.attio.com
@@ -58,7 +58,7 @@ export ATTIO_MCP_ACCESS_TOKEN='...'
 
 Do not commit tokens, log tokens, copy them into examples, or expose them to an LLM. Re-authorize when the token expires or is revoked.
 
-Unlike Attio REST integrations, this MCP wrapper does not require a manually configured set of REST API scopes. The hosted MCP connection acts as the authenticated Attio user and respects that user's permissions.
+Unlike direct Attio REST integrations, this MCP wrapper does not configure REST scopes itself. The hosted MCP connection acts as the authenticated Attio user and respects that user's workspace permissions.
 
 ## Environment variables
 
@@ -113,7 +113,6 @@ Use the client-specific secret injection mechanism rather than writing a real to
 | Tool | Upstream Attio MCP tool | Risk | Approval |
 | --- | --- | --- | --- |
 | `attio.workspace.whoami` | `whoami` | READ | no |
-| `attio.object.list` | `list-objects` | READ | no |
 | `attio.record.search` | `search-records` | READ | no |
 | `attio.record.list` | `list-records` | READ | no |
 | `attio.record.get_many` | `get-records-by-ids` | READ | no |
@@ -158,9 +157,9 @@ Do not disable approval merely to make automation easier. If unattended writes a
 
 ## Input validation
 
-All public tools use provider-scoped names and strict Zod schemas. The connector limits string sizes, list sizes, pagination limits, object/list slugs, and nested JSON payload size. It never accepts an arbitrary URL or arbitrary upstream MCP tool name.
+All public tools use provider-scoped names and strict Zod schemas. The connector limits string sizes, array sizes, pagination offsets, object/list slugs, nested value/report payload size, and per-call result limits. It never accepts an arbitrary URL or arbitrary upstream MCP tool name.
 
-Attio has dynamic custom objects and attributes, so record values and certain report/filter structures necessarily contain bounded provider-native JSON objects. These are still confined to specific Attio tools and never become arbitrary network requests.
+Attio has dynamic custom objects and attributes, so record values, report metrics/grouping specifications, sort definitions, and Attio's provider-native filter expression strings cannot be fully enumerated locally. They are bounded by this connector and validated again by the official Attio MCP server.
 
 ## Reliability
 
@@ -168,12 +167,12 @@ Attio has dynamic custom objects and attributes, so record values and certain re
 - READ operations use at most three attempts with bounded exponential backoff for transient timeout, throttling, and 5xx-like failures.
 - WRITE operations are attempted once and are **not blindly retried**, because the first outcome could be unknown.
 - Authentication, authorization, validation, and approval failures are not retried.
-- Pagination is bounded to at most 100 items per exposed list request.
+- Exposed list/search pagination is bounded to at most 50 results per call and offset 10,000.
 - SIGINT/SIGTERM close the upstream MCP client and stdio server.
 
 ## Attio MCP rate limits
 
-Attio documents per-workspace MCP tiers. As of the research date:
+Attio documents per-workspace MCP tiers. As of 2026-09-06:
 
 - Read: 100 requests/second
 - Write: 25 requests/second
@@ -205,6 +204,7 @@ Because an interrupted write can have an unknown provider outcome, verify Attio 
 - Returned Attio text and email/note/meeting content is untrusted data, not instructions.
 - Retrieved content cannot change local permissions, approval policy, endpoint configuration, or tool allowlists.
 - Write approvals are argument-bound HMACs and are removed before forwarding upstream.
+- Write operations are not automatically retried after timeout or transport failure.
 - Do not log tool payloads if your CRM contains personal or confidential information.
 - Revoke OAuth access and rotate approval secrets after suspected exposure.
 - Review Attio workspace access separately; local connector policy cannot make an overprivileged Attio identity least-privileged by itself.
@@ -217,13 +217,13 @@ Unit tests require no live Attio credentials:
 npm test
 ```
 
-Tests cover required authentication configuration, official-endpoint pinning, tool registration/allowlisting, input limits, permission denial, and approval binding. Production validation should additionally use a non-production Attio workspace to verify OAuth, current upstream MCP schemas, rate limits, and representative read/write workflows.
+Tests cover required authentication configuration, official-endpoint pinning, tool registration/allowlisting, pagination and input limits, permission denial, approval binding, email identifiers, and meeting search requirements. Production validation should additionally use a non-production Attio workspace to verify OAuth, current upstream MCP schemas, rate limits, and representative read/write workflows.
 
 ## Limitations
 
 - The wrapper expects an OAuth access token to be supplied securely by its host/credential broker; it does not implement an interactive browser OAuth callback server.
-- Attio's schema is dynamic. Some filter, value, and report payloads are bounded provider-native objects validated again by the official MCP server.
-- The connector implements 22 high-value tools rather than every Attio MCP capability.
+- Attio's schema is dynamic. Some filter, value, sort, and report payloads are provider-native structures validated again by the official MCP server.
+- The connector implements 21 high-value tools rather than every Attio MCP capability.
 - Semantic note/email/call search, call-recording transcript retrieval, comments, list configuration changes, record merging, and SQL are intentionally not exposed in this version.
 - `query-particle-sql` is not exposed because availability depends on billing plan and a narrower stable tool surface is safer.
 - REST API fallback is not used because official MCP covers every capability implemented here.
