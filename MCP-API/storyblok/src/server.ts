@@ -21,17 +21,17 @@ async function dispatch(name: string, a: Record<string, unknown>) {
       const story: Record<string, unknown> = { name:a.name, slug:a.slug, content:a.content };
       if (a.parentId !== undefined) story.parent_id = a.parentId;
       if (a.isFolder !== undefined) story.is_folder = a.isFolder;
-      return client.request("POST", `${base}/stories`, { story });
+      return client.request("POST", `${base}/stories`, { story, publish:false });
     }
     case "storyblok.story.update": {
       const story: Record<string, unknown> = {};
       if (a.name !== undefined) story.name = a.name;
       if (a.slug !== undefined) story.slug = a.slug;
       if (a.content !== undefined) story.content = a.content;
-      return client.request("PUT", `${base}/stories/${encodeURIComponent(String(a.storyId))}`, { story });
+      return client.request("PUT", `${base}/stories/${encodeURIComponent(String(a.storyId))}`, { story, publish:false });
     }
-    case "storyblok.story.publish": return client.request("PUT", `${base}/stories/${encodeURIComponent(String(a.storyId))}`, { publish:true });
-    case "storyblok.story.delete": return client.request("DELETE", `${base}/stories/${encodeURIComponent(String(a.storyId))}`);
+    case "storyblok.story.publish": return client.request("GET", `${base}/stories/${encodeURIComponent(String(a.storyId))}/publish`, undefined, undefined, false);
+    case "storyblok.story.delete": return client.request("DELETE", `${base}/stories/${encodeURIComponent(String(a.storyId))}`, undefined, undefined, false);
     case "storyblok.component.list": return client.request("GET", `${base}/components`, undefined, { search:q(a.search), is_root:q(a.isRoot), in_group:q(a.inGroup), sort_by:q(a.sortBy) });
     case "storyblok.component.get": return client.request("GET", `${base}/components/${encodeURIComponent(String(a.componentId))}`);
     case "storyblok.tag.list": return client.request("GET", `${base}/tags`, undefined, { search:q(a.search), all_tags:a.allTags ? "true" : undefined, page:q(a.page), per_page:q(a.perPage) });
