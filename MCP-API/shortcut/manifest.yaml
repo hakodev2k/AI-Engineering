@@ -1,0 +1,46 @@
+id: shortcut
+name: Shortcut
+version: 1.0.0
+upstream:
+  official_mcp:
+    available: true
+    endpoint: https://mcp.shortcut.com/mcp
+    auth: oauth2
+    scopes: [read, write, story-write, comment-write]
+  rest:
+    enabled: true
+    base_url: https://api.app.shortcut.com/api/v3
+    auth: api-token
+transport_strategy:
+  note: Stable connector tools use official REST v3 because server-side API-token auth is deterministic and the official MCP server is OAuth-session oriented. The official hosted MCP remains the preferred direct-client option when an MCP client can complete interactive OAuth.
+auth:
+  type: api-token
+  header: Shortcut-Token
+  required_env: [SHORTCUT_API_TOKEN]
+permissions:
+  default: READ
+  supported: [READ, WRITE]
+approval:
+  write: configurable
+  env: SHORTCUT_REQUIRE_WRITE_APPROVAL
+rate_limits:
+  requests_per_minute: 200
+capabilities:
+  - story.search
+  - story.get
+  - story.create
+  - story.update
+  - story.comment.create
+  - epic.list
+  - epic.get
+  - epic.create
+  - iteration.list
+  - objective.list
+  - team.list
+  - workflow.list
+risk:
+  default: READ
+  destructive_tools_exposed: false
+security:
+  credentials_exposed_to_model: false
+  provider_content_untrusted: true
