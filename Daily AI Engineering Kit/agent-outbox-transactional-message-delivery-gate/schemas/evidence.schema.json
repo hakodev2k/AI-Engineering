@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Outbox evidence",
+  "type": "object",
+  "required": ["status", "root", "concepts", "findings"],
+  "properties": {
+    "status": {"enum": ["pass", "blocked"]},
+    "root": {"type": "string"},
+    "concepts": {"type": "object", "additionalProperties": {"type": "array", "items": {"type": "string"}}},
+    "findings": {"type": "array", "items": {"type": "object", "required": ["id", "severity", "message"], "properties": {"id": {"type": "string"}, "severity": {"enum": ["info", "warning", "error"]}, "message": {"type": "string"}, "evidence": {"type": "array", "items": {"type": "string"}}}}}
+  },
+  "additionalProperties": true
+}

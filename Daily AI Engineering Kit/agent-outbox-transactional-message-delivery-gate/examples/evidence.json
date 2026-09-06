@@ -1,0 +1,13 @@
+{
+  "status": "pass",
+  "root": ".",
+  "concepts": {
+    "outbox": ["src/orders/outbox_store.py:18"],
+    "transaction": ["src/orders/service.py:42"],
+    "event_id": ["src/orders/events.py:11"],
+    "retry": ["src/workers/outbox_dispatcher.py:70"],
+    "delivered": ["src/workers/outbox_dispatcher.py:92"],
+    "idempotent": ["src/billing/inbox.py:24"]
+  },
+  "findings": []
+}

@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "required_concepts": [
+    "outbox",
+    "transaction",
+    "event_id",
+    "retry",
+    "delivered",
+    "idempotent"
+  ],
+  "direct_publish_patterns": [
+    "publish(",
+    "sendasync(",
+    "produceasync("
+  ],
+  "transaction_patterns": [
+    "begintransaction",
+    "transactional",
+    "savechanges",
+    "commit"
+  ],
+  "outbox_patterns": [
+    "outbox",
+    "integrationevent",
+    "pendingmessage"
+  ],
+  "max_implementation_cycles": 3,
+  "max_transient_retries": 2
+}
