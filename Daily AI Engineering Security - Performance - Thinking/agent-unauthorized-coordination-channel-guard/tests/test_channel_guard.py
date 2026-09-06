@@ -54,3 +54,12 @@ def test_public_readonly_data_is_allowed_when_never_written():
         {"agent_id": "b", "resource": "dataset://public/base/file", "operation": "read"},
     ]
     assert mod.analyze(events, POLICY)["unapproved_cross_agent_edges"] == 0
+
+
+def test_write_to_declared_readonly_prefix_is_violation():
+    events = [
+        {"agent_id": "a", "resource": "dataset://public/base/message", "operation": "write"},
+    ]
+    report = mod.analyze(events, POLICY)
+    assert report["unapproved_cross_agent_edges"] == 1
+    assert report["violations"][0]["reason"] == "write-to-declared-readonly-prefix"
