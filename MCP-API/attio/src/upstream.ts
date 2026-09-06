@@ -5,7 +5,6 @@ import type { Risk } from './policy.js';
 
 export const ALLOWED_UPSTREAM_TOOLS = new Set([
   'whoami',
-  'list-objects',
   'search-records',
   'list-records',
   'get-records-by-ids',
