@@ -1,0 +1,57 @@
+id: front
+name: Front
+version: 1.0.0
+upstream:
+  - mcp
+transport:
+  mcp:
+    endpoint: https://mcp.frontapp.com/mcp
+    mode: streamable-http
+    spec: "2025-11-25"
+auth:
+  preferred: oauth2-client-credentials
+  alternatives:
+    - externally-managed-oauth-access-token
+  secrets:
+    - FRONT_CLIENT_ID
+    - FRONT_CLIENT_SECRET
+    - FRONT_MCP_ACCESS_TOKEN
+  oauth_url_env: FRONT_OAUTH_URL
+permissions:
+  - read
+  - write
+  - send
+risk:
+  default: READ
+  write_approval: configurable
+  send_approval: explicit
+  send_disabled_by_default: true
+capabilities:
+  - conversation.search
+  - conversation.read
+  - message.read
+  - attachment.get
+  - tag.list
+  - inbox.list
+  - channel.list
+  - teammate.list
+  - draft.list
+  - contact.search
+  - contact.read
+  - draft.create
+  - comment.add
+  - conversation.tag
+  - conversation.assign
+  - conversation.status.update
+  - message.send
+environment:
+  required_one_of:
+    - [FRONT_MCP_ACCESS_TOKEN]
+    - [FRONT_OAUTH_URL, FRONT_CLIENT_ID, FRONT_CLIENT_SECRET]
+  optional:
+    - FRONT_MCP_URL
+    - FRONT_PERMISSIONS
+    - FRONT_REQUIRE_WRITE_APPROVAL
+    - FRONT_ENABLE_SEND
+    - FRONT_TIMEOUT_MS
+    - FRONT_MAX_RETRIES
