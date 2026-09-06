@@ -1,0 +1,50 @@
+id: greenhouse
+name: Greenhouse Recruiting
+upstream:
+  - mcp
+  - rest
+official_mcp:
+  status: open-beta
+  integration: documented-but-not-proxied
+  reason: "Greenhouse exposes a governed official MCP capability, but its public product documentation does not publish a stable remote endpoint/tool contract suitable for this reusable package."
+api:
+  name: Harvest API
+  version: v3
+  base_url: https://harvest.greenhouse.io/v3
+auth:
+  type: oauth2_client_credentials
+  token_url: https://auth.greenhouse.io/token
+  scopes:
+    - harvest:jobs:list
+    - harvest:job_posts:list
+    - harvest:candidates:list
+    - harvest:applications:list
+    - harvest:interviews:list
+    - harvest:offers:list
+    - harvest:departments:list
+    - harvest:offices:list
+    - harvest:candidates:create
+    - harvest:applications:create
+capabilities:
+  - job.list
+  - job.read
+  - job_post.list
+  - candidate.list
+  - candidate.read
+  - candidate.create
+  - application.list
+  - application.read
+  - application.create
+  - interview.list
+  - offer.list
+  - offer.read
+  - department.list
+  - office.list
+risk:
+  default: READ
+  write_approval: configurable
+  high_risk_approval: required
+security:
+  credentials_exposed_to_agent: false
+  retrieved_content_is_untrusted: true
+  employment_decisions_automated: false
