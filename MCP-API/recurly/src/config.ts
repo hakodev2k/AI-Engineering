@@ -2,7 +2,6 @@ import { z } from "zod";
 
 const envSchema = z.object({
   RECURLY_API_KEY: z.string().min(1),
-  RECURLY_SITE_SUBDOMAIN: z.string().regex(/^[a-z0-9][a-z0-9-]{0,62}$/i),
   RECURLY_API_VERSION: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).default("2021-02-25"),
   RECURLY_PERMISSIONS: z.enum(["read", "write", "high-risk"]).default("read"),
   RECURLY_REQUIRE_WRITE_APPROVAL: z.enum(["true", "false"]).default("true"),
@@ -13,7 +12,6 @@ const envSchema = z.object({
 
 export type Config = {
   apiKey: string;
-  siteSubdomain: string;
   apiVersion: string;
   permission: "read" | "write" | "high-risk";
   requireWriteApproval: boolean;
@@ -26,7 +24,6 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
   const value = envSchema.parse(env);
   return {
     apiKey: value.RECURLY_API_KEY,
-    siteSubdomain: value.RECURLY_SITE_SUBDOMAIN,
     apiVersion: value.RECURLY_API_VERSION,
     permission: value.RECURLY_PERMISSIONS,
     requireWriteApproval: value.RECURLY_REQUIRE_WRITE_APPROVAL === "true",
