@@ -13,19 +13,20 @@ const q = (v: unknown) => v === undefined ? undefined : String(v);
 const result = (value: unknown) => ({ content: [{ type: "text" as const, text: JSON.stringify(value, null, 2) }] });
 
 async function dispatch(name: string, a: Record<string, unknown>) {
+  const page = { limit:q(a.limit), cursor:q(a.cursor) };
   switch (name) {
-    case "recurly.account.list": return client.request("GET", "/accounts", undefined, { limit:q(a.limit), cursor:q(a.cursor), state:q(a.state) });
+    case "recurly.account.list": return client.request("GET", "/accounts", undefined, page);
     case "recurly.account.get": return client.request("GET", `/accounts/${enc(a.accountId)}`);
     case "recurly.account.create": return client.request("POST", "/accounts", { code:a.code, email:a.email, first_name:a.firstName, last_name:a.lastName, company:a.company });
     case "recurly.account.update": return client.request("PUT", `/accounts/${enc(a.accountId)}`, { email:a.email, first_name:a.firstName, last_name:a.lastName, company:a.company });
-    case "recurly.subscription.list": return client.request("GET", "/subscriptions", undefined, { limit:q(a.limit), cursor:q(a.cursor), state:q(a.state) });
+    case "recurly.subscription.list": return client.request("GET", "/subscriptions", undefined, page);
     case "recurly.subscription.get": return client.request("GET", `/subscriptions/${enc(a.subscriptionId)}`);
     case "recurly.subscription.cancel": return client.request("POST", `/subscriptions/${enc(a.subscriptionId)}/cancel`, { timeframe:a.timeframe });
     case "recurly.subscription.pause": return client.request("POST", `/subscriptions/${enc(a.subscriptionId)}/pause`, { remaining_pause_cycles:a.remainingPauseCycles });
-    case "recurly.invoice.list": return client.request("GET", "/invoices", undefined, { limit:q(a.limit), cursor:q(a.cursor), state:q(a.state) });
+    case "recurly.invoice.list": return client.request("GET", "/invoices", undefined, page);
     case "recurly.invoice.get": return client.request("GET", `/invoices/${enc(a.invoiceId)}`);
-    case "recurly.plan.list": return client.request("GET", "/plans", undefined, { limit:q(a.limit), cursor:q(a.cursor), state:q(a.state) });
-    case "recurly.transaction.list": return client.request("GET", "/transactions", undefined, { limit:q(a.limit), cursor:q(a.cursor), type:q(a.type) });
+    case "recurly.plan.list": return client.request("GET", "/plans", undefined, page);
+    case "recurly.transaction.list": return client.request("GET", "/transactions", undefined, page);
     default: throw new Error("Unknown Recurly tool.");
   }
 }
