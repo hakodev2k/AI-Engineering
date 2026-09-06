@@ -1,0 +1,11 @@
+{
+  "max_reconnect_attempts": 8,
+  "min_backoff_ms": 100,
+  "max_backoff_ms": 30000,
+  "require_non_decreasing_backoff": true,
+  "allow_duplicate_subscriptions": false,
+  "max_sequence_gap": 0,
+  "allow_sequence_rewind": false,
+  "require_stable_session_id": false,
+  "require_resubscribe_after_reconnect": true
+}

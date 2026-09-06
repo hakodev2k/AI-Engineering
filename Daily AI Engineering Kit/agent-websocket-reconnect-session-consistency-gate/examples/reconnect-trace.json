@@ -1,0 +1,14 @@
+{
+  "status": "captured",
+  "initial_session_id": "session-a",
+  "events": [
+    {"type": "connected", "attempt": 0, "session_id": "session-a"},
+    {"type": "subscribed", "subscription": "orders"},
+    {"type": "message", "subscription": "orders", "sequence": 1},
+    {"type": "disconnected", "reason": "network"},
+    {"type": "reconnect_attempt", "attempt": 1, "backoff_ms": 250},
+    {"type": "connected", "attempt": 1, "session_id": "session-b"},
+    {"type": "subscribed", "subscription": "orders"},
+    {"type": "message", "subscription": "orders", "sequence": 2}
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Reconnect trace",
+  "type": "object",
+  "required": ["status", "events"],
+  "properties": {
+    "status": {"type": "string"},
+    "initial_session_id": {"type": ["string", "null"]},
+    "events": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["type"],
+        "properties": {
+          "type": {"enum": ["connected", "disconnected", "reconnect_attempt", "subscribed", "unsubscribed", "message"]},
+          "attempt": {"type": "integer", "minimum": 0},
+          "backoff_ms": {"type": "integer", "minimum": 0},
+          "session_id": {"type": ["string", "null"]},
+          "subscription": {"type": "string"},
+          "sequence": {"type": "integer", "minimum": 0},
+          "reason": {"type": "string"}
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": true
+}
