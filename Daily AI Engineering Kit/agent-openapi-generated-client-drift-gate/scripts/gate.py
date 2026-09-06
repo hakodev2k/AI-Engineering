@@ -45,6 +45,14 @@ def git(repo: Path, *args: str) -> str:
     return out.strip()
 
 
+def resolve_repo(start: Path) -> Path:
+    start = start.resolve()
+    rc, out, err = run(["git", "rev-parse", "--show-toplevel"], start)
+    if rc:
+        raise RuntimeError(err.strip() or f"not inside a Git repository: {start}")
+    return Path(out.strip()).resolve()
+
+
 def status_path(line: str) -> str:
     path = line[3:] if len(line) > 3 else ""
     return path.split(" -> ")[-1]
@@ -109,7 +117,7 @@ def write_json(path: Path, payload: dict) -> None:
 
 
 def cmd_snapshot(args: argparse.Namespace) -> int:
-    repo = Path(args.repo).resolve()
+    repo = resolve_repo(Path(args.repo))
     cfg = load_config(Path(args.config))
     specs = collect_files(repo, cfg["spec_paths"], cfg.get("ignore_globs", []))
     generated = collect_files(repo, cfg["generated_roots"], cfg.get("ignore_globs", []))
@@ -145,7 +153,7 @@ def changed_generated(repo: Path, roots: list[str]) -> list[str]:
 
 
 def cmd_regenerate(args: argparse.Namespace) -> int:
-    repo = Path(args.repo).resolve()
+    repo = resolve_repo(Path(args.repo))
     cfg = load_config(Path(args.config))
     if cfg.get("require_clean_worktree_before_regeneration", True):
         status = filtered_status(repo, cfg.get("evidence_dirs", [".openapi-drift"]))
