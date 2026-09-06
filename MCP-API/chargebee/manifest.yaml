@@ -5,8 +5,10 @@ upstream:
   - rest
 mcp:
   official: true
-  endpoint: https://mcp.chargebee.com/data-lookup
-  usage: read-only data lookup; connector REST client provides deterministic fallback and write operations
+  endpoint_template_us: https://{chargebee-subdomain}.mcp.chargebee.com/data_lookup_agent
+  endpoint_template_eu: https://{chargebee-subdomain}.mcp.eu.chargebee.com/data_lookup_agent
+  endpoint_template_au: https://{chargebee-subdomain}.mcp.au.chargebee.com/data_lookup_agent
+  usage: official Data Lookup MCP is available for read workflows; this stable connector executes its allow-listed contracts through REST API v2
 api:
   base_url: https://{site}.chargebee.com/api/v2
 auth:
@@ -33,12 +35,5 @@ risk:
   write_requires_approval: true
   high_risk_requires_approval: true
 environment:
-  required:
-    - CHARGEBEE_SITE
-    - CHARGEBEE_API_KEY
-  optional:
-    - CHARGEBEE_TIMEOUT_MS
-    - CHARGEBEE_MAX_RETRIES
-    - CHARGEBEE_ALLOW_WRITES
-    - CHARGEBEE_APPROVAL_TOKEN
-    - CHARGEBEE_MCP_URL
+  required: [CHARGEBEE_SITE, CHARGEBEE_API_KEY]
+  optional: [CHARGEBEE_TIMEOUT_MS, CHARGEBEE_MAX_RETRIES, CHARGEBEE_ALLOW_WRITES, CHARGEBEE_APPROVAL_TOKEN, CHARGEBEE_MCP_URL]
