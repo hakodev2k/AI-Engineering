@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "spec_paths": ["openapi.json", "openapi.yaml", "swagger.json"],
+  "generated_roots": ["src/generated", "generated", "clients/generated"],
+  "generator_commands": [],
+  "ignore_globs": ["**/*.md", "**/.gitkeep"],
+  "allow_manual_edits": false,
+  "max_regeneration_attempts": 2,
+  "require_clean_worktree_before_regeneration": true,
+  "require_generated_diff_empty_after_regeneration": true
+}
