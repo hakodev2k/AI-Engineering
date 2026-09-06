@@ -1,0 +1,7 @@
+{
+  "max_consecutive_failed_or_no_progress_attempts": 3,
+  "minimum_reclaimed_tokens": 1,
+  "require_threshold_clearance": true,
+  "require_successful_request_after_compaction": true,
+  "max_implementation_retries": 2
+}
