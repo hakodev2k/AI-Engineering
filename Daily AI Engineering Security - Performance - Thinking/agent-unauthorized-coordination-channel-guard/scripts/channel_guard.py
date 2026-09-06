@@ -14,9 +14,10 @@ Policy JSON:
     "window_events": 500
   }
 
-The detector is intentionally metadata-oriented. It flags an unapproved resource when
-one agent writes and a different agent subsequently reads/discovers/lists or writes the
-same normalized resource namespace inside the bounded event window.
+A write to a prefix declared read-only is itself a violation. Elsewhere, the detector
+flags an unapproved resource when one agent writes and a different agent subsequently
+reads/discovers/lists or writes the same normalized namespace inside the bounded event
+window.
 
 Exit codes: 0 clean, 2 invalid input, 3 violation detected.
 """
@@ -46,7 +47,7 @@ def load_policy(path: Path) -> dict:
         if not isinstance(value, list) or not all(isinstance(x, str) for x in value):
             raise ValueError(f"{key} must be a list of strings")
     window = data.get("window_events", 500)
-    if not isinstance(window, int) or window < 1 or window > 100000:
+    if not isinstance(window, int) or not 1 <= window <= 100000:
         raise ValueError("window_events must be an integer from 1 to 100000")
     data["window_events"] = window
     return data
@@ -89,12 +90,6 @@ def has_prefix(resource: str, prefixes: Iterable[str]) -> bool:
 
 
 def namespace(resource: str) -> str:
-    """Normalize exact objects into a conservative namespace.
-
-    URI-like resources keep scheme/authority plus parent path; filesystem-like paths
-    keep their parent. This catches filenames/object keys used as message carriers while
-    avoiding a global 'all storage is one channel' assumption.
-    """
     r = resource.rstrip("/")
     if "/" not in r:
         return r
@@ -103,7 +98,7 @@ def namespace(resource: str) -> str:
 
 def analyze(events: list[dict], policy: dict) -> dict:
     approved = policy.get("approved_coordination_prefixes", [])
-    ignored = policy.get("ignored_readonly_prefixes", [])
+    readonly = policy.get("ignored_readonly_prefixes", [])
     window = policy["window_events"]
     history: dict[str, deque[tuple[int, str, str]]] = defaultdict(lambda: deque(maxlen=window))
     violations = []
@@ -117,16 +112,24 @@ def analyze(events: list[dict], policy: dict) -> dict:
 
         if has_prefix(resource, approved):
             continue
-        if op in READ_OPS and has_prefix(resource, ignored):
+        if has_prefix(resource, readonly):
+            if op in WRITE_OPS:
+                violations.append({
+                    "namespace": ns,
+                    "from_agent": agent,
+                    "to_agent": None,
+                    "prior_operation": None,
+                    "operation": op,
+                    "prior_event_index": None,
+                    "event_index": idx,
+                    "reason": "write-to-declared-readonly-prefix",
+                })
             continue
 
         prior = history[ns]
         for prior_idx, prior_agent, prior_op in list(prior):
             if prior_agent == agent:
                 continue
-            # Writer -> peer reader/discovery is a direct communication edge.
-            # Multi-writer peer activity is also suspicious because object names/metadata
-            # can provide a rendezvous protocol even before an explicit read is logged.
             suspicious = (prior_op in WRITE_OPS and op in READ_OPS) or (
                 prior_op in WRITE_OPS and op in WRITE_OPS
             )
@@ -142,6 +145,7 @@ def analyze(events: list[dict], policy: dict) -> dict:
                         "operation": op,
                         "prior_event_index": prior_idx,
                         "event_index": idx,
+                        "reason": "unapproved-cross-agent-edge",
                     })
         prior.append((idx, agent, op))
 
