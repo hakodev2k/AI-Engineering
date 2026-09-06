@@ -9,13 +9,15 @@ export interface AttioConfig {
   timeoutMs: number;
 }
 
-function bool(name: string, fallback: boolean): boolean {
-  const v = process.env[name];
+function bool(env: NodeJS.ProcessEnv, name: string, fallback: boolean): boolean {
+  const v = env[name];
   if (v === undefined) return fallback;
-  return /^(1|true|yes)$/i.test(v);
+  if (/^(1|true|yes)$/i.test(v)) return true;
+  if (/^(0|false|no)$/i.test(v)) return false;
+  throw new Error(`${name} must be true or false.`);
 }
 
-export function loadConfig(env = process.env): AttioConfig {
+export function loadConfig(env: NodeJS.ProcessEnv = process.env): AttioConfig {
   const accessToken = env.ATTIO_MCP_ACCESS_TOKEN?.trim();
   if (!accessToken) throw new Error('ATTIO_MCP_ACCESS_TOKEN is required. Supply an OAuth access token obtained for Attio MCP; never pass it through prompts or tool arguments.');
   const rawUrl = env.ATTIO_MCP_URL?.trim() || 'https://mcp.attio.com/mcp';
@@ -31,7 +33,7 @@ export function loadConfig(env = process.env): AttioConfig {
     mcpUrl,
     accessToken,
     permissions,
-    requireWriteApproval: bool('ATTIO_REQUIRE_WRITE_APPROVAL', true),
+    requireWriteApproval: bool(env, 'ATTIO_REQUIRE_WRITE_APPROVAL', true),
     approvalSecret: env.ATTIO_APPROVAL_SECRET?.trim() || undefined,
     timeoutMs
   };
