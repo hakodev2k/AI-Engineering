@@ -1,7 +1,7 @@
 {
   "version": 1,
   "scan_extensions": [".cs", ".ts", ".tsx", ".js", ".jsx", ".py", ".java", ".go", ".rb", ".php", ".json", ".yaml", ".yml", ".toml", ".xml"],
-  "exclude_dirs": [".git", "node_modules", "bin", "obj", "dist", "build", ".venv", "venv", "vendor", "agent-orphaned-feature-flag-cleanup-gate"],
+  "exclude_dirs": [".git", ".flag-cleanup", "node_modules", "bin", "obj", "dist", "build", ".venv", "venv", "vendor", "agent-orphaned-feature-flag-cleanup-gate"],
   "allowed_reference_globs": ["docs/**", "examples/**", "**/*.md"],
   "registry_states": ["active", "retiring", "retired"],
   "required_retired_behavior": ["enabled", "disabled"],
