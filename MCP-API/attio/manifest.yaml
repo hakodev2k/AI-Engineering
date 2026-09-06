@@ -25,7 +25,6 @@ environment:
     - ATTIO_TIMEOUT_MS
 capabilities:
   - workspace.identity.read
-  - object.list
   - record.search
   - record.list
   - record.read
