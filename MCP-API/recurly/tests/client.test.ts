@@ -3,14 +3,16 @@ import assert from "node:assert/strict";
 import { RecurlyClient, RecurlyApiError } from "../src/client.js";
 import type { Config } from "../src/config.js";
 
-const cfg: Config = { apiKey:"abc", siteSubdomain:"demo", apiVersion:"2021-02-25", permission:"read", requireWriteApproval:true, requireHighRiskApproval:true, timeoutMs:1000, maxRetries:1 };
+const cfg: Config = { apiKey:"abc", apiVersion:"2021-02-25", permission:"read", requireWriteApproval:true, requireHighRiskApproval:true, timeoutMs:1000, maxRetries:1 };
 
-test("sends isolated Basic auth and pinned API version", async () => {
-  let seen: RequestInit | undefined;
-  const fake = async (_input: URL | RequestInfo, init?: RequestInit) => { seen = init; return new Response(JSON.stringify({ id:"a" }), { status:200, headers:{"content-type":"application/json"} }); };
+test("sends isolated Basic auth and pinned API version to the fixed Recurly host", async () => {
+  let seenInput: unknown;
+  let seenInit: RequestInit | undefined;
+  const fake = async (input: URL | RequestInfo, init?: RequestInit) => { seenInput = input; seenInit = init; return new Response(JSON.stringify({ id:"a" }), { status:200, headers:{"content-type":"application/json"} }); };
   const out = await new RecurlyClient(cfg, fake as typeof fetch).request("GET", "/accounts/a");
   assert.deepEqual(out, { id:"a" });
-  const headers = seen?.headers as Record<string,string>;
+  assert.equal(String(seenInput), "https://v3.recurly.com/accounts/a");
+  const headers = seenInit?.headers as Record<string,string>;
   assert.equal(headers.Authorization, `Basic ${Buffer.from("abc:").toString("base64")}`);
   assert.equal(headers.Accept, "application/vnd.recurly.v2021-02-25");
 });
