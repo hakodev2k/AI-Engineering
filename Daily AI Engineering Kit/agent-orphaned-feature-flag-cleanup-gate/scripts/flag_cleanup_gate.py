@@ -42,15 +42,27 @@ def find_flag(registry: dict, key: str):
 
 def scan(args) -> int:
     root = Path(args.root).resolve()
-    policy = load_json(args.policy)
-    registry = load_json(args.registry)
+    registry_path = Path(args.registry).resolve()
+    policy_path = Path(args.policy).resolve()
+    out_path = Path(args.out).resolve()
+    if not root.is_dir():
+        raise ValueError(f"repository root is not a directory: {root}")
+    policy = load_json(str(policy_path))
+    registry = load_json(str(registry_path))
     flag = find_flag(registry, args.flag)
     if flag is None:
         write_json(args.out, {"status": "blocked", "flag": args.flag, "errors": ["flag missing from registry"], "references": []})
         return 2
     refs = []
     needle = args.flag
+    excluded_files = {registry_path, policy_path, out_path}
     for p in iter_files(root, policy):
+        try:
+            resolved = p.resolve()
+        except OSError:
+            resolved = p.absolute()
+        if resolved in excluded_files:
+            continue
         try:
             lines = p.read_text(encoding="utf-8", errors="replace").splitlines()
         except OSError as e:
@@ -91,6 +103,8 @@ def verify(args) -> int:
             errors.append("retired flag must retain retired_at metadata")
     if report.get("flag") != args.flag:
         errors.append("scan report flag mismatch")
+    if report.get("status") not in ("pass", "references-found"):
+        errors.append("scan report status is invalid or blocked")
     if int(report.get("active_reference_count", -1)) != 0:
         errors.append("non-allowlisted references remain")
     status = "verified" if not errors else "failed"
