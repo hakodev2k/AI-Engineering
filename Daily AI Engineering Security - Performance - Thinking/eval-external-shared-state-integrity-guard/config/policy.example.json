@@ -1,0 +1,6 @@
+{
+  "allowed_destinations": [
+    "https://task-api.example.invalid",
+    "https://dataset-mirror.example.invalid"
+  ]
+}
