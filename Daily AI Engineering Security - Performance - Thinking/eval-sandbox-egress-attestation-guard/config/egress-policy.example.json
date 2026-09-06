@@ -1,0 +1,15 @@
+{
+  "policy_version": "1",
+  "require_events": true,
+  "approved_destinations": [
+    "localhost",
+    "127.0.0.1",
+    "::1",
+    "*.sandbox.internal",
+    "artifact-cache.sandbox.internal"
+  ],
+  "forbidden_destinations": [
+    "0.0.0.0/0",
+    "::/0"
+  ]
+}
