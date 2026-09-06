@@ -1,0 +1,36 @@
+{
+  "examples": [
+    {
+      "workflow": "Support account review",
+      "tool": "recurly.account.get",
+      "input": { "accountId": "code-customer-123" },
+      "expected_output": { "id": "...", "code": "customer-123", "state": "active" },
+      "permission": "READ",
+      "approval_required": false
+    },
+    {
+      "workflow": "Create CRM-sourced account",
+      "tool": "recurly.account.create",
+      "input": { "code": "crm-1001", "email": "customer@example.com", "approved": true },
+      "expected_output": { "id": "...", "code": "crm-1001" },
+      "permission": "WRITE",
+      "approval_required": true
+    },
+    {
+      "workflow": "Schedule cancellation at term end",
+      "tool": "recurly.subscription.cancel",
+      "input": { "subscriptionId": "uuid-example", "timeframe": "term_end", "approved": true },
+      "expected_output": { "id": "...", "state": "canceled" },
+      "permission": "HIGH_RISK",
+      "approval_required": true
+    },
+    {
+      "workflow": "Pause subscription for retention",
+      "tool": "recurly.subscription.pause",
+      "input": { "subscriptionId": "uuid-example", "remainingPauseCycles": 2, "approved": true },
+      "expected_output": { "id": "...", "remaining_pause_cycles": 2 },
+      "permission": "HIGH_RISK",
+      "approval_required": true
+    }
+  ]
+}
