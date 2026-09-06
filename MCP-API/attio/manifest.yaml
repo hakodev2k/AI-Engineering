@@ -1,0 +1,58 @@
+id: attio
+name: Attio
+version: 1.0.0
+upstream:
+  - mcp
+mcp:
+  endpoint: https://mcp.attio.com/mcp
+  official: true
+  transport: streamable-http
+api:
+  base_url: https://api.attio.com/v2
+  fallback_status: checked-not-required-for-implemented-tools
+auth:
+  type: oauth2
+  credential_env: ATTIO_MCP_ACCESS_TOKEN
+  note: OAuth bearer token remains inside the connector process.
+environment:
+  required:
+    - ATTIO_MCP_ACCESS_TOKEN
+  optional:
+    - ATTIO_MCP_URL
+    - ATTIO_PERMISSIONS
+    - ATTIO_REQUIRE_WRITE_APPROVAL
+    - ATTIO_APPROVAL_SECRET
+    - ATTIO_TIMEOUT_MS
+capabilities:
+  - workspace.identity.read
+  - object.list
+  - record.search
+  - record.list
+  - record.read
+  - record.create
+  - record.upsert
+  - record.update
+  - attribute.list
+  - list.list
+  - list.entry.read
+  - list.entry.create
+  - note.search
+  - note.read
+  - note.create
+  - task.list
+  - task.create
+  - task.update
+  - meeting.search
+  - email.search
+  - email.read
+  - report.run
+risk:
+  default: READ
+  write_requires_permission: true
+  write_requires_approval_by_default: true
+  destructive_enabled_by_default: false
+security:
+  upstream_tool_allowlist: true
+  official_endpoint_pinned: true
+  credentials_exposed_to_model: false
+  provider_content_untrusted: true
