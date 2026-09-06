@@ -1,0 +1,53 @@
+id: appwrite
+name: Appwrite
+upstream:
+  - mcp
+  - rest
+mcp:
+  official: true
+  endpoint: https://mcp.appwrite.io/
+  transport: streamable-http
+  auth: oauth2.1
+  strategy: primary
+rest:
+  version: v1
+  strategy: fallback
+  auth: api_key
+  headers:
+    - X-Appwrite-Project
+    - X-Appwrite-Key
+auth:
+  least_privilege_scopes:
+    - users.read
+    - users.write
+    - buckets.read
+    - buckets.write
+    - functions.read
+    - functions.write
+    - executions.write
+capabilities:
+  - context.read
+  - docs.search
+  - user.list
+  - user.read
+  - user.create
+  - user.update
+  - user.delete
+  - storage.bucket.list
+  - storage.bucket.read
+  - storage.bucket.create
+  - storage.bucket.delete
+  - function.list
+  - function.read
+  - function.create
+  - function.delete
+  - function.execution.create
+risk:
+  default: READ
+  write_approval: configurable
+  high_risk_approval: required
+  destructive_enabled: false
+security:
+  credentials_exposed_to_agent: false
+  upstream_tool_allowlist: true
+  retrieved_content_is_untrusted: true
