@@ -1,0 +1,13 @@
+{
+  "allowed_roots": [
+    "C:\\CodexProjects"
+  ],
+  "required_allowed_probes": [
+    "C:\\CodexProjects\\.boundary-sentinel-readable.txt"
+  ],
+  "required_denied_probes": [
+    "C:\\SensitiveData\\.boundary-sentinel-secret.txt"
+  ],
+  "require_canonical_paths": true,
+  "require_all_probe_results": true
+}
