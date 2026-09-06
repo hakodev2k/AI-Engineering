@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Feature flag cleanup verification report",
+  "type": "object",
+  "required": ["status", "flag", "errors", "scan", "registry"],
+  "properties": {
+    "status": {"enum": ["verified", "failed"]},
+    "flag": {"type": "string", "minLength": 1},
+    "errors": {"type": "array", "items": {"type": "string"}},
+    "scan": {"type": "string", "minLength": 1},
+    "registry": {"type": "string", "minLength": 1}
+  },
+  "additionalProperties": false
+}
