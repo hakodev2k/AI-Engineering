@@ -1,0 +1,40 @@
+id: lokalise
+name: Lokalise
+upstream:
+  - rest
+official_mcp: false
+api_base_url: https://api.lokalise.com/api2
+auth:
+  type: oauth2-or-api-token
+  header: X-Api-Token
+  oauth_header: Authorization Bearer
+  least_privilege: Token/OAuth permissions are configured in Lokalise; use read-only access unless write tools are required.
+environment:
+  - LOKALISE_OAUTH_TOKEN
+  - LOKALISE_API_TOKEN
+  - LOKALISE_PERMISSIONS
+  - LOKALISE_REQUIRE_WRITE_APPROVAL
+  - LOKALISE_TIMEOUT_MS
+  - LOKALISE_MAX_RETRIES
+capabilities:
+  - project.list
+  - project.get
+  - language.list
+  - key.list
+  - key.get
+  - key.create
+  - key.update
+  - translation.list
+  - translation.get
+  - translation.update
+  - comment.list
+  - comment.create
+  - task.list
+  - task.get
+  - task.create
+risk:
+  default: READ
+  writes: WRITE
+approval:
+  external_writes: configurable
+  destructive: not_exposed
