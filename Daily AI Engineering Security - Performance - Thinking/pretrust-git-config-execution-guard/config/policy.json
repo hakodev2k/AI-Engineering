@@ -1,0 +1,1 @@
+{"policy_version":1,"fail_closed":true,"blocked_git_config":{"core.fsmonitor":{"allow_boolean_values":true,"reason":"Non-boolean values can name an executable helper."}},"exit_codes":{"safe":0,"blocked":2,"inspection_error":3},"max_retries_after_inspection_error":1}
