@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Astra cache transition usage event",
+  "type": "object",
+  "required": ["turn", "input_tokens", "cached_input_tokens", "latency_ms", "effective_reasoning_effort", "transition_mode"],
+  "properties": {
+    "turn": {"type": "integer", "minimum": 1},
+    "input_tokens": {"type": "integer", "minimum": 0},
+    "cached_input_tokens": {"type": "integer", "minimum": 0},
+    "latency_ms": {"type": "number", "minimum": 0},
+    "effective_reasoning_effort": {"type": "string", "minLength": 1},
+    "request_reasoning_effort": {"type": ["string", "null"]},
+    "transition_mode": {"enum": ["none", "configuration_update", "request_level"]},
+    "quality_pass": {"type": "boolean"},
+    "cost_usd": {"type": "number", "minimum": 0}
+  },
+  "additionalProperties": true
+}
