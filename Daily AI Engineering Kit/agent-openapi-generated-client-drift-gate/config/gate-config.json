@@ -4,6 +4,7 @@
   "generated_roots": ["src/generated", "generated", "clients/generated"],
   "generator_commands": [],
   "ignore_globs": ["**/*.md", "**/.gitkeep"],
+  "evidence_dirs": [".openapi-drift"],
   "allow_manual_edits": false,
   "max_regeneration_attempts": 2,
   "require_clean_worktree_before_regeneration": true,
