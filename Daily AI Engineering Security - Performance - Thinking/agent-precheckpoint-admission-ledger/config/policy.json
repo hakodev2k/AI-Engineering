@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "lost_after_seconds": 120,
+  "max_reconcile_retries": 2,
+  "auto_retry_side_effect_free_only": true,
+  "require_idempotency_key": true,
+  "require_durable_admission_before_ack": true
+}
