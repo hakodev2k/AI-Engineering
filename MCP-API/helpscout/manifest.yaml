@@ -1,0 +1,69 @@
+id: helpscout
+name: Help Scout
+
+upstream:
+  - rest
+
+mcp:
+  official_server: false
+  note: "No official Help Scout MCP server was found in Help Scout's official developer documentation as of 2026-09-06. Community implementations exist but are not trusted as upstream dependencies here."
+
+api:
+  base_url: https://api.helpscout.net
+  primary_version: v2
+  read_version_overrides:
+    conversation_get: v3
+    conversation_threads_list: v3
+
+auth:
+  type: oauth2
+  flows:
+    - client_credentials
+    - authorization_code_external_token
+  granular_scopes: "Help Scout documents permissions through the OAuth application's associated Help Scout user rather than named OAuth scopes; use a least-privileged active invited user."
+
+required_env:
+  one_of:
+    - HELPSCOUT_ACCESS_TOKEN
+    - [HELPSCOUT_APP_ID, HELPSCOUT_APP_SECRET]
+optional_env:
+  - HELPSCOUT_API_BASE
+  - HELPSCOUT_TIMEOUT_MS
+  - HELPSCOUT_MAX_RETRIES
+  - HELPSCOUT_REQUIRE_WRITE_APPROVAL
+  - HELPSCOUT_ALLOW_DESTRUCTIVE
+  - HELPSCOUT_APPROVED_ACTIONS
+  - HELPSCOUT_WEBHOOK_SECRET
+
+capabilities:
+  - inbox.list
+  - inbox.read
+  - conversation.search
+  - conversation.read
+  - conversation.threads.read
+  - customer.search
+  - customer.read
+  - user.list
+  - team.list
+  - conversation.note.create
+  - conversation.reply.draft.create
+  - conversation.reply.send
+  - conversation.status.update
+  - conversation.assign
+  - conversation.unassign
+  - conversation.tags.replace
+  - webhook.list
+  - webhook.create
+
+risk:
+  default: READ
+  write: configurable_approval
+  high_risk: explicit_approval
+  destructive: disabled_by_default
+
+security:
+  credentials_exposed_to_agent: false
+  arbitrary_api_request_tool: false
+  webhook_secret_connector_side_only: true
+  webhook_callback_requires_public_https: true
+  provider_content_is_untrusted: true
