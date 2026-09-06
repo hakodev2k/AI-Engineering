@@ -1,19 +1,19 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { expectedApproval, assertAllowed } from '../src/policy.js';
-import type { AttioConfig } from '../src/config.js';
+import type { AttioConfig, Permission } from '../src/config.js';
 
 const base: AttioConfig = {
   mcpUrl: new URL('https://mcp.attio.com/mcp'),
   accessToken: 'test-token',
-  permissions: new Set(['read','write']),
+  permissions: new Set<Permission>(['read','write']),
   requireWriteApproval: true,
   approvalSecret: 'unit-test-secret',
   timeoutMs: 20000
 };
 
 test('READ tool runs with read permission', () => {
-  assert.doesNotThrow(() => assertAllowed('READ','attio.record.search',{query:'Acme'},base));
+  assert.doesNotThrow(() => assertAllowed('READ','attio.record.search',{object:'companies',query:'Acme'},base));
 });
 
 test('WRITE tool requires approval', () => {
@@ -28,5 +28,5 @@ test('WRITE approval is bound to tool and arguments', () => {
 });
 
 test('destructive permission is denied unless explicitly granted', () => {
-  assert.throws(() => assertAllowed('DESTRUCTIVE','attio.comment.delete',{approvalId:'x'.repeat(64)},base), /DESTRUCTIVE/);
+  assert.throws(() => assertAllowed('DESTRUCTIVE','attio.comment.delete',{approvalId:'a'.repeat(64)},base), /DESTRUCTIVE/);
 });
