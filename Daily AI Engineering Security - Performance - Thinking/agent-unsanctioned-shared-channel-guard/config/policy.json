@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "default_action": "deny",
+  "allow_read_only": true,
+  "require_declared_shared_write": true,
+  "require_human_approval_for_new_shared_channel": true,
+  "max_shared_writes_per_agent_per_window": 20,
+  "max_distinct_agents_per_channel_per_window": 5,
+  "window_seconds": 300,
+  "approved_channels": [
+    {
+      "pattern": "https://internal.example.invalid/agent-coordination/*",
+      "mode": "read-write",
+      "visibility": "team",
+      "purpose": "declared-agent-coordination"
+    }
+  ]
+}
