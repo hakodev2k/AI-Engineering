@@ -1,0 +1,60 @@
+id: raygun
+name: Raygun
+version: 1.0.0
+upstream:
+  - mcp
+transport:
+  preferred: official-remote-mcp
+  mcp_endpoint: https://api.raygun.com/v3/mcp
+auth:
+  type: bearer_pat
+  interactive_preferred: oauth
+  credential_env: RAYGUN_PAT
+  notes: OAuth is preferred by Raygun for interactive clients; PAT is supported for automation and clients without OAuth.
+permissions:
+  default: READ
+  levels: [READ, WRITE, HIGH_RISK, DESTRUCTIVE]
+risk:
+  default: READ
+  write_requires_approval: true
+  high_risk_requires_approval: true
+  destructive_enabled_by_default: false
+capabilities:
+  - application.list
+  - application.search
+  - error_group.list
+  - error_group.search
+  - error_group.investigate
+  - error_instance.list
+  - error_instance.get
+  - error_comment.list
+  - error_group.status.update
+  - error_group.comment.add
+  - apm.issue.search
+  - apm.issue.investigate
+  - apm.trace.search
+  - apm.trace.investigate
+  - apm.hotspot.search
+  - deployment.list
+  - deployment.latest
+  - deployment.investigate
+  - deployment.create
+  - customer.search
+  - customer.investigate
+  - session.list
+  - session.investigate
+  - metric.error_trends.analyze
+environment:
+  required:
+    - RAYGUN_PAT
+  optional:
+    - RAYGUN_MCP_URL
+    - RAYGUN_MAX_PERMISSION
+    - RAYGUN_REQUIRE_WRITE_APPROVAL
+    - RAYGUN_REQUIRE_HIGH_RISK_APPROVAL
+    - RAYGUN_ENABLE_DESTRUCTIVE
+    - RAYGUN_TIMEOUT_MS
+security:
+  credentials_exposed_to_llm: false
+  upstream_tool_allowlist: true
+  retrieved_content_untrusted: true
