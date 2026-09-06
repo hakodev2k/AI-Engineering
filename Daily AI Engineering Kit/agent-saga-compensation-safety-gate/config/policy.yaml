@@ -1,0 +1,14 @@
+version: 1
+max_retry_attempts: 2
+max_compensation_attempts: 2
+require_idempotency_key: true
+require_compensation_for_side_effects: true
+require_approval_for:
+  - destructive_compensation
+  - irreversible_external_action
+  - production_config_change
+  - schema_change
+verification:
+  require_plan_validation: true
+  require_simulation: true
+  require_independent_review: true
