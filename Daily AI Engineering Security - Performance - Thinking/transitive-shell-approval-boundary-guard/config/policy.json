@@ -1,0 +1,21 @@
+{
+  "trusted_roots": ["."],
+  "script_extensions": [".sh", ".bash", ".py", ".js", ".ts", ".ps1"],
+  "review_patterns": [
+    "\\beval\\b",
+    "\\bexec\\s*\\(",
+    "curl\\s+[^|]+\\|\\s*(sh|bash)",
+    "wget\\s+[^|]+\\|\\s*(sh|bash)",
+    "powershell(?:\\.exe)?\\s+.*-(?:EncodedCommand|enc)\\b"
+  ],
+  "block_patterns": [
+    "\\brm\\s+-[^\\n]*r[^\\n]*f\\b",
+    "\\brm\\s+-rf\\b",
+    "\\bgit\\s+reset\\s+--hard\\b",
+    "\\bgit\\s+clean\\s+-[^\\n]*f",
+    "\\bdd\\s+if=",
+    "\\bmkfs(?:\\.[A-Za-z0-9]+)?\\b",
+    "Remove-Item\\s+[^\\n]*-Recurse[^\\n]*-Force"
+  ],
+  "max_script_bytes": 1048576
+}
