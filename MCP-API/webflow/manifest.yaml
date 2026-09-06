@@ -1,0 +1,53 @@
+id: webflow
+name: Webflow
+version: 1.0.0
+runtime: node>=22.3.0
+upstream:
+  - rest
+  - official-mcp-available
+transport:
+  external: mcp-stdio
+  provider: https://api.webflow.com/v2
+  official_mcp: https://mcp.webflow.com/mcp
+auth:
+  type: bearer
+  env: WEBFLOW_ACCESS_TOKEN
+  supports:
+    - oauth2-access-token
+    - site-token
+    - workspace-token
+scopes:
+  read:
+    - sites:read
+    - pages:read
+    - cms:read
+  write:
+    - cms:write
+    - sites:write
+capabilities:
+  - site.list
+  - site.get
+  - page.list
+  - page.get
+  - page.content.get
+  - collection.list
+  - collection.get
+  - item.list
+  - item.get
+  - item.create
+  - item.update
+  - item.publish
+  - item.delete
+  - site.publish
+risk:
+  default: read
+  write_requires_configurable_approval: true
+  high_risk_requires_explicit_approval: true
+  destructive_disabled_by_default: true
+env:
+  - WEBFLOW_ACCESS_TOKEN
+  - WEBFLOW_PERMISSIONS
+  - WEBFLOW_REQUIRE_WRITE_APPROVAL
+  - WEBFLOW_ALLOW_DESTRUCTIVE
+  - WEBFLOW_TIMEOUT_MS
+  - WEBFLOW_MAX_RETRIES
