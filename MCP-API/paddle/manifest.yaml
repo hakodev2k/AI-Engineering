@@ -1,0 +1,63 @@
+id: paddle
+name: Paddle
+version: 1.0.0
+runtime: node>=20
+external_interface: mcp-stdio
+upstream:
+  - rest
+upstream_mcp:
+  available: true
+  official_remote_sandbox: https://sandbox-mcp.paddle.com/mcp
+  official_remote_live: https://mcp.paddle.com/mcp
+  used: false
+  rationale: "Official Paddle remote MCP exposes generic codemode search/execute/report_missing_tool. This connector deliberately uses scoped REST tools because unrestricted execute conflicts with the connector safety boundary and Paddle MCP does not hard-gate destructive operations."
+api:
+  sandbox_base_url: https://sandbox-api.paddle.com
+  live_base_url: https://api.paddle.com
+auth:
+  type: bearer_api_key
+  credential_env: PADDLE_API_KEY
+  least_privilege: true
+permissions:
+  provider_model: "entity.read / entity.write API-key permissions"
+  connector_model:
+    - read
+    - write
+    - high_risk
+    - destructive
+capabilities:
+  - product.list
+  - product.get
+  - product.create
+  - product.update
+  - price.list
+  - price.get
+  - price.create
+  - customer.list
+  - customer.get
+  - customer.create
+  - customer.update
+  - transaction.list
+  - transaction.get
+  - subscription.list
+  - subscription.get
+  - subscription.pause
+  - subscription.cancel
+  - adjustment.list
+  - adjustment.create
+  - event_type.list
+risk:
+  default: READ
+  write_approval: configurable
+  high_risk_approval: required
+  destructive_default: disabled
+required_env:
+  - PADDLE_API_KEY
+  - PADDLE_ENVIRONMENT
+optional_env:
+  - PADDLE_PERMISSIONS
+  - PADDLE_REQUIRE_WRITE_APPROVAL
+  - PADDLE_ENABLE_DESTRUCTIVE
+  - PADDLE_TIMEOUT_MS
+  - PADDLE_MAX_RETRIES
+  - PADDLE_WEBHOOK_SECRET
