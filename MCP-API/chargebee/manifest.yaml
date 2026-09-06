@@ -1,0 +1,44 @@
+id: chargebee
+name: Chargebee
+upstream:
+  - mcp
+  - rest
+mcp:
+  official: true
+  endpoint: https://mcp.chargebee.com/data-lookup
+  usage: read-only data lookup; connector REST client provides deterministic fallback and write operations
+api:
+  base_url: https://{site}.chargebee.com/api/v2
+auth:
+  type: api_key_basic
+  username_env: CHARGEBEE_API_KEY
+  password: empty
+capabilities:
+  - customer.list
+  - customer.get
+  - customer.create
+  - customer.update
+  - subscription.list
+  - subscription.get
+  - subscription.cancel
+  - subscription.pause
+  - subscription.resume
+  - invoice.list
+  - invoice.get
+  - credit_note.list
+  - transaction.list
+  - item_price.list
+risk:
+  default: READ
+  write_requires_approval: true
+  high_risk_requires_approval: true
+environment:
+  required:
+    - CHARGEBEE_SITE
+    - CHARGEBEE_API_KEY
+  optional:
+    - CHARGEBEE_TIMEOUT_MS
+    - CHARGEBEE_MAX_RETRIES
+    - CHARGEBEE_ALLOW_WRITES
+    - CHARGEBEE_APPROVAL_TOKEN
+    - CHARGEBEE_MCP_URL
