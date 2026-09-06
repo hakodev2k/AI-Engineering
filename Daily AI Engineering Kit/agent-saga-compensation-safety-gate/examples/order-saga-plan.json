@@ -1,0 +1,24 @@
+{
+  "saga_id": "order-123",
+  "status": "planned",
+  "steps": [
+    {
+      "id": "reserve-inventory",
+      "action": "reserve inventory for order-123",
+      "side_effect": true,
+      "idempotency_key": "order-123:reserve-inventory",
+      "compensation": "release reservation for order-123",
+      "approval_required": false,
+      "dependencies": []
+    },
+    {
+      "id": "authorize-payment",
+      "action": "authorize payment for order-123",
+      "side_effect": true,
+      "idempotency_key": "order-123:authorize-payment",
+      "compensation": "void payment authorization for order-123",
+      "approval_required": false,
+      "dependencies": ["reserve-inventory"]
+    }
+  ]
+}
