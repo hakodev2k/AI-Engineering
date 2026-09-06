@@ -2,7 +2,7 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { ZodError } from 'zod';
 import { loadConfig } from './config.js';
-import { assertAllowed } from './policy.js';
+import { assertAllowed, requiredPermission } from './policy.js';
 import { TOOL_MAP, TOOLS } from './tools.js';
 import { AttioUpstream } from './upstream.js';
 
@@ -14,10 +14,28 @@ function output(value: unknown) {
   return { content:[{ type:'text' as const, text:JSON.stringify({ source:'attio', untrustedData:true, result:value }, null, 2) }] };
 }
 
+function assertPaired(args: Record<string, unknown>, a: string, b: string): void {
+  if ((args[a] === undefined) !== (args[b] === undefined)) throw new Error(`${a} and ${b} must be provided together.`);
+}
+
+function validateRelationships(name: string, args: Record<string, unknown>): void {
+  if (name === 'attio.note.search') assertPaired(args, 'parent_record_object', 'parent_record_id');
+  if (name === 'attio.task.list' || name === 'attio.task.create' || name === 'attio.task.update') assertPaired(args, 'linked_record_object', 'linked_record_id');
+  if (name === 'attio.meeting.search') assertPaired(args, 'related_record_object', 'related_record_ids');
+  if (name === 'attio.task.update') {
+    const mutable = ['deadline_at','assignee_workspace_member_id','is_completed','linked_record_object','linked_record_id'];
+    if (!mutable.some(k => args[k] !== undefined)) throw new Error('attio.task.update requires at least one update field.');
+  }
+}
+
 for (const tool of TOOLS) {
-  server.tool(tool.name, `${tool.description} Risk=${tool.risk}; upstream=official Attio MCP.`, tool.schema.shape, async raw => {
+  const permission = requiredPermission(tool.risk).toUpperCase();
+  const approval = tool.risk === 'READ' ? 'not required' : tool.risk === 'WRITE' ? 'required by default' : 'always required';
+  const description = `${tool.description} RequiredPermission=${permission}; Risk=${tool.risk}; Approval=${approval}; Output=JSON text wrapped as untrusted provider data; Errors=validation/auth/permission/rate-limit/timeout/provider; Upstream=official Attio MCP.`;
+  server.tool(tool.name, description, tool.schema.shape, async raw => {
     try {
       const args = tool.schema.parse(raw) as Record<string, unknown>;
+      validateRelationships(tool.name, args);
       assertAllowed(tool.risk, tool.name, args, config);
       const clean = { ...args };
       delete clean.approvalId;
