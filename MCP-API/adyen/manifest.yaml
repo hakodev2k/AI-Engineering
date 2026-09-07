@@ -1,0 +1,47 @@
+id: adyen
+name: Adyen
+upstream:
+  - mcp
+mcp:
+  official: true
+  package: "@adyen/mcp"
+  transport: stdio
+  environments:
+    - TEST
+    - LIVE
+auth:
+  type: api_key
+  env: ADYEN_API_KEY
+permissions:
+  least_privilege_roles:
+    - Merchant PAL webservice role
+    - Checkout webservice role
+    - Management API—Account read
+    - Management API—Webhooks read
+capabilities:
+  - merchant.list
+  - merchant.get
+  - payment_link.create
+  - payment_link.get
+  - payment_link.expire
+  - payment.cancel
+  - payment.refund
+  - webhook.company.list
+  - webhook.company.get
+  - webhook.merchant.list
+  - webhook.merchant.get
+risk:
+  default: READ
+  write_requires_approval: true
+  high_risk_requires_approval: true
+  destructive_exposed: false
+environment:
+  required:
+    - ADYEN_API_KEY
+  optional:
+    - ADYEN_ENV
+    - ADYEN_LIVE_PREFIX
+    - ADYEN_TIMEOUT_MS
+    - ADYEN_MAX_RETRIES
+    - ADYEN_REQUIRE_WRITE_APPROVAL
+    - ADYEN_APPROVAL_SECRET
