@@ -1,0 +1,58 @@
+id: nylas
+name: Nylas
+runtime: nodejs-20
+upstream:
+  - type: mcp
+    transport: streamable-http
+    endpoints:
+      us: https://mcp.us.nylas.com
+      eu: https://mcp.eu.nylas.com
+    auth: bearer_api_key
+  - type: rest
+    endpoints:
+      us: https://api.us.nylas.com/v3
+      eu: https://api.eu.nylas.com/v3
+    auth: bearer_api_key
+auth:
+  type: api_key_plus_grant
+  credential_env: NYLAS_API_KEY
+  grant_env: NYLAS_GRANT_ID
+  notes: Grant permissions derive from the provider OAuth scopes approved when the account is connected.
+environment:
+  required: [NYLAS_API_KEY]
+  optional: [NYLAS_REGION, NYLAS_GRANT_ID, NYLAS_TIMEOUT_MS, NYLAS_MAX_RETRIES, NYLAS_APPROVE_WRITES, NYLAS_APPROVE_HIGH_RISK, NYLAS_ENABLE_DESTRUCTIVE, NYLAS_WEBHOOK_SECRET]
+capabilities:
+  - grant.get
+  - message.list
+  - message.get
+  - thread.list
+  - draft.create
+  - draft.update
+  - draft.send
+  - message.send
+  - calendar.list
+  - event.list
+  - event.get
+  - event.create
+  - event.update
+  - event.delete
+  - contact.list
+  - webhook.verify
+risk:
+  default: READ
+  tools:
+    draft.create: WRITE
+    draft.update: WRITE
+    draft.send: HIGH_RISK
+    message.send: HIGH_RISK
+    event.create: WRITE
+    event.update: WRITE
+    event.delete: DESTRUCTIVE
+approval:
+  WRITE: configurable
+  HIGH_RISK: explicit
+  DESTRUCTIVE: disabled_by_default
+security:
+  upstream_mcp_allowlist: true
+  credentials_exposed_to_llm: false
+  provider_content_untrusted: true
