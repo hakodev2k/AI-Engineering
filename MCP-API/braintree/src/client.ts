@@ -6,8 +6,8 @@ export type GatewayLike = {
   clientToken: { generate(input?: Record<string, unknown>): Promise<unknown> };
   transaction: { find(id: string): Promise<unknown>; sale(input: Record<string, unknown>): Promise<unknown>; refund(id: string, amount?: string): Promise<unknown>; void(id: string): Promise<unknown> };
   subscription: { find(id: string): Promise<unknown>; cancel(id: string): Promise<unknown> };
-  plan: { all(): Promise<unknown> };
-  merchantAccount: { all(): Promise<unknown> };
+  plan: { all(): Promise<unknown>; find(id: string): Promise<unknown> };
+  merchantAccount: { find(id: string): Promise<unknown> };
 };
 
 export class BraintreeConnectorError extends Error {
@@ -26,7 +26,7 @@ export function createGateway(config: Config): GatewayLike {
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 export class BraintreeClient {
-  constructor(private config: Config, private gateway: GatewayLike = createGateway(config)) {}
+  constructor(private config: Config, readonly gateway: GatewayLike = createGateway(config)) {}
 
   async call<T>(operation: () => Promise<T>, options: { retryable: boolean } = { retryable: true }): Promise<T> {
     let last: unknown;
@@ -49,7 +49,7 @@ export class BraintreeClient {
 
   private mapError(error: unknown) {
     if (error instanceof BraintreeConnectorError) return error;
-    const e = error as { name?: string; message?: string; type?: string; status?: number };
+    const e = error as { message?: string; status?: number };
     const message = e?.message || "Braintree request failed.";
     if (/authentication|authorization|credential|forbidden|not authorized/i.test(message)) return new BraintreeConnectorError("Braintree authentication or permission failure.", "AUTH", false);
     if (/not found/i.test(message)) return new BraintreeConnectorError("Braintree resource was not found.", "NOT_FOUND", false);
