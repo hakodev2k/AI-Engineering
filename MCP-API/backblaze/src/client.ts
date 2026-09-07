@@ -137,12 +137,12 @@ export class BackblazeClient {
   }
 
   async createDownloadUrl(bucket: string, key: string, expiresInSeconds: number) {
-    const url = await getSignedUrl(this.s3 as S3Client, new GetObjectCommand({ Bucket: bucket, Key: key }), { expiresIn: expiresInSeconds });
+    const url = await getSignedUrl(this.s3 as unknown as S3Client, new GetObjectCommand({ Bucket: bucket, Key: key }), { expiresIn: expiresInSeconds });
     return { bucket, key, expiresInSeconds, url };
   }
 
   async createUploadUrl(bucket: string, key: string, expiresInSeconds: number, contentType?: string) {
-    const url = await getSignedUrl(this.s3 as S3Client, new PutObjectCommand({ Bucket: bucket, Key: key, ContentType: contentType }), { expiresIn: expiresInSeconds });
+    const url = await getSignedUrl(this.s3 as unknown as S3Client, new PutObjectCommand({ Bucket: bucket, Key: key, ContentType: contentType }), { expiresIn: expiresInSeconds });
     return { bucket, key, expiresInSeconds, contentType, url };
   }
 
