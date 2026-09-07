@@ -1,0 +1,42 @@
+id: openweathermap
+name: OpenWeather
+upstream:
+  - mcp
+  - rest
+mcp:
+  official: true
+  endpoint: https://mcp.openweathermap.org/mcp
+  operator_note: OpenWeather for agents is powered and operated by The Bot Forum under OpenWeather branding/data licence
+  usage: optional upstream agent lane; this connector pins a stable REST-backed allowlist for preconfigured OpenWeather accounts
+api:
+  base_url: https://api.openweathermap.org
+auth:
+  type: api_key
+  parameter: appid
+  credential_env: OPENWEATHER_API_KEY
+capabilities:
+  - location.search
+  - location.reverse
+  - weather.current
+  - forecast.five_day
+  - air_pollution.current
+  - air_pollution.forecast
+  - one_call.current_forecast
+  - one_call.timemachine
+risk:
+  default: READ
+  writes_exposed: false
+  destructive_exposed: false
+environment:
+  required:
+    - OPENWEATHER_API_KEY
+  optional:
+    - OPENWEATHER_BASE_URL
+    - OPENWEATHER_TIMEOUT_MS
+    - OPENWEATHER_MAX_RETRIES
+    - OPENWEATHER_MCP_URL
+security:
+  credentials_isolated: true
+  provider_content_untrusted: true
+  arbitrary_url_tools: false
+  ssrf_host_pinned: true
