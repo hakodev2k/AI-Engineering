@@ -12,6 +12,7 @@ test("config requires token and restricts API host", () => {
   assert.throws(() => loadConfig({} as NodeJS.ProcessEnv));
   assert.throws(() => loadConfig({ SURVEYMONKEY_ACCESS_TOKEN:"x", SURVEYMONKEY_API_BASE_URL:"https://evil.example/v3" } as NodeJS.ProcessEnv));
   assert.equal(loadConfig(baseEnv).apiBaseUrl, "https://api.surveymonkey.com/v3");
+  assert.equal(loadConfig({ ...baseEnv, SURVEYMONKEY_API_BASE_URL:"https://api.surveymonkey.ca/v3" }).apiBaseUrl, "https://api.surveymonkey.ca/v3");
 });
 
 test("tool registry exposes focused surface", () => {
@@ -64,7 +65,7 @@ test("GET retries 429 but write does not retry", async () => {
 
 test("dispatch maps pagination and webhook validation", async () => {
   const calls: any[] = [];
-  const fake = { request: async (...args:any[]) => { calls.push(args); return {data:{ok:true},meta:{}}; } } as SurveyMonkeyClient;
+  const fake = { request: async (...args:any[]) => { calls.push(args); return {data:{ok:true},meta:{}}; } } as unknown as SurveyMonkeyClient;
   await dispatch("surveymonkey.survey.list", {query:"nps",page:2,perPage:50}, fake);
   assert.deepEqual(calls[0][3], {query:"nps",page:"2",per_page:"50"});
   await assert.rejects(() => dispatch("surveymonkey.webhook.create", {name:"x",subscriptionUrl:"https://example.com/h",eventType:"survey_updated",objectType:"collector",objectIds:["1"]}, fake));
