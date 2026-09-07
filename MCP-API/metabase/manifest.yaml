@@ -1,0 +1,46 @@
+id: metabase
+name: Metabase
+runtime: nodejs-20+
+upstream:
+  - type: mcp
+    official: true
+    endpoint: "${METABASE_BASE_URL}/api/metabase-mcp"
+    usage: documented upstream option; this connector does not forward credentials or dynamically trust upstream tools
+  - type: rest
+    official: true
+    base_url: "${METABASE_BASE_URL}/api"
+  - type: agent-api
+    official: true
+    base_url: "${METABASE_BASE_URL}/api/agent/v1"
+auth:
+  type: api_key
+  header: X-API-Key
+  least_privilege: "Assign the API key to a Metabase group with only permissions required by the exposed resources."
+  credential_isolation: true
+environment:
+  required: [METABASE_BASE_URL, METABASE_API_KEY]
+  optional: [METABASE_TIMEOUT_MS, METABASE_MAX_RETRIES, METABASE_REQUIRE_WRITE_APPROVAL]
+capabilities:
+  - content.search
+  - collection.tree
+  - collection.get
+  - collection.items
+  - question.get
+  - question.run
+  - dashboard.get
+  - agent.search
+  - collection.create
+  - dashboard.create
+  - question.create_native
+  - question.update_metadata
+risk:
+  default: READ
+  writes_require_approval: true
+  destructive_enabled: false
+rate_limits:
+  strategy: respect_429_retry_after_and_bounded_backoff
+  note: "Metabase limits depend on deployment/version; connector does not assume a fixed global quota."
+security:
+  provider_content_untrusted: true
+  arbitrary_api_requests_exposed: false
+  credentials_returned_to_llm: false
