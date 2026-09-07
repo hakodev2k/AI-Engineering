@@ -26,8 +26,8 @@ export function toUpstreamArgs(toolName: string, a: Record<string, unknown>): Re
       return clean({
         sheet_id: a.sheetId,
         request: { term: a.query, caseSensitive: a.caseSensitive ?? false },
-        limit: a.pageSize,
-        offset: typeof a.page === "number" && typeof a.pageSize === "number" ? (a.page - 1) * a.pageSize : undefined
+        limit: a.limit,
+        offset: a.offset
       });
     case "smartsheet.sheet.create":
       return {
@@ -39,13 +39,18 @@ export function toUpstreamArgs(toolName: string, a: Record<string, unknown>): Re
     case "smartsheet.row.update":
       return { sheet_id: a.sheetId, rows: a.rows };
     case "smartsheet.discussion.list":
-      return clean({ sheet_id: a.sheetId, page: a.page, page_size: a.pageSize });
+      return clean({
+        sheet_id: a.sheetId,
+        row_id: a.rowId,
+        include_comments: a.includeComments,
+        include_attachments: a.includeAttachments,
+        page: a.page,
+        page_size: a.pageSize
+      });
     case "smartsheet.comment.add":
       return { sheet_id: a.sheetId, discussion_id: a.discussionId, comment: { text: a.text } };
-    case "smartsheet.report.list": {
-      const page = a.lastKey && /^\d+$/.test(String(a.lastKey)) ? Number(a.lastKey) : undefined;
-      return clean({ page, page_size: a.maxItems });
-    }
+    case "smartsheet.report.list":
+      return clean({ page: a.page, page_size: a.pageSize });
     default:
       throw new Error("Unknown Smartsheet tool.");
   }
