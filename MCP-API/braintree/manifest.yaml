@@ -1,0 +1,45 @@
+id: braintree
+name: Braintree
+upstream:
+  - sdk
+  - graphql
+mcp:
+  official: false
+  note: No official Braintree MCP server was identified in current PayPal/Braintree developer documentation; this connector exposes Braintree capabilities as MCP tools using the official Node SDK and underlying gateway APIs.
+api:
+  graphql_url: https://payments.braintree-api.com/graphql
+auth:
+  type: api_keys
+  fields:
+    - BRAINTREE_MERCHANT_ID
+    - BRAINTREE_PUBLIC_KEY
+    - BRAINTREE_PRIVATE_KEY
+capabilities:
+  - customer.get
+  - customer.create
+  - customer.update
+  - client_token.create
+  - transaction.get
+  - transaction.sale
+  - transaction.refund
+  - transaction.void
+  - subscription.get
+  - subscription.cancel
+  - plan.list
+  - merchant_account.list
+risk:
+  default: READ
+  write_requires_approval: true
+  high_risk_requires_approval: true
+  destructive_enabled: false
+environment:
+  required:
+    - BRAINTREE_ENVIRONMENT
+    - BRAINTREE_MERCHANT_ID
+    - BRAINTREE_PUBLIC_KEY
+    - BRAINTREE_PRIVATE_KEY
+  optional:
+    - BRAINTREE_TIMEOUT_MS
+    - BRAINTREE_MAX_RETRIES
+    - BRAINTREE_ALLOW_WRITES
+    - BRAINTREE_APPROVAL_TOKEN
