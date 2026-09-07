@@ -1,0 +1,71 @@
+id: bunny-net
+name: bunny.net
+version: 1.0.0
+runtime: node>=20
+upstream:
+  - rest
+mcp:
+  official_server: none_found_in_official_docs_review
+  external_interface: stdio
+api:
+  base_url: https://api.bunny.net
+auth:
+  type: api_key
+  header: AccessKey
+  env:
+    - BUNNYNET_API_KEY
+  credential_isolation: connector_only
+permissions:
+  note: bunny.net account API keys are account-scoped; create a dedicated least-privilege key when the account supports scoped credentials and keep it server-side.
+risk:
+  default: READ
+  write_approval: required_by_default
+  destructive_enabled_by_default: false
+capabilities:
+  - name: pull_zone.list
+    risk: READ
+    approval: false
+  - name: pull_zone.get
+    risk: READ
+    approval: false
+  - name: storage_zone.list
+    risk: READ
+    approval: false
+  - name: storage_zone.get
+    risk: READ
+    approval: false
+  - name: storage_zone.statistics
+    risk: READ
+    approval: false
+  - name: dns_zone.list
+    risk: READ
+    approval: false
+  - name: dns_zone.get
+    risk: READ
+    approval: false
+  - name: dns_zone.export
+    risk: READ
+    approval: false
+  - name: dns_record.create
+    risk: HIGH_RISK
+    approval: explicit
+  - name: pull_zone.allowed_referrer.add
+    risk: HIGH_RISK
+    approval: explicit
+  - name: pull_zone.delete
+    risk: DESTRUCTIVE
+    approval: explicit_strong
+    enabled_by_default: false
+environment:
+  BUNNYNET_API_KEY: required
+  BUNNYNET_API_BASE_URL: optional
+  BUNNYNET_TIMEOUT_MS: optional
+  BUNNYNET_MAX_RETRIES: optional
+  BUNNYNET_APPROVAL_MODE: optional
+  BUNNYNET_ALLOW_DESTRUCTIVE: optional
+sources:
+  - https://docs.bunny.net/reference/dnszonepublic_addrecord
+  - https://docs.bunny.net/reference/pullzonepublic_addallowedreferrer
+  - https://docs.bunny.net/reference/pullzonepublic_delete
+  - https://docs.bunny.net/reference/storagezonepublic_storagezonestatistics
+  - https://docs.bunny.net/terraform
