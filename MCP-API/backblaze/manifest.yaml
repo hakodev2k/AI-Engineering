@@ -1,0 +1,84 @@
+id: backblaze
+name: Backblaze B2 Cloud Storage
+runtime: nodejs-20+
+external_interface: mcp-stdio
+upstream:
+  - s3-compatible-api
+  - aws-sdk-v3
+upstream_mcp:
+  official: false
+api:
+  base_url_pattern: https://s3.{region}.backblazeb2.com
+  authentication: aws-signature-v4
+  api_note: Backblaze B2 S3-Compatible API
+sdk:
+  package: '@aws-sdk/client-s3'
+auth:
+  type: application-key
+  credential_mapping:
+    BACKBLAZE_KEY_ID: AWS accessKeyId
+    BACKBLAZE_APPLICATION_KEY: AWS secretAccessKey
+  least_privilege: true
+  credentials_exposed_to_llm: false
+required_env:
+  - BACKBLAZE_KEY_ID
+  - BACKBLAZE_APPLICATION_KEY
+  - BACKBLAZE_REGION
+optional_env:
+  - BACKBLAZE_ALLOW_WRITE
+  - BACKBLAZE_ALLOW_DESTRUCTIVE
+  - BACKBLAZE_WRITE_APPROVAL_REQUIRED
+  - BACKBLAZE_REQUEST_TIMEOUT_MS
+  - BACKBLAZE_MAX_ATTEMPTS
+capabilities:
+  - bucket.list
+  - bucket.get
+  - bucket.create
+  - bucket.delete
+  - object.list
+  - object.get_metadata
+  - object.create_download_url
+  - object.create_upload_url
+  - object.copy
+  - object.delete
+  - bucket.cors.get
+  - bucket.cors.set
+  - bucket.cors.delete
+risk:
+  default: READ
+  write_enabled_by_default: false
+  destructive_enabled_by_default: false
+  explicit_approval:
+    required:
+      - bucket.delete
+      - object.delete
+      - bucket.cors.set
+      - bucket.cors.delete
+    configurable:
+      - bucket.create
+      - object.create_upload_url
+      - object.copy
+permissions:
+  read:
+    - listBuckets
+    - listAllBucketNames
+    - readBuckets
+    - listFiles
+    - readFiles
+  write:
+    - writeBuckets
+    - writeFiles
+  destructive:
+    - deleteBuckets
+    - deleteFiles
+rate_limits:
+  default_new_account_upload_download_rps: 500
+  s3_throttle_status: 503
+  s3_throttle_code: SlowDown
+  retry_after_supported: true
+security:
+  endpoint_derived_from_region: true
+  arbitrary_endpoint_override: false
+  arbitrary_raw_api_tool: false
+  provider_content_untrusted: true
+  destructive_retries: disabled
