@@ -26,7 +26,8 @@ capabilities:
   - subscription.get
   - subscription.cancel
   - plan.list
-  - merchant_account.list
+  - plan.get
+  - merchant_account.get
 risk:
   default: READ
   write_requires_approval: true
