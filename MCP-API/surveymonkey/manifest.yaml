@@ -15,6 +15,7 @@ mcp:
 api:
   base_url: https://api.surveymonkey.com/v3
   eu_base_url: https://api.eu.surveymonkey.com/v3
+  canada_base_url: https://api.surveymonkey.ca/v3
 
 auth:
   type: oauth2_bearer
