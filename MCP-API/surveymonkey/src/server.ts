@@ -1,13 +1,11 @@
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { CallToolRequestSchema, ListToolsRequestSchema } from "@modelcontextprotocol/sdk/types.js";
-import { loadConfig } from "./config.js";
+import { loadConfig, type Config } from "./config.js";
 import { SurveyMonkeyApiError, SurveyMonkeyClient } from "./client.js";
 import { assertAllowed } from "./policy.js";
 import { TOOLS, TOOL_MAP } from "./tools.js";
 
-const config = loadConfig();
-const client = new SurveyMonkeyClient(config);
 const enc = (value: unknown) => encodeURIComponent(String(value));
 const q = (value: unknown) => value === undefined ? undefined : String(value);
 const result = (value: unknown) => ({ content: [{ type:"text" as const, text:JSON.stringify(value, null, 2) }] });
@@ -23,7 +21,7 @@ function validateWebhook(args: Record<string, unknown>) {
   if (event === "collector_created" && objectType === "collector") throw new Error("collector_created must not filter by objectType=collector.");
 }
 
-export async function dispatch(name: string, a: Record<string, unknown>, api: SurveyMonkeyClient = client) {
+export async function dispatch(name: string, a: Record<string, unknown>, api: SurveyMonkeyClient) {
   const pagination = { page:q(a.page), per_page:q(a.perPage) };
   switch (name) {
     case "surveymonkey.user.get": return api.request("GET", "/users/me");
@@ -47,30 +45,33 @@ export async function dispatch(name: string, a: Record<string, unknown>, api: Su
   }
 }
 
-export const server = new Server({ name:"surveymonkey-connector", version:"1.0.0" }, { capabilities:{ tools:{} } });
-server.setRequestHandler(ListToolsRequestSchema, async () => ({ tools:TOOLS.map(t => ({ name:t.name, description:`${t.description} Required permission: ${t.permission}. Risk=${t.risk}. Approval=${t.approval ? "required" : "not required"}.`, inputSchema:t.inputSchema as any })) }));
-server.setRequestHandler(CallToolRequestSchema, async request => {
-  const tool = TOOL_MAP.get(request.params.name);
-  if (!tool) throw new Error("Tool is not exposed by this connector.");
-  const args = tool.schema.parse(request.params.arguments ?? {}) as Record<string, unknown>;
-  assertAllowed(tool.risk, tool.name, args, config);
-  try { return result(await dispatch(tool.name, args)); }
-  catch (error) {
-    if (error instanceof SurveyMonkeyApiError) {
-      if (error.status === 401) throw new Error("SurveyMonkey authentication failed. Verify the access token and app state.");
-      if (error.status === 402) throw new Error(`SurveyMonkey plan limit blocked this operation: ${error.message}`);
-      if (error.status === 403) throw new Error("SurveyMonkey denied the operation. Verify OAuth scopes, plan entitlements, and survey access.");
-      if (error.status === 404) throw new Error("SurveyMonkey resource was not found.");
-      if (error.status === 413) throw new Error("SurveyMonkey rejected an oversized survey or request.");
-      if (error.status === 429) throw new Error(`SurveyMonkey rate limit reached.${error.retryAfter ? ` Retry after ${error.retryAfter}.` : ""}`);
+export function createServer(config: Config = loadConfig(), api: SurveyMonkeyClient = new SurveyMonkeyClient(config)) {
+  const server = new Server({ name:"surveymonkey-connector", version:"1.0.0" }, { capabilities:{ tools:{} } });
+  server.setRequestHandler(ListToolsRequestSchema, async () => ({ tools:TOOLS.map(t => ({ name:t.name, description:`${t.description} Required permission: ${t.permission}. Risk=${t.risk}. Approval=${t.approval ? "required" : "not required"}.`, inputSchema:t.inputSchema as any })) }));
+  server.setRequestHandler(CallToolRequestSchema, async request => {
+    const tool = TOOL_MAP.get(request.params.name);
+    if (!tool) throw new Error("Tool is not exposed by this connector.");
+    const args = tool.schema.parse(request.params.arguments ?? {}) as Record<string, unknown>;
+    assertAllowed(tool.risk, tool.name, args, config);
+    try { return result(await dispatch(tool.name, args, api)); }
+    catch (error) {
+      if (error instanceof SurveyMonkeyApiError) {
+        if (error.status === 401) throw new Error("SurveyMonkey authentication failed. Verify the access token and app state.");
+        if (error.status === 402) throw new Error(`SurveyMonkey plan limit blocked this operation: ${error.message}`);
+        if (error.status === 403) throw new Error("SurveyMonkey denied the operation. Verify OAuth scopes, plan entitlements, and survey access.");
+        if (error.status === 404) throw new Error("SurveyMonkey resource was not found.");
+        if (error.status === 413) throw new Error("SurveyMonkey rejected an oversized survey or request.");
+        if (error.status === 429) throw new Error(`SurveyMonkey rate limit reached.${error.retryAfter ? ` Retry after ${error.retryAfter}.` : ""}`);
+      }
+      if (error instanceof Error && error.name === "AbortError") throw new Error("SurveyMonkey request timed out.");
+      throw error;
     }
-    if (error instanceof Error && error.name === "AbortError") throw new Error("SurveyMonkey request timed out.");
-    throw error;
-  }
-});
+  });
+  return server;
+}
 
 if (import.meta.url === `file://${process.argv[1]}`) {
-  server.connect(new StdioServerTransport()).catch(error => {
+  createServer().connect(new StdioServerTransport()).catch(error => {
     console.error(error instanceof Error ? error.message : error);
     process.exit(1);
   });
