@@ -1,0 +1,48 @@
+id: canny
+name: Canny
+version: 1.0.0
+runtime: node>=20
+upstream:
+  official_mcp:
+    available: true
+    endpoint: https://api.canny.io/api/mcp/v1
+    auth: oauth2
+    note: Official remote MCP exists and its tool set evolves. This reusable server uses the documented REST API for stable provider-scoped contracts and service-side credential isolation.
+  rest:
+    base_url: https://canny.io/api
+    method: POST
+    auth: api_key_in_json_body
+    credential_env: CANNY_API_KEY
+auth:
+  type: api_key
+  least_privilege: Use a dedicated Canny API key and expose this connector only to trusted agent runtimes.
+environment:
+  required: [CANNY_API_KEY]
+  optional: [CANNY_API_BASE_URL, CANNY_TIMEOUT_MS, CANNY_MAX_RETRIES, CANNY_REQUIRE_WRITE_APPROVAL]
+capabilities:
+  - board.list
+  - board.get
+  - category.list
+  - post.list
+  - post.get
+  - comment.list
+  - user.get
+  - post.create
+  - post.update
+  - post.change_status
+  - comment.create
+  - vote.create
+risk:
+  default: READ
+  write_approval: configurable
+  high_risk_approval: required
+tools:
+  READ: [canny.board.list, canny.board.get, canny.category.list, canny.post.list, canny.post.get, canny.comment.list, canny.user.get]
+  WRITE: [canny.post.create, canny.post.update, canny.comment.create, canny.vote.create]
+  HIGH_RISK: [canny.post.change_status]
+  DESTRUCTIVE: []
+security:
+  credentials_to_llm: false
+  arbitrary_http_tool: false
+  retrieved_content_untrusted: true
+  destructive_tools_exposed: false
