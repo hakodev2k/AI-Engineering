@@ -1,4 +1,5 @@
 import type { BunnyConfig } from './config.js';
+import { StaticCredentialProvider, type CredentialProvider } from './auth/credentials.js';
 
 export class BunnyApiError extends Error {
   constructor(
@@ -27,10 +28,15 @@ export interface ApiResult<T = unknown> {
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export class BunnyClient {
+  private readonly credentials: CredentialProvider;
+
   constructor(
     private readonly config: BunnyConfig,
     private readonly fetchImpl: typeof fetch = fetch,
-  ) {}
+    credentials?: CredentialProvider,
+  ) {
+    this.credentials = credentials ?? new StaticCredentialProvider(config.apiKey);
+  }
 
   async request<T>(path: string, options: RequestOptions = {}): Promise<ApiResult<T>> {
     if (!path.startsWith('/') || path.includes('://') || path.includes('\\')) {
@@ -71,7 +77,7 @@ export class BunnyClient {
       response = await this.fetchImpl(url, {
         method: options.method ?? 'GET',
         headers: {
-          AccessKey: this.config.apiKey,
+          AccessKey: this.credentials.getAccessKey(),
           Accept: 'application/json',
           ...(options.body !== undefined ? { 'Content-Type': 'application/json' } : {}),
         },
