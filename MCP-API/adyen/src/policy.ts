@@ -1,0 +1,6 @@
+import { createHmac, timingSafeEqual } from 'node:crypto';
+import type { AdyenConfig } from './config.js';
+export type Risk='READ'|'WRITE'|'HIGH_RISK';
+const canonical=(v:unknown):string=>{if(v===null||typeof v!=='object')return JSON.stringify(v);if(Array.isArray(v))return `[${v.map(canonical).join(',')}]`;return `{${Object.entries(v as Record<string,unknown>).sort(([a],[b])=>a.localeCompare(b)).map(([k,val])=>`${JSON.stringify(k)}:${canonical(val)}`).join(',')}}`;};
+export function approvalDigest(secret:string,tool:string,args:Record<string,unknown>){const clean={...args};delete clean.approvalToken;return createHmac('sha256',secret).update(`${tool}\n${canonical(clean)}`).digest('hex');}
+export function assertAllowed(risk:Risk,tool:string,args:Record<string,unknown>,config:AdyenConfig){if(risk==='READ')return;if(risk==='WRITE'&&!config.requireWriteApproval)return;const secret=config.approvalSecret;const token=typeof args.approvalToken==='string'?args.approvalToken:'';if(!secret||secret.length<16)throw new Error('Approval secret is not configured securely.');const expected=approvalDigest(secret,tool,args);const a=Buffer.from(token);const b=Buffer.from(expected);if(a.length!==b.length||!timingSafeEqual(a,b))throw new Error(`Explicit human approval is required for ${tool}.`);}
