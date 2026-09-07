@@ -1,0 +1,42 @@
+id: smartsheet
+name: Smartsheet
+upstream:
+  - mcp
+mcp:
+  official: true
+  transport: streamable-http
+  endpoints:
+    us: https://mcp.smartsheet.com
+    eu: https://mcp.smartsheet.eu
+    au: https://mcp.smartsheet.au
+auth:
+  type: bearer
+  token_env: SMARTSHEET_API_TOKEN
+  oauth_supported_upstream: true
+capabilities:
+  - asset.search
+  - workspace.list
+  - workspace.browse
+  - sheet.summary.get
+  - sheet.version.get
+  - sheet.find
+  - sheet.columns.get
+  - sheet.create
+  - row.add
+  - row.update
+  - discussion.list
+  - comment.add
+  - report.list
+risk:
+  default: READ
+  write_requires_approval: true
+  high_risk_requires_approval: true
+  destructive_exposed: false
+environment:
+  required:
+    - SMARTSHEET_API_TOKEN
+  optional:
+    - SMARTSHEET_REGION
+    - SMARTSHEET_TIMEOUT_MS
+    - SMARTSHEET_APPROVAL_SECRET
+    - SMARTSHEET_REQUIRE_WRITE_APPROVAL
