@@ -1,0 +1,55 @@
+id: harvest
+name: Harvest
+upstream:
+  - rest
+mcp:
+  official: false
+  status: no official Harvest MCP server found in current official documentation
+api:
+  version: v2
+  base_url: https://api.harvestapp.com/v2
+auth:
+  type: bearer_token
+  supported:
+    - personal_access_token
+    - oauth2_access_token
+  required_headers:
+    - Authorization
+    - Harvest-Account-Id
+    - User-Agent
+capabilities:
+  - user.me
+  - user.list
+  - client.list
+  - client.get
+  - project.list
+  - project.get
+  - task.list
+  - time_entry.list
+  - time_entry.get
+  - time_entry.create
+  - time_entry.update
+  - time_entry.stop
+  - time_entry.restart
+  - expense.list
+  - invoice.list
+  - report.project_time
+risk:
+  default: READ
+  write_requires_approval: true
+  high_risk_requires_approval: true
+  destructive_exposed: false
+rate_limits:
+  general: 100 requests per 15 seconds
+  reports: 100 requests per 15 minutes
+  retry_after_header: true
+environment:
+  required:
+    - HARVEST_ACCESS_TOKEN
+    - HARVEST_ACCOUNT_ID
+    - HARVEST_USER_AGENT
+  optional:
+    - HARVEST_TIMEOUT_MS
+    - HARVEST_MAX_RETRIES
+    - HARVEST_ALLOW_WRITES
+    - HARVEST_APPROVAL_TOKEN
