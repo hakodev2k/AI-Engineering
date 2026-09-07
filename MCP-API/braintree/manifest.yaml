@@ -2,12 +2,13 @@ id: braintree
 name: Braintree
 upstream:
   - sdk
-  - graphql
 mcp:
   official: false
-  note: No official Braintree MCP server was identified in current PayPal/Braintree developer documentation; this connector exposes Braintree capabilities as MCP tools using the official Node SDK and underlying gateway APIs.
+  note: No official Braintree MCP server was identified in current PayPal/Braintree developer documentation; this connector exposes Braintree capabilities as MCP tools using the official Node SDK.
 api:
   graphql_url: https://payments.braintree-api.com/graphql
+  graphql_available: true
+  graphql_used_directly: false
 auth:
   type: api_keys
   fields:
