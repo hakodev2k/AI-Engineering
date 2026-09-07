@@ -1,0 +1,45 @@
+id: clockify
+name: Clockify
+upstream:
+  - rest
+mcp:
+  official: announced
+  status: coming-soon
+  note: Official Clockify MCP documentation exists but the service is not yet generally available; no unavailable MCP transport is proxied.
+api:
+  base_url: https://api.clockify.me/api/v1
+  reports_base_url: https://reports.api.clockify.me/v1
+auth:
+  type: api_key
+  header: X-Api-Key
+  env: CLOCKIFY_API_KEY
+capabilities:
+  - workspace.list
+  - user.me
+  - project.list
+  - project.get
+  - project.create
+  - project.update
+  - task.list
+  - client.list
+  - tag.list
+  - time_entry.list
+  - time_entry.get
+  - time_entry.create
+  - time_entry.update
+  - time_entry.delete
+  - timer.stop
+  - report.detailed
+risk:
+  default: READ
+  write_requires_approval: true
+  destructive_requires_approval: true
+environment:
+  required:
+    - CLOCKIFY_API_KEY
+  optional:
+    - CLOCKIFY_TIMEOUT_MS
+    - CLOCKIFY_MAX_RETRIES
+    - CLOCKIFY_ALLOW_WRITES
+    - CLOCKIFY_ALLOW_DESTRUCTIVE
+    - CLOCKIFY_APPROVAL_TOKEN
