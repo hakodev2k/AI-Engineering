@@ -46,7 +46,9 @@ approval:
   HIGH_RISK: explicit
   DESTRUCTIVE: explicit_and_CLICKHOUSE_ALLOW_DESTRUCTIVE_true
 security:
-  read_query_allowlist: [SELECT, WITH, SHOW, DESCRIBE, DESC, EXPLAIN]
+  read_query_allowlist: [SELECT, WITH]
+  block_network_table_functions: true
+  block_file_table_functions: true
   bounded_results: true
   bounded_execution_time: true
   provider_content_untrusted: true
