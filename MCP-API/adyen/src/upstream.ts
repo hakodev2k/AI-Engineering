@@ -6,6 +6,7 @@ import { TOOLS } from './tools.js';
 
 const sleep=(ms:number)=>new Promise(r=>setTimeout(r,ms));
 const transient=(e:unknown)=>/429|rate.?limit|timeout|timed out|temporar|ECONNRESET|EAI_AGAIN|502|503|504/i.test(e instanceof Error?e.message:String(e));
+const childEnv=(apiKey:string)=>{const keys=['PATH','Path','HOME','USERPROFILE','APPDATA','LOCALAPPDATA','TEMP','TMP','SYSTEMROOT','SystemRoot','COMSPEC','ComSpec','PATHEXT'];const env:Record<string,string>={ADYEN_API_KEY:apiKey};for(const key of keys){const value=process.env[key];if(value)env[key]=value;}return env;};
 
 export class AdyenUpstream {
   private client?:Client;
@@ -16,7 +17,7 @@ export class AdyenUpstream {
     const allowlist=TOOLS.map(t=>t.upstream).join(',');
     const args=['-y','@adyen/mcp','--env='+this.config.env,'--tools='+allowlist];
     if(this.config.env==='LIVE'&&this.config.livePrefix)args.push('--livePrefix='+this.config.livePrefix);
-    this.transport=new StdioClientTransport({command:'npx',args,env:{...process.env,ADYEN_API_KEY:this.config.apiKey} as Record<string,string>});
+    this.transport=new StdioClientTransport({command:'npx',args,env:childEnv(this.config.apiKey)});
     this.client=new Client({name:'adyen-safety-gateway',version:'1.0.0'},{capabilities:{}});
     await this.client.connect(this.transport);
   }
