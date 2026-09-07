@@ -1,0 +1,57 @@
+id: coda
+name: Coda
+version: 1.0.0
+runtime: node >=20
+external_interface: mcp-stdio
+upstream:
+  mcp:
+    official: true
+    endpoint: https://coda.io/apis/mcp
+    status: beta
+    routing: not hard-coded because Coda documents beta tool names/parameters as changeable
+  rest:
+    official: true
+    base_url: https://coda.io/apis/v1
+    routing: primary stable transport for implemented tool contracts
+auth:
+  rest:
+    type: bearer_api_token
+    env: CODA_API_TOKEN
+  official_mcp:
+    type: oauth2_pkce_or_personal_access_token
+    oauth_scope: mcp:all
+    pat_access_modes: [read_only, write_only, read_write]
+capabilities:
+  - account.whoami
+  - doc.list
+  - doc.get
+  - doc.create
+  - page.list
+  - page.get
+  - page.content.list
+  - page.create
+  - page.update
+  - table.list
+  - table.get
+  - column.list
+  - row.list
+  - row.get
+  - row.upsert
+  - row.update
+  - formula.list
+  - formula.get
+  - automation.trigger
+  - button.push
+risk:
+  default: READ
+  write_requires_approval: true
+  high_risk_requires_approval: true
+  destructive_tools_exposed: false
+environment:
+  required: [CODA_API_TOKEN]
+  optional: [CODA_API_BASE_URL, CODA_MCP_URL, CODA_TIMEOUT_MS, CODA_MAX_RETRIES, CODA_ALLOW_WRITES, CODA_ALLOW_HIGH_RISK, CODA_APPROVAL_TOKEN]
+security:
+  credentials_to_llm: false
+  provider_content_trust: untrusted_data
+  arbitrary_http_tool: false
+  endpoint_override: pinned_to_official_coda_hosts
