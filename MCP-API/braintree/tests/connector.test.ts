@@ -23,9 +23,10 @@ const fakeGateway = (overrides: Partial<GatewayLike> = {}) => ({
 
 test("auth configuration requires all Braintree API-key fields", () => {
   assert.throws(() => loadConfig({ BRAINTREE_ENVIRONMENT:"sandbox" }), /required/);
-  const loaded = loadConfig({ BRAINTREE_ENVIRONMENT:"production", BRAINTREE_MERCHANT_ID:"m", BRAINTREE_PUBLIC_KEY:"p", BRAINTREE_PRIVATE_KEY:"s", BRAINTREE_MAX_RETRIES:"9" });
+  assert.throws(() => loadConfig({ BRAINTREE_ENVIRONMENT:"sandbox", BRAINTREE_MERCHANT_ID:"m", BRAINTREE_PUBLIC_KEY:"p", BRAINTREE_PRIVATE_KEY:"s", BRAINTREE_MAX_RETRIES:"9" }), /between 0 and 5/);
+  const loaded = loadConfig({ BRAINTREE_ENVIRONMENT:"production", BRAINTREE_MERCHANT_ID:"m", BRAINTREE_PUBLIC_KEY:"p", BRAINTREE_PRIVATE_KEY:"s", BRAINTREE_MAX_RETRIES:"3" });
   assert.equal(loaded.environment, "production");
-  assert.equal(loaded.maxRetries, 5);
+  assert.equal(loaded.maxRetries, 3);
 });
 
 test("tool registration is unique and contains meaningful coverage", () => {
