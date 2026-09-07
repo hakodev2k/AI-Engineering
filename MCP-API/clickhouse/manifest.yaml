@@ -1,0 +1,52 @@
+id: clickhouse
+name: ClickHouse
+runtime: nodejs-20
+upstream:
+  - type: official-mcp
+    implementation: mcp-clickhouse
+    note: Official ClickHouse MCP exists; this connector uses the official Node.js client as its primary transport so safety policy can constrain queries and writes.
+  - type: sdk
+    implementation: '@clickhouse/client'
+  - type: http
+    base_url_env: CLICKHOUSE_URL
+auth:
+  type: database-credentials
+  environment:
+    - CLICKHOUSE_URL
+    - CLICKHOUSE_USER
+    - CLICKHOUSE_PASSWORD
+    - CLICKHOUSE_DATABASE
+  credential_isolation: connector-only
+capabilities:
+  - database.list
+  - table.list
+  - table.describe
+  - table.sample
+  - table.count
+  - query.readonly
+  - table.insert
+  - table.create
+  - table.truncate
+  - table.drop
+risk:
+  default: READ
+  tools:
+    clickhouse.database.list: READ
+    clickhouse.table.list: READ
+    clickhouse.table.describe: READ
+    clickhouse.table.sample: READ
+    clickhouse.table.count: READ
+    clickhouse.query.readonly: READ
+    clickhouse.table.insert: WRITE
+    clickhouse.table.create: HIGH_RISK
+    clickhouse.table.truncate: DESTRUCTIVE
+    clickhouse.table.drop: DESTRUCTIVE
+approval:
+  WRITE: required_when_CLICKHOUSE_ALLOW_WRITES_false
+  HIGH_RISK: explicit
+  DESTRUCTIVE: explicit_and_CLICKHOUSE_ALLOW_DESTRUCTIVE_true
+security:
+  read_query_allowlist: [SELECT, WITH, SHOW, DESCRIBE, DESC, EXPLAIN]
+  bounded_results: true
+  bounded_execution_time: true
+  provider_content_untrusted: true
