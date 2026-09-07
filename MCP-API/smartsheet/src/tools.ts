@@ -3,8 +3,6 @@ import type { Risk } from "./policy.js";
 
 const id = z.union([z.string().regex(/^\d{1,20}$/), z.number().int().positive()]);
 const approvalToken = z.string().regex(/^[a-f0-9]{64}$/).optional();
-const pageSize = z.number().int().min(1).max(100).optional();
-const cursor = z.string().max(2000).optional();
 const cell = z.object({
   columnId: id,
   value: z.unknown().optional(),
@@ -52,7 +50,7 @@ export const TOOLS: ToolDef[] = [
   {
     name: "smartsheet.workspace.list", upstream: "list_workspaces", risk: "READ",
     description: "List workspaces with bounded pagination.",
-    schema: z.object({ maxItems: z.number().int().min(1).max(100).optional(), lastKey: cursor }).strict(),
+    schema: z.object({ maxItems: z.number().int().min(1).max(100).optional(), lastKey: z.string().max(2000).optional() }).strict(),
     inputSchema: objectSchema({ maxItems: { type:"integer", minimum:1, maximum:100 }, lastKey: str(2000) })
   },
   {
@@ -76,8 +74,8 @@ export const TOOLS: ToolDef[] = [
   {
     name: "smartsheet.sheet.find", upstream: "find_in_sheet", risk: "READ",
     description: "Find matching cell values inside one sheet.",
-    schema: z.object({ sheetId: id, query: z.string().min(1).max(500), caseSensitive: z.boolean().optional(), page: z.number().int().min(1).max(100000).optional(), pageSize: z.number().int().min(1).max(1000).optional() }).strict(),
-    inputSchema: objectSchema({ sheetId:intId, query:str(), caseSensitive:{type:"boolean"}, page:{type:"integer",minimum:1}, pageSize:{type:"integer",minimum:1,maximum:1000} }, ["sheetId","query"])
+    schema: z.object({ sheetId: id, query: z.string().min(1).max(250), caseSensitive: z.boolean().optional(), limit: z.number().int().min(1).max(20000).optional(), offset: z.number().int().min(0).max(10000000).optional() }).strict(),
+    inputSchema: objectSchema({ sheetId:intId, query:str(250), caseSensitive:{type:"boolean"}, limit:{type:"integer",minimum:1,maximum:20000}, offset:{type:"integer",minimum:0,maximum:10000000} }, ["sheetId","query"])
   },
   {
     name: "smartsheet.sheet.columns.get", upstream: "get_columns", risk: "READ",
@@ -88,7 +86,12 @@ export const TOOLS: ToolDef[] = [
   {
     name: "smartsheet.sheet.create", upstream: "create_sheet", risk: "WRITE",
     description: "Create a blank sheet in a workspace or folder after human approval.",
-    schema: z.object({ containerId:id, containerType:z.enum(["WORKSPACE","FOLDER"]), name:z.string().min(1).max(50), columns:z.array(z.object({ title:z.string().min(1).max(50), type:z.enum(["TEXT_NUMBER","DATE","DATETIME","CHECKBOX","CONTACT_LIST","MULTI_CONTACT_LIST","PICKLIST","MULTI_PICKLIST","DURATION"]), primary:z.boolean().optional(), options:z.array(z.string().max(100)).max(100).optional() }).strict()).min(1).max(200), approvalToken }).strict(),
+    schema: z.object({ containerId:id, containerType:z.enum(["WORKSPACE","FOLDER"]), name:z.string().min(1).max(50), columns:z.array(z.object({ title:z.string().min(1).max(50), type:z.enum(["TEXT_NUMBER","DATE","DATETIME","CHECKBOX","CONTACT_LIST","MULTI_CONTACT_LIST","PICKLIST","MULTI_PICKLIST","DURATION"]), primary:z.boolean().optional(), options:z.array(z.string().max(100)).max(100).optional() }).strict()).min(1).max(200), approvalToken }).strict().superRefine((value, ctx) => {
+      const primaries = value.columns.filter(c => c.primary).length;
+      if (primaries !== 1) ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Exactly one primary column is required." });
+      const primary = value.columns.find(c => c.primary);
+      if (primary && primary.type !== "TEXT_NUMBER") ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Primary column must be TEXT_NUMBER." });
+    }),
     inputSchema: objectSchema({ containerId:intId, containerType:{enum:["WORKSPACE","FOLDER"]}, name:str(50), columns:{type:"array",minItems:1,maxItems:200,items:objectSchema({title:str(50),type:{enum:["TEXT_NUMBER","DATE","DATETIME","CHECKBOX","CONTACT_LIST","MULTI_CONTACT_LIST","PICKLIST","MULTI_PICKLIST","DURATION"]},primary:{type:"boolean"},options:{type:"array",maxItems:100,items:str(100)}},["title","type"])}, approvalToken:approval }, ["containerId","containerType","name","columns"])
   },
   {
@@ -105,9 +108,9 @@ export const TOOLS: ToolDef[] = [
   },
   {
     name: "smartsheet.discussion.list", upstream: "list_discussions", risk: "READ",
-    description: "List sheet discussions with bounded pagination.",
-    schema: z.object({ sheetId:id, pageSize, page:z.number().int().min(1).max(100000).optional() }).strict(),
-    inputSchema: objectSchema({ sheetId:intId, pageSize:{type:"integer",minimum:1,maximum:100}, page:{type:"integer",minimum:1} }, ["sheetId"])
+    description: "List sheet or row discussions with bounded pagination.",
+    schema: z.object({ sheetId:id, rowId:id.optional(), includeComments:z.boolean().optional(), includeAttachments:z.boolean().optional(), pageSize:z.number().int().min(1).max(100).optional(), page:z.number().int().min(1).max(100000).optional() }).strict(),
+    inputSchema: objectSchema({ sheetId:intId, rowId:intId, includeComments:{type:"boolean"}, includeAttachments:{type:"boolean"}, pageSize:{type:"integer",minimum:1,maximum:100}, page:{type:"integer",minimum:1} }, ["sheetId"])
   },
   {
     name: "smartsheet.comment.add", upstream: "add_comment", risk: "WRITE",
@@ -117,9 +120,9 @@ export const TOOLS: ToolDef[] = [
   },
   {
     name: "smartsheet.report.list", upstream: "list_reports", risk: "READ",
-    description: "List accessible reports with bounded pagination.",
-    schema: z.object({ maxItems:z.number().int().min(1).max(100).optional(), lastKey:cursor }).strict(),
-    inputSchema: objectSchema({ maxItems:{type:"integer",minimum:1,maximum:100}, lastKey:str(2000) })
+    description: "List accessible reports with bounded page-based pagination.",
+    schema: z.object({ page:z.number().int().min(1).max(100000).optional(), pageSize:z.number().int().min(1).max(100).optional() }).strict(),
+    inputSchema: objectSchema({ page:{type:"integer",minimum:1}, pageSize:{type:"integer",minimum:1,maximum:100} })
   }
 ];
 
