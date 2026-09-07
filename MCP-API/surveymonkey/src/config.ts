@@ -22,8 +22,9 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
 
   const apiBaseUrl = env.SURVEYMONKEY_API_BASE_URL?.trim() || "https://api.surveymonkey.com/v3";
   const parsed = new URL(apiBaseUrl);
-  if (parsed.protocol !== "https:" || !["api.surveymonkey.com", "api.eu.surveymonkey.com"].includes(parsed.hostname)) {
-    throw new Error("SURVEYMONKEY_API_BASE_URL must be an official SurveyMonkey HTTPS API host.");
+  const allowedHosts = ["api.surveymonkey.com", "api.eu.surveymonkey.com", "api.surveymonkey.ca"];
+  if (parsed.protocol !== "https:" || !allowedHosts.includes(parsed.hostname) || !parsed.pathname.startsWith("/v3")) {
+    throw new Error("SURVEYMONKEY_API_BASE_URL must be an official SurveyMonkey HTTPS v3 API URL.");
   }
 
   return {
