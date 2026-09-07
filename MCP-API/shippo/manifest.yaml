@@ -1,0 +1,51 @@
+id: shippo
+name: Shippo
+runtime: node >=20
+upstream:
+  official_mcp:
+    available: true
+    endpoint: https://mcp.shippo.com
+    auth: per-user OAuth
+    used_by_this_connector: false
+    reason: connector uses official REST for reusable service-to-service credential isolation and local approval enforcement
+  rest:
+    base_url: https://api.goshippo.com
+    used_by_this_connector: true
+auth:
+  type: api-token
+  header: "Authorization: ShippoToken <token>"
+  env:
+    - SHIPPO_API_TOKEN
+capabilities:
+  - address.get
+  - address.list
+  - address.create
+  - parcel.get
+  - parcel.list
+  - parcel.create
+  - shipment.create
+  - shipment.get
+  - shipment.list
+  - rate.get
+  - label.purchase
+  - transaction.get
+  - transaction.list
+  - refund.request
+  - refund.get
+  - track.get
+risk:
+  default: READ
+  write_approval: configurable
+  high_risk_approval: required
+  destructive_approval: required
+  destructive_default: disabled
+rate_limits:
+  policy: provider-enforced; 429 responses preserve Retry-After and GET requests use bounded retries
+security:
+  credentials_exposed_to_llm: false
+  provider_content: untrusted-data
+  arbitrary_http_tool: false
+  cross_origin_requests: denied
+environment:
+  required: [SHIPPO_API_TOKEN]
+  optional: [SHIPPO_API_BASE_URL, SHIPPO_API_VERSION, SHIPPO_TIMEOUT_MS, SHIPPO_MAX_RETRIES, SHIPPO_APPROVAL_MODE, SHIPPO_ALLOW_DESTRUCTIVE]
