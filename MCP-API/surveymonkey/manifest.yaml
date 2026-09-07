@@ -1,0 +1,66 @@
+id: surveymonkey
+name: SurveyMonkey
+
+upstream:
+  - mcp
+  - rest
+
+mcp:
+  official: true
+  endpoint: https://mcp.surveymonkey.com/mcp
+  auth: oauth2
+  status: documented and hosted by SurveyMonkey
+  note: official docs publish capabilities but not stable upstream tool identifiers; this connector does not guess identifiers and therefore uses REST for deterministic execution
+
+api:
+  base_url: https://api.surveymonkey.com/v3
+  eu_base_url: https://api.eu.surveymonkey.com/v3
+
+auth:
+  type: oauth2_bearer
+  access_token_env: SURVEYMONKEY_ACCESS_TOKEN
+  credential_isolation: connector_only
+
+required_scopes:
+  - users_read
+  - surveys_read
+  - surveys_write
+  - collectors_read
+  - collectors_write
+  - responses_read_detail
+  - webhooks_read
+  - webhooks_write
+
+capabilities:
+  - user.get
+  - survey.list
+  - survey.get
+  - survey.details.get
+  - survey.create
+  - survey.update
+  - page.list
+  - question.list
+  - collector.list
+  - collector.create_link
+  - response.list
+  - response.get
+  - response.summary
+  - webhook.list
+  - webhook.create
+
+risk:
+  default: READ
+  write_requires_approval: true
+  high_risk_requires_approval: true
+  destructive_tools_exposed: false
+
+environment:
+  required:
+    - SURVEYMONKEY_ACCESS_TOKEN
+  optional:
+    - SURVEYMONKEY_API_BASE_URL
+    - SURVEYMONKEY_MCP_URL
+    - SURVEYMONKEY_TIMEOUT_MS
+    - SURVEYMONKEY_MAX_RETRIES
+    - SURVEYMONKEY_ALLOW_WRITES
+    - SURVEYMONKEY_APPROVAL_TOKEN
