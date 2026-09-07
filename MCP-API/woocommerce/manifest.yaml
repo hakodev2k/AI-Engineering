@@ -1,0 +1,57 @@
+id: woocommerce
+name: WooCommerce
+runtime:
+  language: typescript
+  node: ">=20"
+upstream:
+  - mcp
+  - rest
+mcp:
+  official: true
+  status: developer-preview
+  preferred_endpoint: "https://{store}/wp-json/mcp/mcp-adapter-default-server"
+  deprecated_endpoint: "https://{store}/wp-json/woocommerce/mcp"
+  implementation_note: "Native WooCommerce MCP exists, but this connector pins stable REST-backed tool contracts because the MCP integration is currently developer preview."
+api:
+  type: rest
+  version: wc/v3
+  base_url: "https://{store}/wp-json/wc/v3"
+auth:
+  type: consumer_key_secret_basic
+  transport: https_basic_auth
+  required_permissions:
+    read_only: "WooCommerce REST API key with Read access attached to a least-privilege WordPress user"
+    writes: "WooCommerce REST API key with Read/Write access attached to a least-privilege WordPress user"
+capabilities:
+  - product.list
+  - product.get
+  - product.create
+  - product.update
+  - order.list
+  - order.get
+  - order.status.update
+  - order.note.add
+  - customer.list
+  - customer.get
+  - coupon.list
+  - webhook.list
+risk:
+  default: READ
+  write_requires_approval: true
+  high_risk_requires_approval: true
+  destructive_enabled: false
+environment:
+  required:
+    - WOOCOMMERCE_BASE_URL
+    - WOOCOMMERCE_CONSUMER_KEY
+    - WOOCOMMERCE_CONSUMER_SECRET
+  optional:
+    - WOOCOMMERCE_TIMEOUT_MS
+    - WOOCOMMERCE_MAX_RETRIES
+    - WOOCOMMERCE_ALLOW_WRITES
+    - WOOCOMMERCE_APPROVAL_TOKEN
+    - WOOCOMMERCE_MCP_URL
+security:
+  credentials_visible_to_llm: false
+  https_required: true
+  provider_content_untrusted: true
