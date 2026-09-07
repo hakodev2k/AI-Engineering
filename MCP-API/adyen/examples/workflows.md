@@ -18,9 +18,15 @@ Input: `{ "currency": "EUR", "value": 5000, "merchantAccount": "YOUR_MERCHANT", 
 Expected output: created hosted payment-link metadata.
 Permission: WRITE. Approval: required by default.
 
+## Cancel an authorized payment
+Tool: `adyen.payment.cancel`
+Input: `{ "paymentReference": "PAYMENT_REFERENCE", "merchantAccount": "YOUR_MERCHANT", "approvalToken": "<payload-bound-hmac>" }`
+Expected output: Adyen cancellation response; final outcome should be confirmed from Adyen webhooks.
+Permission: HIGH_RISK. Approval: always required.
+
 ## Refund a payment
 Tool: `adyen.payment.refund`
-Input: `{ "paymentPspReference": "PSP_REFERENCE", "currency": "EUR", "value": 1200, "merchantAccount": "YOUR_MERCHANT", "reference": "REFUND-123", "approvalToken": "<payload-bound-hmac>" }`
+Input: `{ "pspReference": "PSP_REFERENCE", "currency": "EUR", "value": 1200, "merchantAccount": "YOUR_MERCHANT", "reference": "REFUND-123", "approvalToken": "<payload-bound-hmac>" }`
 Expected output: Adyen modification response/reference; final outcome should be confirmed from Adyen webhooks.
 Permission: HIGH_RISK. Approval: always required.
 
