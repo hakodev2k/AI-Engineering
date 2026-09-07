@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 const ConfigSchema = z.object({
   apiKey: z.string().min(1),
-  apiBaseUrl: z.string().url().default('https://api.bunny.net'),
+  apiBaseUrl: z.literal('https://api.bunny.net').default('https://api.bunny.net'),
   timeoutMs: z.number().int().min(1000).max(120000).default(15000),
   maxRetries: z.number().int().min(0).max(5).default(3),
   approvalMode: z.enum(['required', 'optional']).default('required'),
