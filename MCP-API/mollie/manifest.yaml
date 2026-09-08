@@ -1,0 +1,71 @@
+id: mollie
+name: Mollie
+upstream:
+  - mcp
+  - rest
+transport_strategy:
+  official_mcp:
+    endpoint: https://mcp.mollie.com/mcp
+    status: available
+    note: Official MCP covers balances, captures, customers, invoices, mandates, methods, payments, payment links, settlements, subscriptions, terminals, webhooks, and webhook events.
+  rest:
+    base_url: https://api.mollie.com/v2
+    used_for:
+      - deterministic stable tool contracts
+      - refunds capability not listed in current official MCP coverage
+auth:
+  type: bearer
+  methods:
+    - api_key
+    - advanced_access_token
+  credential_env: MOLLIE_ACCESS_TOKEN
+  required_scopes_for_advanced_token:
+    - payments.read
+    - payments.write
+    - payment-links.read
+    - payment-links.write
+    - customers.read
+    - customers.write
+    - refunds.read
+    - refunds.write
+capabilities:
+  - payment.list
+  - payment.get
+  - payment.create
+  - payment_link.list
+  - payment_link.get
+  - payment_link.create
+  - customer.list
+  - customer.get
+  - customer.create
+  - refund.list
+  - refund.get
+  - refund.create
+risk:
+  default: READ
+  write_policy_env: MOLLIE_WRITE_POLICY
+  destructive_policy_env: MOLLIE_DESTRUCTIVE_POLICY
+  tools:
+    mollie.payment.list: READ
+    mollie.payment.get: READ
+    mollie.payment.create: HIGH_RISK
+    mollie.payment_link.list: READ
+    mollie.payment_link.get: READ
+    mollie.payment_link.create: WRITE
+    mollie.customer.list: READ
+    mollie.customer.get: READ
+    mollie.customer.create: WRITE
+    mollie.refund.list: READ
+    mollie.refund.get: READ
+    mollie.refund.create: HIGH_RISK
+approval:
+  HIGH_RISK: explicit
+  WRITE: configurable
+  DESTRUCTIVE: disabled_by_default
+environment:
+  - MOLLIE_ACCESS_TOKEN
+  - MOLLIE_API_BASE_URL
+  - MOLLIE_TIMEOUT_MS
+  - MOLLIE_MAX_RETRIES
+  - MOLLIE_WRITE_POLICY
+  - MOLLIE_DESTRUCTIVE_POLICY
