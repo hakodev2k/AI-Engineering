@@ -1,0 +1,42 @@
+id: hightouch
+name: Hightouch
+upstream:
+  - rest
+  - mcp-docs
+  - mcp-workspace-optional
+auth:
+  type: bearer-api-key
+  env: HIGHTOUCH_API_KEY
+api:
+  base_url: https://api.hightouch.com/api/v1
+mcp:
+  docs_endpoint: https://hightouch.com/docs/api/mcp
+  workspace_access: gated-by-hightouch
+capabilities:
+  - sync.list
+  - sync.get
+  - sync.run.list
+  - sync.trigger
+  - model.list
+  - model.get
+  - source.list
+  - source.get
+  - destination.list
+  - destination.get
+risk:
+  default: read
+  tools:
+    hightouch.sync.trigger: high_risk
+approval:
+  write: configurable
+  high_risk: required
+environment:
+  - HIGHTOUCH_API_KEY
+  - HIGHTOUCH_API_BASE_URL
+  - HIGHTOUCH_TIMEOUT_MS
+  - HIGHTOUCH_MAX_RETRIES
+  - HIGHTOUCH_ALLOW_WRITE
+  - HIGHTOUCH_ALLOW_HIGH_RISK
+security:
+  credentials_exposed_to_model: false
+  provider_content_untrusted: true
