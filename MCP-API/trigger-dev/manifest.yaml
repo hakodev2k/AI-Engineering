@@ -1,0 +1,59 @@
+id: trigger-dev
+name: Trigger.dev
+runtime: node20
+upstream:
+  - type: official_mcp
+    command: npx trigger.dev@latest mcp
+    note: Official local MCP exists; this connector uses the official HTTP Management API for stable headless operation and explicit policy enforcement.
+  - type: rest
+    base_url: https://api.trigger.dev
+  - type: official_sdk
+    package: '@trigger.dev/sdk'
+auth:
+  type: bearer_secret_key
+  env: TRIGGER_SECRET_KEY
+  least_privilege: true
+  key_presets:
+    read: Observer
+    trigger_and_operate: Task operator or Operator
+capabilities:
+  - task.trigger
+  - task.batch_trigger
+  - run.list
+  - run.get
+  - run.cancel
+  - run.replay
+  - run.reschedule
+  - batch.get
+  - batch.results
+  - schedule.list
+  - schedule.get
+risk:
+  default: READ
+  tools:
+    trigger-dev.task.trigger: WRITE
+    trigger-dev.task.batch_trigger: WRITE
+    trigger-dev.run.list: READ
+    trigger-dev.run.get: READ
+    trigger-dev.run.cancel: HIGH_RISK
+    trigger-dev.run.replay: HIGH_RISK
+    trigger-dev.run.reschedule: WRITE
+    trigger-dev.batch.get: READ
+    trigger-dev.batch.results: READ
+    trigger-dev.schedule.list: READ
+    trigger-dev.schedule.get: READ
+approval:
+  write: configurable
+  high_risk: explicit
+rate_limits:
+  api_requests_per_minute: 1500
+  batch_max_items: 1000
+env:
+  required:
+    - TRIGGER_SECRET_KEY
+  optional:
+    - TRIGGER_API_URL
+    - TRIGGER_TIMEOUT_MS
+    - TRIGGER_MAX_RETRIES
+    - TRIGGER_ALLOW_WRITE
+    - TRIGGER_ALLOW_HIGH_RISK
