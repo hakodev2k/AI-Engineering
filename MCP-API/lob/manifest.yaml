@@ -1,0 +1,62 @@
+id: lob
+name: Lob
+upstream:
+  - rest
+mcp:
+  official_server: false
+  note: No official Lob MCP server was identified in Lob's official documentation during this implementation; the connector exposes Lob REST capabilities as MCP tools.
+auth:
+  type: api_key_basic_auth
+  environment_variable: LOB_API_KEY
+  credential_isolation: connector_only
+api:
+  base_url: https://api.lob.com/v1
+  version_header: Lob-Version
+  default_version: "2024-01-01"
+capabilities:
+  - address.list
+  - address.get
+  - address.create
+  - address.delete
+  - address.verify_us
+  - postcard.list
+  - postcard.get
+  - postcard.create
+  - postcard.cancel
+  - letter.list
+  - letter.get
+  - letter.create
+  - letter.cancel
+permissions:
+  read:
+    - lob.address.list
+    - lob.address.get
+    - lob.address.verify_us
+    - lob.postcard.list
+    - lob.postcard.get
+    - lob.letter.list
+    - lob.letter.get
+  write:
+    - lob.address.create
+  high_risk:
+    - lob.postcard.create
+    - lob.postcard.cancel
+    - lob.letter.create
+    - lob.letter.cancel
+  destructive:
+    - lob.address.delete
+approval:
+  high_risk: required
+  destructive: required_and_disabled_by_default
+risk:
+  default: read
+required_environment_variables:
+  - LOB_API_KEY
+optional_environment_variables:
+  - LOB_API_BASE_URL
+  - LOB_API_VERSION
+  - LOB_TIMEOUT_MS
+  - LOB_MAX_RETRIES
+  - LOB_APPROVAL_TOKEN
+  - LOB_REQUIRE_WRITE_APPROVAL
+  - LOB_ENABLE_DESTRUCTIVE
