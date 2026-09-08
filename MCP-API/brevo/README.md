@@ -1,100 +1,185 @@
 # Brevo MCP/API Connector
 
-Reusable, security-bounded MCP connector for Brevo contacts, email campaigns, transactional email, and webhooks.
+Reusable MCP server that exposes a deliberately scoped subset of Brevo operations for AI agents while keeping credentials, permission decisions, retries, and provider transport inside the connector.
 
-## Upstream strategy
-Brevo provides an official remote MCP server at `https://mcp.brevo.com/v1/brevo/mcp`. In March 2026 Brevo moved MCP authentication to `Authorization: Bearer <token>` and documented that its MCP tools are auto-generated from the OpenAPI specification. Brevo also publishes a v3 REST API at `https://api.brevo.com/v3/` with API-key and OAuth 2.0 authentication.
+## Provider and transport
 
-This connector deliberately uses the official REST API behind a smaller MCP facade. The reason is security and contract stability: only 14 reviewed operations are exposed, every mutation has a local approval boundary, destructive behavior is disabled by default, and the LLM never receives the Brevo API key. It does not dynamically trust or expose Brevo's much larger upstream MCP tool inventory.
+Brevo provides both a REST API at `https://api.brevo.com/v3` and an official remote MCP service at `https://mcp.brevo.com/v1/brevo/mcp`. Current Brevo documentation states that the main MCP endpoint combines 27 modules and that MCP tokens grant full read/write account access. Brevo also exposes focused MCP servers for contacts, campaigns, analytics, templates, deals, companies, tasks, lists, segments, senders, domains, webhooks, and other modules.
 
-Official sources researched on 2026-08-30:
-- MCP: https://developers.brevo.com/docs/mcp-protocol
-- MCP security update: https://developers.brevo.com/changelog/2026/3/2
+This package **implements its public tools over Brevo REST v3**. The official MCP server was evaluated first, but REST is used for these operations because it lets this connector enforce stable, narrow tool schemas, method-specific retry policy, local permission gates, webhook target validation, and a fixed API origin. No generic REST passthrough is exposed. The official MCP server remains documented as an upstream option, but is not proxied by this package.
+
+Official references researched for this implementation:
+
+- Brevo MCP Server: https://developers.brevo.com/docs/mcp-protocol
+- MCP tool configuration: https://developers.brevo.com/docs/integration-guide
 - API overview: https://developers.brevo.com/docs/getting-started
-- API key auth: https://developers.brevo.com/docs/api-key-authentication
-- OAuth 2.0: https://developers.brevo.com/docs/oauth
+- API-key authentication: https://developers.brevo.com/docs/api-key-authentication
+- Authentication schemes / OAuth 2.0: https://developers.brevo.com/docs/authentication-schemes
 - Rate limits: https://developers.brevo.com/docs/api-limits
-- Contacts: https://developers.brevo.com/reference/get-contacts and https://developers.brevo.com/reference/create-contact
-- Campaigns: https://developers.brevo.com/reference/get-email-campaigns and https://developers.brevo.com/reference/send-email-campaign-now
-- Transactional email: https://developers.brevo.com/reference/send-transac-email
-- Webhooks: https://developers.brevo.com/docs/how-to-use-webhooks
+- Rate-limit headers: https://developers.brevo.com/docs/limit-headers
+- API concepts and pagination: https://developers.brevo.com/docs/how-it-works
+- Secured webhooks: https://developers.brevo.com/docs/secured-webhooks
 
-## Authentication and permissions
-Set `BREVO_API_KEY`; it is sent only by the connector in Brevo's documented `api-key` header. API keys are appropriate for direct/server-to-server integrations. Brevo OAuth 2.0 is supported by Brevo for delegated user access, but is intentionally not implemented in this package because this reusable server is designed for non-interactive service credentials.
+## Implemented capabilities
 
-Brevo API keys identify the account rather than carrying fine-grained OAuth scopes. Apply least privilege operationally by using a dedicated Brevo account/integration identity where your Brevo plan supports it, protect the key in a secret manager, and optionally apply Brevo IP security controls. The key is never a tool argument.
+| MCP tool | Transport | Risk | Approval | Purpose |
+|---|---|---:|---|---|
+| `brevo.account.get` | REST | READ | No | Read account metadata |
+| `brevo.contact.list` | REST | READ | No | List contacts with bounded pagination |
+| `brevo.contact.get` | REST | READ | No | Read one contact |
+| `brevo.contact.create` | REST | WRITE | Host flag | Create a contact |
+| `brevo.contact.update` | REST | WRITE | Host flag | Update a contact/list membership |
+| `brevo.contact.delete` | REST | DESTRUCTIVE | Strong host flag | Delete a contact |
+| `brevo.campaign.list` | REST | READ | No | List email campaigns |
+| `brevo.campaign.get` | REST | READ | No | Read campaign metadata |
+| `brevo.campaign.create` | REST | WRITE | Host flag | Create a draft email campaign |
+| `brevo.campaign.send` | REST | HIGH_RISK | Explicit host flag | Send an existing campaign |
+| `brevo.email.send` | REST | HIGH_RISK | Explicit host flag | Send transactional email |
+| `brevo.sender.list` | REST | READ | No | List sender identities |
+| `brevo.webhook.list` | REST | READ | No | List webhooks |
+| `brevo.webhook.create` | REST | HIGH_RISK | Explicit host flag | Create an external event destination |
+| `brevo.webhook.delete` | REST | DESTRUCTIVE | Strong host flag | Delete a webhook |
 
-## Tools
-| Tool | Upstream | Risk | Approval |
-|---|---|---|---|
-| `brevo.account.get` | REST | READ | no |
-| `brevo.contact.list` | REST | READ | no |
-| `brevo.contact.get` | REST | READ | no |
-| `brevo.contact.create` | REST | WRITE | yes |
-| `brevo.contact.update` | REST | WRITE | yes |
-| `brevo.contact_list.list` | REST | READ | no |
-| `brevo.campaign.list` | REST | READ | no |
-| `brevo.campaign.get` | REST | READ | no |
-| `brevo.campaign.create` | REST | WRITE | yes |
-| `brevo.campaign.send` | REST | HIGH_RISK | yes |
-| `brevo.transactional_email.send` | REST | HIGH_RISK | yes |
-| `brevo.webhook.list` | REST | READ | no |
-| `brevo.webhook.create` | REST | HIGH_RISK | yes |
-| `brevo.webhook.delete` | REST | DESTRUCTIVE | yes + disabled by default |
-
-Not exposed: arbitrary API requests, contact deletion, contact force-merge, campaign deletion, SMS/WhatsApp sends, billing, account administration, or API-key management.
-
-## Safety model
-READ tools may execute automatically. WRITE/HIGH_RISK/DESTRUCTIVE tools require a payload-bound HMAC approval token generated outside the LLM using `BREVO_APPROVAL_SECRET`. Changing any approved payload field invalidates the token. `brevo.webhook.delete` additionally requires `BREVO_ENABLE_DESTRUCTIVE=true`, which cannot be toggled through MCP.
-
-Campaign send and transactional email send are HIGH_RISK because they communicate externally. Webhook creation is HIGH_RISK because it causes Brevo to send data to an external endpoint. Webhook URLs must use HTTPS, may not contain embedded credentials, and reject obvious local hosts. Contact force-merge is not exposed because Brevo documents that it can merge identifiers and delete the losing contact. Updating the `EMAIL` attribute is also not exposed because Brevo documents that changing a blocklisted contact's email can remove blocklisting and resubscribe the contact.
-
-Provider responses are returned with `untrusted_provider_data: true` and secret-shaped fields are redacted. Retrieved contact/campaign content must be treated as data, not instructions.
-
-## Rate limits and reliability
-Brevo documents tiered rate limits. General limits include up to 10 RPS / 36,000 RPH for contacts, 1,000 RPS / 3,600,000 RPH for transactional `POST /v3/smtp/email`, and lower general limits for many other endpoints. The connector does not assume a subscription tier. It reacts to HTTP 429, honors integer `Retry-After`, preserves known rate-limit headers, and uses bounded exponential backoff for safe reads only. Writes/sends/deletes are never blindly retried.
-
-Requests have a configurable timeout and honor MCP cancellation when available. Pagination is bounded by the provider's documented endpoint maxima.
-
-## Environment
-```text
-BREVO_API_KEY=
-BREVO_API_URL=https://api.brevo.com
-BREVO_TIMEOUT_MS=15000
-BREVO_MAX_RETRIES=3
-BREVO_APPROVAL_SECRET=
-BREVO_ENABLE_DESTRUCTIVE=false
-```
-`BREVO_API_URL` must be HTTPS and may not contain credentials, query parameters, or fragments.
-
-## Install and run
-Requires Node.js 20+.
-```bash
-npm install
-npm run check
-npm test
-npm start
-```
-The server uses MCP stdio transport and can be configured by MCP clients that support local stdio servers. Compatibility depends on the client's ability to launch a standard stdio MCP server; no client-specific proprietary protocol is required.
+The connector intentionally omits unrestricted account/user administration, API-key management, arbitrary requests, and broad campaign mutation operations.
 
 ## Architecture
+
 ```text
-MCP client
-  -> stdio MCP server
-     -> strict provider-scoped schemas
-        -> risk/approval policy
-           -> credential-isolated Brevo REST client
-              -> https://api.brevo.com/v3/
+MCP client / agent
+      |
+      v
+Brevo MCP connector (stdio)
+  |- Zod input schemas
+  |- permission gate
+  |- fixed-origin REST client
+  |- timeout / bounded retry
+  |- rate-limit handling
+  |- webhook SSRF validation
+      |
+      v
+Credential layer (BREVO_API_KEY)
+      |
+      v
+https://api.brevo.com/v3
 ```
 
-## Webhooks
-Brevo supports marketing and transactional webhook events and recommends webhooks instead of polling for statistics. Brevo documents an account limit of 40 marketing + transactional webhooks. This connector manages webhook registrations only; validating inbound webhook authenticity and operating the receiving HTTP service remain responsibilities of the consuming application.
+The model never needs the API key. It calls MCP tools; the server reads credentials from its process environment.
+
+## Authentication
+
+### API key
+
+Set `BREVO_API_KEY` to a Brevo API key. The client sends it only in the `api-key` header to the fixed `https://api.brevo.com/v3` origin.
+
+Brevo also supports OAuth 2.0 for delegated integrations. This package does not implement the interactive OAuth authorization/refresh flow because it is designed as a reusable server-to-server connector. For multi-tenant apps, place an OAuth-aware credential provider in front of the `BrevoClient` and preserve the same tool contracts and policy gates.
+
+### Least privilege
+
+Brevo API keys and MCP tokens are account credentials rather than per-tool capability tokens. Least privilege is therefore enforced locally by exposing only named operations and by separating READ, WRITE, HIGH_RISK, and DESTRUCTIVE execution. Do not pass keys through prompts or MCP arguments.
+
+## Environment variables
+
+Copy `.env.example` and provide values through your secret manager or process environment.
+
+| Variable | Required | Default | Meaning |
+|---|---:|---|---|
+| `BREVO_API_KEY` | Yes | - | Brevo API key |
+| `BREVO_API_BASE_URL` | No | `https://api.brevo.com/v3` | Must remain the official origin; alternate origins are rejected |
+| `BREVO_TIMEOUT_MS` | No | `15000` | Per-attempt timeout |
+| `BREVO_MAX_RETRIES` | No | `2` | Maximum bounded retries, capped at 5 |
+| `BREVO_ALLOW_WRITE` | No | `false` | Enables WRITE tools |
+| `BREVO_ALLOW_HIGH_RISK` | No | `false` | Enables externally impactful sends/webhook creation |
+| `BREVO_ALLOW_DESTRUCTIVE` | No | `false` | Enables delete operations |
+
+Approval flags must be controlled by the MCP host/operator, not generated by the agent. This prevents a tool call from silently escalating its own permission.
+
+## Installation
+
+Requirements: Node.js 20+.
+
+```bash
+npm install
+npm run build
+```
+
+## Running the MCP server
+
+```bash
+BREVO_API_KEY='your-secret-from-a-secret-manager' npm start
+```
+
+The server uses MCP stdio transport, which is supported by MCP clients capable of launching local commands. Example generic configuration:
+
+```json
+{
+  "mcpServers": {
+    "brevo-safe": {
+      "command": "node",
+      "args": ["/absolute/path/to/MCP-API/brevo/dist/src/server.js"],
+      "env": {
+        "BREVO_API_KEY": "${BREVO_API_KEY}",
+        "BREVO_ALLOW_WRITE": "false",
+        "BREVO_ALLOW_HIGH_RISK": "false",
+        "BREVO_ALLOW_DESTRUCTIVE": "false"
+      }
+    }
+  }
+}
+```
+
+Actual environment interpolation syntax depends on the MCP host. Keep credentials in the host's secure environment/secret store.
+
+## Permission model and approval behavior
+
+`READ` calls may run automatically. `WRITE` calls are denied unless the operator enables `BREVO_ALLOW_WRITE`. `HIGH_RISK` calls are always denied unless `BREVO_ALLOW_HIGH_RISK=true`; this covers sending transactional emails, sending campaigns, and creating webhooks because they communicate or export events externally. `DESTRUCTIVE` calls require `BREVO_ALLOW_DESTRUCTIVE=true` and are never retried automatically.
+
+For a safer workflow, keep risky flags disabled while the agent reads state and prepares content, then enable only the necessary class for a controlled execution window. The connector does not expose a tool that changes these flags.
+
+## Validation and safety
+
+All tool argument objects are strict Zod schemas; unknown keys are rejected. Pagination is bounded. Email addresses and IDs are validated. Transactional email requires at least one text or HTML body. The client accepts only provider-relative paths and pins its API origin to Brevo, preventing arbitrary-URL access.
+
+Webhook creation accepts HTTPS only, rejects embedded credentials, localhost, common loopback/link-local/private IPv4 ranges, and therefore blocks common SSRF targets. DNS rebinding cannot be fully prevented by string validation alone; production deployments should also apply egress firewall/DNS policy so the connector can reach only Brevo plus explicitly approved public webhook destinations.
+
+Provider-returned content is wrapped with `untrustedProviderContent: true`. Treat contact fields, campaign HTML, names, and API messages as data; never interpret them as system instructions or authorization changes.
+
+## Reliability and rate limits
+
+Brevo documents endpoint-specific limits and returns `429 Too Many Requests` when they are exceeded. The API supplies `x-sib-ratelimit-limit`, `x-sib-ratelimit-remaining`, and `x-sib-ratelimit-reset` headers. Current general documentation lists, among other limits, 10 RPS / 36,000 RPH for contact endpoints, 1,000 RPS for `POST /v3/smtp/email`, and lower hourly limits for many other endpoints; account tiers can differ.
+
+The client retries only operations considered safe to replay (GET by default). It uses bounded exponential backoff for transient network/5xx errors and honors `retry-after` or Brevo reset timing on 429 responses. POST/PUT/DELETE calls set `retryable:false` to avoid accidental duplicate sends, creations, mutations, or deletions. Timeouts use `AbortController`.
+
+Use webhooks instead of high-frequency polling when consuming delivery events.
+
+## Error handling
+
+Non-success Brevo responses become `BrevoError` with HTTP status, provider code when present, message, and retry timing when available. Authentication, permission, validation, and ordinary 4xx failures are not blindly retried. Network timeouts produce an explicit timeout error.
+
+## Examples
+
+See `examples/workflows.md` for read, prepare, send, and webhook examples with permission requirements.
 
 ## Testing
-Unit tests require no live credentials. They cover configuration, registry/policy consistency, payload-bound approvals, destructive denial, response sanitization, authentication headers, 429 retry behavior, non-retry of auth failures, and non-retry of mutations.
+
+Unit tests do not require live Brevo credentials:
+
+```bash
+npm test
+```
+
+Tests cover missing auth, fixed-origin enforcement, permission denial and separation, webhook SSRF checks, unique/provider-scoped tool registration, strict validation, denial-before-provider-call, and a mocked read operation. Provider live tests are intentionally excluded from the default suite.
+
+## Official MCP comparison
+
+Brevo's official MCP server is real and should be preferred when a trusted client needs broad native platform coverage. Its main endpoint exposes all features and individual endpoints can narrow the module surface. However, Brevo's current configuration guide explicitly warns that the MCP token grants full read/write account access. This connector therefore does not blindly proxy dynamically discovered tools. For agent environments requiring predictable approval boundaries, its explicit REST contracts provide a smaller attack surface.
+
+If you choose the official MCP directly, use an individual server wherever possible (for example contacts-only), keep the token outside prompts, inspect the tool list before enabling it, and do not auto-trust newly appearing tools.
 
 ## Limitations
-- OAuth 2.0 user-consent flow is not implemented; use a service-side API key.
-- The official Brevo MCP server is documented but not proxied, to avoid dynamic exposure of its broad auto-generated tool inventory.
-- This connector does not ingest webhook events; it only lists/creates/deletes registrations.
-- It intentionally omits destructive contact/campaign operations and force-merge behavior.
+
+- API-key authentication is implemented; interactive OAuth token acquisition/refresh is not.
+- This package does not mirror all 27 Brevo MCP modules or the full REST API.
+- Destructive operations are limited to contact and webhook deletion.
+- Campaign creation intentionally creates a draft; sending is a separate HIGH_RISK tool.
+- No arbitrary API request, raw URL fetch, API-key administration, billing change, user-permission change, or account deletion capability is exposed.
+- Webhook DNS-level egress policy must be enforced by the deployment environment for defense in depth.

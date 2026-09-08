@@ -1,46 +1,53 @@
 id: brevo
 name: Brevo
 version: 1.0.0
-
 upstream:
-  - official-mcp
+  - mcp
   - rest
-
 transport_strategy:
-  selected: rest
   official_mcp:
+    available: true
     endpoint: https://mcp.brevo.com/v1/brevo/mcp
-    auth: bearer_mcp_token
-    note: Official MCP exists and exposes a broad auto-generated tool surface. This connector intentionally uses the official REST API for a smaller, stable, approval-gated contract suitable for non-interactive reusable agents.
-  rest:
-    base_url_env: BREVO_API_URL
-    default_base_url: https://api.brevo.com
-    version: v3
-
+    note: "Official MCP exists with 27 modules and full read/write token access. This connector intentionally uses scoped REST handlers for the implemented tools so permission boundaries, strict schemas, retry rules, and approval gates are locally enforceable."
+  implemented: rest
 auth:
   type: api_key
   header: api-key
-  credential_env: BREVO_API_KEY
-  credential_isolation: connector-only
-
+  env: BREVO_API_KEY
+api:
+  base_url: https://api.brevo.com/v3
 capabilities:
-  - account.get
+  - account.read
   - contact.list
-  - contact.get
+  - contact.read
   - contact.create
   - contact.update
-  - contact_list.list
+  - contact.delete
   - campaign.list
-  - campaign.get
+  - campaign.read
   - campaign.create
   - campaign.send
   - transactional_email.send
+  - sender.list
   - webhook.list
   - webhook.create
   - webhook.delete
-
 risk:
   default: READ
-  write_requires_approval: true
-  high_risk_requires_approval: true
-  destructive_disabled_by_default: true
+  approval_env:
+    WRITE: BREVO_ALLOW_WRITE
+    HIGH_RISK: BREVO_ALLOW_HIGH_RISK
+    DESTRUCTIVE: BREVO_ALLOW_DESTRUCTIVE
+required_environment:
+  - BREVO_API_KEY
+optional_environment:
+  - BREVO_TIMEOUT_MS
+  - BREVO_MAX_RETRIES
+  - BREVO_ALLOW_WRITE
+  - BREVO_ALLOW_HIGH_RISK
+  - BREVO_ALLOW_DESTRUCTIVE
+security:
+  credentials_exposed_to_llm: false
+  arbitrary_http_tool: false
+  webhook_https_only: true
+  provider_content_untrusted: true

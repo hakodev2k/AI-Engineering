@@ -1,37 +1,68 @@
-# Brevo connector examples
+# Brevo MCP tool examples
 
-## Inspect contacts
-Tool: `brevo.contact.list` — READ — approval: no
+All examples are MCP tool calls. Provider responses are returned as untrusted data.
+
+## Read contacts
+
+Tool: `brevo.contact.list`
+
+Input:
 ```json
-{"limit":50,"offset":0,"sort":"desc"}
+{"limit":25,"offset":0}
+```
+
+Permission: `READ`  
+Approval: not required.
+
+Expected output shape:
+```json
+{"ok":true,"permission":"READ","data":{"contacts":[],"count":0},"untrustedProviderContent":true}
 ```
 
 ## Create a contact
-Tool: `brevo.contact.create` — WRITE — approval: required
+
+Tool: `brevo.contact.create`
+
+Input:
 ```json
-{"email":"person@example.com","attributes":{"FNAME":"Alex"},"listIds":[12],"approval_token":"<payload-bound-hmac>"}
+{"email":"user@example.com","attributes":{"FIRSTNAME":"Ada"},"listIds":[12],"updateEnabled":false}
 ```
 
-## Prepare a draft campaign
-Tool: `brevo.campaign.create` — WRITE — approval: required
+Permission: `WRITE`  
+Approval: host must set `BREVO_ALLOW_WRITE=true` outside the agent context.
+
+## Prepare an email campaign
+
+Tool: `brevo.campaign.create`
+
+Input:
 ```json
-{"name":"Launch","sender":{"email":"news@example.com","name":"News"},"subject":"Launch","htmlContent":"<p>Hello</p>","recipients":{"listIds":[12]},"approval_token":"<payload-bound-hmac>"}
+{"name":"September launch","subject":"Product update","sender":{"id":3},"htmlContent":"<p>Hello {{ contact.FIRSTNAME }}</p>","recipients":{"listIds":[12]}}
 ```
+
+Permission: `WRITE`  
+Approval: `BREVO_ALLOW_WRITE=true`. This creates a draft and does not send it.
 
 ## Send a campaign
-Tool: `brevo.campaign.send` — HIGH_RISK — approval: required
+
+Tool: `brevo.campaign.send`
+
+Input:
 ```json
-{"campaignId":42,"approval_token":"<payload-bound-hmac>"}
+{"campaignId":42}
 ```
 
-## Send a transactional email
-Tool: `brevo.transactional_email.send` — HIGH_RISK — approval: required
-```json
-{"to":[{"email":"person@example.com"}],"sender":{"email":"service@example.com","name":"Service"},"subject":"Receipt","textContent":"Your receipt is ready.","approval_token":"<payload-bound-hmac>"}
-```
+Permission: `HIGH_RISK`  
+Approval: `BREVO_ALLOW_HIGH_RISK=true`, because this publishes external email.
 
 ## Create a webhook
-Tool: `brevo.webhook.create` — HIGH_RISK — approval: required
+
+Tool: `brevo.webhook.create`
+
+Input:
 ```json
-{"url":"https://hooks.example.com/brevo","events":["delivered","hardBounce"],"type":"transactional","approval_token":"<payload-bound-hmac>"}
+{"url":"https://hooks.example.com/brevo","description":"Delivery events","events":["delivered","hardBounce"],"type":"transactional"}
 ```
+
+Permission: `HIGH_RISK`  
+Approval: `BREVO_ALLOW_HIGH_RISK=true`. URLs must be HTTPS, public, and contain no embedded credentials.
