@@ -1,0 +1,54 @@
+id: razorpay
+name: Razorpay
+upstream:
+  - mcp
+  - rest
+mcp:
+  endpoint: https://mcp.razorpay.com/mcp
+  official: true
+  transport: streamable-http
+api:
+  base_url: https://api.razorpay.com/v1
+auth:
+  type: api_key_basic
+  required_env:
+    - RAZORPAY_KEY_ID
+    - RAZORPAY_KEY_SECRET
+  optional_env:
+    - RAZORPAY_MERCHANT_TOKEN
+capabilities:
+  - payment.read
+  - payment.capture
+  - order.read
+  - order.create
+  - payment_link.read
+  - payment_link.create
+  - refund.read
+  - refund.create
+  - settlement.read
+  - settlement.reconciliation.read
+risk:
+  default: read
+  write_approval_env: RAZORPAY_REQUIRE_WRITE_APPROVAL
+  high_risk:
+    - razorpay.payment.capture
+    - razorpay.payment_link.create
+    - razorpay.refund.create
+transport_routing:
+  mcp_preferred:
+    - payment.read
+    - payment.capture
+    - order.read
+    - order.create
+    - payment_link.read
+    - payment_link.create
+    - refund.read
+    - settlement.read
+    - settlement.reconciliation.read
+  rest_fallback:
+    - read operations when upstream MCP is unavailable
+  rest_required:
+    - razorpay.refund.create
+notes:
+  - Remote Razorpay MCP does not support create_refund; connector uses official REST API for that tool.
+  - Credentials remain in connector process memory and are never returned by tools.
