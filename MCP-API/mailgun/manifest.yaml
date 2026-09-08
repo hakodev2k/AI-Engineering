@@ -1,40 +1,55 @@
 id: mailgun
 name: Mailgun
 version: 1.0.0
-
 upstream:
   - rest
-
-transport_strategy:
-  selected: rest
-  official_mcp: none-found
-  rest:
-    us_base_url: https://api.mailgun.net
-    eu_base_url: https://api.eu.mailgun.net
-
 auth:
-  type: basic
+  type: basic-api-key
   username: api
-  credential_env: MAILGUN_API_KEY
-  credential_isolation: connector-only
-
+  env:
+    - MAILGUN_API_KEY
+    - MAILGUN_REGION
+api:
+  us_base_url: https://api.mailgun.net
+  eu_base_url: https://api.eu.mailgun.net
+mcp:
+  official_upstream: false
 capabilities:
   - domain.list
   - domain.get
-  - logs.query
-  - metrics.query
+  - domain.verify
+  - event.list
+  - message.send
   - template.list
   - template.get
-  - template.create
-  - mailing_list.list
-  - mailing_list.member.list
-  - route.list
-  - route.get
-  - suppression.bounce.list
-  - suppression.complaint.list
-  - message.send
-
+  - webhook.list
+  - webhook.get
+  - webhook.set
+  - webhook.delete
 risk:
   default: READ
-  write_requires_approval: true
-  high_risk_requires_approval: true
+  tools:
+    mailgun.domain.list: READ
+    mailgun.domain.get: READ
+    mailgun.domain.verify: WRITE
+    mailgun.event.list: READ
+    mailgun.message.send: HIGH_RISK
+    mailgun.template.list: READ
+    mailgun.template.get: READ
+    mailgun.webhook.list: READ
+    mailgun.webhook.get: READ
+    mailgun.webhook.set: HIGH_RISK
+    mailgun.webhook.delete: DESTRUCTIVE
+approval:
+  WRITE: configurable
+  HIGH_RISK: required
+  DESTRUCTIVE: required_and_disabled_by_default
+environment:
+  - MAILGUN_API_KEY
+  - MAILGUN_REGION
+  - MAILGUN_DEFAULT_DOMAIN
+  - MAILGUN_TIMEOUT_MS
+  - MAILGUN_MAX_RETRIES
+  - MAILGUN_ALLOW_WRITE
+  - MAILGUN_ALLOW_HIGH_RISK
+  - MAILGUN_ALLOW_DESTRUCTIVE

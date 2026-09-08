@@ -1,23 +1,35 @@
-# Mailgun connector examples
+# Example workflows
 
-## Inspect sending domains
-Tool: `mailgun.domain.list` — READ — no approval.
+## Delivery investigation
+
+Tool: `mailgun.event.list`
+
+Input:
 ```json
-{"limit":50}
+{"domain":"mg.example.com","event":"failed","limit":100,"severity":"permanent"}
 ```
+Permission: READ. Approval: no.
 
-## Check delivery logs
-Tool: `mailgun.logs.query` — READ — no approval.
+Expected shape: Mailgun event response with `items` and `paging` fields.
+
+## Approved transactional send
+
+Tool: `mailgun.message.send`
+
+Input:
 ```json
-{"start":"Sun, 30 Aug 2026 00:00:00 +0000","end":"Sun, 30 Aug 2026 06:00:00 +0000","limit":100}
+{"domain":"mg.example.com","from":"App <postmaster@mg.example.com>","to":["user@example.net"],"subject":"Your receipt","text":"Receipt ready.","approved":true}
 ```
+Permission: HIGH_RISK. Approval: explicit human approval required and `MAILGUN_ALLOW_HIGH_RISK=true`.
 
-## Review suppressions before a campaign
-Use `mailgun.suppression.bounce.list` and `mailgun.suppression.complaint.list` with a verified sending domain. Both are READ tools.
+Expected shape: Mailgun send acknowledgement containing provider message/id fields.
 
-## Prepare and send mail
-Tool: `mailgun.message.send` — HIGH_RISK — explicit approval required.
+## Configure delivery webhook
+
+Tool: `mailgun.webhook.set`
+
+Input:
 ```json
-{"domain":"mg.example.com","from":"Ops <ops@mg.example.com>","to":["user@example.net"],"subject":"Service notice","text":"Message body","approval_token":"<payload-bound HMAC>"}
+{"domain":"mg.example.com","type":"delivered","urls":["https://hooks.example.com/mailgun"],"approved":true}
 ```
-The connector does not retry a failed send automatically, avoiding duplicate external messages.
+Permission: HIGH_RISK. Approval: explicit human approval required.
