@@ -30,7 +30,7 @@ test("REST client isolates bearer credential and parses JSON", async () => {
   }
 });
 
-test("REST client preserves rate-limit retry-after on terminal 429", async () => {
+test("REST client preserves rate-limit retry-after on terminal GET 429", async () => {
   const original = globalThis.fetch;
   let calls = 0;
   globalThis.fetch = (async () => {
@@ -61,6 +61,23 @@ test("REST client does not retry permission errors", async () => {
   try {
     const client = new RevenueCatClient(config);
     await assert.rejects(() => client.rest("GET", "/projects"), /403/);
+    assert.equal(calls, 1);
+  } finally {
+    globalThis.fetch = original;
+  }
+});
+
+test("REST client never retries POST mutations by default", async () => {
+  const original = globalThis.fetch;
+  let calls = 0;
+  globalThis.fetch = (async () => {
+    calls++;
+    return new Response(JSON.stringify({ message: "temporary provider failure" }), { status: 503 });
+  }) as typeof fetch;
+
+  try {
+    const client = new RevenueCatClient(config);
+    await assert.rejects(() => client.rest("POST", "/projects/p/subscriptions/s/actions/cancel"), /503/);
     assert.equal(calls, 1);
   } finally {
     globalThis.fetch = original;
