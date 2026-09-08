@@ -1,0 +1,43 @@
+id: novu
+name: Novu
+upstream:
+  - mcp
+  - rest
+mcp:
+  official: true
+  transport: streamable-http
+  us_endpoint: https://mcp.novu.co/
+  eu_endpoint: https://eu.mcp.novu.co/
+rest:
+  official: true
+  us_base_url: https://api.novu.co
+  eu_base_url: https://eu.api.novu.co
+auth:
+  type: api-key
+  header_mcp: Authorization: Bearer <secret>
+  header_rest: Authorization: ApiKey <secret>
+  env: NOVU_SECRET_KEY
+  note: API keys are environment-scoped; interactive Novu Cloud MCP clients may use OAuth instead.
+capabilities:
+  - subscriber.get
+  - subscriber.search
+  - subscriber.create
+  - subscriber.update
+  - subscriber.preferences.get
+  - subscriber.preferences.update
+  - subscriber.delete
+  - workflow.list
+  - workflow.get
+  - workflow.trigger
+  - notification.list
+  - notification.get
+  - integration.list
+  - integration.active.list
+  - event.cancel
+risk:
+  default: READ
+  write_requires_approval: true
+  high_risk_requires_approval: true
+  destructive_disabled_by_default: true
+required_env:
+  - NOVU_SECRET_KEY
