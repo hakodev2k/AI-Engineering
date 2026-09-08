@@ -1,0 +1,7 @@
+import test from 'node:test'; import assert from 'node:assert/strict'; import {loadConfig} from '../src/config.js'; import {authorize} from '../src/policy.js'; import {KoyebRestClient,KoyebApiError} from '../src/client.js';
+test('config requires token',()=>assert.throws(()=>loadConfig({} as any),/KOYEB_TOKEN/));
+test('write requires approval',()=>assert.throws(()=>authorize('WRITE',false,{requireWriteApproval:true,destructiveEnabled:false}),/APPROVAL_REQUIRED/));
+test('destructive disabled',()=>assert.throws(()=>authorize('DESTRUCTIVE',true,{requireWriteApproval:true,destructiveEnabled:false}),/DESTRUCTIVE_DISABLED/));
+test('read executes without approval',()=>assert.doesNotThrow(()=>authorize('READ',undefined,{requireWriteApproval:true,destructiveEnabled:false})));
+test('rest maps provider errors',async()=>{const f=async()=>new Response(JSON.stringify({code:'authentication_error'}),{status:401,headers:{'content-type':'application/json'}}); const c=new KoyebRestClient({token:'x',baseUrl:'https://app.koyeb.com',timeoutMs:2000,requireWriteApproval:true,destructiveEnabled:false},f as any); await assert.rejects(()=>c.request('GET','/v1/apps'),(e:any)=>e instanceof KoyebApiError&&e.status===401)});
+test('rest parses success',async()=>{const f=async()=>new Response(JSON.stringify({apps:[]}),{status:200}); const c=new KoyebRestClient({token:'x',baseUrl:'https://app.koyeb.com',timeoutMs:2000,requireWriteApproval:true,destructiveEnabled:false},f as any); assert.deepEqual(await c.request('GET','/v1/apps'),{apps:[]})});

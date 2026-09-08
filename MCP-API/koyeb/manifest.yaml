@@ -1,0 +1,37 @@
+id: koyeb
+name: Koyeb
+upstream:
+  - official-mcp
+  - rest
+official_mcp:
+  package: '@koyeb/mcp-server'
+  transport: stdio
+api_base_url: https://app.koyeb.com
+auth:
+  type: bearer-api-token
+  env: KOYEB_TOKEN
+  scopes: []
+capabilities:
+  - app.list
+  - app.get
+  - app.create
+  - app.pause
+  - app.resume
+  - app.delete
+  - service.list
+  - service.get
+  - service.update
+  - deployment.list
+  - deployment.get
+  - instance.list
+  - instance.get
+  - domain.list
+  - secret.list
+  - secret.create
+  - secret.delete
+risk:
+  default: READ
+  write_requires_approval: true
+  destructive_disabled_by_default: true
+required_env:
+  - KOYEB_TOKEN
