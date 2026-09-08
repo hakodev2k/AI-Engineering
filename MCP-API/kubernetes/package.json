@@ -1,0 +1,14 @@
+{
+  "name": "@ai-engineering/kubernetes-mcp-connector",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "scripts": { "build": "tsc -p tsconfig.json", "start": "node dist/server.js", "test": "vitest run" },
+  "dependencies": {
+    "@kubernetes/client-node": "^2.0.0",
+    "@modelcontextprotocol/sdk": "^1.17.0",
+    "zod": "^3.25.0"
+  },
+  "devDependencies": { "@types/node": "^24.0.0", "typescript": "^5.9.0", "vitest": "^3.2.0" }
+}

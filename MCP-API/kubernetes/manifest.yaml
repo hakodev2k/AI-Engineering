@@ -1,0 +1,54 @@
+id: kubernetes
+name: Kubernetes
+version: 1.0.0
+upstream:
+  - kubernetes-api
+  - official-client-sdk
+official_mcp:
+  available: false
+  note: "No Kubernetes-project official MCP server is used; this connector uses the official Kubernetes API through @kubernetes/client-node."
+api:
+  base_url: "configured by kubeconfig cluster.server"
+auth:
+  type: kubeconfig
+  credentials_isolated: true
+  least_privilege: "RBAC permissions should be limited to namespaces/resources/verbs required by enabled tools."
+environment:
+  - KUBERNETES_KUBECONFIG
+  - KUBERNETES_CONTEXT
+  - KUBERNETES_DEFAULT_NAMESPACE
+  - KUBERNETES_TIMEOUT_MS
+  - KUBERNETES_MAX_RETRIES
+  - KUBERNETES_ALLOW_WRITE
+  - KUBERNETES_ALLOW_HIGH_RISK
+  - KUBERNETES_ALLOW_DESTRUCTIVE
+capabilities:
+  - namespace.list
+  - pod.list
+  - pod.get
+  - pod.logs
+  - deployment.list
+  - deployment.get
+  - service.list
+  - event.list
+  - deployment.scale
+  - deployment.restart
+  - pod.delete
+risk:
+  default: READ
+  tools:
+    kubernetes.namespace.list: READ
+    kubernetes.pod.list: READ
+    kubernetes.pod.get: READ
+    kubernetes.pod.logs: READ
+    kubernetes.deployment.list: READ
+    kubernetes.deployment.get: READ
+    kubernetes.service.list: READ
+    kubernetes.event.list: READ
+    kubernetes.deployment.scale: HIGH_RISK
+    kubernetes.deployment.restart: HIGH_RISK
+    kubernetes.pod.delete: DESTRUCTIVE
+approval:
+  write: configurable
+  high_risk: explicit
+  destructive: disabled_by_default_and_explicit
