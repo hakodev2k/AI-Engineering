@@ -1,0 +1,63 @@
+id: akamai
+name: Akamai
+runtime: node>=20
+upstream:
+  - rest
+mcp:
+  official_server: false
+  note: Akamai documents an official MCP server for TrafficPeak only; this connector targets Property Manager and Fast Purge through official REST APIs.
+auth:
+  type: edgegrid
+  credential_source: environment
+  required_env:
+    - AKAMAI_CLIENT_TOKEN
+    - AKAMAI_CLIENT_SECRET
+    - AKAMAI_ACCESS_TOKEN
+    - AKAMAI_HOST
+  optional_env:
+    - AKAMAI_ACCOUNT_SWITCH_KEY
+    - AKAMAI_TIMEOUT_MS
+    - AKAMAI_MAX_RETRIES
+    - AKAMAI_ALLOW_WRITE
+    - AKAMAI_ALLOW_HIGH_RISK
+    - AKAMAI_ALLOW_DESTRUCTIVE
+permissions:
+  least_privilege:
+    - "Property Manager: READ for read tools; READ-WRITE only for activation.create"
+    - "Purge Cache: READ-WRITE for Fast Purge tools"
+api:
+  base_url: "https://{AKAMAI_HOST}"
+  services:
+    property_manager: /papi/v1
+    fast_purge: /ccu/v3
+capabilities:
+  - property.list
+  - property.get
+  - property.hostnames.list
+  - activation.list
+  - activation.get
+  - activation.create
+  - purge.rate_limit.get
+  - purge.url.invalidate
+  - purge.cpcode.invalidate
+  - purge.tag.invalidate
+risk:
+  default: READ
+  tools:
+    akamai.property.list: READ
+    akamai.property.get: READ
+    akamai.property.hostnames.list: READ
+    akamai.activation.list: READ
+    akamai.activation.get: READ
+    akamai.activation.create: HIGH_RISK
+    akamai.purge.rate_limit.get: READ
+    akamai.purge.url.invalidate: WRITE
+    akamai.purge.cpcode.invalidate: WRITE
+    akamai.purge.tag.invalidate: WRITE
+approval:
+  WRITE: explicit
+  HIGH_RISK: explicit
+  DESTRUCTIVE: disabled-by-default
+security:
+  credentials_exposed_to_llm: false
+  provider_content_trust: untrusted-data

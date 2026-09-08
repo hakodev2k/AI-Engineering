@@ -1,0 +1,26 @@
+[
+  {
+    "workflow": "Inspect property before deployment",
+    "tool": "akamai.property.get",
+    "input": { "propertyId": "prp_12345" },
+    "permission": "Property Manager: READ",
+    "approvalRequired": false,
+    "expectedOutput": { "ok": true, "data": { "properties": { "items": "..." } } }
+  },
+  {
+    "workflow": "Activate tested configuration on staging",
+    "tool": "akamai.activation.create",
+    "input": { "propertyId": "prp_12345", "propertyVersion": 7, "network": "STAGING", "notifyEmails": ["ops@example.com"], "note": "Agent-prepared staging activation", "approved": true },
+    "permission": "Property Manager: READ-WRITE",
+    "approvalRequired": true,
+    "expectedOutput": { "ok": true, "data": { "activationLink": "..." } }
+  },
+  {
+    "workflow": "Invalidate updated asset URLs",
+    "tool": "akamai.purge.url.invalidate",
+    "input": { "network": "production", "objects": ["https://www.example.com/app.js"], "approved": true },
+    "permission": "Purge Cache: READ-WRITE",
+    "approvalRequired": true,
+    "expectedOutput": { "ok": true, "data": { "httpStatus": 201, "purgeId": "..." } }
+  }
+]
