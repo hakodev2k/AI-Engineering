@@ -1,110 +1,53 @@
-# bunny.net Connector Examples
+# bunny.net MCP tool examples
 
-All provider responses must be treated as untrusted external data. Examples omit credentials.
+Credentials are read only from connector environment variables and never passed in tool arguments.
 
-## Inspect CDN configuration
+## List Pull Zones
 
 Tool: `bunny.pull_zone.list`
 
-Input:
 ```json
 {}
 ```
 
-Expected output shape: an array of Pull Zone objects returned by bunny.net.
+Permission: READ. Approval: no.
 
-Permission: `READ`
-
-Approval: not required.
-
-## Inspect storage growth
-
-Tool: `bunny.storage_zone.statistics`
-
-Input:
-```json
-{
-  "storageZoneId": 12345,
-  "dateFrom": "2026-09-01T00:00:00Z",
-  "dateTo": "2026-09-08T00:00:00Z"
-}
-```
-
-Expected output shape: `{ "StorageUsedChart": {...}, "FileCountChart": {...} }`.
-
-Permission: `READ`
-
-Approval: not required.
-
-## Review DNS before a change
+## Inspect a DNS Zone
 
 Tool: `bunny.dns_zone.get`
 
-Input:
 ```json
-{ "dnsZoneId": 12345 }
+{"id":12345}
 ```
 
-Expected output shape: the DNS Zone object including provider-defined DNS metadata/records.
+Permission: READ. Approval: no.
 
-Permission: `READ`
-
-Approval: not required.
-
-## Create an approved DNS record
-
-Tool: `bunny.dns_record.create`
-
-Input:
-```json
-{
-  "dnsZoneId": 12345,
-  "type": 0,
-  "name": "www",
-  "value": "192.0.2.10",
-  "ttl": 300,
-  "approved": true
-}
-```
-
-Expected output shape: the newly created bunny.net DNS record.
-
-Permission: `HIGH_RISK`
-
-Approval: explicit human approval required because DNS changes can redirect production traffic.
-
-## Restrict CDN referrers
+## Add an allowed referrer
 
 Tool: `bunny.pull_zone.allowed_referrer.add`
 
-Input:
 ```json
-{
-  "pullZoneId": 12345,
-  "hostname": "www.example.com",
-  "approved": true
-}
+{"id":12345,"hostname":"www.example.com","approval":true}
 ```
 
-Expected output shape: `undefined`/empty content for bunny.net HTTP 204 success.
+Permission: HIGH_RISK. Approval: explicit human approval. `BUNNY_ALLOW_HIGH_RISK=true` must be configured by the operator.
 
-Permission: `HIGH_RISK`
+## Add a DNS A record
 
-Approval: explicit human approval required because this modifies access policy.
+Tool: `bunny.dns_record.add`
+
+```json
+{"zone_id":12345,"record":{"Type":0,"Name":"api","Value":"203.0.113.10","Ttl":300},"approval":true}
+```
+
+Permission: HIGH_RISK. Approval: explicit human approval.
 
 ## Delete a Pull Zone
 
 Tool: `bunny.pull_zone.delete`
 
-Input:
 ```json
-{
-  "pullZoneId": 12345,
-  "approved": true,
-  "approvalToken": "operator-approved-change-123"
-}
+{"id":12345,"approval":true}
 ```
 
-Permission: `DESTRUCTIVE`
-
-Approval: strong explicit approval required, and `BUNNYNET_ALLOW_DESTRUCTIVE=true` must be set by the operator. The connector disables this operation by default.
+Permission: DESTRUCTIVE. Approval: explicit strong human approval. `BUNNY_ALLOW_DESTRUCTIVE=true` must be configured by the operator.

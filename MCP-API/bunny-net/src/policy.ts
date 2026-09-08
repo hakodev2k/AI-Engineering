@@ -1,39 +1,19 @@
-export type RiskLevel = 'READ' | 'WRITE' | 'HIGH_RISK' | 'DESTRUCTIVE';
+import { config } from './config.js';
 
-export interface ApprovalContext {
-  approved?: boolean;
-  approvalToken?: string;
-}
+export type Risk = 'READ' | 'WRITE' | 'HIGH_RISK' | 'DESTRUCTIVE';
 
-export interface PolicyConfig {
-  approvalMode: 'required' | 'optional';
-  allowDestructive: boolean;
-}
-
-export class PolicyError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = 'PolicyError';
-  }
-}
-
-export function assertAllowed(
-  risk: RiskLevel,
-  approval: ApprovalContext,
-  config: PolicyConfig,
-): void {
+export function enforceRisk(risk: Risk, approval?: boolean): void {
   if (risk === 'READ') return;
-
-  if (risk === 'DESTRUCTIVE' && !config.allowDestructive) {
-    throw new PolicyError('Destructive operations are disabled. Set BUNNYNET_ALLOW_DESTRUCTIVE=true only after an explicit operator decision.');
+  if (risk === 'WRITE') {
+    if (!config.allowWrite) throw new Error('WRITE tools are disabled. Set BUNNY_ALLOW_WRITE=true.');
+    if (!approval) throw new Error('Explicit approval is required for WRITE tools.');
+    return;
   }
-
-  const approvalRequired = risk === 'HIGH_RISK' || risk === 'DESTRUCTIVE' || config.approvalMode === 'required';
-  if (approvalRequired && approval.approved !== true) {
-    throw new PolicyError(`${risk} operation requires explicit human approval.`);
+  if (risk === 'HIGH_RISK') {
+    if (!config.allowHighRisk) throw new Error('HIGH_RISK tools are disabled. Set BUNNY_ALLOW_HIGH_RISK=true.');
+    if (!approval) throw new Error('Explicit human approval is required for HIGH_RISK tools.');
+    return;
   }
-
-  if (risk === 'DESTRUCTIVE' && (!approval.approvalToken || approval.approvalToken.length < 8)) {
-    throw new PolicyError('Destructive operation requires a non-empty strong approval token (minimum 8 characters).');
-  }
+  if (!config.allowDestructive) throw new Error('DESTRUCTIVE tools are disabled. Set BUNNY_ALLOW_DESTRUCTIVE=true.');
+  if (!approval) throw new Error('Explicit strong human approval is required for DESTRUCTIVE tools.');
 }

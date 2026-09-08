@@ -1,61 +1,51 @@
-import test from 'node:test';
-import assert from 'node:assert/strict';
-import { BunnyApiError, BunnyClient } from '../src/client.js';
-import type { BunnyConfig } from '../src/config.js';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { BunnyClient, BunnyError } from '../src/client.js';
 
-const config: BunnyConfig = {
-  apiKey: 'test-key',
-  apiBaseUrl: 'https://api.bunny.net',
-  timeoutMs: 2000,
-  maxRetries: 1,
-  approvalMode: 'required',
-  allowDestructive: false,
-};
+const response = (status: number, body: unknown, headers: Record<string, string> = {}) => new Response(JSON.stringify(body), { status, headers });
 
-test('sends AccessKey and parses successful JSON', async () => {
-  const calls: Request[] = [];
-  const fakeFetch: typeof fetch = async (input, init) => {
-    const request = new Request(input, init);
-    calls.push(request);
-    return new Response(JSON.stringify([{ Id: 1 }]), { status: 200, headers: { 'content-type': 'application/json', 'x-ratelimit-limit': '100', 'x-ratelimit-remaining': '99' } });
-  };
-  const client = new BunnyClient(config, fakeFetch);
-  const result = await client.request('/pullzone');
-  assert.equal(calls.length, 1);
-  assert.equal(calls[0].headers.get('AccessKey'), 'test-key');
-  assert.deepEqual(result.data, [{ Id: 1 }]);
-  assert.equal(result.rateLimit?.remaining, 99);
-});
+describe('BunnyClient', () => {
+  afterEach(() => vi.restoreAllMocks());
 
-test('rejects unrestricted/absolute provider paths to prevent SSRF', async () => {
-  const client = new BunnyClient(config, fetch);
-  await assert.rejects(() => client.request('https://evil.example/steal'), /relative bunny.net API path/);
-});
-
-test('maps provider errors and does not retry mutating requests', async () => {
-  let calls = 0;
-  const fakeFetch: typeof fetch = async () => {
-    calls++;
-    return new Response(JSON.stringify({ Message: 'Invalid request' }), { status: 400, statusText: 'Bad Request' });
-  };
-  const client = new BunnyClient(config, fakeFetch);
-  await assert.rejects(() => client.request('/dnszone/1/records', { method: 'PUT', body: {} }), (err: unknown) => {
-    assert.ok(err instanceof BunnyApiError);
-    assert.equal(err.status, 400);
-    return true;
+  it('requires an API key', () => {
+    expect(() => new BunnyClient('', 'https://api.bunny.net')).toThrow(/BUNNY_API_KEY/);
   });
-  assert.equal(calls, 1);
-});
 
-test('retries bounded GET requests on 429 then succeeds', async () => {
-  let calls = 0;
-  const fakeFetch: typeof fetch = async () => {
-    calls++;
-    if (calls === 1) return new Response('{}', { status: 429, headers: { 'retry-after': '0' } });
-    return new Response(JSON.stringify({ Id: 1 }), { status: 200 });
-  };
-  const client = new BunnyClient(config, fakeFetch);
-  const result = await client.request('/pullzone/1');
-  assert.deepEqual(result.data, { Id: 1 });
-  assert.equal(calls, 2);
+  it('requires HTTPS for the API base URL', () => {
+    expect(() => new BunnyClient('key', 'http://api.bunny.net')).toThrow(/HTTPS/);
+  });
+
+  it('parses a successful read response', async () => {
+    const fetchMock = vi.fn(async () => response(200, [{ Id: 1 }]));
+    const client = new BunnyClient('key', 'https://api.bunny.net', 1000, 0, fetchMock as typeof fetch);
+    expect(await client.request('GET', '/pullzone')).toEqual([{ Id: 1 }]);
+  });
+
+  it('retries bounded transient read errors', async () => {
+    const fetchMock = vi.fn()
+      .mockResolvedValueOnce(response(503, { Message: 'temporary' }))
+      .mockResolvedValueOnce(response(200, { Id: 1 }));
+    const client = new BunnyClient('key', 'https://api.bunny.net', 1000, 1, fetchMock as typeof fetch);
+    await expect(client.request('GET', '/pullzone/1')).resolves.toEqual({ Id: 1 });
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
+  it('does not blindly retry mutating calls', async () => {
+    const fetchMock = vi.fn(async () => response(503, { Message: 'failed' }));
+    const client = new BunnyClient('key', 'https://api.bunny.net', 1000, 3, fetchMock as typeof fetch);
+    await expect(client.request('DELETE', '/pullzone/1', undefined, false)).rejects.toBeInstanceOf(BunnyError);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('preserves Retry-After on throttling', async () => {
+    const fetchMock = vi.fn(async () => response(429, { Message: 'limited' }, { 'Retry-After': '3' }));
+    const client = new BunnyClient('key', 'https://api.bunny.net', 1000, 0, fetchMock as typeof fetch);
+    try {
+      await client.request('GET', '/pullzone');
+      throw new Error('expected failure');
+    } catch (error) {
+      expect(error).toBeInstanceOf(BunnyError);
+      expect((error as BunnyError).code).toBe('rate_limited');
+      expect((error as BunnyError).retryAfterMs).toBe(3000);
+    }
+  });
 });

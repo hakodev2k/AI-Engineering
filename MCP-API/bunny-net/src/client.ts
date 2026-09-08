@@ -1,135 +1,63 @@
-import type { BunnyConfig } from './config.js';
-import { StaticCredentialProvider, type CredentialProvider } from './auth/credentials.js';
+import { config } from './config.js';
 
-export class BunnyApiError extends Error {
-  constructor(
-    message: string,
-    public readonly status: number,
-    public readonly retryAfterSeconds?: number,
-    public readonly body?: unknown,
-  ) {
-    super(message);
-    this.name = 'BunnyApiError';
-  }
+export class BunnyError extends Error {
+  constructor(message: string, public status?: number, public code?: string, public retryAfterMs?: number) { super(message); }
 }
 
-export interface RequestOptions {
-  method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
-  query?: Record<string, string | number | boolean | undefined>;
-  body?: unknown;
-  signal?: AbortSignal;
-}
-
-export interface ApiResult<T = unknown> {
-  data: T;
-  rateLimit?: { limit?: number; remaining?: number };
-}
-
-const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 export class BunnyClient {
-  private readonly credentials: CredentialProvider;
-
   constructor(
-    private readonly config: BunnyConfig,
-    private readonly fetchImpl: typeof fetch = fetch,
-    credentials?: CredentialProvider,
+    private key = config.apiKey,
+    private baseUrl = config.baseUrl,
+    private timeoutMs = config.timeoutMs,
+    private maxRetries = config.maxRetries,
+    private fetchImpl: typeof fetch = fetch,
   ) {
-    this.credentials = credentials ?? new StaticCredentialProvider(config.apiKey);
+    if (!key) throw new BunnyError('BUNNY_API_KEY is required', 401, 'missing_api_key');
+    const u = new URL(baseUrl);
+    if (u.protocol !== 'https:') throw new BunnyError('BUNNY_API_BASE_URL must use HTTPS', 400, 'invalid_base_url');
   }
 
-  async request<T>(path: string, options: RequestOptions = {}): Promise<ApiResult<T>> {
-    if (!path.startsWith('/') || path.includes('://') || path.includes('\\')) {
-      throw new Error('Provider path must be a relative bunny.net API path.');
-    }
-
-    const method = options.method ?? 'GET';
-    const maxAttempts = method === 'GET' ? this.config.maxRetries + 1 : 1;
-    let lastError: unknown;
-
-    for (let attempt = 0; attempt < maxAttempts; attempt++) {
+  async request<T>(method: string, path: string, body?: unknown, retrySafe = ['GET', 'HEAD'].includes(method.toUpperCase())): Promise<T> {
+    const base = this.baseUrl.endsWith('/') ? this.baseUrl : `${this.baseUrl}/`;
+    const url = new URL(path.replace(/^\//, ''), base);
+    if (url.origin !== new URL(base).origin) throw new BunnyError('Cross-origin requests are forbidden', 400, 'ssrf_blocked');
+    let attempt = 0;
+    while (true) {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), this.timeoutMs);
       try {
-        return await this.requestOnce<T>(path, options);
+        const response = await this.fetchImpl(url, {
+          method,
+          headers: { Accept: 'application/json', AccessKey: this.key, ...(body === undefined ? {} : { 'Content-Type': 'application/json' }) },
+          body: body === undefined ? undefined : JSON.stringify(body),
+          signal: controller.signal,
+        });
+        const text = await response.text();
+        const data = text ? (() => { try { return JSON.parse(text); } catch { return text; } })() : null;
+        const retryAfter = Number(response.headers.get('Retry-After') ?? '');
+        const retryAfterMs = Number.isFinite(retryAfter) && retryAfter > 0 ? retryAfter * 1000 : undefined;
+        if (!response.ok) {
+          const message = typeof data === 'object' && data && 'Message' in data ? String((data as Record<string, unknown>).Message) : `bunny.net API ${response.status}`;
+          if (retrySafe && attempt < this.maxRetries && (response.status === 429 || response.status >= 500)) {
+            await sleep(retryAfterMs ?? Math.min(500 * 2 ** attempt, 5000));
+            attempt += 1;
+            continue;
+          }
+          throw new BunnyError(message, response.status, response.status === 429 ? 'rate_limited' : 'provider_error', retryAfterMs);
+        }
+        return data as T;
       } catch (error) {
-        lastError = error;
-        if (!this.shouldRetry(error, method) || attempt === maxAttempts - 1) throw error;
-        const retryAfter = error instanceof BunnyApiError ? error.retryAfterSeconds : undefined;
-        const delayMs = retryAfter != null
-          ? Math.min(retryAfter * 1000, 30000)
-          : Math.min(250 * 2 ** attempt + Math.floor(Math.random() * 100), 5000);
-        await sleep(delayMs);
-      }
+        if (error instanceof BunnyError) throw error;
+        if (error instanceof Error && error.name === 'AbortError') throw new BunnyError('bunny.net request timed out', 504, 'timeout');
+        if (retrySafe && attempt < this.maxRetries) {
+          await sleep(Math.min(500 * 2 ** attempt, 5000));
+          attempt += 1;
+          continue;
+        }
+        throw new BunnyError(error instanceof Error ? error.message : 'network failure', 503, 'network_error');
+      } finally { clearTimeout(timer); }
     }
-
-    throw lastError;
-  }
-
-  private async requestOnce<T>(path: string, options: RequestOptions): Promise<ApiResult<T>> {
-    const url = new URL(path, this.config.apiBaseUrl);
-    for (const [key, value] of Object.entries(options.query ?? {})) {
-      if (value !== undefined) url.searchParams.set(key, String(value));
-    }
-
-    const timeout = AbortSignal.timeout(this.config.timeoutMs);
-    const signal = options.signal ? AbortSignal.any([options.signal, timeout]) : timeout;
-    let response: Response;
-    try {
-      response = await this.fetchImpl(url, {
-        method: options.method ?? 'GET',
-        headers: {
-          AccessKey: this.credentials.getAccessKey(),
-          Accept: 'application/json',
-          ...(options.body !== undefined ? { 'Content-Type': 'application/json' } : {}),
-        },
-        body: options.body !== undefined ? JSON.stringify(options.body) : undefined,
-        signal,
-      });
-    } catch (error) {
-      if (error instanceof DOMException && error.name === 'TimeoutError') {
-        throw new BunnyApiError('bunny.net API request timed out.', 408);
-      }
-      throw error;
-    }
-
-    const retryAfterHeader = response.headers.get('retry-after');
-    const retryAfterSeconds = retryAfterHeader && /^\d+$/.test(retryAfterHeader)
-      ? Number(retryAfterHeader)
-      : undefined;
-    const limitHeader = response.headers.get('x-ratelimit-limit');
-    const remainingHeader = response.headers.get('x-ratelimit-remaining');
-
-    const text = await response.text();
-    let parsed: unknown = undefined;
-    if (text) {
-      try { parsed = JSON.parse(text); } catch { parsed = text; }
-    }
-
-    if (!response.ok) {
-      const providerMessage = typeof parsed === 'object' && parsed && 'Message' in parsed
-        ? String((parsed as { Message?: unknown }).Message)
-        : response.statusText;
-      throw new BunnyApiError(
-        `bunny.net API ${response.status}: ${providerMessage || 'request failed'}`,
-        response.status,
-        retryAfterSeconds,
-        parsed,
-      );
-    }
-
-    return {
-      data: parsed as T,
-      rateLimit: {
-        limit: limitHeader && /^\d+$/.test(limitHeader) ? Number(limitHeader) : undefined,
-        remaining: remainingHeader && /^\d+$/.test(remainingHeader) ? Number(remainingHeader) : undefined,
-      },
-    };
-  }
-
-  private shouldRetry(error: unknown, method: string): boolean {
-    if (method !== 'GET') return false;
-    if (error instanceof BunnyApiError) {
-      return error.status === 429 || error.status === 408 || error.status >= 500;
-    }
-    return error instanceof TypeError;
   }
 }
