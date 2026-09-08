@@ -1,0 +1,37 @@
+id: semgrep
+name: Semgrep
+upstream:
+  - type: mcp
+    implementation: official
+    transport: stdio
+    command: semgrep mcp
+    source: https://github.com/semgrep/semgrep/tree/develop/cli/src/semgrep/mcp
+auth:
+  type: api-token
+  env: SEMGREP_APP_TOKEN
+  required_for:
+    - finding.code.list
+    - finding.supply_chain.list
+capabilities:
+  - language.list
+  - rule.schema.get
+  - scan.code
+  - scan.custom_rule
+  - scan.supply_chain
+  - ast.get
+  - finding.code.list
+  - finding.supply_chain.list
+risk:
+  default: READ
+  write: []
+  high_risk: []
+  destructive: []
+approval:
+  required: false
+required_environment:
+  - SEMGREP_BINARY
+optional_environment:
+  - SEMGREP_APP_TOKEN
+  - SEMGREP_UPSTREAM_TIMEOUT_SECONDS
+  - SEMGREP_MAX_CODE_BYTES
+  - SEMGREP_MAX_FILES
