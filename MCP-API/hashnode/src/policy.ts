@@ -1,0 +1,3 @@
+export type Risk='READ'|'WRITE'|'HIGH_RISK'|'DESTRUCTIVE';
+export type Policy={requireWriteApproval:boolean;destructiveEnabled:boolean};
+export function authorize(risk:Risk,approved:unknown,p:Policy){if(risk==='READ')return;if(risk==='DESTRUCTIVE'&&!p.destructiveEnabled)throw new Error('DESTRUCTIVE_DISABLED');if(p.requireWriteApproval&&approved!==true)throw new Error('APPROVAL_REQUIRED');}

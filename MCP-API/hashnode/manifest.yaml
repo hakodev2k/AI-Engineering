@@ -1,0 +1,34 @@
+id: hashnode
+name: Hashnode
+upstream:
+  - graphql
+mcp:
+  official_server: false
+  note: Hashnode publishes an official GraphQL agent skill, not an MCP server.
+graphql_endpoint: https://gql-beta.hashnode.com
+auth:
+  type: personal-access-token
+  env: HASHNODE_PAT
+  scopes: []
+capabilities:
+  - post.get
+  - feed.list
+  - user.get
+  - tag.get
+  - publication.get
+  - publication.search_posts
+  - draft.get
+  - post.publish
+  - post.update
+  - post.remove
+  - draft.create
+  - draft.update
+  - draft.publish
+  - draft.submit_for_review
+  - draft.delete
+risk:
+  default: READ
+  write_requires_approval: true
+  destructive_disabled_by_default: true
+required_env:
+  - HASHNODE_PAT
