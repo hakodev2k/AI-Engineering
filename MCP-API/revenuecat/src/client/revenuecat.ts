@@ -56,12 +56,19 @@ export class RevenueCatClient {
     return response;
   }
 
-  async rest<T>(method: "GET" | "POST" | "DELETE" | "PATCH", path: string, body?: unknown): Promise<T> {
+  async rest<T>(
+    method: "GET" | "POST" | "DELETE" | "PATCH",
+    path: string,
+    body?: unknown,
+    options: { allowRetry?: boolean } = {},
+  ): Promise<T> {
     if (!path.startsWith("/")) throw new Error("REST path must begin with /");
     const url = `${this.config.apiBaseUrl}${path}`;
+    const allowRetry = options.allowRetry ?? method === "GET";
+    const maxAttempts = allowRetry ? this.config.maxRetries + 1 : 1;
     let lastError: unknown;
 
-    for (let attempt = 0; attempt <= this.config.maxRetries; attempt++) {
+    for (let attempt = 0; attempt < maxAttempts; attempt++) {
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), this.config.timeoutMs);
       try {
@@ -92,13 +99,13 @@ export class RevenueCatClient {
           parsed,
         );
 
-        const retryable = response.status === 429 || response.status >= 500;
-        if (!retryable || attempt === this.config.maxRetries) throw error;
+        const retryable = allowRetry && (response.status === 429 || response.status >= 500);
+        if (!retryable || attempt === maxAttempts - 1) throw error;
         await sleep(retryMs ?? Math.min(250 * 2 ** attempt, 2000));
       } catch (error) {
         lastError = error;
         if (error instanceof RevenueCatError) throw error;
-        if (attempt === this.config.maxRetries) {
+        if (!allowRetry || attempt === maxAttempts - 1) {
           if (error instanceof Error && error.name === "AbortError") {
             throw new RevenueCatError(`RevenueCat API ${method} ${path} timed out`);
           }
