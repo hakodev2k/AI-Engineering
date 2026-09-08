@@ -1,0 +1,41 @@
+id: upcloud
+name: UpCloud
+upstream:
+  - rest
+api_base_url: https://api.upcloud.com/1.3
+auth:
+  type: api_token
+  header: "Authorization: Bearer <token>"
+required_env:
+  - UPCLOUD_TOKEN
+  - UPCLOUD_API_BASE_URL
+capabilities:
+  - zone.list
+  - plan.list
+  - server.list
+  - server.get
+  - server.create
+  - server.start
+  - server.stop
+  - server.restart
+  - server.delete
+  - storage.list
+  - storage.get
+  - ip_address.list
+risk:
+  default: READ
+tools:
+  upcloud.zone.list: { risk: READ, approval: false }
+  upcloud.plan.list: { risk: READ, approval: false }
+  upcloud.server.list: { risk: READ, approval: false }
+  upcloud.server.get: { risk: READ, approval: false }
+  upcloud.storage.list: { risk: READ, approval: false }
+  upcloud.storage.get: { risk: READ, approval: false }
+  upcloud.ip_address.list: { risk: READ, approval: false }
+  upcloud.server.create: { risk: HIGH_RISK, approval: explicit }
+  upcloud.server.start: { risk: HIGH_RISK, approval: explicit }
+  upcloud.server.stop: { risk: HIGH_RISK, approval: explicit }
+  upcloud.server.restart: { risk: HIGH_RISK, approval: explicit }
+  upcloud.server.delete: { risk: DESTRUCTIVE, approval: strong_explicit, disabled_by_default: true }
+notes:
+  official_mcp: "No official UpCloud MCP server was identified in UpCloud documentation as of 2026-09-08; connector uses the official REST API."
