@@ -1,0 +1,65 @@
+id: revenuecat
+name: RevenueCat
+version: 1.0.0
+runtime: node>=20
+
+upstream:
+  - type: mcp
+    endpoint: https://mcp.revenuecat.ai/mcp
+    official: true
+    transport: streamable-http
+  - type: rest
+    endpoint: https://api.revenuecat.com/v2
+    official: true
+
+auth:
+  type: bearer
+  credential: RevenueCat API v2 secret key
+  env:
+    - REVENUECAT_API_V2_KEY
+  notes:
+    - Use a dedicated API v2 key with only the permissions required by enabled tools.
+    - OAuth is supported by RevenueCat's hosted MCP for interactive clients, but this reusable server-to-server connector uses an isolated API v2 key.
+
+capabilities:
+  - project.list
+  - app.list
+  - product.list
+  - product.get
+  - entitlement.list
+  - offering.list
+  - customer.search
+  - customer.get
+  - customer.subscription.list
+  - customer.entitlement.grant
+  - subscription.get
+  - subscription.cancel
+  - subscription.transaction.refund
+  - analytics.overview
+  - webhook.list
+  - webhook.create
+  - webhook.delete
+
+risk:
+  default: READ
+  write_requires_approval: true
+  high_risk_requires_approval: true
+  destructive_disabled_without_approval: true
+
+approval:
+  env: REVENUECAT_APPROVAL_TOKEN
+  mechanism: caller must pass the exact approval token for WRITE, HIGH_RISK, or DESTRUCTIVE tools
+
+required_env:
+  - REVENUECAT_API_V2_KEY
+optional_env:
+  - REVENUECAT_MCP_URL
+  - REVENUECAT_API_BASE_URL
+  - REVENUECAT_APPROVAL_TOKEN
+  - REVENUECAT_TIMEOUT_MS
+  - REVENUECAT_MAX_RETRIES
+
+security:
+  credentials_exposed_to_model: false
+  arbitrary_http_tool: false
+  provider_content_is_untrusted: true
