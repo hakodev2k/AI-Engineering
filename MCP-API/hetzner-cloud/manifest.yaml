@@ -1,0 +1,45 @@
+id: hetzner-cloud
+name: Hetzner Cloud
+upstream:
+  - rest
+mcp:
+  official_available: false
+  note: No official Hetzner Cloud MCP server was identified; this connector exposes scoped MCP tools over the official Cloud REST API.
+api:
+  base_url: https://api.hetzner.cloud/v1
+  official_docs: https://docs.hetzner.cloud/reference/cloud
+  official_sdk: https://github.com/hetznercloud/hcloud-go
+auth:
+  type: bearer_api_token
+  credential_env: HETZNER_CLOUD_TOKEN
+  least_privilege: Use a read-only project token for READ-only deployments; write-capable project token is required for mutations.
+rate_limit:
+  default: 3600 requests/hour/project
+  headers: [RateLimit-Limit, RateLimit-Remaining, RateLimit-Reset]
+capabilities:
+  - server.list
+  - server.get
+  - server.create
+  - server.power_action
+  - server.delete
+  - server_type.list
+  - image.list
+  - location.list
+  - datacenter.list
+  - network.list
+  - firewall.list
+  - volume.list
+  - ssh_key.list
+risk:
+  default: READ
+  high_risk: [server.create, server.power_action]
+  destructive: [server.delete]
+approval:
+  HIGH_RISK: explicit human approval plus HETZNER_CLOUD_ALLOW_HIGH_RISK=true
+  DESTRUCTIVE: explicit human approval, exact confirmation phrase, plus HETZNER_CLOUD_ALLOW_DESTRUCTIVE=true
+environment:
+  required: [HETZNER_CLOUD_TOKEN]
+  optional: [HETZNER_CLOUD_API_BASE_URL, HETZNER_CLOUD_TIMEOUT_MS, HETZNER_CLOUD_MAX_RETRIES, HETZNER_CLOUD_ALLOW_HIGH_RISK, HETZNER_CLOUD_ALLOW_DESTRUCTIVE]
+transport:
+  external: stdio_mcp
+  upstream: https_rest
