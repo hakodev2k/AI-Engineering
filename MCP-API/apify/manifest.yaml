@@ -1,0 +1,57 @@
+id: apify
+name: Apify
+version: 1.0.0
+upstream:
+  official_mcp:
+    available: true
+    endpoint: https://mcp.apify.com
+    local_package: '@apify/actors-mcp-server'
+    note: Official MCP is best for dynamic Actor discovery/execution; this connector intentionally uses the official REST API for a fixed, auditable tool surface and platform-management operations.
+  rest:
+    base_url: https://api.apify.com/v2
+    docs: https://docs.apify.com/api/v2
+auth:
+  type: api_token
+  header: 'Authorization: Bearer <token>'
+  env: APIFY_TOKEN
+  least_privilege: Use a dedicated scoped/expiring Apify API token limited to the resources this connector needs.
+capabilities:
+  - account.get
+  - actor.get
+  - actor.runs.list
+  - actor.run
+  - task.run
+  - run.get
+  - run.abort
+  - run.log
+  - dataset.items.list
+  - key_value_store.record.get
+  - webhook.list
+  - webhook.create
+  - webhook.delete
+risk:
+  default: READ
+  write_enabled_by: APIFY_ALLOW_WRITE
+  high_risk_enabled_by: APIFY_ALLOW_HIGH_RISK
+  destructive_enabled_by: APIFY_ALLOW_DESTRUCTIVE
+approval:
+  actor.run: APPROVE_PAID_EXECUTION
+  task.run: APPROVE_PAID_EXECUTION
+  run.abort: APPROVE_ABORT
+  webhook.create: APPROVE_EXTERNAL_WEBHOOK
+  webhook.delete: APPROVE_DELETE
+security:
+  credential_isolation: true
+  arbitrary_api_tool: false
+  retrieved_content_is_untrusted: true
+  webhook_private_network_targets_blocked: true
+rate_limits:
+  official_mcp: '30 requests/second/user per official documentation; REST limits can vary by endpoint/plan.'
+environment:
+  - APIFY_TOKEN
+  - APIFY_API_BASE_URL
+  - APIFY_TIMEOUT_MS
+  - APIFY_MAX_RETRIES
+  - APIFY_ALLOW_WRITE
+  - APIFY_ALLOW_HIGH_RISK
+  - APIFY_ALLOW_DESTRUCTIVE
