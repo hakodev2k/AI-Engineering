@@ -1,0 +1,65 @@
+id: scaleway
+name: Scaleway
+upstream:
+  - rest
+  - official-sdk-reference
+mcp:
+  official_server: false
+  note: No official Scaleway MCP server was identified; connector exposes Scaleway REST APIs through a local MCP server.
+api:
+  base_url: https://api.scaleway.com
+  docs: https://www.scaleway.com/en/developers/api
+sdk:
+  javascript: https://github.com/scaleway/scaleway-sdk-js
+auth:
+  type: api_key
+  header: X-Auth-Token
+  credential_env:
+    - SCW_SECRET_KEY
+  least_privilege: true
+  notes: API keys inherit the IAM permissions of their user/application bearer.
+capabilities:
+  - project.list
+  - instance.list
+  - instance.get
+  - instance.list_actions
+  - instance.perform_action
+  - kubernetes.cluster.list
+  - kubernetes.cluster.get
+  - registry.namespace.list
+  - registry.namespace.get
+  - registry.image.list
+risk:
+  default: READ
+  tools:
+    scaleway.project.list: READ
+    scaleway.instance.list: READ
+    scaleway.instance.get: READ
+    scaleway.instance.list_actions: READ
+    scaleway.instance.perform_action: HIGH_RISK
+    scaleway.kubernetes.cluster.list: READ
+    scaleway.kubernetes.cluster.get: READ
+    scaleway.registry.namespace.list: READ
+    scaleway.registry.namespace.get: READ
+    scaleway.registry.image.list: READ
+approval:
+  high_risk: explicit_human_approval
+  destructive: not_implemented
+required_env:
+  - SCW_SECRET_KEY
+optional_env:
+  - SCW_ORGANIZATION_ID
+  - SCW_PROJECT_ID
+  - SCW_DEFAULT_ZONE
+  - SCW_DEFAULT_REGION
+  - SCW_TIMEOUT_MS
+  - SCW_MAX_RETRIES
+  - SCW_MAX_PAGES
+  - SCW_ALLOW_WRITE
+  - SCW_ALLOW_HIGH_RISK
+security:
+  credential_isolation: connector_only
+  provider_content_untrusted: true
+  arbitrary_url_requests: false
+  bounded_pagination: true
+  bounded_retries: true
