@@ -1,0 +1,47 @@
+id: porkbun
+name: Porkbun
+version: 1.0.0
+runtime: node>=20
+external_transport: mcp-stdio
+upstream:
+  - type: mcp
+    implementation: official
+    package: '@porkbunllc/mcp-server'
+    homepage: https://porkbun.com/mcp
+    api_version: '3.19'
+auth:
+  type: api_key_pair
+  environment:
+    - PORKBUN_API_KEY
+    - PORKBUN_SECRET_API_KEY
+  isolation: connector-process-only
+capabilities:
+  - connectivity.read
+  - domain.availability.read
+  - pricing.read
+  - domain.list
+  - domain.read
+  - nameserver.read
+  - nameserver.update
+  - dns.record.list
+  - dns.record.create
+  - dns.record.update
+  - dns.record.delete
+risk:
+  default: READ
+  write_requires_approval: true
+  destructive_disabled_by_default: true
+required_environment:
+  - PORKBUN_API_KEY
+  - PORKBUN_SECRET_API_KEY
+optional_environment:
+  - PORKBUN_APPROVAL_SECRET
+  - PORKBUN_REQUIRE_WRITE_APPROVAL
+  - PORKBUN_ENABLE_DESTRUCTIVE
+  - PORKBUN_TIMEOUT_MS
+  - PORKBUN_MAX_READ_RETRIES
+security:
+  upstream_tool_allowlist: true
+  arbitrary_request_tool: false
+  provider_content_untrusted: true
+  credentials_exposed_to_llm: false
