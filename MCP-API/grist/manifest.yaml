@@ -1,0 +1,56 @@
+id: grist
+name: Grist
+version: 1.0.0
+upstream:
+  - mcp
+official:
+  mcp_url: https://docs.getgrist.com/api/mcp
+  docs: https://support.getgrist.com/mcp/
+auth:
+  type: api-key-or-oauth
+  connector_mode: api-key
+  header: Authorization
+  env:
+    - GRIST_MCP_URL
+    - GRIST_API_KEY
+scopes:
+  read:
+    - user.profile:read
+    - doc:read
+  write:
+    - doc:write
+    - doc.schema:write
+  additional:
+    - doc:download
+    - doc:webhooks
+capabilities:
+  - org.list
+  - workspace.list
+  - document.list
+  - document.get
+  - document.query
+  - table.list
+  - table.columns.list
+  - record.list
+  - record.create
+  - record.update
+  - record.delete
+  - document.create
+  - table.create
+  - column.create
+  - attachment.list
+  - attachment.url.get
+risk:
+  default: READ
+  write_requires_approval: true
+  high_risk_requires_approval: true
+  destructive_disabled_by_default: true
+transport:
+  type: streamable-http
+security:
+  upstream_tool_allowlist: true
+  credentials_exposed_to_model: false
+  retrieved_content_untrusted: true
+limits:
+  request_body_bytes: 1048576
+  concurrency_per_document: 10
