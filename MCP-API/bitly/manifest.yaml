@@ -1,0 +1,57 @@
+id: bitly
+name: Bitly
+runtime: node>=20
+external_interface: mcp-stdio
+upstream:
+  selected:
+    - rest
+  api_base_url: https://api-ssl.bitly.com/v4
+  official_mcp:
+    available: true
+    endpoint: https://api-ssl.bitly.com/v4/mcp
+    auth: OAuth 2.1 with DCR or Bearer token
+    scope: mcp.all
+    selection_note: Direct REST is used by this connector to keep a fixed tool allowlist, local approval gates, bounded retries, and narrowly validated request shapes.
+auth:
+  type: bearer_token
+  env: BITLY_ACCESS_TOKEN
+  credential_isolation: connector_only
+capabilities:
+  - user.get
+  - user.platform_limits
+  - organization.list
+  - group.list
+  - group.get
+  - group.preferences
+  - group.tags
+  - group.links.list
+  - link.get
+  - link.destination
+  - link.clicks
+  - link.clicks_summary
+  - group.clicks
+  - group.devices
+  - link.create
+  - link.update
+  - link.delete
+risk:
+  default: READ
+  write_approval_env: BITLY_REQUIRE_WRITE_APPROVAL
+  destructive_enabled_env: BITLY_DESTRUCTIVE_ENABLED
+  tools:
+    bitly.link.create: WRITE
+    bitly.link.update: HIGH_RISK
+    bitly.link.delete: DESTRUCTIVE
+environment:
+  required:
+    - BITLY_ACCESS_TOKEN
+  optional:
+    - BITLY_API_BASE
+    - BITLY_REQUEST_TIMEOUT_MS
+    - BITLY_MAX_RETRIES
+    - BITLY_REQUIRE_WRITE_APPROVAL
+    - BITLY_DESTRUCTIVE_ENABLED
+security:
+  provider_content_untrusted: true
+  arbitrary_http_tool: false
+  destructive_disabled_by_default: true
