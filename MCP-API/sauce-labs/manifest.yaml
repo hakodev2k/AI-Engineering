@@ -1,0 +1,45 @@
+id: sauce-labs
+name: Sauce Labs
+upstream:
+  - mcp
+  - rest
+mcp:
+  type: remote
+  transport: streamable-http
+  endpoint: https://mcp.saucelabs.com
+  region_header: X-Sauce-Region
+api:
+  available: true
+  used_by_connector: false
+  reason: selected capabilities are covered by the official Sauce MCP server
+auth:
+  type: http-basic
+  username_env: SAUCE_USERNAME
+  access_key_env: SAUCE_ACCESS_KEY
+  scopes: []
+capabilities:
+  - account.info
+  - team.current
+  - region.current
+  - team.lookup
+  - user.lookup
+  - job.recent
+  - build.lookup
+  - storage.file.list
+  - storage.group.list
+  - device.list
+  - device.status.list
+  - session.list
+risk:
+  default: READ
+  write_requires_approval: true
+  destructive_disabled_by_default: true
+required_env:
+  - SAUCE_USERNAME
+  - SAUCE_ACCESS_KEY
+optional_env:
+  - SAUCE_REGION
+  - SAUCE_MCP_URL
+  - SAUCE_TIMEOUT_MS
+  - SAUCE_REQUIRE_WRITE_APPROVAL
+  - SAUCE_ENABLE_DESTRUCTIVE
