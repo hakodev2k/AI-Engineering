@@ -1,0 +1,63 @@
+id: checkly
+name: Checkly
+version: 1.0.0
+runtime: node>=20
+
+upstream:
+  - type: mcp
+    endpoint: https://api.checklyhq.com/mcp
+    transport: streamable-http
+    auth: bearer
+    usage: preferred for supported read workflows; REST fallback is bounded to read-only calls
+  - type: rest
+    base_url: https://api.checklyhq.com
+    auth: bearer-api-key-plus-account-header
+    usage: documented REST operations and deterministic write execution
+
+auth:
+  type: api_key
+  required_environment:
+    - CHECKLY_API_KEY
+    - CHECKLY_ACCOUNT_ID
+  notes:
+    - User API keys start with cu_. Service API keys start with sv_ and require an eligible plan.
+    - Credentials stay inside the connector transport and are never returned to the MCP caller.
+
+capabilities:
+  - check.list
+  - check.get
+  - check_status.list
+  - check_result.list
+  - check_result.get
+  - error_group.list
+  - alert_notification.list
+  - status_page.list
+  - private_location.list
+  - private_location.metrics
+  - check_session.trigger
+  - check_session.get
+  - check_session.completion
+
+risk:
+  default: READ
+  tools:
+    checkly.check_session.trigger:
+      classification: HIGH_RISK
+      approval: explicit-human
+      reason: consumes execution quota and completed runs can activate normal alerting rules
+  destructive_operations_exposed: false
+
+security:
+  untrusted_provider_content: true
+  redact_credential_like_response_fields: true
+  arbitrary_url_requests: false
+  https_only: true
+  default_allowed_hosts:
+    - api.checklyhq.com
+
+reliability:
+  read_retries: bounded-exponential-backoff
+  write_retries: disabled
+  retry_after: honored
+  pagination: bounded
+  timeout_ms_env: CHECKLY_REQUEST_TIMEOUT_MS
