@@ -48,7 +48,7 @@ MCP client
   -> src/server.ts
   -> schema validation + permission/approval policy
   -> src/client.ts
-  -> credential isolation + bounded retry/refresh
+  -> credential isolation + bounded read retry / OAuth refresh
   -> Keap REST API
 ```
 
@@ -117,9 +117,11 @@ The connector also protects against SSRF/token exfiltration by restricting confi
 
 ## Reliability and error handling
 
-Requests have bounded timeouts and bounded retries. The client retries transient network failures, HTTP 429, and HTTP 5xx with exponential backoff. It honors `Retry-After` where present, capped to avoid unbounded waiting. It does not retry normal permission/validation errors such as HTTP 403.
+All requests have bounded timeouts. Automatic retries are limited to idempotent reads (`GET`/`HEAD`) and use bounded exponential backoff for transient network failures, HTTP 429, and HTTP 5xx. `Retry-After` is honored when present, capped to avoid unbounded waiting. Permission and validation errors are not retried.
 
-A single HTTP 401 can trigger OAuth refresh when client ID, client secret, and refresh token are configured. Authentication failures that still remain after refresh surface as errors rather than retry loops.
+Writes (`POST`, `PATCH`, `DELETE`) are never automatically replayed after timeout, network failure, 429, or 5xx because the connector cannot safely infer whether Keap already applied the mutation. If a write encounters an expired OAuth token, the token may be refreshed, but the write is not replayed automatically; callers must verify provider state before retrying.
+
+A read that receives one HTTP 401 can trigger OAuth refresh when client ID, client secret, and refresh token are configured. Authentication failures that still remain after refresh surface as errors rather than retry loops.
 
 Pagination is explicit through bounded `limit` and `offset` inputs so callers control request volume.
 
@@ -131,7 +133,7 @@ Keap's official quota page, current as researched for this connector, documents:
 - Personal Access Token or Service Account Key: 10 queries/second, 240/minute, and 30,000/day.
 - Per application instance, effective June 8, 2026: 10,000 requests/minute and 250,000/day.
 
-Keap returns quota/throttle information in response headers and may return HTTP 429 with `Retry-After`. This connector responds to 429 conservatively rather than attempting to consume all available quota.
+Keap returns quota/throttle information in response headers and may return HTTP 429 with `Retry-After`. The connector retries throttled reads conservatively and surfaces throttled writes without replaying them.
 
 ## REST Hook behavior
 
