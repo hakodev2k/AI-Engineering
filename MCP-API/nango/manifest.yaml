@@ -1,0 +1,34 @@
+id: nango
+name: Nango
+upstream:
+  - official-mcp
+  - rest-api-fallback-available
+official_mcp:
+  endpoint: https://mcp.nango.dev/mcp
+  transport: streamable-http
+auth:
+  type: bearer-api-key
+  env: NANGO_SECRET_KEY
+scopes:
+  read:
+    - environment:integrations:list
+    - environment:integrations:read
+    - environment:connections:list
+    - environment:functions:list
+    - environment:logs:read
+  write:
+    - environment:connect_sessions:write
+capabilities:
+  - integration.list
+  - integration.get
+  - connection.list
+  - connect_session.create
+  - function.list
+  - log.operation.list
+  - log.operation.get
+risk:
+  default: READ
+  write_requires_approval: true
+  destructive_tools: none
+required_env:
+  - NANGO_SECRET_KEY
