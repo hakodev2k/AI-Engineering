@@ -1,0 +1,50 @@
+id: ngrok
+name: ngrok
+upstream:
+  - rest
+auth:
+  type: api-key
+  header: Authorization
+  scheme: Bearer
+api:
+  base_url: https://api.ngrok.com
+  version_header: ngrok-version
+  version: "2"
+mcp:
+  official_server: false
+  transport: stdio
+capabilities:
+  - endpoint.list
+  - endpoint.get
+  - endpoint.create
+  - endpoint.update
+  - endpoint.delete
+  - reserved_domain.list
+  - reserved_domain.get
+  - reserved_domain.create
+  - reserved_domain.update
+  - reserved_domain.delete
+risk:
+  default: READ
+  WRITE:
+    - ngrok.endpoint.create
+    - ngrok.endpoint.update
+    - ngrok.reserved_domain.create
+    - ngrok.reserved_domain.update
+  DESTRUCTIVE:
+    - ngrok.endpoint.delete
+    - ngrok.reserved_domain.delete
+approval:
+  write: configurable
+  destructive: explicit_and_disabled_by_default
+environment:
+  required:
+    - NGROK_API_KEY
+  optional:
+    - NGROK_API_BASE
+    - NGROK_API_VERSION
+    - NGROK_REQUEST_TIMEOUT_MS
+    - NGROK_REQUIRE_WRITE_APPROVAL
+    - NGROK_DESTRUCTIVE_ENABLED
+rate_limits:
+  account_api: 120 requests per rolling 60 seconds
