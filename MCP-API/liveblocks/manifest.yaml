@@ -1,0 +1,33 @@
+id: liveblocks
+name: Liveblocks
+upstream:
+  - official-mcp
+  - rest
+official_mcp:
+  repository: liveblocks/liveblocks-mcp-server
+  package: liveblocks-mcp-server
+  transport: stdio
+api_base_url: https://api.liveblocks.io/v2
+auth:
+  type: secret-key
+  env: LIVEBLOCKS_SECRET_KEY
+capabilities:
+  - room.list
+  - room.get
+  - room.create
+  - room.update
+  - room.delete
+  - room.active-users
+  - storage.read
+  - yjs.read
+  - thread.list
+  - thread.get
+  - thread.create
+  - thread.resolve
+  - thread.delete
+risk:
+  default: READ
+  write_requires_approval: true
+  destructive_disabled_by_default: true
+required_env:
+  - LIVEBLOCKS_SECRET_KEY
