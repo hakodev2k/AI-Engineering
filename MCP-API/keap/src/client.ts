@@ -17,6 +17,9 @@ export class KeapClient {
 
   async request(method: string, path: string, body?: unknown, query?: Record<string, unknown>): Promise<Json> {
     if (!path.startsWith('/')) throw new Error('Keap path must be relative');
+    const verb = method.toUpperCase();
+    const retrySafe = verb === 'GET' || verb === 'HEAD';
+    const maxAttempts = retrySafe ? this.config.maxRetries + 1 : 1;
     const url = new URL(this.config.apiBase + path);
     for (const [k, v] of Object.entries(query ?? {})) {
       if (v == null) continue;
@@ -25,12 +28,12 @@ export class KeapClient {
     }
 
     let refreshed = false;
-    for (let attempt = 0; attempt <= this.config.maxRetries; attempt++) {
+    for (let attempt = 0; attempt < maxAttempts; attempt++) {
       const controller = new AbortController();
       const timer = setTimeout(() => controller.abort(), this.config.timeoutMs);
       try {
         const res = await this.fetchImpl(url, {
-          method,
+          method: verb,
           signal: controller.signal,
           headers: {
             'Authorization': `Bearer ${this.accessToken}`,
@@ -43,12 +46,13 @@ export class KeapClient {
         if (res.status === 401 && !refreshed && this.canRefresh()) {
           await this.refreshAccessToken();
           refreshed = true;
-          continue;
+          if (retrySafe) continue;
+          throw new KeapApiError(401, 'Keap access token expired during a write request. Token was refreshed, but the write was not replayed automatically; retry only after verifying provider state.');
         }
 
-        if (res.status === 429 || (res.status >= 500 && res.status <= 599)) {
+        if (retrySafe && (res.status === 429 || (res.status >= 500 && res.status <= 599))) {
           const retryAfter = parseRetryAfter(res.headers.get('retry-after'));
-          if (attempt < this.config.maxRetries) {
+          if (attempt + 1 < maxAttempts) {
             await sleep(retryAfter ?? Math.min(1000 * 2 ** attempt, 8000));
             continue;
           }
@@ -63,8 +67,10 @@ export class KeapClient {
         return data;
       } catch (error) {
         if (error instanceof KeapApiError) throw error;
-        if (error instanceof Error && error.name === 'AbortError') throw new Error(`Keap request timed out after ${this.config.timeoutMs}ms`);
-        if (attempt >= this.config.maxRetries) throw error;
+        if (error instanceof Error && error.name === 'AbortError') {
+          throw new Error(`Keap request timed out after ${this.config.timeoutMs}ms; writes are never replayed automatically.`);
+        }
+        if (!retrySafe || attempt + 1 >= maxAttempts) throw error;
         await sleep(Math.min(1000 * 2 ** attempt, 8000));
       } finally {
         clearTimeout(timer);
