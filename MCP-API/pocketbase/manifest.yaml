@@ -1,0 +1,37 @@
+id: pocketbase
+name: PocketBase
+upstream:
+  - rest
+official_mcp: none-found
+api_base_url: configurable
+auth:
+  type: bearer-auth-token
+  env: POCKETBASE_AUTH_TOKEN
+  scopes: []
+capabilities:
+  - health.check
+  - collection.list
+  - collection.get
+  - record.list
+  - record.get
+  - record.create
+  - record.update
+  - record.delete
+  - log.list
+  - log.get
+  - log.stats
+  - backup.list
+  - backup.create
+  - backup.delete
+  - backup.restore
+risk:
+  default: READ
+  write_requires_approval: true
+  destructive_disabled_by_default: true
+required_env:
+  - POCKETBASE_BASE_URL
+optional_env:
+  - POCKETBASE_AUTH_TOKEN
+  - POCKETBASE_TIMEOUT_MS
+  - POCKETBASE_REQUIRE_WRITE_APPROVAL
+  - POCKETBASE_ENABLE_DESTRUCTIVE
