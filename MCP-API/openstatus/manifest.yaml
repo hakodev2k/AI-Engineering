@@ -1,0 +1,46 @@
+id: openstatus
+name: OpenStatus
+upstream:
+  - mcp
+  - api
+  - sdk
+transport:
+  primary: mcp
+  mcp_endpoint: https://api.openstatus.dev/mcp
+  api_base_url: https://api.openstatus.dev/rpc
+  fallback: "Official API/Node SDK verified and documented; not used for implemented tools because the official MCP server covers them."
+auth:
+  type: api-key
+  header: x-openstatus-key
+  environment:
+    - OPENSTATUS_API_KEY
+  scopes:
+    read: "Read-only API key"
+    write: "Read & write API key"
+capabilities:
+  - status_page.list
+  - status_page.component.list
+  - status_report.list
+  - maintenance.list
+  - monitor.list
+  - monitor.get
+  - monitor.status.get
+  - monitor.summary.get
+  - response_log.list
+  - response_log.get
+  - notification.list
+  - private_location.list
+  - audit_log.list
+  - audit_log.get
+  - maintenance.create
+risk:
+  default: READ
+  maintenance.create: HIGH_RISK
+approval:
+  maintenance.create: required
+credentials:
+  isolation: connector-only
+security:
+  untrusted_provider_content: true
+  upstream_tool_allowlist: true
+  allowed_mcp_hosts_env: OPENSTATUS_ALLOWED_MCP_HOSTS
