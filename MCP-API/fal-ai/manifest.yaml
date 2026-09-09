@@ -1,0 +1,46 @@
+id: fal-ai
+name: fal.ai
+
+upstream:
+  - official-mcp
+
+official_mcp:
+  endpoint: https://mcp.fal.ai/mcp
+  transport: streamable-http
+  authentication: bearer-api-key
+
+auth:
+  type: api-key
+  env: FAL_KEY
+  upstream_header: "Authorization: Bearer <FAL_KEY>"
+  platform_api_header: "Authorization: Key <FAL_KEY>"
+  scopes:
+    minimum: API
+    note: Admin scope is not required by the implemented connector tools.
+
+capabilities:
+  - model.search
+  - model.schema.get
+  - model.pricing.get
+  - model.recommend
+  - docs.search
+  - model.run
+  - job.submit
+  - job.status.get
+  - job.result.get
+  - job.cancel
+  - file.upload
+
+risk:
+  default: READ
+  write_requires_approval: true
+  high_risk_disabled_by_default: true
+  destructive_tools: []
+
+required_env:
+  - FAL_KEY
+optional_env:
+  - FAL_MCP_URL
+  - FAL_REQUIRE_WRITE_APPROVAL
+  - FAL_ENABLE_HIGH_RISK
+  - FAL_TOOL_TIMEOUT_MS
