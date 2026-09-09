@@ -11,39 +11,37 @@ export type PrefectConfig = {
   enableHighRisk: boolean;
 };
 
-function intEnv(name: string, fallback: number, min: number, max: number): number {
-  const raw = process.env[name];
+function intEnv(env: NodeJS.ProcessEnv, name: string, fallback: number, min: number, max: number): number {
+  const raw = env[name];
   const value = raw === undefined ? fallback : Number(raw);
   if (!Number.isInteger(value) || value < min || value > max) throw new Error(`${name} must be an integer in ${min}..${max}`);
   return value;
 }
 
-function boolEnv(name: string, fallback: boolean): boolean {
-  const raw = process.env[name];
+function boolEnv(env: NodeJS.ProcessEnv, name: string, fallback: boolean): boolean {
+  const raw = env[name];
   if (raw === undefined) return fallback;
   if (raw === 'true') return true;
   if (raw === 'false') return false;
   throw new Error(`${name} must be true or false`);
 }
 
-export function loadConfig(env = process.env): PrefectConfig {
+export function loadConfig(env: NodeJS.ProcessEnv = process.env): PrefectConfig {
   const apiUrl = env.PREFECT_API_URL?.replace(/\/$/, '');
   if (!apiUrl) throw new Error('PREFECT_API_URL is required');
   const parsed = new URL(apiUrl);
   if (parsed.protocol !== 'https:' && !['localhost', '127.0.0.1', '::1'].includes(parsed.hostname)) {
     throw new Error('PREFECT_API_URL must use HTTPS except for localhost');
   }
-  const timeoutMs = intEnv('PREFECT_TIMEOUT_MS', 15000, 1000, 120000);
-  const maxRetries = intEnv('PREFECT_MAX_RETRIES', 2, 0, 5);
   return {
     apiUrl,
     apiKey: env.PREFECT_API_KEY,
     apiVersion: env.PREFECT_API_VERSION || '0.8.4',
-    timeoutMs,
-    maxRetries,
-    requireWriteApproval: boolEnv('PREFECT_REQUIRE_WRITE_APPROVAL', true),
+    timeoutMs: intEnv(env, 'PREFECT_TIMEOUT_MS', 15000, 1000, 120000),
+    maxRetries: intEnv(env, 'PREFECT_MAX_RETRIES', 2, 0, 5),
+    requireWriteApproval: boolEnv(env, 'PREFECT_REQUIRE_WRITE_APPROVAL', true),
     approvalSecret: env.PREFECT_APPROVAL_SECRET,
-    enableHighRisk: boolEnv('PREFECT_ENABLE_HIGH_RISK', false)
+    enableHighRisk: boolEnv(env, 'PREFECT_ENABLE_HIGH_RISK', false)
   };
 }
 
