@@ -67,30 +67,49 @@ export class OfficialSonarMcpClient {
 
   constructor(private readonly cfg: Config) {}
 
+  private async ensureConnected(): Promise<Client> {
+    if (this.client) return this.client;
+    const env: Record<string, string> = {
+      SONARQUBE_TOKEN: this.cfg.token,
+      SONARQUBE_ORG: this.cfg.organization,
+      TELEMETRY_DISABLED: 'true'
+    };
+    if (process.env.PATH) env.PATH = process.env.PATH;
+    if (process.env.HOME) env.HOME = process.env.HOME;
+    if (this.cfg.baseUrl === 'https://sonarqube.us') env.SONARQUBE_URL = this.cfg.baseUrl;
+    const args = ['run', '--rm', '-i', '--init', '--pull=missing', '-e', 'SONARQUBE_TOKEN', '-e', 'SONARQUBE_ORG'];
+    if (this.cfg.baseUrl === 'https://sonarqube.us') args.push('-e', 'SONARQUBE_URL');
+    args.push('-e', 'TELEMETRY_DISABLED', this.cfg.mcpImage);
+    this.transport = new StdioClientTransport({ command: 'docker', args, env });
+    this.client = new Client({ name: 'sonarcloud-reusable-connector', version: '1.0.0' });
+    await this.client.connect(this.transport);
+    return this.client;
+  }
+
   async call(tool: string, args: Record<string, unknown>): Promise<unknown> {
     if (!this.cfg.mcpEnabled) throw new Error('Official MCP transport is disabled');
-    if (!this.client) {
-      const env: Record<string, string> = {
-        SONARQUBE_TOKEN: this.cfg.token,
-        SONARQUBE_ORG: this.cfg.organization,
-        TELEMETRY_DISABLED: 'true'
-      };
-      if (this.cfg.baseUrl === 'https://sonarqube.us') env.SONARQUBE_URL = this.cfg.baseUrl;
-      this.transport = new StdioClientTransport({
-        command: 'docker',
-        args: ['run', '--rm', '-i', '--init', '--pull=missing', '-e', 'SONARQUBE_TOKEN', '-e', 'SONARQUBE_ORG', '-e', 'SONARQUBE_URL', '-e', 'TELEMETRY_DISABLED', this.cfg.mcpImage],
-        env
-      });
-      this.client = new Client({ name: 'sonarcloud-reusable-connector', version: '1.0.0' });
-      await this.client.connect(this.transport);
+    const client = await this.ensureConnected();
+    let timer: NodeJS.Timeout | undefined;
+    try {
+      return await Promise.race([
+        client.callTool({ name: tool, arguments: args }),
+        new Promise<never>((_, reject) => {
+          timer = setTimeout(() => reject(new Error(`Official SonarQube MCP call timed out after ${this.cfg.timeoutMs}ms`)), this.cfg.timeoutMs);
+        })
+      ]);
+    } catch (error) {
+      await this.close().catch(() => undefined);
+      throw error;
+    } finally {
+      if (timer) clearTimeout(timer);
     }
-    return this.client.callTool({ name: tool, arguments: args });
   }
 
   async close(): Promise<void> {
-    await this.transport?.close();
+    const transport = this.transport;
     this.client = undefined;
     this.transport = undefined;
+    await transport?.close();
   }
 }
 
