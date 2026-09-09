@@ -1,0 +1,43 @@
+id: rollbar
+name: Rollbar
+runtime: node>=20
+upstream:
+  - type: mcp
+    transport: stdio
+    package: "@rollbar/mcp-server@0.6.0"
+    trust: official
+  - type: rest
+    base_url: "https://api.rollbar.com/api/1"
+auth:
+  type: access_token
+  header: X-Rollbar-Access-Token
+  least_privilege:
+    read: [read]
+    item_update: [read, write]
+    deployment_create: [post_server_item]
+environment:
+  required_one_of: [ROLLBAR_ACCESS_TOKEN, ROLLBAR_ACCOUNT_ACCESS_TOKEN]
+  optional: [ROLLBAR_POST_SERVER_TOKEN, ROLLBAR_API_BASE, ROLLBAR_REQUEST_TIMEOUT_MS, ROLLBAR_REQUIRE_WRITE_APPROVAL, ROLLBAR_ALLOWED_API_HOSTS]
+capabilities:
+  - project.list
+  - item.get
+  - item.list
+  - item.top
+  - occurrence.list
+  - deployment.list
+  - version.get
+  - replay.get
+  - item.update
+  - deployment.create
+risk:
+  default: READ
+  WRITE: [item.update]
+  HIGH_RISK: [deployment.create]
+approval:
+  WRITE: configurable_required_default
+  HIGH_RISK: required
+security:
+  credentials_to_llm: false
+  upstream_tool_allowlist: true
+  provider_content_untrusted: true
+  api_base_https_allowlist: true
