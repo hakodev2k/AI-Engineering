@@ -1,0 +1,39 @@
+id: prefect
+name: Prefect
+upstream:
+  - rest
+auth:
+  type: bearer_api_key
+  environment:
+    - PREFECT_API_URL
+    - PREFECT_API_KEY
+api:
+  base_url: ${PREFECT_API_URL}
+  version_header: X-PREFECT-API-VERSION
+capabilities:
+  - deployment.list
+  - deployment.get
+  - deployment.run
+  - flow_run.list
+  - flow_run.get
+  - flow_run.cancel
+  - task_run.list
+  - work_pool.list
+  - work_pool.get
+  - work_queue.list
+  - worker.list
+risk:
+  default: READ
+  deployment.run: HIGH_RISK
+  flow_run.cancel: HIGH_RISK
+approval:
+  write_default: required
+  high_risk: explicit_human
+  destructive: unsupported
+security:
+  credentials_isolated: true
+  arbitrary_http: false
+  provider_content_untrusted: true
+runtime:
+  language: typescript
+  node: '>=20'
