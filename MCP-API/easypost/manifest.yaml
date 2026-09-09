@@ -1,0 +1,47 @@
+id: easypost
+name: EasyPost
+version: 1.0.0
+upstream:
+  - rest
+auth:
+  type: api-key-basic-auth
+  credential_env: EASYPOST_API_KEY
+api:
+  base_url: https://api.easypost.com/v2
+mcp:
+  official_server: false
+  note: No official EasyPost MCP server was identified in EasyPost official documentation reviewed for this implementation; the connector exposes EasyPost REST capabilities as MCP tools.
+capabilities:
+  - address.list
+  - address.read
+  - address.create
+  - address.verify
+  - parcel.read
+  - parcel.create
+  - shipment.list
+  - shipment.read
+  - shipment.create
+  - shipment.buy
+  - shipment.refund
+  - tracker.list
+  - tracker.read
+  - tracker.create
+  - tracker.delete
+  - webhook.list
+  - webhook.read
+  - webhook.create
+  - webhook.delete
+risk:
+  default: READ
+  write_requires_approval_configurable: true
+  high_risk_requires_approval: true
+  destructive_disabled_by_default: true
+required_environment:
+  - EASYPOST_API_KEY
+optional_environment:
+  - EASYPOST_API_BASE
+  - EASYPOST_REQUEST_TIMEOUT_MS
+  - EASYPOST_MAX_READ_RETRIES
+  - EASYPOST_REQUIRE_WRITE_APPROVAL
+  - EASYPOST_DESTRUCTIVE_ENABLED
+  - EASYPOST_ALLOWED_API_HOSTS
