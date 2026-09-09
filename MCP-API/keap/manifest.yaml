@@ -1,0 +1,54 @@
+id: keap
+name: Keap
+version: 1.0.0
+runtime: node20+
+upstream:
+  - rest
+official_mcp: false
+api:
+  base_url: https://api.infusionsoft.com/crm/rest/v1
+  token_url: https://api.infusionsoft.com/token
+auth:
+  type: oauth2-or-bearer-token
+  oauth_flow: authorization_code
+  scope: full
+  credential_isolation: connector-only
+capabilities:
+  - contact.list
+  - contact.get
+  - contact.create
+  - contact.update
+  - contact.email.list
+  - tag.list
+  - tag.contacts.list
+  - contact.tag.apply
+  - contact.tag.remove
+  - webhook.list
+  - webhook.create
+  - webhook.delete
+risk:
+  default: READ
+  write_requires_approval: configurable
+  high_risk_requires_approval: true
+  destructive_disabled_by_default: true
+environment:
+  required:
+    - KEAP_ACCESS_TOKEN
+  optional:
+    - KEAP_CLIENT_ID
+    - KEAP_CLIENT_SECRET
+    - KEAP_REFRESH_TOKEN
+    - KEAP_API_BASE
+    - KEAP_TOKEN_URL
+    - KEAP_REQUEST_TIMEOUT_MS
+    - KEAP_MAX_RETRIES
+    - KEAP_REQUIRE_WRITE_APPROVAL
+    - KEAP_DESTRUCTIVE_ENABLED
+security:
+  treat_provider_content_as_untrusted: true
+  arbitrary_http_requests: false
+  allowed_api_host: api.infusionsoft.com
+rate_limits:
+  oauth2: 1500_per_minute_150000_per_day
+  pat_or_service_account: 10_per_second_240_per_minute_30000_per_day
+  tenant_effective_2026_06_08: 10000_per_minute_250000_per_day
