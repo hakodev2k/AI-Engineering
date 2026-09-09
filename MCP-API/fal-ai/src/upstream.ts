@@ -25,9 +25,7 @@ export class FalOfficialMcpClient {
     if (this.client) return;
     const client = new Client({ name: 'ai-engineering-fal-ai-connector', version: '1.0.0' });
     const transport = new StreamableHTTPClientTransport(new URL(this.config.mcpUrl), {
-      requestInit: {
-        headers: { Authorization: `Bearer ${this.config.falKey}` }
-      }
+      requestInit: { headers: { Authorization: `Bearer ${this.config.falKey}` } }
     });
     await client.connect(transport);
     const listed = await client.listTools();
@@ -41,15 +39,14 @@ export class FalOfficialMcpClient {
   async call(name: string, args: Record<string, unknown>): Promise<unknown> {
     if (!ALLOWED_UPSTREAM_TOOLS.has(name)) throw new Error('UPSTREAM_TOOL_NOT_ALLOWED');
     await this.connect();
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), this.config.toolTimeoutMs);
+    let timer: NodeJS.Timeout | undefined;
+    const timeout = new Promise<never>((_, reject) => {
+      timer = setTimeout(() => reject(new Error('UPSTREAM_TIMEOUT')), this.config.toolTimeoutMs);
+    });
     try {
-      return await this.client!.callTool({ name, arguments: args }, undefined, {
-        signal: controller.signal,
-        timeout: this.config.toolTimeoutMs
-      });
+      return await Promise.race([this.client!.callTool({ name, arguments: args }), timeout]);
     } finally {
-      clearTimeout(timer);
+      if (timer) clearTimeout(timer);
     }
   }
 }
