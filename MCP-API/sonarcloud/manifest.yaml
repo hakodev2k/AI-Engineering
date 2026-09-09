@@ -1,0 +1,50 @@
+id: sonarcloud
+name: SonarQube Cloud
+upstream:
+  - mcp
+  - rest
+official_mcp:
+  image: mcp/sonarqube
+  transport: stdio
+api:
+  eu_base_url: https://sonarcloud.io/api
+  us_base_url: https://sonarqube.us/api
+auth:
+  type: user-token
+  env:
+    - SONARQUBE_TOKEN
+    - SONARQUBE_ORG
+  notes: Official MCP connected mode requires a SonarQube user token; credentials stay in the connector process.
+capabilities:
+  - issue.search
+  - issue.change_status
+  - hotspot.search
+  - hotspot.read
+  - hotspot.change_status
+  - webhook.list
+  - webhook.create
+  - code.analyze
+risk:
+  default: READ
+  tools:
+    sonarcloud.issue.search: READ
+    sonarcloud.issue.change_status: WRITE
+    sonarcloud.hotspot.search: READ
+    sonarcloud.hotspot.get: READ
+    sonarcloud.hotspot.change_status: WRITE
+    sonarcloud.webhook.list: READ
+    sonarcloud.webhook.create: HIGH_RISK
+    sonarcloud.code.analyze: READ
+approval:
+  write: configurable
+  high_risk: required
+required_environment:
+  - SONARQUBE_TOKEN
+  - SONARQUBE_ORG
+optional_environment:
+  - SONARQUBE_URL
+  - SONARQUBE_MCP_IMAGE
+  - SONARQUBE_REQUEST_TIMEOUT_MS
+  - SONARQUBE_REQUIRE_WRITE_APPROVAL
+  - SONARQUBE_ALLOW_WEBHOOK_WRITES
+  - SONARQUBE_MCP_ENABLED
