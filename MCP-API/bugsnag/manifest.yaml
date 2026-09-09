@@ -1,0 +1,72 @@
+id: bugsnag
+name: BugSnag
+runtime:
+  language: typescript
+  node: ">=22"
+upstream:
+  preferred:
+    type: mcp
+    implementation: SmartBear official local MCP server
+    package: "@smartbear/mcp@latest"
+    transport: stdio
+  available_remote:
+    type: mcp
+    url: https://bugsnag.mcp.smartbear.com/mcp
+    auth: SmartBear ID OAuth browser flow
+  fallback_checked:
+    type: rest
+    api_base_url: https://api.bugsnag.com
+    api_version: 2
+    used: false
+    reason: selected capabilities are supported by the official SmartBear MCP server
+auth:
+  type: personal_access_token
+  credential_env: BUGSNAG_AUTH_TOKEN
+  optional_project_scope_env: BUGSNAG_PROJECT_API_KEY
+  credential_isolation: connector_process_only
+required_env:
+  - BUGSNAG_AUTH_TOKEN
+optional_env:
+  - BUGSNAG_PROJECT_API_KEY
+  - BUGSNAG_ENDPOINT
+  - BUGSNAG_UPSTREAM_COMMAND
+  - BUGSNAG_UPSTREAM_PACKAGE
+  - BUGSNAG_UPSTREAM_START_TIMEOUT_MS
+  - BUGSNAG_TOOL_TIMEOUT_MS
+  - BUGSNAG_REQUIRE_WRITE_APPROVAL
+capabilities:
+  - project.list
+  - project.current
+  - error.list
+  - error.get
+  - error.event.list
+  - event.get
+  - project.event_filter.list
+  - error.update
+  - release.list
+  - release.get
+  - build.get
+  - performance.span_group.list
+  - performance.span_group.get
+  - performance.span.list
+  - performance.trace.get
+  - performance.trace_field.list
+  - performance.network_grouping.get
+  - performance.network_grouping.set
+risk:
+  default: READ
+  write_tools:
+    - bugsnag.error.update
+    - bugsnag.performance.network_grouping.set
+  high_risk_tools: []
+  destructive_tools: []
+approval:
+  read: none
+  write: configurable_required_by_default
+  high_risk: explicit
+  destructive: disabled
+security:
+  upstream_tool_discovery: allowlisted_capability_resolution
+  untrusted_provider_content: true
+  arbitrary_api_proxy: false
+  credentials_exposed_to_llm: false
