@@ -1,0 +1,51 @@
+id: flagsmith
+name: Flagsmith
+version: 1.0.0
+upstream:
+  - mcp
+mcp:
+  type: remote-streamable-http
+  endpoint_env: FLAGSMITH_MCP_URL
+  default_endpoint: https://mcp.flagsmith.com
+auth:
+  type: api-key
+  header: Authorization
+  scheme: "Api-Key"
+  credential_env: FLAGSMITH_API_TOKEN
+  notes: Organisation API keys can manage projects in that organisation; keep them connector-side only.
+capabilities:
+  - organization.list
+  - project.list
+  - project.get
+  - environment.list
+  - feature.list
+  - feature.get
+  - feature.code_references.get
+  - multivariate_option.list
+  - segment.list
+  - segment.get
+  - feature.create
+  - feature.update
+  - segment.create
+  - segment.update
+  - feature_state.update
+risk:
+  default: READ
+  write_requires_configurable_approval: true
+  high_risk_requires_explicit_approval: true
+required_env:
+  - FLAGSMITH_API_TOKEN
+optional_env:
+  - FLAGSMITH_MCP_URL
+  - FLAGSMITH_ALLOWED_MCP_HOSTS
+  - FLAGSMITH_REQUEST_TIMEOUT_MS
+  - FLAGSMITH_MAX_READ_RETRIES
+  - FLAGSMITH_REQUIRE_WRITE_APPROVAL
+security:
+  credential_isolation: true
+  upstream_tool_allowlist: true
+  provider_content_untrusted: true
+  arbitrary_api_requests: false
+rate_limits:
+  admin_api_default: "500 requests/minute"
+  handling: "bounded read retries with exponential backoff; no automatic write retries"
