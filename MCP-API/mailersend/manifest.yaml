@@ -1,0 +1,31 @@
+id: mailersend
+name: MailerSend
+upstream:
+  - official-mcp
+  - rest
+official_mcp:
+  endpoint: https://mcp.mailersend.com/mcp
+  transport: streamable-http
+  auth: oauth
+api_base_url: https://api.mailersend.com
+auth:
+  type: bearer-api-token
+  env: MAILERSEND_API_TOKEN
+capabilities:
+  - domain.list
+  - domain.get
+  - template.list
+  - template.get
+  - activity.list
+  - webhook.list
+  - webhook.create
+  - webhook.delete
+  - email.send
+  - email.bulk_send
+  - bulk_email.get
+risk:
+  default: READ
+  write_requires_approval: true
+  destructive_disabled_by_default: true
+required_env:
+  - MAILERSEND_API_TOKEN
