@@ -1,0 +1,20 @@
+{
+  "examples": [
+    {
+      "workflow": "rate_then_buy",
+      "steps": [
+        { "tool": "easypost.address.create_and_verify", "input": { "address": { "street1": "417 Montgomery St", "city": "San Francisco", "state": "CA", "zip": "94104", "country": "US" }, "approved": true }, "permission": "WRITE", "approval": "configurable" },
+        { "tool": "easypost.parcel.create", "input": { "parcel": { "weight": 16, "length": 10, "width": 8, "height": 4 }, "approved": true }, "permission": "WRITE", "approval": "configurable" },
+        { "tool": "easypost.shipment.create", "input": { "to_address_id": "adr_...", "from_address_id": "adr_...", "parcel_id": "prcl_...", "approved": true }, "permission": "WRITE", "approval": "configurable", "expected_output": "Shipment including available rates" },
+        { "tool": "easypost.shipment.buy", "input": { "shipment_id": "shp_...", "rate_id": "rate_...", "approved": true }, "permission": "HIGH_RISK", "approval": "required", "expected_output": "Purchased Shipment including tracking and postage label metadata" }
+      ]
+    },
+    {
+      "workflow": "track_external_package",
+      "steps": [
+        { "tool": "easypost.tracker.create", "input": { "tracking_code": "EZ1000000001", "carrier": "USPS", "approved": true }, "permission": "WRITE", "approval": "configurable" },
+        { "tool": "easypost.tracker.list", "input": { "tracking_code": "EZ1000000001", "carrier": "USPS", "page_size": 10 }, "permission": "READ", "approval": "not required" }
+      ]
+    }
+  ]
+}
