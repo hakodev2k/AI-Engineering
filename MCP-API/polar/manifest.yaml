@@ -1,0 +1,53 @@
+id: polar
+name: Polar
+upstream:
+  - official-remote-mcp
+  - rest
+transport_strategy:
+  external: mcp-stdio
+  upstream_default: rest
+  official_mcp_checked: true
+  official_mcp:
+    production: https://mcp.polar.sh/mcp/polar-mcp
+    sandbox: https://mcp.polar.sh/mcp/polar-sandbox
+  note: The connector uses the official REST API for its stable service-to-service OAT contract; Polar's remote MCP remains an optional direct client integration.
+api:
+  production: https://api.polar.sh/v1
+  sandbox: https://sandbox-api.polar.sh/v1
+auth:
+  type: organization-access-token
+  header: "Authorization: Bearer <token>"
+  required_scopes:
+    - products:read
+    - customers:read
+    - subscriptions:read
+    - orders:read
+    - metrics:read
+    - checkouts:read
+    - checkouts:write
+    - refunds:write
+capabilities:
+  - product.list
+  - product.get
+  - customer.list
+  - customer.get
+  - customer.state
+  - subscription.list
+  - subscription.get
+  - order.list
+  - order.get
+  - metrics.get
+  - checkout.create
+  - checkout.get
+  - refund.create
+risk:
+  default: READ
+  write_requires_approval: true
+  high_risk_requires_approval: true
+  destructive: disabled
+required_env:
+  - POLAR_ACCESS_TOKEN
+optional_env:
+  - POLAR_ENVIRONMENT
+  - POLAR_REQUIRE_WRITE_APPROVAL
+  - POLAR_TIMEOUT_MS
