@@ -1,0 +1,79 @@
+id: honeybadger
+name: Honeybadger
+version: 1.0.0
+runtime: node>=20
+upstream:
+  - type: mcp
+    official: true
+    transport: stdio
+    image: ghcr.io/honeybadger-io/honeybadger-mcp-server:latest
+    hosted_us: https://mcp.honeybadger.io/mcp
+    hosted_eu: https://eu-mcp.honeybadger.io/mcp
+    purpose: projects, errors, Insights, streams, check-ins
+  - type: rest
+    official: true
+    base_us: https://app.honeybadger.io/v2
+    base_eu: https://eu-app.honeybadger.io/v2
+    purpose: uptime fallback
+
+auth:
+  type: personal_auth_token
+  transport:
+    mcp_self_hosted: HONEYBADGER_PERSONAL_AUTH_TOKEN
+    data_api: HTTP Basic username token with empty password
+  least_privilege: Personal auth token access is bounded by the Honeybadger user; local policy further gates writes.
+
+capabilities:
+  - project.list
+  - project.get
+  - project.report
+  - project.create
+  - project.update
+  - project.delete
+  - fault.list
+  - fault.get
+  - fault.counts
+  - fault.notices
+  - fault.affected_users
+  - fault.update
+  - insights.query
+  - stream.list
+  - check_in.list
+  - check_in.get
+  - uptime.list
+  - uptime.get
+  - uptime.outages
+  - uptime.history
+
+risk:
+  default: READ
+  WRITE:
+    - honeybadger.project.create
+    - honeybadger.project.update
+    - honeybadger.fault.update
+  DESTRUCTIVE:
+    - honeybadger.project.delete
+  approval:
+    WRITE: configurable, enabled by default
+    HIGH_RISK: explicit
+    DESTRUCTIVE: disabled by default and explicit approval required
+
+rate_limits:
+  data_api: 360 requests/hour; limit headers are X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset
+
+required_env:
+  - HONEYBADGER_PERSONAL_AUTH_TOKEN
+optional_env:
+  - HONEYBADGER_REGION
+  - HONEYBADGER_API_URL
+  - HONEYBADGER_UPSTREAM_COMMAND
+  - HONEYBADGER_UPSTREAM_IMAGE
+  - HONEYBADGER_REQUIRE_WRITE_APPROVAL
+  - HONEYBADGER_DESTRUCTIVE_ENABLED
+  - HONEYBADGER_TIMEOUT_MS
+
+security:
+  credentials_to_llm: false
+  upstream_tool_allowlist: true
+  provider_content_untrusted: true
+  arbitrary_http_tool: false
