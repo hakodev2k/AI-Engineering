@@ -1,0 +1,40 @@
+id: typesense
+name: Typesense
+runtime: node>=20
+upstream:
+  - rest
+api:
+  base_url_env: TYPESENSE_HOST
+  documentation: https://typesense.org/docs/30.2/api/
+auth:
+  type: api_key
+  header: X-TYPESENSE-API-KEY
+  credential_env: TYPESENSE_API_KEY
+  least_privilege: true
+capabilities:
+  - collection.list
+  - collection.get
+  - collection.create
+  - document.search
+  - document.get
+  - document.create
+  - document.update
+  - document.delete
+  - document.export
+  - health.get
+risk:
+  default: READ
+  write_requires_approval: configurable
+  destructive_requires_approval: true
+  destructive_disabled_by_default: true
+environment:
+  required: [TYPESENSE_HOST, TYPESENSE_API_KEY, TYPESENSE_ALLOWED_HOSTS]
+  optional: [TYPESENSE_REQUEST_TIMEOUT_MS, TYPESENSE_MAX_READ_RETRIES, TYPESENSE_REQUIRE_WRITE_APPROVAL, TYPESENSE_DESTRUCTIVE_ENABLED]
+security:
+  provider_content_is_untrusted: true
+  credentials_exposed_to_llm: false
+  host_allowlist_required: true
+  generic_raw_request_tool: false
+notes:
+  - No official Typesense MCP server was identified in the official documentation reviewed for this connector; the official REST API is wrapped by a local MCP server.
+  - Use fine-grained Typesense API keys restricted by action and collection. Avoid the bootstrap/admin key in production.
