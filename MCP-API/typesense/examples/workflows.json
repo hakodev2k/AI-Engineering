@@ -1,0 +1,9 @@
+{
+  "examples":[
+    {"tool":"typesense.collection.list","input":{},"permission":"collections:get","approval":false,"expected_output":{"provider":"typesense","untrusted_data":true,"result":"array of collection schemas"}},
+    {"tool":"typesense.document.search","input":{"collection":"products","q":"wireless headphones","query_by":"name,description","filter_by":"in_stock:=true","per_page":10},"permission":"documents:search","approval":false,"expected_output":{"provider":"typesense","untrusted_data":true,"result":"Typesense search response"}},
+    {"tool":"typesense.document.create","input":{"collection":"products","document":{"id":"sku-42","name":"Example"},"approved":true},"permission":"documents:create","approval":true,"expected_output":{"provider":"typesense","untrusted_data":true,"result":"created document"}},
+    {"tool":"typesense.document.update","input":{"collection":"products","id":"sku-42","changes":{"in_stock":false},"approved":true},"permission":"documents:update","approval":true,"expected_output":{"provider":"typesense","untrusted_data":true,"result":"updated document"}},
+    {"tool":"typesense.document.delete","input":{"collection":"products","id":"sku-42","approved":true},"permission":"documents:delete","approval":true,"expected_output":{"provider":"typesense","untrusted_data":true,"result":"deleted document"},"note":"Also requires TYPESENSE_DESTRUCTIVE_ENABLED=true."}
+  ]
+}
