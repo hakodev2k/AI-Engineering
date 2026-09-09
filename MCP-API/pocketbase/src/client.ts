@@ -25,7 +25,11 @@ export class PocketBaseClient {
     const auth = options.auth !== false;
     if (auth && !this.cfg.authToken) throw new Error('POCKETBASE_AUTH_TOKEN is required for this tool');
 
-    for (let attempt = 0; attempt < 3; attempt++) {
+    const normalizedMethod = method.toUpperCase();
+    const retrySafe = normalizedMethod === 'GET' || normalizedMethod === 'HEAD';
+    const maxAttempts = retrySafe ? 3 : 1;
+
+    for (let attempt = 0; attempt < maxAttempts; attempt++) {
       const controller = new AbortController();
       const timer = setTimeout(() => controller.abort(), this.cfg.timeoutMs);
       try {
@@ -34,7 +38,7 @@ export class PocketBaseClient {
         if (options.body !== undefined) headers['content-type'] = 'application/json';
 
         const response = await this.fetchImpl(url, {
-          method,
+          method: normalizedMethod,
           headers,
           body: options.body === undefined ? undefined : JSON.stringify(options.body),
           signal: controller.signal
@@ -49,7 +53,7 @@ export class PocketBaseClient {
 
         const retryAfter = Number(response.headers.get('retry-after') || '0') || undefined;
         const message = typeof data === 'object' && data && 'message' in data ? String((data as any).message) : response.statusText;
-        if ((response.status === 429 || response.status >= 500) && attempt < 2) {
+        if (retrySafe && (response.status === 429 || response.status >= 500) && attempt < maxAttempts - 1) {
           const waitMs = retryAfter ? Math.min(retryAfter * 1000, 10000) : 250 * (2 ** attempt);
           await delay(waitMs);
           continue;

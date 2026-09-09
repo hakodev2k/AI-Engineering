@@ -44,7 +44,7 @@ Set `POCKETBASE_AUTH_TOKEN` to a PocketBase auth token. The connector never acce
 
 PocketBase auth tokens do not use OAuth scopes. Effective privileges come from the identity represented by the token plus each collection's List/View/Create/Update/Delete rules. Superusers bypass collection API rules and can access/modify anything, so they should be reserved for administrative workflows.
 
-`POCKETBASE_AUTH_TOKEN` is optional only because the health endpoint and any PocketBase endpoint made public by its rules can be unauthenticated in principle. This connector requires a configured token for every implemented tool except `pocketbase.health.check`, keeping behavior explicit.
+`POCKETBASE_AUTH_TOKEN` is optional only because the health endpoint is unauthenticated. This connector requires a configured token for every implemented tool except `pocketbase.health.check`, keeping credential behavior explicit.
 
 ## Environment variables
 
@@ -96,9 +96,9 @@ The `approved` flag is an enforcement input, not a substitute for an actual huma
 
 ## Reliability, errors, and rate limiting
 
-Every HTTP call has a configurable timeout. Retries are bounded to at most three attempts and apply only to HTTP 429 and 5xx responses. `Retry-After` is honored up to ten seconds; otherwise exponential backoff is used. Validation, authentication, authorization, and ordinary 4xx failures are not retried. PocketBase does not document one universal fixed API rate limit for all deployments; deployments can differ, so the connector treats 429 as the authoritative throttle signal rather than inventing a quota.
+Every HTTP call has a configurable timeout. Automatic retries are limited to idempotent `GET`/`HEAD` requests only, with at most three attempts. Those safe reads retry only HTTP 429 and 5xx responses. `Retry-After` is honored up to ten seconds; otherwise exponential backoff is used. `POST`, `PATCH`, and `DELETE` operations—including backup creation, restore, and deletion—are never automatically retried, preventing duplicate or irreversible mutations after ambiguous failures. Validation, authentication, authorization, and ordinary 4xx failures are not retried.
 
-PocketBase error status, message, response data, and `Retry-After` are mapped to `PocketBaseApiError`. No automatic destructive retry is performed after a successful response; the generic retry loop only reacts to explicit 429/5xx responses, and operators should configure upstream idempotency/operational safeguards for high-impact actions.
+PocketBase does not document one universal fixed API rate limit for all deployments; deployments can differ, so the connector treats 429 as the authoritative throttle signal rather than inventing a quota. PocketBase error status, message, response data, and `Retry-After` are mapped to `PocketBaseApiError`.
 
 ## Testing
 
