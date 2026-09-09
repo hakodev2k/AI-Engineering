@@ -3,7 +3,14 @@ import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/
 import type { Config } from './config.js';
 import type { Risk } from './policy.js';
 
+export interface UpstreamTool {
+  name: string;
+  description?: string;
+  inputSchema: Record<string, unknown>;
+}
+
 export interface UpstreamCaller {
+  listTools(): Promise<UpstreamTool[]>;
   call(name: string, args: Record<string, unknown>, risk: Risk, signal?: AbortSignal): Promise<unknown>;
   close(): Promise<void>;
 }
@@ -34,9 +41,7 @@ export class FlagsmithUpstream implements UpstreamCaller {
     this.connecting = (async () => {
       const client = new Client({ name: 'ai-engineering-flagsmith-connector', version: '1.0.0' });
       const transport = new StreamableHTTPClientTransport(this.cfg.mcpUrl, {
-        requestInit: {
-          headers: { Authorization: `Api-Key ${this.cfg.apiToken}` },
-        },
+        requestInit: { headers: { Authorization: `Api-Key ${this.cfg.apiToken}` } },
       });
       await client.connect(transport);
       this.client = client;
@@ -53,17 +58,23 @@ export class FlagsmithUpstream implements UpstreamCaller {
     this.client = undefined;
   }
 
+  async listTools(): Promise<UpstreamTool[]> {
+    const client = await this.getClient();
+    const result = await client.listTools(undefined, { timeout: this.cfg.timeoutMs });
+    return result.tools.map(tool => ({
+      name: tool.name,
+      description: tool.description,
+      inputSchema: tool.inputSchema as Record<string, unknown>,
+    }));
+  }
+
   async call(name: string, args: Record<string, unknown>, risk: Risk, signal?: AbortSignal): Promise<unknown> {
     const attempts = risk === 'READ' ? this.cfg.maxReadRetries : 1;
     let lastError: unknown;
     for (let attempt = 1; attempt <= attempts; attempt++) {
       try {
         const client = await this.getClient();
-        return await client.callTool(
-          { name, arguments: args },
-          undefined,
-          { signal, timeout: this.cfg.timeoutMs },
-        );
+        return await client.callTool({ name, arguments: args }, undefined, { signal, timeout: this.cfg.timeoutMs });
       } catch (error) {
         lastError = error;
         const message = error instanceof Error ? error.message : String(error);
