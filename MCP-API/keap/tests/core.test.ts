@@ -51,6 +51,13 @@ describe('client', () => {
     expect(fetchMock).toHaveBeenCalledTimes(2);
   });
 
+  it('does not retry a throttled write', async () => {
+    const fetchMock = vi.fn(async () => new Response(JSON.stringify({ message: 'rate limited' }), { status: 429, headers: { 'retry-after': '0' } }));
+    const client = new KeapClient(loadConfig(baseEnv), fetchMock as any);
+    await expect(client.request('POST', '/contacts', { given_name: 'Ada' })).rejects.toBeInstanceOf(KeapApiError);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
   it('does not turn a 403 into a retry loop', async () => {
     const fetchMock = vi.fn(async () => new Response(JSON.stringify({ message: 'forbidden' }), { status: 403 }));
     const client = new KeapClient(loadConfig(baseEnv), fetchMock as any);
