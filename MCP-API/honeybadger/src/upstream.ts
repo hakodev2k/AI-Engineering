@@ -14,7 +14,9 @@ export class HoneybadgerUpstream {
 
   private async getClient() {
     if (this.client) return this.client;
+    const inherited = Object.fromEntries(Object.entries(process.env).filter((entry): entry is [string,string] => typeof entry[1] === 'string'));
     const env: Record<string,string> = {
+      ...inherited,
       HONEYBADGER_PERSONAL_AUTH_TOKEN: this.cfg.token,
       HONEYBADGER_API_URL: this.cfg.apiUrl,
       HONEYBADGER_READ_ONLY: 'false',
