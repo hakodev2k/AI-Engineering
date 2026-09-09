@@ -1,0 +1,55 @@
+id: formstack
+name: Formstack Forms
+upstream:
+  - rest
+auth:
+  type: personal_access_token
+  header: Authorization
+  scheme: Bearer
+  env:
+    - FORMSTACK_ACCESS_TOKEN
+api:
+  base_url: https://www.formstack.com/api/v2025
+  version: v2025
+mcp:
+  official_server: false
+capabilities:
+  - form.list
+  - form.get
+  - form.create
+  - form.update
+  - form.delete
+  - field.list
+  - field.create
+  - field.update
+  - field.delete
+  - submission.list
+  - submission.get
+  - submission.delete
+  - webhook.list
+  - webhook.create
+  - webhook.delete
+risk:
+  default: READ
+  approval:
+    WRITE: configurable
+    HIGH_RISK: required
+    DESTRUCTIVE: required_and_disabled_by_default
+environment:
+  required:
+    - FORMSTACK_ACCESS_TOKEN
+  optional:
+    - FORMSTACK_API_BASE
+    - FORMSTACK_REQUEST_TIMEOUT_MS
+    - FORMSTACK_REQUIRE_WRITE_APPROVAL
+    - FORMSTACK_DESTRUCTIVE_ENABLED
+security:
+  credentials_exposed_to_llm: false
+  arbitrary_http_passthrough: false
+  provider_content_untrusted: true
+  webhook_https_required: true
+sources:
+  - https://developers.formstack.com/reference/api-overview
+  - https://developers.formstack.com/reference/forms
+  - https://developers.formstack.com/reference/submissions
+  - https://developers.formstack.com/reference/webhook
