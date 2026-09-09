@@ -9,14 +9,6 @@ export type Config = {
   mcpEnabled: boolean;
 };
 
-function bool(name: string, fallback: boolean): boolean {
-  const value = process.env[name];
-  if (value === undefined || value === '') return fallback;
-  if (value === 'true') return true;
-  if (value === 'false') return false;
-  throw new Error(`${name} must be true or false`);
-}
-
 export function normalizeCloudUrl(value: string | undefined): string {
   const raw = (value || 'https://sonarcloud.io').replace(/\/+$/, '');
   const url = new URL(raw);
@@ -25,6 +17,14 @@ export function normalizeCloudUrl(value: string | undefined): string {
     throw new Error('SONARQUBE_URL must be https://sonarcloud.io or https://sonarqube.us');
   }
   return `${url.protocol}//${url.host}`;
+}
+
+export function normalizeMcpImage(value: string | undefined): string {
+  const image = value?.trim() || 'mcp/sonarqube';
+  if (!/^mcp\/sonarqube(?::[A-Za-z0-9_.-]+)?$/.test(image)) {
+    throw new Error('SONARQUBE_MCP_IMAGE must reference the official mcp/sonarqube image');
+  }
+  return image;
 }
 
 export function loadConfig(env = process.env): Config {
@@ -40,7 +40,7 @@ export function loadConfig(env = process.env): Config {
     token,
     organization,
     baseUrl: normalizeCloudUrl(env.SONARQUBE_URL),
-    mcpImage: env.SONARQUBE_MCP_IMAGE?.trim() || 'mcp/sonarqube',
+    mcpImage: normalizeMcpImage(env.SONARQUBE_MCP_IMAGE),
     timeoutMs,
     requireWriteApproval: env.SONARQUBE_REQUIRE_WRITE_APPROVAL !== 'false',
     allowWebhookWrites: env.SONARQUBE_ALLOW_WEBHOOK_WRITES === 'true',
