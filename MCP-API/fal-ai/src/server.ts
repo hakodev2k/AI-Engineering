@@ -30,6 +30,17 @@ function safeRemoteUrl(value: string): boolean {
   }
 }
 
+function safeFalQueueUrl(value: string): boolean {
+  try {
+    const url = new URL(value);
+    return url.protocol === 'https:' && url.hostname === 'queue.fal.run';
+  } catch {
+    return false;
+  }
+}
+
+const falQueueUrl = z.string().url().max(2048).refine(safeFalQueueUrl, 'URL must use https://queue.fal.run');
+
 async function invoke(upstreamName: string, args: Record<string, unknown>, risk: Risk) {
   authorize(risk, args.approved as boolean | undefined, {
     requireWriteApproval: config.requireWriteApproval,
@@ -91,7 +102,7 @@ server.registerTool('fal.job.status.get', {
   inputSchema: {
     endpoint_id: endpointId,
     request_id: requestId,
-    status_url: z.string().url().max(2048).optional()
+    status_url: falQueueUrl.optional()
   }
 }, (args) => invoke('check_job', args, 'READ'));
 
@@ -100,7 +111,7 @@ server.registerTool('fal.job.result.get', {
   inputSchema: {
     endpoint_id: endpointId,
     request_id: requestId,
-    response_url: z.string().url().max(2048).optional()
+    response_url: falQueueUrl.optional()
   }
 }, (args) => invoke('get_job_result', args, 'READ'));
 
@@ -109,7 +120,7 @@ server.registerTool('fal.job.cancel', {
   inputSchema: {
     endpoint_id: endpointId,
     request_id: requestId,
-    cancel_url: z.string().url().max(2048).optional(),
+    cancel_url: falQueueUrl.optional(),
     approved
   }
 }, (args) => invoke('cancel_job', args, 'WRITE'));
