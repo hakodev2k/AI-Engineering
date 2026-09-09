@@ -22,8 +22,6 @@ auth:
     - api.*.verify_key
     - ratelimit.*.limit
     - ratelimit.*.set_override
-    - ratelimit.*.read_override
-    - ratelimit.*.delete_override
 capabilities:
   - api.create
   - api.get
