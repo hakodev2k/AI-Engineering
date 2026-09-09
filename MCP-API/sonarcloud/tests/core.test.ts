@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { loadConfig, normalizeCloudUrl, type Config } from '../src/config.js';
+import { loadConfig, normalizeCloudUrl, normalizeMcpImage, type Config } from '../src/config.js';
 import { authorize, assertHttpsWebhook } from '../src/policy.js';
-import { SonarRestClient, SonarError } from '../src/upstream.js';
+import { SonarRestClient, SonarError, SonarUpstream } from '../src/upstream.js';
 
 const cfg: Config = {
   token: 'test-token',
@@ -20,11 +20,13 @@ test('configuration requires isolated credentials', () => {
   assert.throws(() => loadConfig({ SONARQUBE_TOKEN: 'x' } as NodeJS.ProcessEnv), /SONARQUBE_ORG/);
 });
 
-test('cloud URL is restricted to official SonarQube Cloud hosts', () => {
+test('cloud URL and MCP image are restricted to trusted Sonar targets', () => {
   assert.equal(normalizeCloudUrl(undefined), 'https://sonarcloud.io');
   assert.equal(normalizeCloudUrl('https://sonarqube.us/'), 'https://sonarqube.us');
   assert.throws(() => normalizeCloudUrl('http://sonarcloud.io'), /HTTPS/);
   assert.throws(() => normalizeCloudUrl('https://example.com'), /must be/);
+  assert.equal(normalizeMcpImage('mcp/sonarqube:1.26.0'), 'mcp/sonarqube:1.26.0');
+  assert.throws(() => normalizeMcpImage('evil/image:latest'), /official/);
 });
 
 test('write operations require approval and high-risk writes are disabled by default', () => {
@@ -70,4 +72,17 @@ test('REST client maps provider errors and does not retry non-idempotent writes'
     return true;
   });
   assert.equal(calls, 1);
+});
+
+test('MCP failure falls back to official API when a fallback is defined', async () => {
+  const fakeFetch = (async () => new Response(JSON.stringify({ paging: { total: 0 }, issues: [] }), {
+    status: 200,
+    headers: { 'content-type': 'application/json' }
+  })) as typeof fetch;
+  const upstream = new SonarUpstream(cfg, fakeFetch);
+  const output = await upstream.mcpFirst('search_sonar_issues_in_projects', {}, () => upstream.rest.request('GET', 'issues/search', {
+    organization: cfg.organization
+  }, true));
+  assert.equal(output.transport, 'rest');
+  assert.deepEqual(output.data, { paging: { total: 0 }, issues: [] });
 });
