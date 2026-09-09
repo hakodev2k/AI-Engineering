@@ -1,0 +1,46 @@
+id: unkey
+name: Unkey
+version: 1.0.0
+upstream:
+  official_mcp:
+    available: true
+    endpoint: https://mcp.unkey.com/mcp/v2
+    note: Official remote MCP exists; this connector uses the stable v2 HTTP API to enforce fixed schemas, explicit risk classes, and approval boundaries.
+  rest:
+    base_url: https://api.unkey.com
+    version: v2
+auth:
+  type: bearer_root_key
+  env: UNKEY_ROOT_KEY
+  least_privilege_permissions:
+    - api.*.read_api
+    - api.*.create_api
+    - api.*.read_key
+    - api.*.create_key
+    - api.*.update_key
+    - api.*.delete_key
+    - api.*.verify_key
+    - ratelimit.*.limit
+    - ratelimit.*.set_override
+    - ratelimit.*.read_override
+    - ratelimit.*.delete_override
+capabilities:
+  - api.create
+  - api.get
+  - key.create
+  - key.get
+  - key.list
+  - key.update
+  - key.verify
+  - key.reroll
+  - key.delete
+  - ratelimit.limit
+  - ratelimit.override.set
+risk:
+  default: READ
+  write_requires_approval: true
+  high_risk_requires_approval: true
+  destructive_disabled_by_default: true
+environment:
+  required: [UNKEY_ROOT_KEY]
+  optional: [UNKEY_API_BASE, UNKEY_REQUEST_TIMEOUT_MS, UNKEY_REQUIRE_WRITE_APPROVAL, UNKEY_DESTRUCTIVE_ENABLED, UNKEY_ALLOWED_API_HOSTS]
