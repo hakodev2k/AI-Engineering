@@ -1,0 +1,45 @@
+id: healthchecks-io
+name: Healthchecks.io
+version: 1.0.0
+upstream:
+  - rest
+api:
+  base_url: https://healthchecks.io/api/v3
+auth:
+  type: api_key
+  header: X-Api-Key
+  least_privilege:
+    read_only: read-only project API key
+    read_write: read-write project API key
+capabilities:
+  - check.list
+  - check.get
+  - check.create
+  - check.update
+  - check.pause
+  - check.resume
+  - check.delete
+  - check.flips.list
+  - integration.list
+  - badge.list
+  - service.status
+risk:
+  default: READ
+  WRITE: [check.create, check.update, check.pause, check.resume]
+  DESTRUCTIVE: [check.delete]
+approval:
+  WRITE: configurable
+  DESTRUCTIVE: required
+rate_limits:
+  management_api: "avoid more than 100 requests/minute; 429 may be returned"
+env:
+  required: [HEALTHCHECKS_API_KEY]
+  optional: [HEALTHCHECKS_API_BASE, HEALTHCHECKS_TIMEOUT_MS, HEALTHCHECKS_MAX_RETRIES, HEALTHCHECKS_APPROVAL_MODE]
+security:
+  credentials_exposed_to_llm: false
+  arbitrary_url_requests: false
+sources:
+  - https://healthchecks.io/docs/api/
+  - https://healthchecks.io/docs/http_api/
+limitations:
+  - No official Healthchecks.io MCP server was found in official documentation during research; this connector exposes MCP tools backed by the official Management API v3.
