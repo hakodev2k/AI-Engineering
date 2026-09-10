@@ -7,13 +7,12 @@ import type { Scope } from './policy.js';
 export type UpstreamTool = { name: string; description?: string; inputSchema: Record<string,unknown> };
 export interface Upstream {
   list(scope: Scope): Promise<UpstreamTool[]>;
-  call(scope: Scope, name: string, args: Record<string,unknown>): Promise<unknown>;
+  call(scope: Scope, name: string, args: Record<string,unknown>, retrySafe: boolean): Promise<unknown>;
   close(): Promise<void>;
 }
 
 class EndpointClient {
   private client?: Client;
-  private transport?: StreamableHTTPClientTransport;
   constructor(private url: string, private config: Config) {}
   async connect(): Promise<Client> {
     if (this.client) return this.client;
@@ -25,7 +24,8 @@ class EndpointClient {
       client.connect(transport),
       new Promise((_, reject) => setTimeout(() => reject(new Error('Confluent MCP connection timeout')), this.config.timeoutMs))
     ]);
-    this.client = client; this.transport = transport; return client;
+    this.client = client;
+    return client;
   }
   async list(): Promise<UpstreamTool[]> {
     const c = await this.connect();
@@ -55,8 +55,8 @@ export class ConfluentUpstream implements Upstream {
     return this.regional;
   }
   list(scope: Scope) { return this.endpoint(scope).list(); }
-  async call(scope: Scope, name: string, args: Record<string,unknown>): Promise<unknown> {
-    const attempts = scope === 'global' || scope === 'regional' ? this.config.maxReadRetries + 1 : 1;
+  async call(scope: Scope, name: string, args: Record<string,unknown>, retrySafe: boolean): Promise<unknown> {
+    const attempts = retrySafe ? this.config.maxReadRetries + 1 : 1;
     let last: unknown;
     for (let i=0;i<attempts;i++) {
       try { return await this.endpoint(scope).call(name,args); }
