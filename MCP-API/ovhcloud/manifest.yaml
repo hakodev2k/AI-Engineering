@@ -1,0 +1,39 @@
+id: ovhcloud
+name: OVHcloud
+upstream:
+  - rest
+auth:
+  type: application-key-consumer-key-signature
+  environment:
+    - OVH_APPLICATION_KEY
+    - OVH_APPLICATION_SECRET
+    - OVH_CONSUMER_KEY
+api:
+  base_url_env: OVH_ENDPOINT
+  default_base_url: https://eu.api.ovh.com/1.0
+risk:
+  default: read
+capabilities:
+  - account.get
+  - cloud.project.list
+  - cloud.project.get
+  - cloud.instance.list
+  - cloud.instance.get
+  - cloud.instance.reboot
+  - vps.list
+  - vps.get
+  - vps.reboot
+  - domain.list
+  - domain.get
+permissions:
+  read:
+    approval: false
+  write:
+    approval: configurable
+  high_risk:
+    approval: true
+    enabled_by_default: false
+required_environment:
+  - OVH_APPLICATION_KEY
+  - OVH_APPLICATION_SECRET
+  - OVH_CONSUMER_KEY
