@@ -1,0 +1,56 @@
+id: confluent-cloud
+name: Confluent Cloud
+runtime: nodejs-20+
+upstream:
+  - type: mcp
+    name: managed-global
+    transport: streamable-http
+    endpoint: https://api.confluent.cloud/mcp/v1
+  - type: mcp
+    name: managed-regional
+    transport: streamable-http
+    endpoint_template: https://mcp.{region}.{cloud}.confluent.cloud/mcp/v1/organizations/{organization_id}
+auth:
+  type: http-basic-api-key
+  credentials:
+    - CONFLUENT_API_KEY
+    - CONFLUENT_API_SECRET
+  least_privilege: Use a Cloud API key for global-only access or a Global API key when regional tools are required; provider RBAC remains authoritative.
+risk:
+  default: READ
+  writes_enabled_by_default: false
+  approval_secret: CONFLUENT_APPROVAL_SECRET
+capabilities:
+  - {name: environment.list, risk: READ, transport: mcp-global}
+  - {name: environment.get, risk: READ, transport: mcp-global}
+  - {name: cluster.list, risk: READ, transport: mcp-global}
+  - {name: cluster.get, risk: READ, transport: mcp-global}
+  - {name: connector.list, risk: READ, transport: mcp-global}
+  - {name: connector.config.get, risk: READ, transport: mcp-global}
+  - {name: connector.status.get, risk: READ, transport: mcp-global}
+  - {name: connector.logs.get, risk: READ, transport: mcp-global}
+  - {name: connector.offsets.get, risk: READ, transport: mcp-global}
+  - {name: connector.metrics.get, risk: READ, transport: mcp-global}
+  - {name: connector.error_summary.get, risk: READ, transport: mcp-global}
+  - {name: connector.restart, risk: HIGH_RISK, transport: mcp-global, approval: required}
+  - {name: connector.config.update, risk: HIGH_RISK, transport: mcp-global, approval: required}
+  - {name: metric.list, risk: READ, transport: mcp-global}
+  - {name: metric.query, risk: READ, transport: mcp-global}
+  - {name: topic.list, risk: READ, transport: mcp-regional}
+  - {name: topic.describe, risk: READ, transport: mcp-regional}
+  - {name: topic.message.sample, risk: READ, transport: mcp-regional}
+  - {name: schema.subject.list, risk: READ, transport: mcp-regional}
+  - {name: schema.subject.get, risk: READ, transport: mcp-regional}
+required_environment:
+  global:
+    - CONFLUENT_API_KEY
+    - CONFLUENT_API_SECRET
+  regional:
+    - CONFLUENT_CLOUD_PROVIDER
+    - CONFLUENT_CLOUD_REGION
+    - CONFLUENT_ORGANIZATION_ID
+security:
+  credentials_exposed_to_llm: false
+  arbitrary_upstream_tools: false
+  destructive_tools: false
+  provider_content_trust: untrusted-data
