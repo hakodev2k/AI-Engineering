@@ -1,0 +1,55 @@
+id: imgix
+name: Imgix
+upstream:
+  - rest
+  - url-api
+official_mcp:
+  available: false
+api:
+  base_url: https://api.imgix.com
+  management_version: v1
+auth:
+  type: bearer-api-key
+  environment:
+    - IMGIX_API_TOKEN
+    - IMGIX_SIGNING_TOKEN
+permissions:
+  provider_key_permissions:
+    - Sources
+    - Asset Manager Browse
+    - Purge
+capabilities:
+  - source.list
+  - source.get
+  - source.search
+  - asset.list
+  - asset.search
+  - cache.purge
+  - render.url.build
+  - render.url.sign
+risk:
+  default: READ
+  tools:
+    imgix.source.list: READ
+    imgix.source.get: READ
+    imgix.source.search: READ
+    imgix.asset.list: READ
+    imgix.asset.search: READ
+    imgix.cache.purge: HIGH_RISK
+    imgix.render.url.build: READ
+    imgix.render.url.sign: WRITE
+approval:
+  write: configurable
+  high_risk: required
+environment:
+  IMGIX_API_TOKEN: bearer key kept inside connector
+  IMGIX_SIGNING_TOKEN: optional secure URL signing token kept inside connector
+  IMGIX_API_BASE_URL: must be https://api.imgix.com
+  IMGIX_REQUEST_TIMEOUT_MS: default 15000
+  IMGIX_MAX_RETRIES: default 2
+  IMGIX_ALLOW_WRITE: default false
+  IMGIX_ALLOW_HIGH_RISK: default false
+security:
+  arbitrary_requests: disabled
+  credentials_exposed_to_agent: false
+  provider_content_trusted_as_instructions: false
