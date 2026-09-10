@@ -1,0 +1,40 @@
+id: wasabi
+name: Wasabi
+upstream:
+  - mcp
+  - s3-api
+mcp:
+  endpoint: https://mcp.wasabisys.dev/s3
+  status: beta
+  transport: streamable-http
+  oauth: true
+api:
+  compatibility: Amazon S3 API
+auth:
+  type: access-key-secret-key
+  optional_mcp_oauth_bearer: true
+required_env:
+  - WASABI_ACCESS_KEY_ID
+  - WASABI_SECRET_ACCESS_KEY
+  - WASABI_REGION
+  - WASABI_ENDPOINT
+optional_env:
+  - WASABI_MCP_ACCESS_TOKEN
+  - WASABI_APPROVAL_SECRET
+capabilities:
+  - bucket.list
+  - bucket.location
+  - bucket.create
+  - bucket.delete
+  - object.list
+  - object.metadata
+  - object.read_text
+  - object.put_text
+  - object.copy
+  - object.delete
+  - object.presign_get
+  - object.presign_put
+risk:
+  default: READ
+  write_requires_approval: true
+  destructive_disabled_by_default: true
