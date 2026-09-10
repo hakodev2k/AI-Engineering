@@ -1,0 +1,39 @@
+id: cockroachdb-cloud
+name: CockroachDB Cloud
+upstream:
+  - rest
+  - mcp-researched-not-proxied
+api_base_url: https://cockroachlabs.cloud/api/v1
+mcp_endpoint: https://cockroachlabs.cloud/mcp
+auth:
+  type: service-account-api-key
+  credential_env: COCKROACH_CLOUD_API_KEY
+  notes: Bearer token; keep credential inside connector process.
+capabilities:
+  - cluster.list
+  - cluster.get
+  - cluster.nodes.list
+  - cluster.connection_string.get
+  - cluster.version.list
+  - database.list
+  - sql_user.list
+  - cluster.delete
+  - sql_user.delete
+risk:
+  default: read
+  destructive_disabled_by_default: true
+permissions:
+  READ:
+    approval: false
+  DESTRUCTIVE:
+    approval: true
+    enabled_by_env: COCKROACH_CLOUD_ALLOW_DESTRUCTIVE
+required_environment:
+  - COCKROACH_CLOUD_API_KEY
+optional_environment:
+  - COCKROACH_CLOUD_API_BASE_URL
+  - COCKROACH_CLOUD_TIMEOUT_MS
+  - COCKROACH_CLOUD_MAX_RETRIES
+  - COCKROACH_CLOUD_REQUIRE_WRITE_APPROVAL
+  - COCKROACH_CLOUD_ALLOW_DESTRUCTIVE
+  - COCKROACH_CLOUD_APPROVAL_SECRET
