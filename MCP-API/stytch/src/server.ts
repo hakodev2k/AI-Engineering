@@ -11,7 +11,7 @@ export function createServer(config = loadConfig(), client = new StytchClient(co
     { capabilities: { tools: {} } }
   );
 
-  server.setRequestHandler(ListToolsRequestSchema, async () => ({ tools: toolDefinitions }));
+  server.setRequestHandler(ListToolsRequestSchema, async () => ({ tools: toolDefinitions as any }));
   server.setRequestHandler(CallToolRequestSchema, async request => {
     try {
       const result = await executeTool(config, client, request.params.name, request.params.arguments ?? {});
