@@ -1,0 +1,62 @@
+{
+  "diagnose_failed_run": [
+    {
+      "tool": "prefect-cloud.flow_run.list",
+      "input": {
+        "filter": { "state": { "type": { "any_": ["FAILED", "CRASHED"] } } },
+        "limit": 20,
+        "offset": 0
+      },
+      "expected_output": "Array or structured upstream result containing bounded flow-run summaries",
+      "permission": "READ",
+      "approval_required": false
+    },
+    {
+      "tool": "prefect-cloud.flow_run.logs",
+      "input": {
+        "flow_run_id": "33333333-3333-3333-3333-333333333333",
+        "limit": 200
+      },
+      "expected_output": "Bounded execution log records for the selected flow run",
+      "permission": "READ",
+      "approval_required": false
+    },
+    {
+      "tool": "prefect-cloud.work_pool.list",
+      "input": {
+        "filter": { "name": { "like_": "prod-%" } },
+        "limit": 50,
+        "offset": 0
+      },
+      "expected_output": "Work-pool summaries useful for worker/infrastructure diagnosis",
+      "permission": "READ",
+      "approval_required": false
+    }
+  ],
+  "inspect_recent_events": {
+    "tool": "prefect-cloud.event.read",
+    "input": {
+      "event_type_prefix": "prefect.flow-run",
+      "limit": 100,
+      "occurred_after": "2026-09-10T00:00:00Z",
+      "occurred_before": "2026-09-11T00:00:00Z"
+    },
+    "expected_output": "Prefect event records matching the bounded type/time filters",
+    "permission": "READ",
+    "approval_required": false
+  },
+  "trigger_approved_deployment": {
+    "tool": "prefect-cloud.deployment.run",
+    "input": {
+      "deployment_id": "44444444-4444-4444-4444-444444444444",
+      "parameters": { "window": "2026-09-10" },
+      "idempotency_key": "example-run-2026-09-10",
+      "confirm": "RUN_DEPLOYMENT",
+      "approval_token": "<provided-at-execution-time>"
+    },
+    "expected_output": "Prefect flow-run object returned by create_flow_run",
+    "permission": "HIGH_RISK",
+    "approval_required": true,
+    "host_precondition": "PREFECT_ENABLE_EXECUTION=true and a matching server-side PREFECT_APPROVAL_TOKEN"
+  }
+}
