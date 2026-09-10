@@ -1,0 +1,40 @@
+id: stytch
+name: Stytch
+version: 1.0.0
+upstream:
+  - rest
+  - mcp-evaluated-not-used
+official_mcp:
+  endpoint: https://mcp.stytch.dev/mcp
+  purpose: programmatic workspace actions
+api:
+  test_base_url: https://test.stytch.com
+  live_base_url: https://api.stytch.com
+auth:
+  type: http-basic
+  credentials:
+    - STYTCH_PROJECT_ID
+    - STYTCH_SECRET
+capabilities:
+  - organization.search
+  - organization.get
+  - organization.create
+  - organization.update
+  - member.search
+  - member.get
+  - member.create
+  - member.update
+risk:
+  default: READ
+  write_approval: configurable-default-required
+  high_risk_approval: always
+required_environment:
+  - STYTCH_PROJECT_ID
+  - STYTCH_SECRET
+optional_environment:
+  - STYTCH_ENVIRONMENT
+  - STYTCH_TIMEOUT_MS
+  - STYTCH_MAX_RETRIES
+  - STYTCH_REQUIRE_WRITE_APPROVAL
+  - STYTCH_ENABLE_HIGH_RISK
+  - STYTCH_APPROVAL_SECRET
