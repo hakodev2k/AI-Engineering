@@ -1,0 +1,47 @@
+id: gcore
+name: Gcore
+upstream:
+  - mcp
+auth:
+  type: api_key
+  environment: GCORE_API_KEY
+  credential_isolation: connector_process
+mcp:
+  implementation: official
+  source: https://github.com/G-Core/gcore-mcp-server
+  transport: stdio
+  command: uvx
+api:
+  base_url: https://api.gcore.com
+capabilities:
+  - project.list
+  - region.list
+  - instance.list
+  - instance.get
+  - instance.create
+  - instance.update
+  - instance.action
+  - instance.delete
+  - volume.list
+  - network.list
+  - security_group.list
+  - ssh_key.list
+risk:
+  default: read
+  classes:
+    READ: auto
+    WRITE: approval_and_feature_gate
+    HIGH_RISK: approval_and_feature_gate
+    DESTRUCTIVE: approval_and_feature_gate
+required_environment:
+  - GCORE_API_KEY
+optional_environment:
+  - GCORE_BASE_URL
+  - GCORE_CLOUD_PROJECT_ID
+  - GCORE_CLOUD_REGION_ID
+  - GCORE_CLIENT_ID
+  - GCORE_APPROVAL_SECRET
+  - GCORE_ALLOW_WRITE
+  - GCORE_ALLOW_HIGH_RISK
+  - GCORE_ALLOW_DESTRUCTIVE
+  - GCORE_UPSTREAM_TIMEOUT_MS
