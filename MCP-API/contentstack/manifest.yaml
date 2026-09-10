@@ -1,0 +1,69 @@
+id: contentstack
+name: Contentstack
+runtime: node>=20
+upstream:
+  - type: rest
+    name: Content Management API
+    base_url_by_region:
+      aws-na: https://api.contentstack.io/v3
+      aws-eu: https://eu-api.contentstack.com/v3
+      aws-au: https://au-api.contentstack.com/v3
+      azure-na: https://azure-na-api.contentstack.com/v3
+      azure-eu: https://azure-eu-api.contentstack.com/v3
+      gcp-na: https://gcp-na-api.contentstack.com/v3
+      gcp-eu: https://gcp-eu-api.contentstack.com/v3
+  - type: mcp
+    name: Contentstack MCP Profile Hub
+    endpoint_template: https://mcp-profile-hub.contentstack.com/api/mcp?profile_id=<profile_id>&org_uid=<org_uid>
+    usage: official optional direct client transport; not proxied by this connector
+auth:
+  type: management_token
+  headers:
+    - api_key
+    - authorization
+  oauth_alternative: OAuth 2.1 with PKCE through official MCP Profile Hub
+required_env:
+  - CONTENTSTACK_API_KEY
+  - CONTENTSTACK_MANAGEMENT_TOKEN
+optional_env:
+  - CONTENTSTACK_REGION
+  - CONTENTSTACK_BRANCH
+  - CONTENTSTACK_TIMEOUT_MS
+  - CONTENTSTACK_MAX_RETRIES
+  - CONTENTSTACK_REQUIRE_WRITE_APPROVAL
+  - CONTENTSTACK_ENABLE_DESTRUCTIVE
+  - CONTENTSTACK_APPROVAL_SECRET
+risk:
+  default: READ
+capabilities:
+  - content_type.list
+  - content_type.get
+  - entry.list
+  - entry.get
+  - entry.create
+  - entry.update
+  - entry.publish
+  - entry.unpublish
+  - entry.delete
+  - asset.list
+  - asset.get
+  - environment.list
+  - workflow.list
+permissions:
+  content_type.list: { risk: READ, oauth_scope: cm.content-types.management:read, approval: false }
+  content_type.get: { risk: READ, oauth_scope: cm.content-types.management:read, approval: false }
+  entry.list: { risk: READ, oauth_scope: cm.entries.management:read, approval: false }
+  entry.get: { risk: READ, oauth_scope: cm.entries.management:read, approval: false }
+  entry.create: { risk: WRITE, oauth_scope: cm.entries.management:write, approval: configurable }
+  entry.update: { risk: WRITE, oauth_scope: cm.entries.management:write, approval: configurable }
+  entry.publish: { risk: HIGH_RISK, oauth_scope: cm.entry:publish, approval: true }
+  entry.unpublish: { risk: HIGH_RISK, oauth_scope: cm.entry:unpublish, approval: true }
+  entry.delete: { risk: DESTRUCTIVE, oauth_scope: cm.entries.management:write, approval: true, disabled_by_default: true }
+  asset.list: { risk: READ, oauth_scope: cm.assets.management:read, approval: false }
+  asset.get: { risk: READ, oauth_scope: cm.assets.management:read, approval: false }
+  environment.list: { risk: READ, oauth_scope: cm.environments.management:read, approval: false }
+  workflow.list: { risk: READ, oauth_scope: cm.workflows.management:read, approval: false }
+rate_limits:
+  cma_default_read_rps: 10
+  cma_default_write_rps: 10
+  bulk_rps: 1
