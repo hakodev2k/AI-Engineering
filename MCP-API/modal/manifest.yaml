@@ -1,0 +1,50 @@
+id: modal
+name: Modal
+runtime:
+  language: typescript
+  node: ">=22"
+upstream:
+  - sdk
+mcp:
+  upstream_server: null
+  note: "No official Modal MCP server was identified for these capabilities; the connector exposes MCP tools backed by Modal's official JavaScript SDK."
+auth:
+  type: api-token-pair
+  environment:
+    - MODAL_TOKEN_ID
+    - MODAL_TOKEN_SECRET
+  optional:
+    - MODAL_ENVIRONMENT
+api:
+  sdk_package: modal
+  sdk_version: "^0.10.0"
+capabilities:
+  - app.get
+  - function.invoke
+  - function.spawn
+  - sandbox.list
+  - sandbox.create
+  - sandbox.exec
+  - sandbox.terminate
+  - volume.get
+  - volume.delete
+risk:
+  default: READ
+  tools:
+    modal.app.get: READ
+    modal.function.invoke: HIGH_RISK
+    modal.function.spawn: HIGH_RISK
+    modal.sandbox.list: READ
+    modal.sandbox.create: HIGH_RISK
+    modal.sandbox.exec: HIGH_RISK
+    modal.sandbox.terminate: HIGH_RISK
+    modal.volume.get: READ
+    modal.volume.delete: DESTRUCTIVE
+approval:
+  write_default: required
+  high_risk: required
+  destructive: "disabled unless MODAL_ALLOW_DESTRUCTIVE=true and approved=true"
+security:
+  credentials_exposed_to_model: false
+  arbitrary_raw_api_tool: false
+  shell_string_tool: false
