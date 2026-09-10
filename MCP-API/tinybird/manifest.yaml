@@ -1,0 +1,55 @@
+id: tinybird
+name: Tinybird
+version: 1.0.0
+runtime: node>=20
+upstream:
+  - mcp
+  - rest
+mcp:
+  endpoint: https://mcp.tinybird.co
+  transport: streamable-http
+api:
+  base_url_env: TINYBIRD_API_HOST
+  default_base_url: https://api.tinybird.co
+auth:
+  type: bearer-token
+  token_env: TINYBIRD_TOKEN
+  guidance: Use a resource-scoped Static Token or JWT; avoid ADMIN unless required.
+capabilities:
+  - datasource.list
+  - datasource.service_list
+  - endpoint.list
+  - data.explore
+  - sql.generate
+  - query.execute
+  - endpoint.call
+  - job.list
+  - job.get
+  - events.ingest
+permissions:
+  read:
+    - datasource.list
+    - datasource.service_list
+    - endpoint.list
+    - data.explore
+    - sql.generate
+    - query.execute
+    - endpoint.call
+    - job.list
+    - job.get
+  write:
+    - events.ingest
+risk:
+  default: READ
+  events.ingest: WRITE
+approval:
+  events.ingest: required
+required_environment:
+  - TINYBIRD_TOKEN
+optional_environment:
+  - TINYBIRD_API_HOST
+  - TINYBIRD_MCP_URL
+  - TINYBIRD_TIMEOUT_MS
+  - TINYBIRD_MAX_RETRIES
+  - TINYBIRD_ALLOW_WRITE
+  - TINYBIRD_APPROVED_ACTION_IDS
