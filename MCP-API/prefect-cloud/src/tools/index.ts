@@ -22,7 +22,7 @@ export const schemas = {
     limit: z.number().int().min(1).max(500).default(50),
     occurred_after: z.string().datetime({ offset: true }).optional(),
     occurred_before: z.string().datetime({ offset: true }).optional(),
-  }).strict().refine((v) => !v.occurred_after || !v.occurred_before || Date.parse(v.occurred_after) <= Date.parse(v.occurred_before), "occurred_after must not be later than occurred_before"),
+  }).strict(),
   automations: z.object({ workspace_id: Workspace, filter: Filter, limit: z.number().int().min(1).max(200).default(100) }).strict(),
   rateLimits: z.object({ workspace_id: Workspace, since: z.string().datetime({ offset: true }).optional(), until: z.string().datetime({ offset: true }).optional() }).strict(),
   workspaces: z.object({}).strict(),
@@ -89,6 +89,14 @@ function assertFallbackWorkspace(config: ConnectorConfig, requested?: unknown): 
   }
 }
 
+function validateTimeRange(args: Record<string, unknown>): void {
+  const after = typeof args.occurred_after === "string" ? Date.parse(args.occurred_after) : undefined;
+  const before = typeof args.occurred_before === "string" ? Date.parse(args.occurred_before) : undefined;
+  if (after !== undefined && before !== undefined && after > before) {
+    throw new Error("occurred_after must not be later than occurred_before");
+  }
+}
+
 async function readWithFallback(
   mcp: PrefectMcpCaller,
   api: PrefectApiClient,
@@ -96,6 +104,7 @@ async function readWithFallback(
   name: Exclude<ToolName, "prefect-cloud.deployment.run">,
   args: Record<string, unknown>,
 ): Promise<unknown> {
+  if (name === "prefect-cloud.event.read") validateTimeRange(args);
   const upstreamArgs = { ...args };
   delete upstreamArgs.offset;
   try {
