@@ -1,0 +1,58 @@
+id: ably
+name: Ably
+version: 1.0.0
+runtime: node >=20
+upstream:
+  - rest
+official_mcp: not_identified
+api:
+  base_url: https://rest.ably.io
+  docs: https://ably.com/docs/api/rest-api
+auth:
+  type: api_key_basic
+  env: ABLY_API_KEY
+  guidance: Server-side only; use a least-privilege Ably API key.
+required_capabilities:
+  publish: [publish]
+  message_history: [history]
+  presence_current: [subscribe]
+  presence_history: [history]
+  channel_metadata: [channel-metadata]
+  app_stats: [stats]
+capabilities:
+  - message.publish
+  - message.publish_batch
+  - message.history
+  - presence.get
+  - presence.history
+  - presence.batch_get
+  - channel.get
+  - channel.list
+  - stats.get
+  - service.time
+risk:
+  default: READ
+  tools:
+    ably.message.publish: HIGH_RISK
+    ably.message.publish_batch: HIGH_RISK
+    ably.message.history: READ
+    ably.presence.get: READ
+    ably.presence.history: READ
+    ably.presence.batch_get: READ
+    ably.channel.get: READ
+    ably.channel.list: READ
+    ably.stats.get: READ
+    ably.service.time: READ
+approval:
+  high_risk: explicit
+  destructive: disabled_by_default
+environment:
+  - ABLY_API_KEY
+  - ABLY_REST_BASE_URL
+  - ABLY_HTTP_TIMEOUT_MS
+  - ABLY_MAX_RETRIES
+  - ABLY_REQUIRE_WRITE_APPROVAL
+  - ABLY_ENABLE_DESTRUCTIVE
+security:
+  credentials_exposed_to_llm: false
+  provider_content_is_untrusted: true
