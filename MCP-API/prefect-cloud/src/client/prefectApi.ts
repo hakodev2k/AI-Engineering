@@ -103,7 +103,7 @@ export class PrefectApiClient {
 
   filter<T>(collection: "deployments" | "flows" | "flow_runs" | "task_runs" | "work_pools", filter: unknown, limit: number, offset: number): Promise<T> {
     const body: Record<string, unknown> = { limit, offset };
-    if (filter && typeof filter === "object") Object.assign(body, filter as object);
+    if (filter && typeof filter === "object") body[collection] = filter;
     return this.request<T>(`/${collection}/filter`, {
       method: "POST",
       body: JSON.stringify(body),
