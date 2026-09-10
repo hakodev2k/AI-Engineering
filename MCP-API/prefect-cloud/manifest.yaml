@@ -1,0 +1,92 @@
+id: prefect-cloud
+name: Prefect Cloud
+version: 1.0.0
+runtime: node>=20
+
+upstream:
+  - type: mcp
+    implementation: official
+    endpoint: https://prefect.fastmcp.app/mcp
+    transport: streamable-http-or-stdio
+    status: beta
+  - type: rest
+    implementation: official
+    base_url: configurable-PREFECT_API_URL
+
+auth:
+  mcp:
+    type: prefect-cloud-oauth-or-local-prefect-profile
+    credentials_remain_in_connector: true
+  rest:
+    type: bearer-api-key
+    header: Authorization
+    credentials_remain_in_connector: true
+
+capabilities:
+  - identity.get
+  - workspace.list_authorized
+  - dashboard.get
+  - deployment.list
+  - flow.list
+  - flow_run.list
+  - flow_run.logs
+  - task_run.list
+  - work_pool.list
+  - event.read
+  - automation.list
+  - rate_limit.review
+  - deployment.run
+
+risk:
+  default: READ
+  tools:
+    prefect-cloud.identity.get: READ
+    prefect-cloud.workspace.list_authorized: READ
+    prefect-cloud.dashboard.get: READ
+    prefect-cloud.deployment.list: READ
+    prefect-cloud.flow.list: READ
+    prefect-cloud.flow_run.list: READ
+    prefect-cloud.flow_run.logs: READ
+    prefect-cloud.task_run.list: READ
+    prefect-cloud.work_pool.list: READ
+    prefect-cloud.event.read: READ
+    prefect-cloud.automation.list: READ
+    prefect-cloud.rate_limit.review: READ
+    prefect-cloud.deployment.run: HIGH_RISK
+
+approval:
+  prefect-cloud.deployment.run:
+    required: true
+    execution_flag: PREFECT_ENABLE_EXECUTION
+    server_secret: PREFECT_APPROVAL_TOKEN
+    caller_confirmation: RUN_DEPLOYMENT
+
+required_environment:
+  read_via_hosted_mcp:
+    - PREFECT_MCP_ACCESS_TOKEN
+  read_via_local_mcp:
+    - PREFECT_API_URL
+    - PREFECT_API_KEY
+  rest_fallback_and_execution:
+    - PREFECT_API_URL
+    - PREFECT_API_KEY
+
+optional_environment:
+  - PREFECT_API_VERSION
+  - PREFECT_MCP_TRANSPORT
+  - PREFECT_MCP_URL
+  - PREFECT_MCP_COMMAND
+  - PREFECT_MCP_ARGS
+  - PREFECT_REQUEST_TIMEOUT_MS
+  - PREFECT_MAX_RETRIES
+  - PREFECT_MAX_RESPONSE_BYTES
+  - PREFECT_ENABLE_EXECUTION
+  - PREFECT_APPROVAL_TOKEN
+
+security:
+  arbitrary_provider_requests: false
+  upstream_mcp_tool_discovery_trusted_automatically: false
+  upstream_mcp_allowlist: true
+  destructive_tools_exposed: false
+  response_size_limit: true
+  non_local_plain_http_api_urls_rejected: true
