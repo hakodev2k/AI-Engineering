@@ -1,0 +1,43 @@
+id: mailjet
+name: Mailjet
+runtime: node>=20
+upstream:
+  - type: official-mcp
+    implementation: https://github.com/mailgun/mailjet-mcp-server
+    mode: local-stdio
+    note: "Official Mailjet MCP implementation exists; this connector exposes a smaller stable least-privilege surface over official APIs."
+  - type: rest
+    base_url: https://api.mailjet.com
+auth:
+  type: api-key-secret-basic-auth
+  environment:
+    - MAILJET_API_KEY
+    - MAILJET_SECRET_KEY
+capabilities:
+  - contact.list
+  - contact.get
+  - contact.create
+  - contact.update
+  - contactlist.list
+  - contactlist.get
+  - contactlist.create
+  - contactlist.add_contact
+  - contactlist.remove_contact
+  - message.list
+  - message.get
+  - sender.list
+  - template.list
+  - template.get
+  - campaign.list
+  - campaign.get
+  - email.send
+risk:
+  default: READ
+  write_approval: configurable_default_required
+  high_risk_approval: required
+  destructive_enabled: false
+tools:
+  READ: [mailjet.contact.list, mailjet.contact.get, mailjet.contactlist.list, mailjet.contactlist.get, mailjet.message.list, mailjet.message.get, mailjet.sender.list, mailjet.template.list, mailjet.template.get, mailjet.campaign.list, mailjet.campaign.get]
+  WRITE: [mailjet.contact.create, mailjet.contact.update, mailjet.contactlist.create, mailjet.contactlist.add_contact]
+  HIGH_RISK: [mailjet.contactlist.remove_contact, mailjet.email.send]
+  DESTRUCTIVE: []
