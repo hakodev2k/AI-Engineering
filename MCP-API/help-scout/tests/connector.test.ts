@@ -28,13 +28,13 @@ describe("Help Scout connector", () => {
   it("registers the expected scoped tool set", () => {
     const fetchFn = vi.fn() as unknown as typeof fetch;
     const { tools } = fixture(fetchFn);
-    expect(tools).toHaveLength(16);
+    expect(tools).toHaveLength(17);
     expect(tools.every(t => t.name.startsWith("helpscout."))).toBe(true);
     expect(new Set(tools.map(t => t.name)).size).toBe(tools.length);
   });
 
   it("performs a read operation with bearer auth", async () => {
-    const fetchMock = vi.fn(async (_url: URL | RequestInfo, init?: RequestInit) => {
+    const fetchMock = vi.fn(async (_url: any, init?: RequestInit) => {
       expect((init?.headers as Record<string, string>).Authorization).toBe("Bearer test-token");
       return new Response(JSON.stringify({ _embedded: { mailboxes: [] } }), { status: 200 });
     });
@@ -57,6 +57,20 @@ describe("Help Scout connector", () => {
     const { tools } = fixture(fetchFn, { HELPSCOUT_ALLOW_WRITE: "true" });
     const tool = tools.find(t => t.name === "helpscout.conversation.note.add")!;
     await expect(tool.run({ conversationId: 1, text: "internal note" })).rejects.toThrow(/approval/i);
+    expect(fetchFn).not.toHaveBeenCalled();
+  });
+
+  it("requires a separate high-risk gate for external replies", async () => {
+    const fetchFn = vi.fn() as unknown as typeof fetch;
+    const { tools } = fixture(fetchFn, { HELPSCOUT_ALLOW_WRITE: "true", HELPSCOUT_ALLOW_HIGH_RISK: "false" });
+    const tool = tools.find(t => t.name === "helpscout.conversation.reply.create")!;
+    await expect(tool.run({
+      conversationId: 1,
+      customerId: 2,
+      text: "draft",
+      draft: true,
+      confirmation: "APPROVE_HIGH_RISK"
+    })).rejects.toThrow(/High-risk operations are disabled/);
     expect(fetchFn).not.toHaveBeenCalled();
   });
 
