@@ -1,0 +1,50 @@
+id: temporal-cloud
+name: Temporal Cloud
+upstream:
+  - rest
+api:
+  base_url: https://saas-api.tmprl.cloud
+  reference: https://saas-api.tmprl.cloud/docs/httpapi.html
+auth:
+  type: api_key
+  header: Authorization
+  scheme: Bearer
+  least_privilege: true
+capabilities:
+  - account.get
+  - identity.get
+  - namespace.list
+  - namespace.get
+  - namespace.capacity.get
+  - region.list
+  - region.get
+  - user.list
+  - user.get
+  - service_account.list
+  - service_account.get
+  - audit_log.list
+  - operation.get
+  - namespace.create
+  - namespace.tags.update
+  - namespace.delete
+risk:
+  default: READ
+  write_requires_approval: true
+  high_risk_requires_approval: true
+  destructive_disabled_by_default: true
+environment:
+  required:
+    - TEMPORAL_CLOUD_API_KEY
+  optional:
+    - TEMPORAL_CLOUD_API_BASE_URL
+    - TEMPORAL_CLOUD_TIMEOUT_MS
+    - TEMPORAL_CLOUD_MAX_RETRIES
+    - TEMPORAL_CLOUD_ALLOW_WRITE
+    - TEMPORAL_CLOUD_ALLOW_HIGH_RISK
+    - TEMPORAL_CLOUD_ALLOW_DESTRUCTIVE
+    - TEMPORAL_CLOUD_APPROVAL_SECRET
+    - TEMPORAL_CLOUD_ALLOWED_ACCOUNT_ID
+security:
+  credentials_visible_to_llm: false
+  arbitrary_http_tool: false
+  provider_content_untrusted: true
