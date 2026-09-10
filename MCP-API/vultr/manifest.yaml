@@ -1,0 +1,55 @@
+id: vultr
+name: Vultr
+runtime: node >=20
+external_transport: mcp-stdio
+upstream:
+  - type: rest
+    base_url: https://api.vultr.com/v2
+    reason: "Stable scoped contracts and local approval gates; official Vultr MCP was evaluated but exposes a much broader generated surface."
+  - type: mcp
+    availability: official
+    endpoint: https://vultrmcp.com/
+    usage: documented-not-proxied
+auth:
+  type: api_key
+  header: "Authorization: Bearer <VULTR_API_KEY>"
+  least_privilege: "Vultr API keys are broad account credentials; restrict API access by user/IP and expose only this connector's curated tools."
+environment:
+  required:
+    - VULTR_API_KEY
+  optional:
+    - VULTR_API_BASE_URL
+    - VULTR_TIMEOUT_MS
+    - VULTR_MAX_RETRIES
+    - VULTR_REQUIRE_WRITE_APPROVAL
+    - VULTR_ENABLE_HIGH_RISK
+    - VULTR_ENABLE_DESTRUCTIVE
+    - VULTR_APPROVAL_SECRET
+risk:
+  default: READ
+  write_approval_default: true
+  high_risk_enabled_default: false
+  destructive_enabled_default: false
+capabilities:
+  - { tool: vultr.instance.list, risk: READ, approval: false }
+  - { tool: vultr.instance.get, risk: READ, approval: false }
+  - { tool: vultr.region.list, risk: READ, approval: false }
+  - { tool: vultr.region.availability, risk: READ, approval: false }
+  - { tool: vultr.plan.list, risk: READ, approval: false }
+  - { tool: vultr.os.list, risk: READ, approval: false }
+  - { tool: vultr.ssh_key.list, risk: READ, approval: false }
+  - { tool: vultr.firewall_group.list, risk: READ, approval: false }
+  - { tool: vultr.firewall_rule.list, risk: READ, approval: false }
+  - { tool: vultr.snapshot.list, risk: READ, approval: false }
+  - { tool: vultr.instance.tags.update, risk: WRITE, approval: true }
+  - { tool: vultr.instance.create, risk: HIGH_RISK, approval: true }
+  - { tool: vultr.instance.reboot, risk: HIGH_RISK, approval: true }
+  - { tool: vultr.snapshot.create, risk: HIGH_RISK, approval: true }
+  - { tool: vultr.instance.delete, risk: DESTRUCTIVE, approval: true, disabled_by_default: true }
+  - { tool: vultr.snapshot.delete, risk: DESTRUCTIVE, approval: true, disabled_by_default: true }
+security:
+  credentials_exposed_to_llm: false
+  arbitrary_http_tool: false
+  upstream_mcp_dynamic_tools_exposed: false
+  provider_content_untrusted: true
+  destructive_disabled_by_default: true
