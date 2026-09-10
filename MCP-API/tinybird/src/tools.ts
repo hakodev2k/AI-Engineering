@@ -34,7 +34,7 @@ export function registerTools(server: McpServer, api: TinybirdClient, upstream: 
 
   server.tool("tinybird.query.execute", "READ. Execute SQL through Tinybird's official MCP execute_query tool. The configured token determines accessible rows/resources.", {
     sql: z.string().min(1).max(131_072),
-    format: z.enum(["CSVWithNames", "JSON", "NDJSON"]).optional()
+    format: z.enum(["CSV", "CSVWithNames", "JSON", "TSV", "TSVWithNames", "PrettyCompact", "JSONEachRow", "Parquet", "Prometheus"]).optional()
   }, async ({ sql, format }) => result(await upstream.call("execute_query", { sql, ...(format ? { format } : {}) })));
 
   server.tool("tinybird.endpoint.call", "READ. Call one published Tinybird Pipe Endpoint through the official REST API. Endpoint name and scalar parameters are strictly validated.", {
