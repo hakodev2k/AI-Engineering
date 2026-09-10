@@ -1,0 +1,47 @@
+id: onesignal
+name: OneSignal
+runtime: node >=20
+upstream:
+  - type: mcp
+    trust: official
+    endpoint: https://api.onesignal.com/mcp/oauth
+    auth: oauth2
+    status: beta
+transport_strategy:
+  primary: official-mcp
+  api_fallback: disabled-for-selected-capabilities
+  rationale: Selected capabilities are provided by the official hosted MCP server; preserving its OAuth and built-in guardrails is safer than duplicating them with REST.
+auth:
+  type: oauth2-bearer
+  credential_env: ONESIGNAL_MCP_ACCESS_TOKEN
+  credential_isolation: connector-only
+capabilities:
+  - app.list
+  - message.list
+  - message.get
+  - message.send
+  - user.get
+  - user.identity.get
+  - user.identity.get_by_subscription
+  - user.create
+  - user.update
+  - subscription.create
+  - subscription.update
+  - template.list
+  - template.get
+  - segment.list
+  - segment.get
+  - analytics.outcomes.get
+risk:
+  default: READ
+  write_requires_configurable_approval: true
+  high_risk_requires_explicit_approval: true
+  destructive_tools_exposed: false
+env:
+  required: [ONESIGNAL_MCP_ACCESS_TOKEN]
+  optional: [ONESIGNAL_MCP_URL, ONESIGNAL_TIMEOUT_MS, ONESIGNAL_REQUIRE_WRITE_APPROVAL, ONESIGNAL_ALLOW_HIGH_RISK]
+security:
+  upstream_tool_allowlist: true
+  runtime_schema_validation: true
+  validates_upstream_results: true
+  treats_provider_content_as_untrusted: true
