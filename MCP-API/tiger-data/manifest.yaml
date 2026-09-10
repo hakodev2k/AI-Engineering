@@ -1,0 +1,55 @@
+id: tiger-data
+name: Tiger Data
+provider_aliases:
+  - Timescale
+  - Timescale Cloud
+  - Tiger Cloud
+upstream:
+  - mcp
+auth:
+  type: client_credentials_or_cli_session
+  environment:
+    - TIGER_PUBLIC_KEY
+    - TIGER_SECRET_KEY
+    - TIGER_SERVICE_ID
+transport:
+  type: stdio
+  command: tiger
+  args:
+    - mcp
+    - start
+capabilities:
+  - service.list
+  - service.get
+  - service.logs
+  - service.create
+  - service.fork
+  - service.start
+  - service.stop
+  - service.resize
+  - service.update_password
+  - database.schema
+  - database.query.read
+  - database.query.write
+risk:
+  default: READ
+  write_approval_configurable: true
+  high_risk_approval_required: true
+  destructive_exposed: false
+security:
+  credentials_visible_to_agent: false
+  provider_content_untrusted: true
+  dynamic_upstream_tools_allowed: false
+  write_default_enabled: false
+required_environment:
+  - TIGER_PUBLIC_KEY or authenticated tiger CLI session
+optional_environment:
+  - TIGER_SECRET_KEY
+  - TIGER_SERVICE_ID
+  - TIGER_CONNECTOR_ALLOW_WRITE
+  - TIGER_CONNECTOR_ALLOW_HIGH_RISK
+  - TIGER_CONNECTOR_REQUIRE_WRITE_APPROVAL
+  - TIGER_CONNECTOR_APPROVAL_SECRET
+  - TIGER_CONNECTOR_TIMEOUT_MS
+  - TIGER_CONNECTOR_MAX_RETRIES
+  - TIGER_CLI_PATH
