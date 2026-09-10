@@ -45,9 +45,25 @@ export class GcoreUpstream {
     return structuredClone(schema) as Record<string, unknown>;
   }
 
-  async call(upstreamName: string, args: Record<string, unknown>): Promise<unknown> {
+  async call(upstreamName: string, args: Record<string, unknown>, retryable = false): Promise<unknown> {
     await this.connect();
-    return this.withTimeout(this.client.callTool({ name: upstreamName, arguments: args }));
+    const attempts = retryable ? 3 : 1;
+    let lastError: unknown;
+    for (let attempt = 0; attempt < attempts; attempt++) {
+      try {
+        return await this.withTimeout(this.client.callTool({ name: upstreamName, arguments: args }));
+      } catch (error) {
+        lastError = error;
+        if (!retryable || !this.isTransient(error) || attempt === attempts - 1) throw error;
+        await new Promise((resolve) => setTimeout(resolve, Math.min(2000, 250 * 2 ** attempt)));
+      }
+    }
+    throw lastError;
+  }
+
+  private isTransient(error: unknown): boolean {
+    const message = error instanceof Error ? error.message.toLowerCase() : String(error).toLowerCase();
+    return /429|rate.?limit|timeout|timed out|temporar|502|503|504|connection reset|econnreset/.test(message);
   }
 
   private async withTimeout<T>(promise: Promise<T>): Promise<T> {
