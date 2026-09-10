@@ -1,0 +1,100 @@
+id: help-scout
+name: Help Scout
+version: 1.0.0
+runtime:
+  language: typescript
+  node: ">=20"
+
+upstream:
+  - type: rest
+    provider: Help Scout Inbox API
+    base_url: https://api.helpscout.net
+    api_versions:
+      - v2
+      - v3
+    official_mcp: false
+
+auth:
+  type: oauth2
+  documented_flows:
+    - authorization_code
+    - client_credentials
+  connector_modes:
+    - pre_obtained_access_token
+    - client_credentials
+  scopes: "Help Scout Inbox API documentation does not define granular OAuth scopes for these endpoints; effective access follows the authenticated Help Scout user/application permissions."
+  credentials_isolated: true
+  required_environment:
+    any_of:
+      - [HELPSCOUT_ACCESS_TOKEN]
+      - [HELPSCOUT_CLIENT_ID, HELPSCOUT_CLIENT_SECRET]
+  optional_environment:
+    - HELPSCOUT_API_BASE
+    - HELPSCOUT_TIMEOUT_MS
+    - HELPSCOUT_MAX_RETRIES
+    - HELPSCOUT_ALLOW_WRITE
+    - HELPSCOUT_REQUIRE_WRITE_APPROVAL
+    - HELPSCOUT_ALLOW_HIGH_RISK
+    - HELPSCOUT_WEBHOOK_SECRET
+
+rate_limits:
+  account_shared: true
+  plan_dependent: true
+  write_request_cost: 2
+  throttled_status: 429
+  headers:
+    - X-RateLimit-Limit-Minute
+    - X-RateLimit-Remaining-Minute
+    - X-RateLimit-Retry-After
+
+risk:
+  default: READ
+  write_enabled_by_default: false
+  high_risk_enabled_by_default: false
+  destructive_tools_exposed: false
+  approvals:
+    WRITE: APPROVE_WRITE
+    HIGH_RISK: APPROVE_HIGH_RISK
+
+capabilities:
+  - { tool: helpscout.mailbox.list, class: READ, transport: rest, approval: false }
+  - { tool: helpscout.mailbox.get, class: READ, transport: rest, approval: false }
+  - { tool: helpscout.user.list, class: READ, transport: rest, approval: false }
+  - { tool: helpscout.user.me, class: READ, transport: rest, approval: false }
+  - { tool: helpscout.conversation.list, class: READ, transport: rest, approval: false }
+  - { tool: helpscout.conversation.get, class: READ, transport: rest, approval: false }
+  - { tool: helpscout.conversation.threads.list, class: READ, transport: rest, approval: false }
+  - { tool: helpscout.customer.list, class: READ, transport: rest, approval: false }
+  - { tool: helpscout.customer.get, class: READ, transport: rest, approval: false }
+  - { tool: helpscout.conversation.create, class: WRITE, transport: rest, approval: configurable }
+  - { tool: helpscout.conversation.note.add, class: WRITE, transport: rest, approval: configurable }
+  - { tool: helpscout.conversation.reply.create, class: HIGH_RISK, transport: rest, approval: required }
+  - { tool: helpscout.conversation.status.update, class: WRITE, transport: rest, approval: configurable }
+  - { tool: helpscout.conversation.assignment.update, class: WRITE, transport: rest, approval: configurable }
+  - { tool: helpscout.conversation.tags.replace, class: WRITE, transport: rest, approval: configurable }
+  - { tool: helpscout.webhook.list, class: READ, transport: rest, approval: false }
+  - { tool: helpscout.webhook.create, class: HIGH_RISK, transport: rest, approval: required }
+
+security:
+  provider_content_untrusted: true
+  arbitrary_api_proxy_exposed: false
+  webhook_https_required: true
+  webhook_private_network_targets_blocked: true
+  webhook_secret_from_server_environment_only: true
+  automatic_permission_escalation: false
+
+official_sources:
+  - https://developer.helpscout.com/mailbox-api/
+  - https://developer.helpscout.com/mailbox-api/overview/authentication/
+  - https://developer.helpscout.com/mailbox-api/overview/rate-limiting/
+  - https://developer.helpscout.com/mailbox-api/endpoints/conversations/list/
+  - https://developer.helpscout.com/mailbox-api/endpoints/conversations/get-v3/
+  - https://developer.helpscout.com/mailbox-api/endpoints/conversations/threads/list-v3/
+  - https://developer.helpscout.com/mailbox-api/endpoints/customers/list-v3/
+  - https://developer.helpscout.com/mailbox-api/endpoints/conversations/create/
+  - https://developer.helpscout.com/mailbox-api/endpoints/conversations/threads/note/
+  - https://developer.helpscout.com/mailbox-api/endpoints/conversations/threads/reply/
+  - https://developer.helpscout.com/mailbox-api/endpoints/conversations/update/
+  - https://developer.helpscout.com/mailbox-api/endpoints/conversations/tags/update/
+  - https://developer.helpscout.com/mailbox-api/endpoints/webhooks/create/
+  - https://developer.helpscout.com/mailbox-api/changelog/
