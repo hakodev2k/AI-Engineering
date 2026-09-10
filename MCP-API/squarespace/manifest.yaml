@@ -1,0 +1,42 @@
+id: squarespace
+name: Squarespace
+upstream:
+  - rest
+api:
+  base_url: https://api.squarespace.com
+auth:
+  type: bearer
+  mechanisms:
+    - api_key
+    - oauth2_access_token
+  environment:
+    - SQUARESPACE_API_KEY
+    - SQUARESPACE_ACCESS_TOKEN
+capabilities:
+  - order.list
+  - order.get
+  - order.fulfill
+  - transaction.list
+  - transaction.get
+  - inventory.list
+  - inventory.adjust
+  - product.list
+  - product.get
+  - product.update
+  - contact.list
+  - contact.get
+  - contact.query
+  - contact.update
+risk:
+  default: read
+  write_requires_approval: true
+  high_risk_requires_approval: true
+  destructive_enabled: false
+environment:
+  - SQUARESPACE_API_BASE_URL
+  - SQUARESPACE_USER_AGENT
+  - SQUARESPACE_TIMEOUT_MS
+  - SQUARESPACE_MAX_RETRIES
+  - SQUARESPACE_REQUIRE_WRITE_APPROVAL
+  - SQUARESPACE_ENABLE_HIGH_RISK
+  - SQUARESPACE_APPROVAL_SECRET
