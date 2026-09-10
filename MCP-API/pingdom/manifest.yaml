@@ -1,0 +1,45 @@
+id: pingdom
+name: Pingdom
+version: 1.0.0
+upstream:
+  - rest
+official_mcp: false
+api:
+  base_url: https://api.pingdom.com/api/3.1
+  version: "3.1"
+auth:
+  type: bearer-token
+  environment: PINGDOM_API_TOKEN
+  least_privilege: "Use a Read token for read-only deployments; use Read/Write only when write tools are required."
+capabilities:
+  - check.list
+  - check.get
+  - check.summary
+  - check.create
+  - check.update
+  - check.delete
+  - probe.list
+  - alert.list
+  - maintenance.list
+  - maintenance.get
+  - maintenance.occurrence.list
+  - maintenance.create
+  - maintenance.update
+  - maintenance.delete
+  - account.credits.get
+risk:
+  default: READ
+  write_requires_approval: true
+  destructive_disabled_by_default: true
+environment:
+  required:
+    - PINGDOM_API_TOKEN
+    - PINGDOM_APPROVAL_SECRET
+  optional:
+    - PINGDOM_API_BASE_URL
+    - PINGDOM_TIMEOUT_MS
+    - PINGDOM_MAX_READ_RETRIES
+    - PINGDOM_ENABLE_DESTRUCTIVE
+transport:
+  external: mcp-stdio
+  upstream: rest
