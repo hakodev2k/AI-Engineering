@@ -1,0 +1,42 @@
+id: planetscale
+name: PlanetScale
+runtime: node20
+upstream:
+  - type: mcp
+    endpoint: https://mcp.pscale.dev/mcp
+    official: true
+auth:
+  type: bearer_service_token
+  environment:
+    - PLANETSCALE_MCP_TOKEN
+capabilities:
+  - organization.list
+  - organization.get
+  - database.list
+  - database.get
+  - branch.list
+  - branch.get
+  - branch.schema
+  - insights.get
+  - schema_recommendation.list
+  - query_tag.list
+  - query_tag.get
+  - query_tag.summary
+  - postgres.logs
+  - query.read
+  - query.write
+risk:
+  default: READ
+  high_risk:
+    - query.write
+approval:
+  high_risk: required
+  write_enabled_by_default: false
+reliability:
+  retry_reads_only: true
+  max_retries_env: PLANETSCALE_MAX_RETRIES
+  timeout_env: PLANETSCALE_TIMEOUT_MS
+security:
+  provider_content_untrusted: true
+  dynamic_upstream_tools: false
+  credentials_exposed_to_llm: false
