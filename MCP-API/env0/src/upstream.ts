@@ -19,10 +19,16 @@ export class Env0McpClient implements Env0Upstream {
     if (this.client) return;
     if (!this.connecting) this.connecting = (async () => {
       const client = new Client({ name: 'ai-engineering-env0-connector', version: '1.0.0' });
-      const args = ['run','-i','--rm','-e',`ENV0_API_KEY=${this.config.apiKey}`,'-e',`ENV0_API_SECRET=${this.config.apiSecret}`];
-      if (this.config.organizationId) args.push('-e', `ENV0_ORGANIZATION_ID=${this.config.organizationId}`);
+      const args = ['run','-i','--rm','-e','ENV0_API_KEY','-e','ENV0_API_SECRET'];
+      if (this.config.organizationId) args.push('-e', 'ENV0_ORGANIZATION_ID');
       args.push(this.config.image);
-      const transport = new StdioClientTransport({ command: 'docker', args });
+      const childEnv: Record<string, string> = {
+        ...Object.fromEntries(Object.entries(process.env).filter((entry): entry is [string, string] => typeof entry[1] === 'string')),
+        ENV0_API_KEY: this.config.apiKey,
+        ENV0_API_SECRET: this.config.apiSecret
+      };
+      if (this.config.organizationId) childEnv.ENV0_ORGANIZATION_ID = this.config.organizationId;
+      const transport = new StdioClientTransport({ command: 'docker', args, env: childEnv });
       await client.connect(transport);
       const advertised = new Set((await client.listTools()).tools.map(t => t.name));
       for (const name of ALLOWED_UPSTREAM_TOOLS) if (!advertised.has(name)) throw new Error(`Official env0 MCP no longer advertises expected tool: ${name}`);
