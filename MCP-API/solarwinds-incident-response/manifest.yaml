@@ -1,0 +1,45 @@
+id: solarwinds-incident-response
+name: SolarWinds Incident Response
+aliases:
+  - Squadcast
+upstream:
+  - rest
+  - official-sdk-available
+official_mcp:
+  available: false
+api:
+  us_base_url: https://api.squadcast.com
+  eu_base_url: https://api.eu.squadcast.com
+  us_auth_url: https://auth.squadcast.com/oauth/access-token
+  eu_auth_url: https://auth.eu.squadcast.com/oauth/access-token
+auth:
+  type: refresh-token-exchange
+  credential_env: SOLARWINDS_IR_REFRESH_TOKEN
+  access_token_transport: bearer
+  access_control: provider-role-based
+capabilities:
+  - incident.read
+  - incident.events.read
+  - incident.acknowledge
+  - service.list
+  - team.list
+  - schedule.list
+  - schedule.read
+  - schedule.pause
+  - schedule.resume
+  - schedule.override.list
+  - analytics.organization.read
+  - analytics.team.read
+  - audit_log.list
+risk:
+  default: READ
+  write_requires_approval: true
+  destructive_tools_exposed: false
+approval:
+  token_env: SOLARWINDS_IR_APPROVAL_TOKEN
+environment:
+  - SOLARWINDS_IR_REGION
+  - SOLARWINDS_IR_REFRESH_TOKEN
+  - SOLARWINDS_IR_APPROVAL_TOKEN
+  - SOLARWINDS_IR_TIMEOUT_MS
+  - SOLARWINDS_IR_MAX_RETRIES
