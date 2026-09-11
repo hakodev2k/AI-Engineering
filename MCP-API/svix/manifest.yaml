@@ -1,0 +1,42 @@
+id: svix
+name: Svix
+upstream:
+  - rest
+  - official-mcp-available-for-app-portal-debugging
+auth:
+  type: bearer-api-token
+  env: SVIX_API_TOKEN
+api:
+  base_url: https://api.svix.com
+mcp:
+  official_app_portal:
+    available: true
+    scope: single application consumer debugging
+    transport: http
+    note: not used for operator/admin tools in this connector because its app-scoped consumer token is narrower than the server-side API workflow
+capabilities:
+  - application.list
+  - application.get
+  - application.create
+  - application.update
+  - endpoint.list
+  - endpoint.get
+  - endpoint.create
+  - endpoint.update
+  - message.list
+  - message.get
+  - message.create
+  - message_attempt.list
+  - message_attempt.resend
+risk:
+  default: read
+  write_approval_configurable: true
+  external_delivery_requires_approval: true
+env:
+  required:
+    - SVIX_API_TOKEN
+  optional:
+    - SVIX_API_BASE_URL
+    - SVIX_REQUEST_TIMEOUT_MS
+    - SVIX_REQUIRE_WRITE_APPROVAL
+    - SVIX_APPROVAL_TOKENS
