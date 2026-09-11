@@ -4,7 +4,6 @@ import type { ConnectorConfig } from "./config.js";
 
 export class OpenObserveMcpClient {
   private client?: Client;
-  private transport?: StreamableHTTPClientTransport;
 
   constructor(private readonly config: ConnectorConfig) {}
 
@@ -16,19 +15,19 @@ export class OpenObserveMcpClient {
     const client = new Client({ name: "openobserve-connector", version: "1.0.0" });
     await client.connect(transport);
     this.client = client;
-    this.transport = transport;
     return client;
   }
 
   async callTool(name: string, args: Record<string, unknown>): Promise<unknown> {
     const client = await this.ensureConnected();
-    return client.callTool({ name, arguments: args });
+    const result = await client.callTool({ name, arguments: args });
+    if (typeof result === "object" && result !== null && "isError" in result && result.isError === true) {
+      throw new Error(`OpenObserve MCP tool ${name} returned an error result`);
+    }
+    return result;
   }
 
   async close(): Promise<void> {
-    try { await this.client?.close(); } finally {
-      this.client = undefined;
-      this.transport = undefined;
-    }
+    try { await this.client?.close(); } finally { this.client = undefined; }
   }
 }
