@@ -1,0 +1,46 @@
+id: sematext
+name: Sematext
+runtime: node>=20
+upstream:
+  - rest
+mcp:
+  official_server: false
+api:
+  region_aware: true
+  us_base: https://apps.sematext.com
+  eu_base: https://apps.eu.sematext.com
+auth:
+  type: api_key
+  header: Authorization
+  format: "apiKey <SEMATEXT_API_KEY>"
+  required_env:
+    - SEMATEXT_API_KEY
+    - SEMATEXT_REGION
+capabilities:
+  - app.list
+  - synthetics.monitor.list
+  - synthetics.monitor.get
+  - synthetics.monitor.run
+  - synthetics.monitor.create_http
+  - synthetics.monitor.create_browser
+  - logs.search
+  - event.search
+  - event.create
+risk:
+  default: READ
+  tools:
+    sematext.app.list: READ
+    sematext.synthetics.monitor.list: READ
+    sematext.synthetics.monitor.get: READ
+    sematext.synthetics.monitor.run: WRITE
+    sematext.synthetics.monitor.create_http: WRITE
+    sematext.synthetics.monitor.create_browser: WRITE
+    sematext.logs.search: READ
+    sematext.event.search: READ
+    sematext.event.create: WRITE
+approval:
+  write_required_by_default: true
+  destructive_tools_enabled: false
+security:
+  credentials_exposed_to_llm: false
+  provider_content_untrusted: true
