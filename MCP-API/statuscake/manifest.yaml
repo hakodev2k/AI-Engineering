@@ -1,0 +1,52 @@
+id: statuscake
+name: StatusCake
+version: 1.0.0
+upstream:
+  - rest
+api_base_url: https://api.statuscake.com/v1
+official_mcp: false
+auth:
+  type: bearer_token
+  env: STATUSCAKE_API_TOKEN
+capabilities:
+  - uptime.list
+  - uptime.get
+  - uptime.history
+  - uptime.alerts
+  - uptime.create
+  - uptime.update
+  - uptime.delete
+  - heartbeat.list
+  - heartbeat.get
+  - ssl.list
+  - ssl.get
+  - pagespeed.list
+  - pagespeed.get
+  - maintenance_window.list
+  - maintenance_window.create
+  - maintenance_window.delete
+  - contact_group.list
+  - contact_group.get
+  - location.list
+risk:
+  default: READ
+approval:
+  WRITE: configurable
+  HIGH_RISK: required
+  DESTRUCTIVE: required_and_disabled_by_default
+environment:
+  required:
+    - STATUSCAKE_API_TOKEN
+  optional:
+    - STATUSCAKE_API_BASE_URL
+    - STATUSCAKE_TIMEOUT_MS
+    - STATUSCAKE_MAX_RETRIES
+    - STATUSCAKE_REQUIRE_WRITE_APPROVAL
+    - STATUSCAKE_ENABLE_DESTRUCTIVE
+security:
+  credentials_exposed_to_llm: false
+  provider_content_trusted_as_instructions: false
+notes:
+  - StatusCake API v1 uses HTTPS Bearer authentication.
+  - No official StatusCake MCP server was identified in official developer documentation as of 2026-09-11; this connector wraps the official REST API behind MCP tools.
+  - Free/unsubscribed accounts are limited to 60 requests/minute and all accounts are subject to a 5 requests/second burst limit according to official documentation.
