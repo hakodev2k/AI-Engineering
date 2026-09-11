@@ -1,0 +1,42 @@
+id: instatus
+name: Instatus
+upstream:
+  - rest
+auth:
+  type: bearer-api-key
+  env: INSTATUS_API_KEY
+api:
+  base_url: https://api.instatus.com/v1
+official_mcp: false
+capabilities:
+  - page.list
+  - page.get
+  - component.list
+  - component.get
+  - component.update
+  - incident.list
+  - incident.get
+  - incident.create
+  - incident.update
+  - incident.delete
+  - maintenance.list
+  - maintenance.get
+  - maintenance.create
+  - maintenance.delete
+risk:
+  default: READ
+  WRITE: [component.update]
+  HIGH_RISK: [incident.create, incident.update, maintenance.create]
+  DESTRUCTIVE: [incident.delete, maintenance.delete]
+approval:
+  write: configurable
+  high_risk: explicit
+  destructive: disabled_by_default_and_explicit
+required_env:
+  - INSTATUS_API_KEY
+optional_env:
+  - INSTATUS_API_BASE
+  - INSTATUS_TIMEOUT_MS
+  - INSTATUS_MAX_RETRIES
+  - INSTATUS_APPROVE_WRITES
+  - INSTATUS_ENABLE_DESTRUCTIVE
