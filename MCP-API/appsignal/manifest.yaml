@@ -1,0 +1,64 @@
+id: appsignal
+name: AppSignal
+upstream:
+  - mcp
+transport:
+  mcp:
+    endpoint: https://appsignal.com/api/mcp
+    official: true
+    status: preview
+auth:
+  type: bearer_token
+  token_kind: AppSignal MCP token
+  least_privilege: true
+  notes: Use a token scoped to required applications and enable only required toolsets. OAuth is supported by AppSignal directly, while this reusable local wrapper uses a bearer MCP token for non-interactive credential isolation.
+environment:
+  required:
+    - APPSIGNAL_MCP_TOKEN
+  optional:
+    - APPSIGNAL_MCP_URL
+    - APPSIGNAL_TIMEOUT_MS
+    - APPSIGNAL_WRITE_APPROVAL_REQUIRED
+capabilities:
+  - app.resources
+  - logging.search
+  - metric.names
+  - metric.tags
+  - metric.timeseries
+  - metric.aggregate
+  - uptime.errors
+  - uptime.duration
+  - deploy.list
+  - user.list
+  - notifier.list
+  - log_source.list
+risk:
+  default: READ
+  tools:
+    appsignal.app.resources: READ
+    appsignal.logging.search: READ
+    appsignal.metric.names: READ
+    appsignal.metric.tags: READ
+    appsignal.metric.timeseries: READ
+    appsignal.metric.aggregate: READ
+    appsignal.uptime.errors: READ
+    appsignal.uptime.duration: READ
+    appsignal.deploy.list: READ
+    appsignal.user.list: READ
+    appsignal.notifier.list: READ
+    appsignal.log_source.list: READ
+approval:
+  read: false
+  write: configurable
+  high_risk: required
+  destructive: disabled_by_default
+security:
+  upstream_tool_allowlist:
+    - get_app_resources
+    - get_log_lines
+    - get_metric_names
+    - get_metric_tags
+    - get_metrics_timeseries
+    - get_metrics_list
+  provider_content_is_untrusted: true
+  credentials_exposed_to_llm: false
