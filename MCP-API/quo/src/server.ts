@@ -9,7 +9,8 @@ const config = loadConfig();
 const tools = buildTools(new QuoClient(config), config);
 const server = new McpServer({ name: "quo-connector", version: "1.0.0" });
 
-const schemas: Record<keyof typeof tools, z.ZodTypeAny> = {
+type AnyObject = z.ZodObject<z.ZodRawShape>;
+const schemas: Record<keyof typeof tools, AnyObject> = {
   "quo.phone_number.list": z.object({ userId: z.string().optional() }),
   "quo.conversation.list": z.object({ phoneNumbers: z.array(z.string()).optional(), userId: z.string().optional(), createdAfter: z.string().optional(), createdBefore: z.string().optional(), excludeInactive: z.boolean().optional(), maxResults: z.number().optional(), pageToken: z.string().optional() }),
   "quo.message.list": z.object({ phoneNumberId: z.string(), participants: z.array(z.string()), userId: z.string().optional(), createdAfter: z.string().optional(), createdBefore: z.string().optional(), maxResults: z.number().optional(), pageToken: z.string().optional() }),
