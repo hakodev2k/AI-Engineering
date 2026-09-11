@@ -1,0 +1,56 @@
+id: firehydrant
+name: FireHydrant
+upstream:
+  - mcp
+  - rest
+transport:
+  official_mcp:
+    status: available
+    package: firehydrant-mcp
+    mode: local-stdio
+    note: "Official beta server exposes a small generated tool set; this connector uses the REST API for deterministic scoped contracts and to avoid passing API keys on a subprocess command line."
+  rest:
+    base_url_us: https://api.firehydrant.io/v1
+    read_only_url_us: https://api-read.firehydrant.io/v1
+    base_url_eu: https://api.eu.firehydrant.io/v1
+auth:
+  type: api_key
+  header: Authorization
+  scheme: Bearer
+  environment: FIREHYDRANT_API_KEY
+permissions:
+  read: READ
+  write: WRITE
+  high_risk: HIGH_RISK
+capabilities:
+  - incident.list
+  - incident.get
+  - incident.events.list
+  - incident.alerts.list
+  - incident.links.list
+  - incident.status_pages.list
+  - incident.metrics
+  - incident.mean_time
+  - team.list
+  - runbook.actions.list
+  - incident.create
+  - incident.alert.attach
+  - runbook.execute
+  - incident.close
+risk:
+  default: read
+  approval_required:
+    - incident.create
+    - incident.alert.attach
+    - runbook.execute
+    - incident.close
+  high_risk_disabled_by_default:
+    - runbook.execute
+    - incident.close
+environment:
+  - FIREHYDRANT_API_KEY
+  - FIREHYDRANT_REGION
+  - FIREHYDRANT_TIMEOUT_MS
+  - FIREHYDRANT_MAX_RETRIES
+  - FIREHYDRANT_WRITE_APPROVAL_REQUIRED
+  - FIREHYDRANT_HIGH_RISK_ENABLED
