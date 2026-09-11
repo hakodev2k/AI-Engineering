@@ -1,0 +1,57 @@
+id: cronitor
+name: Cronitor
+runtime: node>=20
+upstream:
+  - rest
+  - telemetry
+mcp:
+  official_upstream_server: false
+  external_interface: stdio
+api:
+  base_url: https://cronitor.io/api
+  version: 2025-11-28
+  telemetry_base_url: https://cronitor.link
+auth:
+  type: api_key_basic_auth
+  scopes:
+    read:
+      - monitor:read
+      - issue:read
+      - statuspage:read
+    write:
+      - monitor:write
+      - issue:write
+      - statuspage:write
+    telemetry:
+      - monitor:telemetry
+environment:
+  - CRONITOR_API_KEY
+  - CRONITOR_TELEMETRY_KEY
+  - CRONITOR_API_BASE
+  - CRONITOR_TELEMETRY_BASE
+  - CRONITOR_API_VERSION
+  - CRONITOR_REQUIRE_WRITE_APPROVAL
+  - CRONITOR_ENABLE_DESTRUCTIVE
+  - CRONITOR_TIMEOUT_MS
+risk:
+  default: READ
+  write_requires_approval: true
+  destructive_disabled_by_default: true
+capabilities:
+  - monitor.list
+  - monitor.get
+  - monitor.create
+  - monitor.update
+  - monitor.pause
+  - monitor.delete
+  - issue.list
+  - issue.get
+  - issue.create
+  - issue.update
+  - issue.delete
+  - statuspage.list
+  - statuspage.get
+  - statuspage.create
+  - statuspage.update
+  - statuspage.delete
+  - telemetry.send
