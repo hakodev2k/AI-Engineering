@@ -1,0 +1,61 @@
+id: env0
+name: env0
+version: 1.0.0
+runtime:
+  language: typescript
+  node: ">=20"
+upstream:
+  - type: mcp
+    implementation: official
+    repository: https://github.com/env0/mcp-server
+    transport: stdio
+    launcher: docker
+    image: env0/mcp-server
+auth:
+  type: api_key_pair
+  credentials:
+    - ENV0_API_KEY
+    - ENV0_API_SECRET
+  optional:
+    - ENV0_ORGANIZATION_ID
+  least_privilege: "Use a dedicated env0 API key limited by env0-side permissions to only the organizations/projects required by the agent."
+environment:
+  required:
+    - ENV0_API_KEY
+    - ENV0_API_SECRET
+  optional:
+    - ENV0_ORGANIZATION_ID
+    - ENV0_MCP_IMAGE
+    - ENV0_TIMEOUT_MS
+    - ENV0_REQUIRE_WRITE_APPROVAL
+    - ENV0_ENABLE_DESTRUCTIVE
+capabilities:
+  - project.list
+  - environment.list
+  - deployment.search
+  - deployment.context.get
+  - environment.plan_logs.get
+  - environment.error_analysis.get
+  - cloud_configuration.list
+  - cloud_resource.search
+  - environment.deploy
+  - environment.abort
+  - environment.approve
+  - environment.cancel
+  - iac.generate
+  - iac_job.get
+risk:
+  default: READ
+  approvals:
+    READ: none
+    WRITE: configurable_explicit_approval
+    HIGH_RISK: explicit_human_approval
+    DESTRUCTIVE: disabled_by_default
+  notes:
+    - "Deployment, abort, approval, and cancellation operations are classified HIGH_RISK."
+    - "No destructive env0 tool is exposed by this connector."
+security:
+  credentials_exposed_to_llm: false
+  upstream_tool_allowlist: true
+  provider_content_untrusted: true
+  unexpected_upstream_capabilities: fail_closed
