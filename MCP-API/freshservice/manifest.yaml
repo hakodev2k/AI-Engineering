@@ -1,0 +1,30 @@
+id: freshservice
+name: Freshservice
+upstream:
+  - mcp
+auth:
+  type: api_key
+  header: Authorization
+mcp_endpoint: https://<your-domain>.freshservice.com/mcp
+capabilities:
+  - ticket.list
+  - ticket.get
+  - ticket.search
+  - ticket.create
+  - ticket.update
+  - ticket.note.create
+  - asset.list
+  - asset.get
+  - agent.list
+  - requester.list
+  - service_catalog.search
+  - solution_article.search
+risk:
+  default: read
+  write_requires_approval: true
+required_environment:
+  - FRESHSERVICE_DOMAIN
+  - FRESHSERVICE_API_KEY
+optional_environment:
+  - FRESHSERVICE_ALLOW_WRITE
+  - FRESHSERVICE_TIMEOUT_MS
