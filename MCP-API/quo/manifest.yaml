@@ -1,0 +1,42 @@
+id: quo
+name: Quo
+aliases:
+  - OpenPhone
+upstream:
+  - mcp
+  - rest
+transport:
+  default: rest
+  notes: "Quo provides an official first-party MCP integration for ChatGPT and Claude, but this reusable connector uses the documented public REST API because the generic remote MCP endpoint/auth contract is not documented for arbitrary MCP clients."
+auth:
+  type: api_key
+  header: Authorization
+  required_environment:
+    - QUO_API_KEY
+api:
+  base_url: https://api.openphone.com/v1
+mcp:
+  official: true
+  status: beta
+  generic_endpoint_documented: false
+capabilities:
+  - phone_number.list
+  - conversation.list
+  - message.list
+  - message.send
+  - call.list
+  - call.transcript.get
+  - call.summary.get
+  - contact.list
+  - contact.get
+  - contact.custom_field.list
+  - contact.create
+  - contact.update
+  - contact.delete
+risk:
+  default: READ
+  write_approval: configurable
+  high_risk_approval: required
+  destructive_enabled_by_default: false
+rate_limits:
+  requests_per_second_per_api_key: 10
