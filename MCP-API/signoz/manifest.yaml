@@ -1,0 +1,44 @@
+id: signoz
+name: SigNoz
+upstream:
+  - mcp
+  - rest
+mcp:
+  official: true
+  cloud_endpoint: https://mcp.<region>.signoz.cloud/mcp
+  self_hosted: true
+auth:
+  type: api-key
+  header: SIGNOZ-API-KEY
+  credential_isolation: true
+api:
+  base_url: ${SIGNOZ_URL}
+  query_endpoint: /api/v5/query_range
+capabilities:
+  - org.overview
+  - metric.list
+  - metric.query
+  - service.list
+  - alert.list
+  - alert.get
+  - alert.create
+  - alert.update
+  - alert.delete
+  - dashboard.list
+  - dashboard.get
+  - log.search
+  - trace.search
+  - trace.get
+risk:
+  default: READ
+  writes_require_approval: true
+  destructive_disabled_by_default: true
+env:
+  required:
+    - SIGNOZ_MCP_URL
+    - SIGNOZ_URL
+    - SIGNOZ_API_KEY
+  optional:
+    - SIGNOZ_TIMEOUT_MS
+    - SIGNOZ_ALLOW_WRITE
+    - SIGNOZ_ALLOW_DESTRUCTIVE
