@@ -1,0 +1,58 @@
+id: openobserve
+name: OpenObserve
+version: 1.0.0
+runtime: node>=20
+upstream:
+  - mcp
+  - rest
+mcp:
+  official: true
+  endpoint_template: "${OPENOBSERVE_BASE_URL}/api/${OPENOBSERVE_ORG_ID}/mcp"
+api:
+  base_url_env: OPENOBSERVE_BASE_URL
+auth:
+  type: basic
+  credential_env:
+    - OPENOBSERVE_AUTH_TOKEN
+    - OPENOBSERVE_EMAIL
+    - OPENOBSERVE_PASSWORD
+  notes: "Use a dedicated least-privilege OpenObserve identity. Enterprise/Cloud RBAC is recommended for agent use."
+capabilities:
+  - stream.list
+  - stream.schema
+  - search.sql
+  - search.values
+  - trace.latest
+  - metrics.range_query
+  - search.profile
+  - cluster.info
+risk:
+  default: READ
+  write_tools: []
+  high_risk_tools: []
+  destructive_tools: []
+approval:
+  read: automatic
+  write: not_exposed
+  high_risk: not_exposed
+  destructive: not_exposed
+environment:
+  required:
+    - OPENOBSERVE_BASE_URL
+    - OPENOBSERVE_ORG_ID
+  credential_alternatives:
+    - OPENOBSERVE_AUTH_TOKEN
+    - OPENOBSERVE_EMAIL+OPENOBSERVE_PASSWORD
+  optional:
+    - OPENOBSERVE_MCP_URL
+    - OPENOBSERVE_TIMEOUT_MS
+    - OPENOBSERVE_MAX_RETRIES
+    - OPENOBSERVE_ALLOW_REST_FALLBACK
+security:
+  credentials_to_llm: false
+  upstream_tool_allowlist:
+    - StreamList
+    - StreamSchema
+    - SearchSQL
+    - GetLatestTraces
+    - PrometheusRangeQuery
