@@ -1,0 +1,70 @@
+id: harness
+name: Harness
+version: 1.0.0
+upstream:
+  official_mcp:
+    endpoint: https://mcp.harness.io/mcp
+    status: available
+    transport: streamable-http
+    auth: oauth
+    note: Hosted MCP is SaaS-only and requires Harness OAuth enablement. Tool exposure follows Harness licensing and RBAC.
+  rest:
+    endpoint: https://app.harness.io
+    status: primary_for_this_connector
+    auth: x-api-key
+auth:
+  type: api_key
+  header: x-api-key
+  required_environment:
+    - HARNESS_API_KEY
+    - HARNESS_ACCOUNT_ID
+    - HARNESS_ORG_ID
+    - HARNESS_PROJECT_ID
+capabilities:
+  - pipeline.list
+  - pipeline.get
+  - execution.list
+  - execution.get
+  - service.list
+  - service.get
+  - service.create
+  - service.update
+  - connector.list
+  - connector.get
+  - user_group.list
+  - cloud_egress_ip.list
+risk:
+  default: READ
+  tools:
+    harness.pipeline.list: READ
+    harness.pipeline.get: READ
+    harness.execution.list: READ
+    harness.execution.get: READ
+    harness.service.list: READ
+    harness.service.get: READ
+    harness.service.create: WRITE
+    harness.service.update: WRITE
+    harness.connector.list: READ
+    harness.connector.get: READ
+    harness.user_group.list: READ
+    harness.cloud_egress_ip.list: READ
+approval:
+  writes: required
+  high_risk: required
+  destructive: disabled
+reliability:
+  timeout_ms_env: HARNESS_TIMEOUT_MS
+  max_retries_env: HARNESS_MAX_RETRIES
+  retry_statuses: [429, 502, 503, 504]
+  never_retry_statuses: [400, 401, 403, 404, 409, 422]
+security:
+  credential_exposure_to_llm: false
+  arbitrary_http_tool: false
+  untrusted_provider_content: true
+  ssrf: base_url_allowlist
+sources:
+  - https://developer.harness.io/docs/platform/harness-ai/connect-with-ai/harness-mcp-server/hosted-mcp/
+  - https://apidocs.harness.io/section/introduction
+  - https://apidocs.harness.io/pipeline-execution-details/getlistofexecutions
+  - https://apidocs.harness.io/services
+  - https://apidocs.harness.io/connectors/getconnectorlist
