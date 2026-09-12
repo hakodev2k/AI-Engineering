@@ -1,0 +1,47 @@
+id: lever
+name: Lever
+upstream:
+  - rest
+official_mcp: false
+api_base_url: https://api.lever.co/v1
+auth:
+  type: api_key_basic
+  environment:
+    - LEVER_API_KEY
+  note: API key is sent as the HTTP Basic username with an empty password.
+required_permissions:
+  - opportunities:read
+  - postings:read
+  - users:read
+  - stages:read
+  - sources:read
+  - applications:read
+  - notes:read
+  - opportunities:write
+  - notes:write
+capabilities:
+  - opportunity.list
+  - opportunity.read
+  - opportunity.create
+  - opportunity.stage.update
+  - posting.list
+  - posting.read
+  - user.list
+  - user.read
+  - stage.list
+  - stage.read
+  - source.list
+  - application.list
+  - note.list
+  - note.create
+risk:
+  default: READ
+  write_requires_approval: true
+  high_risk_requires_explicit_approval: true
+  destructive_tools: disabled
+confidential_data:
+  default: disabled
+  enable_environment: LEVER_ALLOW_CONFIDENTIAL
+transport:
+  external: mcp_stdio
+  upstream: official_rest_api
