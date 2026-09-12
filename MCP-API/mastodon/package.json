@@ -1,0 +1,21 @@
+{
+  "name": "@daily-mcp/mastodon",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/src/server.js",
+    "test": "node --import tsx --test tests/*.test.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.17.4",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/node": "^22.18.3",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2"
+  },
+  "engines": { "node": ">=20" }
+}
