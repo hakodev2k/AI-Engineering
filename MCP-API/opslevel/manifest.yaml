@@ -1,5 +1,57 @@
-OPSLEVEL_API_TOKEN=
-OPSLEVEL_GRAPHQL_URL=https://api.opslevel.com/graphql
-OPSLEVEL_TIMEOUT_MS=15000
-OPSLEVEL_MAX_RETRIES=2
-OPSLEVEL_WRITE_APPROVAL=required
+id: opslevel
+name: OpsLevel
+version: 1.0.0
+upstream:
+  official_mcp:
+    endpoint: https://app.opslevel.com/mcp
+    status: available
+    access: read-only
+    used_by_connector: false
+    reason: browser-OAuth remote MCP is not suitable for deterministic headless API-token execution; official GraphQL provides the implemented read/write workflows
+  graphql:
+    endpoint: https://api.opslevel.com/graphql
+    status: primary
+auth:
+  type: api_token
+  header: Authorization
+  scheme: Bearer
+  environment:
+    - OPSLEVEL_API_TOKEN
+capabilities:
+  - account.read
+  - service.list
+  - service.read
+  - service.create
+  - service.update
+  - service.tags.assign
+  - team.list
+  - system.list
+  - domain.list
+  - integration.list
+risk:
+  default: READ
+  write_tools:
+    - opslevel.service.create
+    - opslevel.service.update
+    - opslevel.service.tags.assign
+  destructive_tools: []
+approval:
+  writes: required
+  destructive: disabled
+rate_limits:
+  api_token: 400 requests/minute
+  ip: 10000 requests/5_minutes
+  headers:
+    remaining: RateLimit-Remaining
+    retry_after: RateLimit-Retry-After
+required_environment:
+  - OPSLEVEL_API_TOKEN
+optional_environment:
+  - OPSLEVEL_GRAPHQL_URL
+  - OPSLEVEL_TIMEOUT_MS
+  - OPSLEVEL_MAX_RETRIES
+  - OPSLEVEL_WRITE_APPROVED
+security:
+  untrusted_provider_content: true
+  arbitrary_graphql_tool: false
+  credential_exposure_to_llm: false
