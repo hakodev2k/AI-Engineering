@@ -1,0 +1,54 @@
+id: port
+name: Port
+version: 1.0.0
+upstream:
+  - mcp
+  - rest
+mcp:
+  endpoint: https://mcp.port.io/v1
+  official: true
+  auth: oauth2_client_credentials
+  token_endpoint: https://mcp.port.io/v1/token
+api:
+  base_url: https://api.port.io/v1
+  auth_endpoint: https://api.port.io/v1/auth/access_token
+auth:
+  type: client_credentials
+  environment:
+    - PORT_CLIENT_ID
+    - PORT_CLIENT_SECRET
+capabilities:
+  - blueprint.list
+  - entity.list
+  - action.list
+  - workflow.list
+  - scorecard.list
+  - integration.list
+  - action.permissions.get
+  - workflow.run.get
+  - entity.upsert
+  - blueprint.upsert
+  - workflow.trigger
+risk:
+  default: READ
+  write_tools:
+    - port.entity.upsert
+    - port.blueprint.upsert
+    - port.workflow.trigger
+  destructive_tools: []
+approval:
+  writes: required
+  destructive: disabled
+rate_limits:
+  mcp_token_endpoint: 50 requests per 15 minutes per client
+  entities: 35000 requests per 5 minutes
+  blueprints: 15000 requests per 5 minutes
+  other_api: 15000 requests per 5 minutes
+  headers:
+    - x-ratelimit-limit
+    - x-ratelimit-remaining
+    - x-ratelimit-reset
+security:
+  credentials_to_llm: false
+  provider_content_untrusted: true
+  newly_discovered_upstream_tools_auto_trusted: false
