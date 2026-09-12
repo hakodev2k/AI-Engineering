@@ -1,0 +1,51 @@
+id: incidentio
+name: incident.io
+version: 1.0.0
+upstream:
+  - type: mcp
+    endpoint: https://mcp.incident.io/mcp
+    status: official-public-beta
+    transport: streamable-http
+  - type: rest
+    endpoint: https://api.incident.io
+    status: documented-fallback-not-used
+auth:
+  interactive: oauth
+  automation: bearer-api-key
+  required_environment:
+    - INCIDENTIO_API_KEY
+capabilities:
+  - incident.list
+  - incident.show
+  - incident.stats
+  - incident.create
+  - incident.update
+  - alert.list
+  - alert.show
+  - alert.stats
+  - schedule.list
+  - schedule.show
+  - team.list
+  - team.show
+  - escalation.list
+  - escalation.show
+  - escalation.respond
+  - follow_up.list
+  - follow_up.create
+risk:
+  default: READ
+  write:
+    - incidentio.incident.create
+    - incidentio.incident.update
+    - incidentio.follow_up.create
+  high_risk:
+    - incidentio.escalation.respond
+approval:
+  write: explicit-per-call-and-runtime-gate
+  high_risk: explicit-per-call-and-runtime-gate
+  destructive: disabled
+security:
+  provider_content_is_untrusted: true
+  upstream_tool_allowlist: true
+  validates_against_upstream_tool_schema: true
+  credentials_exposed_to_llm: false
