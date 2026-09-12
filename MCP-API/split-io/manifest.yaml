@@ -1,0 +1,52 @@
+id: split-io
+name: Split.io
+upstream:
+  - rest
+official_mcp: false
+api_base_url: https://api.split.io
+auth:
+  type: api_key_or_harness_token
+  environment:
+    - SPLIT_API_KEY
+    - SPLIT_AUTH_MODE
+  modes:
+    bearer: "Authorization: Bearer <Admin API key>"
+    x-api-key: "x-api-key: <Harness PAT or SAT>"
+capabilities:
+  - feature_flag.list
+  - feature_flag.get
+  - feature_flag.create
+  - feature_flag.description.update
+  - feature_flag_definition.list
+  - feature_flag_definition.get
+  - feature_flag_definition.create
+  - feature_flag_definition.patch
+risk:
+  default: READ
+  write_requires_approval: true
+  high_risk_requires_explicit_approval: true
+  destructive_tools: disabled
+permissions:
+  read_roles:
+    - API_ALL_GRANTED
+    - API_FEATURE_FLAG_VIEWER
+    - API_FEATURE_FLAG_EDITOR
+  write_roles:
+    - API_ALL_GRANTED
+    - API_FEATURE_FLAG_EDITOR
+  accepted_scopes:
+    - GLOBAL
+    - WORKSPACE
+    - ENVIRONMENT
+transport:
+  external: mcp_stdio
+  upstream: official_rest_api
+required_environment:
+  - SPLIT_API_KEY
+optional_environment:
+  - SPLIT_AUTH_MODE
+  - SPLIT_BASE_URL
+  - SPLIT_TIMEOUT_MS
+  - SPLIT_MAX_RETRIES
+  - SPLIT_ALLOW_WRITES
+  - SPLIT_ALLOW_HIGH_RISK
