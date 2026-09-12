@@ -1,118 +1,116 @@
 # WorkOS MCP/API Connector
 
-Reusable MCP server for bounded WorkOS organization, AuthKit user, membership, invitation, and SSO-connection workflows. Credentials remain in the connector; the agent receives only scoped tool contracts and provider responses.
+Reusable MCP server exposing a focused set of WorkOS enterprise identity, Directory Sync, environment event, and Audit Log operations for AI agents.
 
 ## Transport strategy
 
-WorkOS publishes an official `@workos/mcp-docs-server`, introduced June 12, 2025, with documentation-oriented tools (`workos_search`, `workos_docs`, `workos_examples`, `workos_changelogs`). It is useful for developer documentation but does not provide account-management operations. Therefore none of this connector's operational capabilities are forced through that MCP server.
+WorkOS has an official remote Management MCP server at `https://mcp.workos.com/mcp` using streamable HTTP and OAuth. As of August 5, 2026, WorkOS documents four management tools (`whoami`, `list_operations`, `query`, `mutate`) which discover and execute hundreds of workspace operations. It inherits the signed-in dashboard user's team/environment permissions, can be restricted from production or writes by team admins, strips secrets from responses, and requires explicit confirmation for selected irreversible deletes.
 
-Operational tools use the official WorkOS REST API at `https://api.workos.com`. This is the safer and complete official transport for the selected workflows.
+This package intentionally uses the official REST API (`https://api.workos.com`) for its implemented application-facing operations. The connector is designed for unattended/headless MCP runtimes where a server-side WorkOS API key is already held by the connector. It does not attempt to capture or proxy the browser OAuth session required by the official Management MCP server. Interactive agents that need broad WorkOS workspace administration should connect to the official Management MCP directly; this connector provides a narrower, predictable tool contract with no arbitrary API escape hatch.
 
-Official sources researched:
-- https://workos.com/blog/workos-mcp-documentation-server
-- https://workos.com/mcp
-- https://workos.com/docs/reference/api-authentication
-- https://workos.com/docs/reference/rate-limits
-- https://workos.com/docs/reference/organization
-- https://workos.com/docs/reference/authkit/organization-membership
-- https://workos.com/docs/reference/authkit/invitation
-- https://workos.com/docs/reference/sso/connection
-- https://workos.com/docs/authkit/users-organizations
+WorkOS also publishes `@workos/mcp-docs-server`, an official local MCP documentation server. That server supplies documentation/search/changelog context rather than tenant business operations, so it is not used as the execution transport here.
 
-## Runtime
+## Official sources researched
 
-Requires Node.js 20+.
+- Management MCP: https://mcp.workos.com/mcp and https://workos.com/blog/install-workos-plugin-claude-chatgpt-codex
+- REST API reference: https://workos.com/docs/reference
+- Organizations: https://workos.com/docs/reference/organization
+- Directory Sync: https://workos.com/docs/reference/directory-sync
+- Directory users: https://workos.com/docs/reference/directory-sync/directory-user
+- Directory groups: https://workos.com/docs/reference/directory-sync/directory-group
+- Events API: https://workos.com/docs/reference/events
+- Audit Log events: https://workos.com/docs/reference/audit-logs/event
+- Rate limits: https://workos.com/docs/reference/rate-limits
+- MCP documentation server: https://workos.com/blog/workos-mcp-documentation-server
+
+## Capabilities
+
+| Tool | Upstream | Risk | Approval |
+|---|---|---|---|
+| `workos.organization.list` | REST | READ | none |
+| `workos.organization.get` | REST | READ | none |
+| `workos.directory.list` | REST | READ | none |
+| `workos.directory.get` | REST | READ | none |
+| `workos.directory_user.list` | REST | READ | none |
+| `workos.directory_user.get` | REST | READ | none |
+| `workos.directory_group.list` | REST | READ | none |
+| `workos.directory_group.get` | REST | READ | none |
+| `workos.event.list` | REST | READ | none |
+| `workos.audit_event.create` | REST | WRITE | explicit human |
+
+No delete, credential rotation, impersonation, arbitrary URL, or arbitrary REST request tool is exposed.
+
+## Authentication and permissions
+
+Set a WorkOS server API key in `WORKOS_API_KEY`. The credential is read only by `src/config.ts` and sent by `src/client.ts` as `Authorization: Bearer ...`; it is never returned in MCP output or placed into model-visible tool arguments.
+
+WorkOS API keys inherit the environment and permissions configured for that key. Use a key scoped to the environment and capabilities needed by this connector. Do not use a broader production key when a restricted key is sufficient.
+
+The only connector write is Audit Log event creation. It is blocked unless the human-controlled runtime setting `WORKOS_WRITE_APPROVED=true` is present. The flag is intentionally outside tool arguments so an agent cannot elevate itself by supplying `approved: true`.
+
+## Environment variables
+
+```text
+WORKOS_API_KEY=
+WORKOS_API_BASE_URL=https://api.workos.com
+WORKOS_TIMEOUT_MS=15000
+WORKOS_MAX_RETRIES=2
+WORKOS_WRITE_APPROVED=false
+```
+
+`WORKOS_API_BASE_URL` must use HTTPS. The configurable base URL exists for controlled test/proxy environments; do not point it at arbitrary user-supplied hosts.
+
+## Install and run
+
+Requires Node.js 20 or newer.
 
 ```bash
 npm install
 npm run build
-npm test
-WORKOS_API_KEY=... npm start
+npm start
 ```
 
-The connector exposes MCP over stdio and can be launched by MCP clients that support stdio subprocess servers.
+The server uses MCP stdio transport, so compatible clients can launch the built `dist/src/server.js` process and consume the registered tools. Compatibility depends on the client supporting standard MCP stdio servers; no vendor-specific client protocol is required.
 
-## Authentication and least privilege
+## Pagination
 
-Set `WORKOS_API_KEY` to a secret WorkOS API key (`sk_...`). Requests use `Authorization: Bearer <key>` over HTTPS. WorkOS documents secret API keys as capable of performing any API request and scoped to the key's environment; there is no documented per-key scope mechanism. Use a dedicated staging/production environment and operational controls appropriate to the account.
+List tools expose bounded cursor pagination. `limit` is capped at 100. `before` and `after` cursors are passed through to WorkOS. Consumers should persist cursors in their own state instead of repeatedly rescanning entire collections.
 
-The API key is never accepted as a tool argument, never returned to the LLM, and should be injected through a secret manager or process environment.
-
-## Environment
-- `WORKOS_API_KEY` — required.
-- `WORKOS_API_BASE_URL` — default `https://api.workos.com`; HTTPS enforced.
-- `WORKOS_TIMEOUT_MS` — default 15000, range 1000–120000.
-- `WORKOS_MAX_RETRIES` — default 2, range 0–5.
-- `WORKOS_REQUIRE_WRITE_APPROVAL` — default true.
-- `WORKOS_APPROVED_ACTIONS` — comma-separated exact action fingerprints set outside the agent.
-
-## Tools
-
-| Tool | Transport | Risk | Approval |
-|---|---|---|---|
-| `workos.organization.list` | REST | READ | none |
-| `workos.organization.get` | REST | READ | none |
-| `workos.organization.create` | REST | WRITE | configurable; required by default |
-| `workos.organization.update` | REST | WRITE | configurable; required by default |
-| `workos.user.list` | REST | READ | none |
-| `workos.user.get` | REST | READ | none |
-| `workos.membership.list` | REST | READ | none |
-| `workos.membership.get` | REST | READ | none |
-| `workos.membership.create` | REST | HIGH_RISK | explicit |
-| `workos.membership.roles.update` | REST | HIGH_RISK | explicit |
-| `workos.invitation.list` | REST | READ | none |
-| `workos.invitation.get` | REST | READ | none |
-| `workos.invitation.send` | REST | HIGH_RISK | explicit |
-| `workos.invitation.revoke` | REST | HIGH_RISK | explicit |
-| `workos.connection.list` | REST | READ | none |
-| `workos.connection.get` | REST | READ | none |
-
-No organization/user deletion, membership deactivation, SSO configuration mutation, authentication impersonation, password reset, billing, arbitrary HTTP, or unrestricted API passthrough is exposed.
-
-## Approval model
-
-`WRITE` operations require approval by default and can be relaxed by operators for low-risk metadata workflows. `HIGH_RISK` operations always require an exact fingerprint in `WORKOS_APPROVED_ACTIONS`. Approval is configuration, not an agent parameter, so the model cannot self-approve.
-
-Examples:
-```text
-WORKOS_APPROVED_ACTIONS=workos.membership.create:org_123:user_456,workos.invitation.send:person@example.com:org_123
-```
-
-The intended control flow is Read → Recommend/Prepare → Human approval → Execute.
-
-The connector also refuses to set an organization domain state to `verified` via `organization.update`; ownership verification should happen through an explicitly approved administrative process.
+Directory user group membership deserves special attention: WorkOS deprecated the unbounded `groups` field on Directory User objects and, for teams created on or after May 1, 2026, it is empty by default. Use `workos.directory_group.list` with `userId` to fetch memberships.
 
 ## Rate limits and reliability
 
-WorkOS documents a general limit of 6,000 requests per 60 seconds per API key. AuthKit `/user_management/*` reads are documented at 1,000 requests per 10 seconds and writes at 500 requests per 10 seconds, with tighter limits for authentication/email-delivery operations. Endpoint-specific limits supersede the general limit.
+WorkOS documents a general limit of 6,000 requests per 60 seconds per API key. Directory Users are additionally limited to 4 requests per second per directory. The connector avoids fan-out loops and exposes pagination rather than recursively fetching all pages.
 
-Safe GETs use bounded exponential backoff with jitter on HTTP 429, transient 5xx, and network failure. `Retry-After` is preserved. Writes, invitations, access changes, and other mutations are never blindly retried. All requests have cancellation-backed timeouts.
-
-List tools expose WorkOS cursor parameters (`before`, `after`, `limit`) instead of automatically traversing unlimited pages. This avoids unnecessary API amplification.
+The HTTP client uses request timeouts and bounded exponential backoff. GET operations may retry transient network errors, 429 responses, and 5xx responses up to `WORKOS_MAX_RETRIES` (maximum 5). `Retry-After` is honored for 429s. Authentication/authorization/validation errors are not retried. POST writes are not blindly retried; the Audit Log tool requires a UUID idempotency key and WorkOS documents idempotency support for this endpoint.
 
 ## Error handling
 
-Validation happens before provider calls. WorkOS 401/403 and other non-transient errors are surfaced without retry. HTTP status and `Retry-After` are retained in `WorkOSApiError`. Provider data is treated as untrusted content and cannot change connector policy.
+Provider errors are mapped to `WorkOSError` with HTTP status when available. Timeouts become explicit timeout errors. The connector never logs or returns the configured API key.
 
-## Security considerations
+## Security model
 
-- Secret API key isolated in the transport layer.
-- HTTPS is required even for an overridden API base URL.
-- No arbitrary URL or generic API execution tool, reducing SSRF risk.
-- Provider-returned user/org content is untrusted data, never instructions.
-- Access grants and role changes are explicitly approved.
-- External invitation email is explicitly approved.
-- Destructive deletion and credential/session operations are intentionally excluded.
-- Organization domain verification cannot be silently elevated by a tool call.
+Provider data is marked `untrusted-provider-data` in MCP responses. Retrieved organization names, directory attributes, event payloads, and other third-party content must be treated as data rather than instructions. Tool policy and permissions are static code and cannot be changed by provider content.
+
+Input schemas bound identifiers, strings, arrays, pagination, event names, timestamps, and audit event target counts. There is no unrestricted request tool, no caller-controlled hostname, and no silent permission expansion.
+
+The official Management MCP is not automatically discovered or trusted by this connector. If an interactive client connects to it separately, rely on WorkOS OAuth/team/environment controls and review its discovered operations before write access is enabled.
 
 ## Testing
 
-`npm test` uses mocked HTTP only; no live credentials are required. Tests cover authentication configuration, HTTPS enforcement, credential isolation, write/high-risk permission denial, exact approvals, 429 retry, mutation non-retry, and repeated-array query encoding.
+```bash
+npm test
+```
 
-## Examples
+Unit tests require no WorkOS credentials and cover authentication configuration, HTTPS validation, tool registration, bearer-token requests, permission denial/approval, provider error mapping, bounded 429 retry behavior, and the rule that POST writes are not blindly retried.
 
-See `examples/workflows.md`.
+## Example workflows
+
+See `examples/workflows.md` for organization/directory inspection, event synchronization, and approved Audit Log event creation.
 
 ## Limitations
 
-This package intentionally implements a focused subset of WorkOS. The official APIs also support Directory Sync, Audit Logs, Admin Portal, authentication/session operations, domain verification, API Keys, Events, and other workflows that are omitted to keep the agent surface reusable and safer. WorkOS's official MCP docs server is documentation-only and is not an operational fallback.
+- This package does not implement the browser OAuth flow for WorkOS Management MCP; use the official remote server directly for broad interactive workspace administration.
+- It does not expose destructive operations, API key/client-secret management, user impersonation, billing changes, or arbitrary REST calls.
+- It does not automatically consume webhooks. Use `workos.event.list` for pull-based synchronization or implement a separate verified webhook receiver using WorkOS webhook verification guidance.
+- Audit Log event schemas must be configured in WorkOS before events using those schemas can be emitted successfully.

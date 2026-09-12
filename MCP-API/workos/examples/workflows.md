@@ -1,20 +1,36 @@
 # WorkOS connector workflows
 
-## Inspect enterprise access
-1. `workos.organization.get` — `{ "organizationId": "org_..." }` — READ, no approval.
-2. `workos.connection.list` — `{ "organizationId": "org_..." }` — READ, no approval.
-3. `workos.membership.list` — `{ "organizationId": "org_...", "statuses": ["active"] }` — READ, no approval.
+## Inspect an enterprise tenant
 
-## Invite a teammate safely
-1. Inspect the organization and desired role.
-2. Approve exact fingerprint `workos.invitation.send:person@example.com:org_...` outside the agent.
-3. Call `workos.invitation.send` with `{ "email": "person@example.com", "organizationId": "org_...", "roleSlug": "member" }`.
+1. `workos.organization.list` — input `{ "search": "Acme", "limit": 20 }`; permission `READ`; approval `none`.
+2. `workos.organization.get` — input `{ "organizationId": "org_..." }`; permission `READ`; approval `none`.
+3. `workos.directory.list` — input `{ "organizationId": "org_...", "limit": 20 }`; permission `READ`; approval `none`.
+4. `workos.directory_user.list` — input `{ "directoryId": "directory_...", "limit": 50 }`; permission `READ`; approval `none`.
+5. `workos.directory_group.list` — input `{ "userId": "directory_user_..." }`; permission `READ`; approval `none`.
 
-This sends external email and is always HIGH_RISK.
+Expected output is a JSON object wrapped as MCP text content with `trust: "untrusted-provider-data"` and the provider response in `data`.
 
-## Change an existing member role
-1. Read `workos.membership.get`.
-2. Approve `workos.membership.roles.update:om_...`.
-3. Call `workos.membership.roles.update` with `{ "membershipId": "om_...", "roleSlug": "admin" }`.
+## Consume synchronization events
 
-Role changes are HIGH_RISK because they alter authorization.
+Call `workos.event.list` with `{ "events": ["dsync.user.created", "dsync.user.updated"], "limit": 100 }`. Permission is `READ`; approval is not required. Persist the returned cursor externally if your agent needs incremental synchronization.
+
+## Emit an audit event
+
+Call `workos.audit_event.create` only after a human explicitly approves the write and the runtime sets `WORKOS_WRITE_APPROVED=true`.
+
+Example input:
+
+```json
+{
+  "organizationId": "org_01EXAMPLE",
+  "idempotencyKey": "884793cd-bef4-46cf-8790-e3d4957a09ce",
+  "event": {
+    "action": "document.viewed",
+    "occurred_at": "2026-09-12T12:00:00.000Z",
+    "actor": { "type": "user", "id": "user_01EXAMPLE" },
+    "targets": [{ "type": "document", "id": "doc_123" }]
+  }
+}
+```
+
+Permission is `WRITE`; approval is `explicit-human`. The action and target schema must already exist in WorkOS Audit Logs.

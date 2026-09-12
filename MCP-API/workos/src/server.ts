@@ -7,5 +7,5 @@ import { registerTools } from './tools.js';
 const config = loadConfig();
 const api = new WorkOSClient(config);
 const server = new McpServer({ name: 'workos-connector', version: '1.0.0' });
-registerTools(server, config, api);
+registerTools(server, api, config);
 await server.connect(new StdioServerTransport());

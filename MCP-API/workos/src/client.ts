@@ -1,59 +1,59 @@
 import type { Config } from './config.js';
 
-type QueryValue = string | number | boolean | string[] | undefined;
-
-export class WorkOSApiError extends Error {
-  constructor(public readonly status: number, message: string, public readonly retryAfterMs?: number) { super(message); }
+export class WorkOSError extends Error {
+  constructor(message: string, public readonly status?: number, public readonly retryAfterMs?: number) { super(message); }
 }
 
-const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+const sleep = (ms: number) => new Promise(r => setTimeout(r, ms));
 
 export class WorkOSClient {
   constructor(private readonly config: Config, private readonly fetchImpl: typeof fetch = fetch) {}
 
-  async request<T>(method: string, path: string, options: { query?: Record<string, QueryValue>; body?: unknown; retry?: boolean } = {}): Promise<T> {
-    const url = new URL(this.config.apiBaseUrl + path);
-    for (const [key, value] of Object.entries(options.query ?? {})) {
-      if (value === undefined) continue;
-      if (Array.isArray(value)) value.forEach(item => url.searchParams.append(key, item));
-      else url.searchParams.set(key, String(value));
+  async request<T>(method: 'GET'|'POST', path: string, query?: Record<string, unknown>, body?: unknown, headers?: Record<string,string>): Promise<T> {
+    const url = new URL(path, this.config.baseUrl);
+    for (const [k,v] of Object.entries(query || {})) {
+      if (v === undefined || v === null || v === '') continue;
+      if (Array.isArray(v)) v.forEach(x => url.searchParams.append(k, String(x)));
+      else url.searchParams.set(k, String(v));
     }
-    const retryable = options.retry ?? method === 'GET';
-    for (let attempt = 0;; attempt++) {
+    for (let attempt = 0; attempt <= this.config.maxRetries; attempt++) {
       const controller = new AbortController();
       const timer = setTimeout(() => controller.abort(), this.config.timeoutMs);
       try {
-        const response = await this.fetchImpl(url, {
+        const res = await this.fetchImpl(url, {
           method,
-          signal: controller.signal,
           headers: {
             Authorization: `Bearer ${this.config.apiKey}`,
             Accept: 'application/json',
-            ...(options.body !== undefined ? { 'Content-Type': 'application/json' } : {})
+            ...(body ? {'Content-Type':'application/json'} : {}),
+            ...headers
           },
-          body: options.body !== undefined ? JSON.stringify(options.body) : undefined
+          body: body ? JSON.stringify(body) : undefined,
+          signal: controller.signal
         });
-        const raw = await response.text();
-        let data: any = undefined;
-        if (raw) { try { data = JSON.parse(raw); } catch { data = raw; } }
-        const retryAfter = response.headers.get('retry-after');
-        const retryAfterMs = retryAfter == null ? undefined : Math.max(0, Number(retryAfter) * 1000);
-        if (response.ok) return data as T;
-        if ((response.status === 429 || response.status >= 500) && retryable && attempt < this.config.maxRetries) {
-          await sleep(Math.min(retryAfterMs ?? (250 * 2 ** attempt + Math.floor(Math.random() * 100)), 10000));
+        const text = await res.text();
+        const data = text ? JSON.parse(text) : {};
+        if (res.ok) return data as T;
+        const retryAfter = Number(res.headers.get('retry-after') || 0) * 1000;
+        if (res.status === 429 && attempt < this.config.maxRetries) {
+          await sleep(Math.max(retryAfter || 0, 250 * 2 ** attempt));
           continue;
         }
-        const message = typeof data?.message === 'string' ? data.message : typeof data?.error === 'string' ? data.error : `WorkOS API ${response.status}`;
-        throw new WorkOSApiError(response.status, message, retryAfterMs);
-      } catch (error) {
-        if (error instanceof WorkOSApiError) throw error;
-        if ((error as Error).name === 'AbortError') throw new Error('WorkOS API request timed out');
-        if (retryable && attempt < this.config.maxRetries) {
-          await sleep(Math.min(250 * 2 ** attempt + Math.floor(Math.random() * 100), 10000));
+        if (res.status >= 500 && attempt < this.config.maxRetries && method === 'GET') {
+          await sleep(250 * 2 ** attempt);
           continue;
         }
-        throw error;
+        throw new WorkOSError(data?.message || `WorkOS API error ${res.status}`, res.status, retryAfter || undefined);
+      } catch (err) {
+        if (err instanceof WorkOSError) throw err;
+        if (attempt < this.config.maxRetries && method === 'GET') { await sleep(250 * 2 ** attempt); continue; }
+        if ((err as Error).name === 'AbortError') throw new WorkOSError('WorkOS request timed out');
+        throw new WorkOSError((err as Error).message);
       } finally { clearTimeout(timer); }
     }
+    throw new WorkOSError('WorkOS request failed');
   }
+
+  get<T>(path: string, query?: Record<string, unknown>) { return this.request<T>('GET', path, query); }
+  post<T>(path: string, body: unknown, headers?: Record<string,string>) { return this.request<T>('POST', path, undefined, body, headers); }
 }

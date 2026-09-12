@@ -1,40 +1,52 @@
 id: workos
 name: WorkOS
+version: 1.0.0
 upstream:
-  - rest
-mcp:
-  official_docs_server:
-    package: "@workos/mcp-docs-server"
-    purpose: documentation_only
-    operational_transport: false
-rest:
-  base_url: https://api.workos.com
+  mcp:
+    endpoint: https://mcp.workos.com/mcp
+    status: official
+    transport: streamable-http
+    auth: oauth2
+    note: Official management MCP exposes whoami, list_operations, query, and mutate. This connector uses the official REST API for deterministic headless API-key execution; MCP remains the preferred interactive management surface.
+  rest:
+    endpoint: https://api.workos.com
+    status: primary-connector-transport
 auth:
   type: api_key
-  header: "Authorization: Bearer <WORKOS_API_KEY>"
-  scopes: "Secret API keys can perform any API request in their WorkOS environment; no per-key scopes are documented."
-environment:
-  required: [WORKOS_API_KEY]
-  optional: [WORKOS_API_BASE_URL, WORKOS_TIMEOUT_MS, WORKOS_MAX_RETRIES, WORKOS_REQUIRE_WRITE_APPROVAL, WORKOS_APPROVED_ACTIONS]
+  header: Authorization
+  scheme: Bearer
+  environment:
+    - WORKOS_API_KEY
 capabilities:
   - organization.list
-  - organization.get
-  - organization.create
-  - organization.update
-  - user.list
-  - user.get
-  - membership.list
-  - membership.get
-  - membership.create
-  - membership.roles.update
-  - invitation.list
-  - invitation.get
-  - invitation.send
-  - invitation.revoke
-  - connection.list
-  - connection.get
+  - organization.read
+  - directory.list
+  - directory.read
+  - directory_user.list
+  - directory_user.read
+  - directory_group.list
+  - directory_group.read
+  - event.list
+  - audit_event.create
 risk:
   default: READ
-  write_requires_approval_by_default: true
-  high_risk_requires_explicit_approval: true
-  destructive_tools: false
+  write_tools:
+    - workos.audit_event.create
+  destructive_tools: []
+approval:
+  writes: required
+  destructive: disabled
+rate_limits:
+  general: 6000 requests/60_seconds/api_key
+  directory_users: 4 requests/second/directory
+required_environment:
+  - WORKOS_API_KEY
+optional_environment:
+  - WORKOS_API_BASE_URL
+  - WORKOS_TIMEOUT_MS
+  - WORKOS_MAX_RETRIES
+  - WORKOS_WRITE_APPROVED
+security:
+  arbitrary_api_tool: false
+  credential_exposure_to_llm: false
+  provider_content_is_untrusted: true
