@@ -8,6 +8,10 @@ const Id = z.string().min(1).max(128);
 const Approval = z.enum(["approved", "approved-high-risk"]).optional();
 const E164 = z.string().regex(/^\+[1-9]\d{6,14}$/);
 const Metadata = z.array(z.object({ name: z.string().min(1).max(128), type: z.enum(["string", "number", "boolean", "object"]), value: z.unknown() }).strict()).max(50).optional();
+const WebhookTrigger = z.union([
+  z.literal(0), z.literal(1), z.literal(2), z.literal(3), z.literal(4), z.literal(5), z.literal(6), z.literal(7), z.literal(8), z.literal(9), z.literal(10),
+  z.literal(12), z.literal(13), z.literal(14), z.literal(15), z.literal(16), z.literal(29), z.literal(30)
+]);
 
 function result(tool: string, risk: Risk, data: unknown) {
   return { content: [{ type: "text" as const, text: JSON.stringify({ provider: "Onfleet", tool, risk, untrusted_provider_content: true, data }, null, 2) }] };
@@ -77,7 +81,7 @@ export function registerTools(server: McpServer, client: OnfleetClient, config: 
     result("onfleet.webhook.list", "READ", await client.request("GET", "/webhooks", { signal: extra.signal })));
 
   server.tool("onfleet.webhook.create", "Create a webhook for an allowlisted Onfleet trigger. HIGH_RISK because it sends organization event data to an external HTTPS endpoint.", {
-    url: z.string().url().max(2048), name: z.string().min(1).max(200), trigger: z.number().int().min(0).max(30), threshold: z.number().nonnegative().optional(), canReceiveConnectionEvents: z.boolean().optional(), approval: Approval
+    url: z.string().url().max(2048), name: z.string().min(1).max(200), trigger: WebhookTrigger, threshold: z.number().nonnegative().optional(), canReceiveConnectionEvents: z.boolean().optional(), approval: Approval
   }, async ({ approval, url, ...rest }, extra) => {
     requireApproval("HIGH_RISK", approval, config);
     return result("onfleet.webhook.create", "HIGH_RISK", await client.request("POST", "/webhooks", { body: { url: assertWebhookUrl(url), ...rest }, signal: extra.signal, retryable: false }));
