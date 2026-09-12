@@ -1,0 +1,57 @@
+id: ashby
+name: Ashby
+upstream:
+  - mcp
+  - rest
+mcp:
+  official: true
+  endpoint: https://mcp.ashbyhq.com/mcp/v1
+  auth: oauth2-user
+  status: open-beta
+rest:
+  official: true
+  base_url: https://api.ashbyhq.com
+  auth: http-basic-api-key
+permissions:
+  read:
+    - jobsRead
+    - candidatesRead
+    - interviewsRead
+  write:
+    - candidatesWrite
+risk:
+  default: READ
+  write_requires_approval: true
+  high_risk_requires_explicit_approval: true
+  destructive_tools: disabled
+capabilities:
+  - job.list
+  - job.search
+  - job.read
+  - candidate.list
+  - candidate.search
+  - candidate.read
+  - application.list
+  - application.read
+  - application.create
+  - application.stage.update
+  - interview.list
+  - interview_stage.list
+  - candidate_note.list
+  - candidate_note.create
+security:
+  credentials_to_llm: false
+  provider_content_untrusted: true
+  private_fields_default: false
+required_environment:
+  - ASHBY_API_KEY
+optional_environment:
+  - ASHBY_MCP_ACCESS_TOKEN
+  - ASHBY_MCP_URL
+  - ASHBY_API_BASE_URL
+  - ASHBY_TIMEOUT_MS
+  - ASHBY_MAX_RETRIES
+  - ASHBY_ALLOW_WRITES
+  - ASHBY_ALLOW_HIGH_RISK
+  - ASHBY_ALLOW_PRIVATE_FIELDS
+  - ASHBY_ON_BEHALF_OF_USER_ID
