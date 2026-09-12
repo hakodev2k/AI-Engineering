@@ -1,0 +1,45 @@
+id: teamwork
+name: Teamwork.com
+upstream:
+  - mcp
+official_mcp: true
+mcp:
+  endpoint: https://mcp.ai.teamwork.com
+  source: https://github.com/Teamwork/mcp
+  transport: streamable-http
+  auth: bearer-token-or-oauth2
+capabilities:
+  - project.list
+  - project.read
+  - project.create
+  - task.list
+  - task.read
+  - task.create
+  - task.update
+  - task.complete
+  - user.list
+  - user.read
+  - content.search
+  - milestone.list
+  - timelog.list
+  - timelog.create
+  - timelog.summarize
+risk:
+  default: READ
+  writes_require_approval: true
+  high_risk_requires_explicit_approval: true
+  destructive: disabled
+environment:
+  required:
+    - TEAMWORK_MCP_BEARER_TOKEN
+  optional:
+    - TEAMWORK_MCP_URL
+    - TEAMWORK_TIMEOUT_MS
+    - TEAMWORK_MAX_READ_RETRIES
+    - TEAMWORK_ALLOW_WRITES
+    - TEAMWORK_ALLOW_HIGH_RISK
+security:
+  credentials_exposed_to_llm: false
+  upstream_tool_allowlist: true
+  provider_content_is_untrusted: true
+  live_upstream_schema_validation: true
