@@ -1,0 +1,53 @@
+id: codecov
+name: Codecov
+version: 1.0.0
+upstream:
+  official_mcp:
+    status: unavailable
+    notes: No official Codecov MCP server was found in current Codecov documentation or Codecov-owned repositories; community MCP servers exist but are not trusted upstreams for this connector.
+  rest:
+    type: official_api_v2
+    base_url: https://api.codecov.io/api/v2
+auth:
+  type: bearer_api_token
+  environment:
+    - CODECOV_API_TOKEN
+capabilities:
+  - repository.list
+  - branch.list
+  - commit.list
+  - pull_request.list
+  - coverage.totals.get
+  - coverage.report.get
+  - coverage.file.get
+  - coverage.tree.get
+  - coverage.trend.get
+  - repository.get
+risk:
+  default: READ
+  write_tools: []
+  high_risk_tools: []
+  destructive_tools: []
+approval:
+  reads: none
+  writes: unsupported
+required_environment:
+  - CODECOV_API_TOKEN
+optional_environment:
+  - CODECOV_API_BASE_URL
+  - CODECOV_TIMEOUT_MS
+  - CODECOV_MAX_RETRIES
+security:
+  arbitrary_http_tool: false
+  credential_exposure_to_llm: false
+  untrusted_provider_content: true
+sources:
+  - https://docs.codecov.com/reference/repos_list
+  - https://docs.codecov.com/reference/repos_branches_list
+  - https://docs.codecov.com/reference/repos_commits_list
+  - https://docs.codecov.com/reference/repos_pulls_list
+  - https://docs.codecov.com/reference/repos_totals_retrieve
+  - https://docs.codecov.com/reference/repos_report_retrieve
+  - https://docs.codecov.com/reference/repos_file_report_retrieve
+  - https://docs.codecov.com/reference/repos_report_tree_retrieve
+  - https://docs.codecov.com/reference/repos_coverage_list
