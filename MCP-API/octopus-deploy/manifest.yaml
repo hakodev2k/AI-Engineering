@@ -1,0 +1,54 @@
+id: octopus-deploy
+name: Octopus Deploy
+version: 1.0.0
+upstream:
+  - mcp
+  - rest
+mcp:
+  type: remote-http
+  endpoint: "${OCTOPUS_URL}/mcp"
+  auth_header: X-Octopus-ApiKey
+  official: true
+rest:
+  base_url: "${OCTOPUS_URL}/api"
+  auth_header: X-Octopus-ApiKey
+auth:
+  type: api_key
+  required_environment:
+    - OCTOPUS_URL
+    - OCTOPUS_API_KEY
+capabilities:
+  - space.search
+  - project.search
+  - environment.list
+  - release.list
+  - deployment.list
+  - task.get
+  - runbook.list
+  - release.create
+  - deployment.create
+  - runbook.run
+risk:
+  default: READ
+  tools:
+    octopus.space.search: READ
+    octopus.project.search: READ
+    octopus.environment.list: READ
+    octopus.release.list: READ
+    octopus.deployment.list: READ
+    octopus.task.get: READ
+    octopus.runbook.list: READ
+    octopus.release.create: WRITE
+    octopus.deployment.create: HIGH_RISK
+    octopus.runbook.run: HIGH_RISK
+approval:
+  write: configurable
+  high_risk: explicit
+  destructive: disabled
+security:
+  arbitrary_api_tool: false
+  arbitrary_mcp_tool: false
+  provider_content_is_untrusted: true
+  credentials_exposed_to_llm: false
+rate_limits:
+  note: Octopus limits depend on server/version/infrastructure; connector honors 429 and Retry-After and uses bounded retries.
