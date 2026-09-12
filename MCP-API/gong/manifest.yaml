@@ -1,0 +1,64 @@
+id: gong
+name: Gong
+version: 1.0.0
+upstream:
+  official_mcp:
+    endpoint: https://mcp.gong.io/mcp
+    status: available
+    mode: remote
+    access: read-only-ai-insights
+    tools:
+      - ask_account
+      - ask_deal
+      - generate_brief
+    used_by_connector: false
+    reason: official MCP exposes synthesized account/deal/contact insights, not the raw calls, transcripts, users, permissions, or call-access resources implemented here
+  rest:
+    endpoint: https://api.gong.io
+    status: primary
+auth:
+  types:
+    - basic_access_key_secret
+    - oauth2_bearer
+  environment:
+    - GONG_ACCESS_KEY
+    - GONG_ACCESS_KEY_SECRET
+    - GONG_OAUTH_ACCESS_TOKEN
+scopes:
+  - api:users:read
+  - api:calls:read:extensive
+  - api:calls:read:transcript
+  - api:call-user-access:read
+  - api:call-user-access:write
+capabilities:
+  - user.list
+  - call.list
+  - call.extensive.list
+  - call.transcript.list
+  - call.access.list
+  - call.access.grant
+  - permission_profile.list
+  - permission_profile.users.list
+risk:
+  default: READ
+  high_risk_tools:
+    - gong.call.access.grant
+  destructive_tools: []
+approval:
+  high_risk: explicit
+  destructive: disabled
+rate_limits:
+  default_per_second: 3
+  default_per_day: 10000
+  retry_after_header: Retry-After
+security:
+  credentials_exposed_to_llm: false
+  arbitrary_http_tool: false
+  provider_content_untrusted: true
+required_environment:
+  - one_of: [GONG_OAUTH_ACCESS_TOKEN, GONG_ACCESS_KEY+GONG_ACCESS_KEY_SECRET]
+optional_environment:
+  - GONG_API_BASE_URL
+  - GONG_TIMEOUT_MS
+  - GONG_MAX_RETRIES
+  - GONG_HIGH_RISK_APPROVED
