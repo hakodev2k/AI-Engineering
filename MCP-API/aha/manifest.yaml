@@ -1,0 +1,68 @@
+id: aha
+name: Aha!
+version: 1.0.0
+upstream:
+  official_mcp:
+    endpoint_template: https://{account}.aha.io/api/v1/mcp
+    auth: oauth_dynamic_client_registration
+    capabilities:
+      - record.search
+      - record.read
+      - report.read
+      - record.create
+      - record.update
+      - comment.create
+      - record.copy
+      - record.link
+    destructive_delete: unsupported
+    embedded_by_connector: false
+    reason: official remote MCP requires interactive user OAuth/DCR; this reusable headless connector uses the official REST API for strict, deterministic tool schemas
+  rest:
+    endpoint_template: https://{account}.aha.io/api/v1
+    status: primary
+auth:
+  supported:
+    - oauth2_bearer
+    - api_key_bearer
+  environment:
+    - AHA_ACCOUNT_DOMAIN
+    - AHA_ACCESS_TOKEN
+capabilities:
+  - workspace.list
+  - feature.list
+  - feature.read
+  - feature.create
+  - feature.update
+  - feature.comments.list
+  - feature.comment.create
+  - release.list
+  - release.create
+  - release.update
+  - idea.list
+  - idea.read
+  - idea.create
+  - idea.update
+risk:
+  default: READ
+  write:
+    - aha.feature.create
+    - aha.feature.update
+    - aha.feature.comment.create
+    - aha.release.create
+    - aha.release.update
+    - aha.idea.create
+    - aha.idea.update
+approval:
+  writes: required
+  destructive: disabled
+rate_limits:
+  per_minute: 300
+  per_second: 20
+  headers:
+    limit: X-Ratelimit-Limit
+    remaining: X-Ratelimit-Remaining
+    reset: X-Ratelimit-Reset
+security:
+  credentials_exposed_to_llm: false
+  arbitrary_http_tool: false
+  provider_content_untrusted: true
