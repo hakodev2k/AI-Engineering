@@ -1,0 +1,45 @@
+id: onfleet
+name: Onfleet
+upstream:
+  - rest
+official_mcp: false
+api_base_url: https://onfleet.com/api/v2
+auth:
+  type: api_key_basic
+  environment:
+    - ONFLEET_API_KEY
+  note: API key is the HTTP Basic username; password is blank.
+least_privilege:
+  scoped_api_key_supported: true
+capabilities:
+  - task.list
+  - task.read
+  - task.create
+  - worker.list
+  - worker.read
+  - worker.nearby
+  - worker.schedule.read
+  - team.list
+  - recipient.find
+  - route_plan.list
+  - webhook.list
+  - webhook.create
+  - webhook.delete
+risk:
+  default: READ
+  write_requires_approval: true
+  high_risk_requires_explicit_approval: true
+  destructive_requires_explicit_approval: true
+required_environment:
+  - ONFLEET_API_KEY
+optional_environment:
+  - ONFLEET_BASE_URL
+  - ONFLEET_TIMEOUT_MS
+  - ONFLEET_MAX_RETRIES
+  - ONFLEET_ALLOW_WRITES
+  - ONFLEET_ALLOW_HIGH_RISK
+rate_limit:
+  organization_requests_per_second: 20
+transport:
+  external: mcp_stdio
+  upstream: official_rest_api
