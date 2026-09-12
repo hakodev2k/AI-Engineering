@@ -1,0 +1,55 @@
+id: mastodon
+name: Mastodon
+upstream:
+  - rest
+official_mcp: false
+api_base_url: configurable per Mastodon instance
+auth:
+  type: oauth2_user_token
+  token_environment: MASTODON_ACCESS_TOKEN
+  instance_environment: MASTODON_BASE_URL
+recommended_scopes:
+  - profile
+  - read:statuses
+  - read:search
+  - read:notifications
+  - read:favourites
+  - read:bookmarks
+  - write:statuses
+  - write:favourites
+  - write:bookmarks
+capabilities:
+  - profile.read
+  - timeline.public.read
+  - timeline.home.read
+  - search
+  - notifications.read
+  - favourites.read
+  - bookmarks.read
+  - status.read
+  - status.create
+  - status.delete
+  - status.favourite
+  - status.unfavourite
+  - status.reblog
+  - status.unreblog
+  - status.bookmark
+  - status.unbookmark
+risk:
+  default: READ
+  write_requires_approval: true
+  public_publish: HIGH_RISK
+  delete_status: DESTRUCTIVE
+  destructive_disabled_by_default: true
+transport:
+  external: mcp_stdio
+  upstream: official_rest_api
+required_environment:
+  - MASTODON_BASE_URL
+  - MASTODON_ACCESS_TOKEN
+optional_environment:
+  - MASTODON_TIMEOUT_MS
+  - MASTODON_MAX_RETRIES
+  - MASTODON_ALLOW_WRITES
+  - MASTODON_ALLOW_HIGH_RISK
+  - MASTODON_ALLOW_DESTRUCTIVE
