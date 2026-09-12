@@ -1,0 +1,77 @@
+id: saucelabs
+name: Sauce Labs
+version: 1.0.0
+upstream:
+  - type: mcp
+    endpoint: https://mcp.saucelabs.com
+    transport: streamable-http
+    official: true
+    capabilities:
+      - account.read
+      - region.read
+      - job.list
+      - job.read
+      - job.assets.read
+      - build.search
+      - build.read
+      - build.jobs.read
+      - storage.list
+      - tunnel.list
+  - type: rest
+    base_urls:
+      us-west-1: https://api.us-west-1.saucelabs.com
+      us-east-4: https://api.us-east-4.saucelabs.com
+      eu-central-1: https://api.eu-central-1.saucelabs.com
+    official: true
+    capabilities:
+      - job.metadata.update
+      - job.stop
+auth:
+  type: http_basic
+  username_env: SAUCE_USERNAME
+  secret_env: SAUCE_ACCESS_KEY
+  credential_isolation: connector-only
+permissions:
+  read: automatic
+  write: requires SAUCE_ENABLE_WRITES=true and approved=true
+  high_risk: explicit approval required
+  destructive: disabled
+capabilities:
+  - saucelabs.account.get
+  - saucelabs.region.get
+  - saucelabs.job.list
+  - saucelabs.job.get
+  - saucelabs.job.assets.list
+  - saucelabs.build.search
+  - saucelabs.build.get
+  - saucelabs.build.jobs.list
+  - saucelabs.storage.files.list
+  - saucelabs.tunnel.list
+  - saucelabs.job.metadata.update
+  - saucelabs.job.stop
+risk:
+  default: READ
+  WRITE:
+    - saucelabs.job.metadata.update
+  HIGH_RISK:
+    - saucelabs.job.stop
+  DESTRUCTIVE: []
+rate_limits:
+  authenticated_rest: 10 requests/second or 3500 requests/hour
+  behavior: bounded backoff on 429; Retry-After respected when present
+required_environment:
+  - SAUCE_USERNAME
+  - SAUCE_ACCESS_KEY
+optional_environment:
+  - SAUCE_REGION
+  - SAUCE_API_BASE_URL
+  - SAUCE_MCP_URL
+  - SAUCE_TIMEOUT_MS
+  - SAUCE_MAX_RETRIES
+  - SAUCE_ENABLE_WRITES
+security:
+  provider_content_is_untrusted: true
+  arbitrary_rest_tool: false
+  arbitrary_mcp_tool: false
+  public_visibility_mutation: not_exposed
+  job_deletion: not_exposed
