@@ -1,0 +1,56 @@
+id: matomo
+name: Matomo Analytics
+version: 1.0.0
+upstream:
+  - mcp
+  - http-reporting-api
+official_mcp:
+  availability: supported
+  deployment: Matomo Cloud or MCP Server plugin for On-Premise
+  endpoint: configured per Matomo instance
+  use: capability discovery
+  raw_api_access_default: disabled by Matomo
+api:
+  base_url: configured by MATOMO_BASE_URL
+  request_style: HTTP POST Reporting API
+auth:
+  type: api-token
+  environment:
+    - MATOMO_TOKEN_AUTH
+  api_transport: token_auth in POST body
+  mcp_transport: Bearer token
+capabilities:
+  - site.list
+  - visits.summary
+  - page.urls
+  - referrers.all
+  - device.types
+  - event.categories
+  - country.list
+  - visit_time.local
+  - visit_frequency.get
+  - ai_agents.get
+  - mcp.tools.list
+risk:
+  default: READ
+  write: none
+  high_risk: none
+  destructive: none
+approval:
+  read: none
+  write: unsupported
+required_environment:
+  - MATOMO_BASE_URL
+  - MATOMO_TOKEN_AUTH
+optional_environment:
+  - MATOMO_MCP_URL
+  - MATOMO_TIMEOUT_MS
+  - MATOMO_MAX_RETRIES
+  - MATOMO_ALLOW_INSECURE_HTTP
+  - MATOMO_ALLOW_CROSS_ORIGIN_MCP
+security:
+  arbitrary_api_method: false
+  arbitrary_url_tool: false
+  credentials_exposed_to_llm: false
+  provider_content_untrusted: true
+  mcp_dynamic_tools_auto_trusted: false
