@@ -72,9 +72,13 @@ export function registerTools(server: McpServer, client: PandaDocClient, config:
     return output("pandadoc.document.send", "HIGH_RISK", await client.request(`/documents/${document_id}/send`, { method: "POST", body, retryable: false }));
   });
 
-  server.tool("pandadoc.document.remind", "Send reminders to specified recipients. HIGH_RISK external communication.", {
+  server.tool("pandadoc.document.remind", "Send email/SMS reminders to specified document recipients. HIGH_RISK external communication.", {
     document_id: id,
-    reminders: z.array(z.object({ recipient: z.string().email(), delivery_method: z.enum(["email", "sms"]).optional() }).strict()).min(1).max(50),
+    reminders: z.array(z.object({
+      recipient_id: id,
+      delivery_methods: z.object({ email: z.boolean(), sms: z.boolean() }).strict().refine(v => v.email || v.sms, "At least one delivery method must be enabled"),
+      email_customization: z.object({ subject: z.string().max(512).optional(), message: z.string().max(5000).optional() }).strict().optional()
+    }).strict()).min(1).max(50),
     approval
   }, async ({ document_id, approval: a, reminders }) => {
     requireApproval("HIGH_RISK", a, config);
