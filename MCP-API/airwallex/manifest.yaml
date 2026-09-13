@@ -1,0 +1,54 @@
+id: airwallex
+name: Airwallex
+upstream:
+  - official-rest
+  - official-mcp-sandbox-reference
+auth:
+  type: api-key-to-access-token
+  token_endpoint: /api/v1/authentication/login
+  token_ttl_minutes: 30
+api:
+  sandbox_base_url: https://api.sandbox.airwallex.com
+  production_base_url: https://api.airwallex.com
+  version_header: x-api-version
+capabilities:
+  - balance.current
+  - balance.history
+  - beneficiary.list
+  - beneficiary.get
+  - beneficiary.validate
+  - beneficiary.create
+  - beneficiary.update
+  - transfer.list
+  - transfer.get
+  - transfer.validate
+  - transfer.create
+  - transfer.cancel
+  - webhook.list
+risk:
+  default: READ
+  write_mode_default: deny
+  high_risk_mode_default: deny
+permissions:
+  READ:
+    approval: false
+  WRITE:
+    approval: operator-configured
+  HIGH_RISK:
+    approval: explicit-operator-enable
+  DESTRUCTIVE:
+    approval: explicit-operator-enable
+required_env:
+  - AIRWALLEX_CLIENT_ID
+  - AIRWALLEX_API_KEY
+optional_env:
+  - AIRWALLEX_ENV
+  - AIRWALLEX_LOGIN_AS
+  - AIRWALLEX_API_VERSION
+  - AIRWALLEX_TIMEOUT_MS
+  - AIRWALLEX_MAX_RETRIES
+  - AIRWALLEX_WRITE_MODE
+  - AIRWALLEX_HIGH_RISK_MODE
+notes:
+  - Credentials remain inside the connector and are never returned to MCP callers.
+  - The official Airwallex Developer MCP is sandbox-focused; operational tools here use the official REST API so the same contract can work in sandbox or production.
