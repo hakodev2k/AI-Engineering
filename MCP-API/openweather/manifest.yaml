@@ -1,0 +1,35 @@
+id: openweather
+name: OpenWeather
+upstream:
+  - rest
+auth:
+  type: api-key
+  credential_env: OPENWEATHER_API_KEY
+api:
+  base_url: https://api.openweathermap.org
+  geocoding_url: https://api.openweathermap.org/geo/1.0
+official_mcp:
+  available: false
+capabilities:
+  - location.search
+  - location.zip
+  - weather.current
+  - forecast.five_day
+  - air.current
+  - air.forecast
+  - air.history
+  - onecall.summary
+  - onecall.timemachine
+risk:
+  default: READ
+  writes: false
+approval:
+  required: false
+permissions:
+  - weather.read
+environment:
+  required:
+    - OPENWEATHER_API_KEY
+  optional:
+    - OPENWEATHER_TIMEOUT_MS
+    - OPENWEATHER_MAX_RETRIES
