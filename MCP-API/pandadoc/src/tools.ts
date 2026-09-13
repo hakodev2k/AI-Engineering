@@ -27,7 +27,8 @@ export const TOOL_SPECS: ToolSpec[] = [
 const webhookTriggers = z.enum([
   "document_deleted", "recipient_completed", "document_updated", "document_state_changed",
   "document_creation_failed", "document_completed_pdf_ready", "document_section_added", "quote_updated",
-  "teamplate_created", "template_updated", "template_deleted"
+  "template_created", "template_updated", "template_deleted", "content_library_item_created",
+  "content_library_item_creation_failed"
 ]);
 
 function output(tool: string, risk: Risk, result: unknown) {
