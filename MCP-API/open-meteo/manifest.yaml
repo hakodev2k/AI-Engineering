@@ -1,0 +1,46 @@
+id: open-meteo
+name: Open-Meteo
+upstream:
+  - rest
+mcp:
+  official_server: false
+  transport: stdio
+api:
+  base_urls:
+    forecast: https://api.open-meteo.com
+    geocoding: https://geocoding-api.open-meteo.com
+    archive: https://archive-api.open-meteo.com
+    air_quality: https://air-quality-api.open-meteo.com
+    marine: https://marine-api.open-meteo.com
+    flood: https://flood-api.open-meteo.com
+    climate: https://climate-api.open-meteo.com
+    ensemble: https://ensemble-api.open-meteo.com
+auth:
+  type: none_or_api_key
+  env:
+    - OPEN_METEO_API_KEY
+runtime:
+  node: ">=20"
+capabilities:
+  - location.search
+  - weather.forecast
+  - weather.history
+  - air_quality.forecast
+  - marine.forecast
+  - elevation.get
+  - flood.forecast
+  - climate.projection
+  - ensemble.forecast
+risk:
+  default: READ
+  writes: false
+approval:
+  required: false
+environment:
+  - OPEN_METEO_TIMEOUT_MS
+  - OPEN_METEO_MAX_RETRIES
+  - OPEN_METEO_API_KEY
+security:
+  provider_content_untrusted: true
+  arbitrary_urls_allowed: false
+  credentials_exposed_to_llm: false
