@@ -12,16 +12,17 @@ Vapi is a voice-AI platform for assistants, phone numbers, calls, and reusable t
 - Upstream transport: official Vapi MCP server over Streamable HTTP.
 - Upstream endpoint: `https://mcp.vapi.ai/mcp`.
 - Authentication: private Vapi API key sent only by the connector as `Authorization: Bearer <token>`.
-- REST fallback: not used in this version because Vapi's official MCP server currently exposes every capability implemented here.
+- REST fallback: not used in this version because Vapi's official MCP server exposes every capability implemented here.
 
-Vapi also documents a legacy SSE endpoint. This connector intentionally uses Streamable HTTP, which is Vapi's current recommended MCP transport.
+Vapi also documents a legacy SSE endpoint. This connector intentionally uses Streamable HTTP, which is Vapi's recommended MCP transport.
 
 Official sources researched for this implementation:
 
 - Vapi MCP Server: https://docs.vapi.ai/sdk/mcp-server
+- Official MCP implementation: https://github.com/VapiAI/mcp-server
 - Vapi MCP Tools: https://docs.vapi.ai/tools/mcp
 - Vapi Calls API / authentication and filters: https://docs.vapi.ai/api-reference/calls/list
-- Vapi assistant schema: https://docs.vapi.ai/api-reference/assistants/get
+- Vapi assistant API schema: https://docs.vapi.ai/api-reference/assistants/get
 - Vapi assistant quickstart/default presets: https://docs.vapi.ai/assistants/quickstart
 - Vapi call artifacts: https://docs.vapi.ai/assistants/call-recording
 
@@ -40,7 +41,7 @@ Official sources researched for this implementation:
 | `vapi.tool.list` | `list_tools` | READ | none |
 | `vapi.tool.get` | `get_tool` | READ | none |
 
-The connector does not expose arbitrary MCP tool calls, arbitrary REST requests, delete operations, phone-number purchasing, billing changes, or permission changes.
+The connector does not expose arbitrary MCP tool calls, arbitrary REST requests, delete operations, assistant/tool updates, phone-number purchasing, billing changes, or permission changes.
 
 ## Architecture
 
@@ -65,7 +66,7 @@ Create or copy a private Vapi API key from the Vapi dashboard and set it in the 
 export VAPI_TOKEN="..."
 ```
 
-The token remains inside `src/upstream.ts`. Tool inputs and outputs never include it. The connector also pins the upstream hostname to `mcp.vapi.ai` to prevent credential forwarding to an arbitrary host.
+The token remains inside `src/upstream.ts`. Tool inputs and outputs never include it. The connector pins the upstream hostname to `mcp.vapi.ai` to prevent credential forwarding to an arbitrary host.
 
 Vapi's official MCP documentation supports bearer-token authentication for custom clients. OAuth handled by other Vapi tooling is intentionally not reimplemented here; this package targets reusable non-interactive/server-side MCP usage with a private API key.
 
@@ -79,7 +80,7 @@ VAPI_ALLOW_HIGH_RISK=false
 VAPI_TIMEOUT_MS=20000
 ```
 
-`VAPI_MCP_URL` must remain HTTPS and must resolve to the exact hostname `mcp.vapi.ai`.
+`VAPI_MCP_URL` must remain HTTPS and must use the exact hostname `mcp.vapi.ai`.
 
 ## Permission and approval model
 
@@ -101,15 +102,15 @@ The connector exposes no destructive tool.
 
 Schemas are strict and reject unknown fields. Important constraints include:
 
-- Provider IDs use UUID validation.
+- Stable connector IDs use UUID validation and are mapped to the official MCP parameter names (`assistantId`, `callId`, `phoneNumberId`, and `toolId`).
 - Customer phone numbers must be in E.164 format.
 - List limits are bounded to `1..1000`.
 - Date/time filters and scheduled call times must be ISO/RFC3339-compatible date-time strings.
-- Assistant name is capped at 40 characters.
-- Assistant max duration is bounded to Vapi's documented `10..43200` seconds.
+- Assistant names are capped at 40 characters.
+- Assistant creation exposes only fields confirmed by the official Vapi MCP schema: `name`, `firstMessage`, `firstMessageMode`, `instructions`, and `toolIds`.
 - Arbitrary raw API or MCP parameters are not accepted.
 
-`vapi.assistant.create` intentionally supports only `name`, `firstMessage`, `endCallMessage`, and `maxDurationSeconds`. Vapi's default Balanced preset supplies omitted transcriber/model/voice settings. Advanced assistant creation should be performed through an explicitly expanded, reviewed schema rather than a generic pass-through object.
+Vapi's official MCP server supplies defaults for omitted assistant model, voice, and transcriber configuration. Advanced assistant configuration should be added only through an explicitly reviewed schema rather than a generic pass-through object.
 
 ## Installation
 
@@ -171,9 +172,10 @@ The unit suite covers:
 - high-risk approval
 - strict schema rejection
 - E.164 validation
+- stable-to-upstream ID argument mapping
 - outbound-call argument mapping
 - fixed tool registration metadata
-- read operation forwarding through a fake upstream
+- provider/rate-limit error propagation without unsafe retries
 
 Live integration tests are intentionally excluded from the default suite so CI does not require a Vapi account or accidentally create external calls.
 
@@ -183,7 +185,7 @@ See `examples/workflows.md` for read-first discovery, safe assistant creation, e
 
 ## Limitations
 
-- Only the ten Vapi MCP capabilities documented in this package are exposed, despite the broader Vapi API surface.
+- Only the ten Vapi MCP capabilities documented in this package are exposed, despite the broader official MCP/API surface.
 - No delete, update, billing, campaign, phone-number purchase, or credential-management operations are implemented.
 - Advanced assistant model/voice/transcriber configuration is intentionally omitted from creation to keep the schema narrow and auditable.
 - The package uses private API-key authentication to the hosted MCP endpoint; it does not implement an interactive OAuth browser flow.
