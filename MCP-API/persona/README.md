@@ -30,7 +30,7 @@ The Persona MCP documentation was last updated September 1, 2026. The connector 
 | `persona.case.get` | official MCP | READ | `case.read` | none |
 | `persona.verification.get` | official MCP | READ | `verification.read` | none |
 | `persona.report.get` | official MCP | READ | `report.read` | none |
-| `persona.transaction.get` | official MCP | READ | `transaction.read` | none |
+| `persona.transaction.get` | official MCP | READ | `txn.read` | none |
 | `persona.webhook.list` | official MCP | READ | `webhook.read` | none |
 
 No delete, API-key management, permission management, approval/decline decision, or other irreversible/high-impact Persona action is exposed.
@@ -63,7 +63,7 @@ account.read
 case.read
 verification.read
 report.read
-transaction.read
+txn.read
 webhook.read
 ```
 
