@@ -1,0 +1,56 @@
+id: brex
+name: Brex
+version: 1.0.0
+runtime: node>=20
+external_transport: mcp-stdio
+upstream:
+  - rest
+upstream_notes:
+  official_mcp: "Brex launched an official MCP server in beta in April 2026. This connector uses the official REST API for deterministic, least-privilege read workflows and stable pagination contracts."
+  api_base_url: https://api.brex.com
+auth:
+  type: bearer-token
+  environment:
+    - BREX_ACCESS_TOKEN
+  notes: "Use a Brex user token or OAuth-derived bearer token with only the scopes required by enabled tools."
+required_scopes:
+  - users.readonly
+  - cards.readonly
+  - departments.readonly
+  - locations.readonly
+  - legal_entities.readonly
+  - titles.readonly
+  - accounts.card.readonly
+  - accounts.cash.readonly
+  - transactions.card.readonly
+  - transactions.cash.readonly
+  - vendors.readonly
+capabilities:
+  - user.list
+  - user.get
+  - card.list
+  - card.get
+  - department.list
+  - location.list
+  - legal_entity.list
+  - legal_entity.get
+  - title.list
+  - account.card.get_primary
+  - account.cash.list
+  - transaction.card.list
+  - transaction.cash.list
+  - vendor.list
+  - vendor.get
+risk:
+  default: READ
+  writes_implemented: false
+  destructive_implemented: false
+approval:
+  read: not-required
+  write: required-if-added
+  high_risk: explicit-human-approval
+  destructive: disabled-by-default
+security:
+  credentials_exposed_to_model: false
+  provider_content_untrusted: true
+  arbitrary_request_tool: false
