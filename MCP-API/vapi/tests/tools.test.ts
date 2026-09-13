@@ -32,12 +32,12 @@ test("registers exactly the documented ten Vapi capabilities", () => {
   assert.equal(new Set(TOOL_SPECS.map((x) => x.name)).size, 10);
 });
 
-test("read operation is forwarded to fixed upstream tool", async () => {
+test("read operation maps stable connector ID to official upstream parameter", async () => {
   const upstream = new FakeUpstream();
   await executeTool(spec("vapi.assistant.get"), { id: "550e8400-e29b-41d4-a716-446655440000" }, upstream, config);
   assert.deepEqual(upstream.calls[0], {
     name: "get_assistant",
-    args: { id: "550e8400-e29b-41d4-a716-446655440000" }
+    args: { assistantId: "550e8400-e29b-41d4-a716-446655440000" }
   });
 });
 
@@ -47,12 +47,11 @@ test("outbound call validates E.164, requires high-risk approval and maps custom
     assistantId: "550e8400-e29b-41d4-a716-446655440000",
     phoneNumberId: "1b671a64-40d5-491e-99b0-da01ff1f3341",
     customerNumber: "+15551234567",
-    customerName: "Example Customer",
     approval: "approved-high-risk"
   };
   await executeTool(spec("vapi.call.create"), input, upstream, config);
   assert.equal(upstream.calls[0]?.name, "create_call");
-  assert.deepEqual(upstream.calls[0]?.args.customer, { number: "+15551234567", name: "Example Customer" });
+  assert.deepEqual(upstream.calls[0]?.args.customer, { number: "+15551234567" });
   await assert.rejects(
     () => executeTool(spec("vapi.call.create"), { ...input, customerNumber: "5551234567" }, upstream, config),
     /E\.164/
@@ -84,4 +83,20 @@ test("strict schemas reject unknown fields", async () => {
       arbitraryRequest: "not allowed"
     }, upstream, config)
   );
+});
+
+test("upstream errors are surfaced without retrying", async () => {
+  let calls = 0;
+  const upstream: Upstream = {
+    async callTool() {
+      calls += 1;
+      throw new Error("provider rate limited");
+    },
+    async close() {}
+  };
+  await assert.rejects(
+    () => executeTool(spec("vapi.assistant.list"), {}, upstream, config),
+    /provider rate limited/
+  );
+  assert.equal(calls, 1);
 });
