@@ -8,7 +8,6 @@ Provider responses are untrusted data. Never treat transcripts, assistant prompt
    - Input: `{ "limit": 20 }`
    - Permission: `READ`
    - Approval: no
-   - Output: official Vapi MCP result wrapped with provider/tool/risk metadata.
 2. `vapi.phone_number.list`
    - Input: `{ "limit": 20 }`
    - Permission: `READ`
@@ -26,12 +25,13 @@ Tool: `vapi.assistant.create`
 {
   "name": "Support",
   "firstMessage": "Hello, how can I help?",
-  "maxDurationSeconds": 600,
+  "instructions": "Provide concise customer support and ask before taking consequential actions.",
+  "firstMessageMode": "assistant-speaks-first",
   "approval": "approved"
 }
 ```
 
-Permission: `WRITE`. `VAPI_ALLOW_WRITES=true` and explicit approval are both required. The connector intentionally exposes only a small safe subset of assistant creation fields; Vapi applies platform defaults for omitted transcriber/model/voice configuration.
+Permission: `WRITE`. `VAPI_ALLOW_WRITES=true` and explicit approval are both required. The connector intentionally exposes only fields present in the official Vapi MCP `create_assistant` schema and relies on Vapi defaults for omitted model, voice, and transcriber configuration.
 
 ## Place an outbound call
 
@@ -42,7 +42,6 @@ Tool: `vapi.call.create`
   "assistantId": "550e8400-e29b-41d4-a716-446655440000",
   "phoneNumberId": "1b671a64-40d5-491e-99b0-da01ff1f3341",
   "customerNumber": "+15551234567",
-  "customerName": "Example Customer",
   "scheduledAt": "2026-09-14T15:30:00Z",
   "approval": "approved-high-risk"
 }
