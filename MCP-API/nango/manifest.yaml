@@ -1,34 +1,33 @@
 id: nango
 name: Nango
 upstream:
-  - official-mcp
-  - rest-api-fallback-available
-official_mcp:
-  endpoint: https://mcp.nango.dev/mcp
-  transport: streamable-http
+  - rest
+  - mcp-proxy
 auth:
-  type: bearer-api-key
-  env: NANGO_SECRET_KEY
-scopes:
-  read:
-    - environment:integrations:list
-    - environment:integrations:read
-    - environment:connections:list
-    - environment:functions:list
-    - environment:logs:read
-  write:
-    - environment:connect_sessions:write
+  type: bearer-secret-key
+  environment: NANGO_SECRET_KEY
+api:
+  base_url: https://api.nango.dev
 capabilities:
+  - provider.list
+  - provider.get
+  - provider.search
   - integration.list
-  - integration.get
-  - connection.list
+  - integration.search
   - connect_session.create
-  - function.list
-  - log.operation.list
-  - log.operation.get
+  - mcp.initialize
+  - mcp.tools.list
+  - mcp.tool.call
 risk:
   default: READ
-  write_requires_approval: true
-  destructive_tools: none
-required_env:
+  write_approval_configurable: true
+  high_risk_approval_required: true
+  destructive_enabled_by_default: false
+environment:
   - NANGO_SECRET_KEY
+  - NANGO_BASE_URL
+  - NANGO_TIMEOUT_MS
+  - NANGO_MAX_RETRIES
+  - NANGO_REQUIRE_WRITE_APPROVAL
+  - NANGO_ENABLE_DESTRUCTIVE
+  - NANGO_APPROVED_ACTION_IDS

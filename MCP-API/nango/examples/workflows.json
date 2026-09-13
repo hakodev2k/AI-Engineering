@@ -1,0 +1,9 @@
+{
+  "examples": [
+    { "tool": "nango.provider.search", "input": { "query": "slack", "limit": 10 }, "permission": "READ", "approvalRequired": false },
+    { "tool": "nango.integration.list", "input": {}, "permission": "READ", "approvalRequired": false },
+    { "tool": "nango.connect_session.create", "input": { "end_user_id": "user-123", "allowed_integrations": ["github-prod"], "approval_id": "human-issued-id" }, "permission": "WRITE", "approvalRequired": true },
+    { "tool": "nango.mcp.tools.list", "input": { "integration_id": "slack-mcp", "connection_id": "user-123" }, "permission": "READ", "approvalRequired": false },
+    { "tool": "nango.mcp.tool.call", "input": { "integration_id": "slack-mcp", "connection_id": "user-123", "tool_name": "search_messages", "arguments": { "query": "incident" }, "approval_id": "human-issued-id" }, "permission": "HIGH_RISK", "approvalRequired": true }
+  ]
+}
