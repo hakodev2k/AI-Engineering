@@ -6,16 +6,16 @@ export interface Config {
   timeoutMs: number;
 }
 
-function bool(name: string, fallback = false): boolean {
-  const raw = process.env[name];
+function bool(env: NodeJS.ProcessEnv, name: string, fallback = false): boolean {
+  const raw = env[name];
   if (raw === undefined) return fallback;
   if (raw === "true") return true;
   if (raw === "false") return false;
   throw new Error(`${name} must be true or false`);
 }
 
-function positiveInt(name: string, fallback: number): number {
-  const raw = process.env[name];
+function positiveInt(env: NodeJS.ProcessEnv, name: string, fallback: number): number {
+  const raw = env[name];
   if (raw === undefined) return fallback;
   const value = Number(raw);
   if (!Number.isInteger(value) || value <= 0 || value > 120000) {
@@ -24,7 +24,7 @@ function positiveInt(name: string, fallback: number): number {
   return value;
 }
 
-export function loadConfig(env = process.env): Config {
+export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
   const token = env.VAPI_TOKEN?.trim();
   if (!token) throw new Error("VAPI_TOKEN is required");
 
@@ -33,17 +33,11 @@ export function loadConfig(env = process.env): Config {
   if (parsed.protocol !== "https:") throw new Error("VAPI_MCP_URL must use https");
   if (parsed.hostname !== "mcp.vapi.ai") throw new Error("VAPI_MCP_URL host must be mcp.vapi.ai");
 
-  const previous = process.env;
-  try {
-    process.env = env;
-    return {
-      token,
-      mcpUrl,
-      allowWrites: bool("VAPI_ALLOW_WRITES", false),
-      allowHighRisk: bool("VAPI_ALLOW_HIGH_RISK", false),
-      timeoutMs: positiveInt("VAPI_TIMEOUT_MS", 20000)
-    };
-  } finally {
-    process.env = previous;
-  }
+  return {
+    token,
+    mcpUrl,
+    allowWrites: bool(env, "VAPI_ALLOW_WRITES", false),
+    allowHighRisk: bool(env, "VAPI_ALLOW_HIGH_RISK", false),
+    timeoutMs: positiveInt(env, "VAPI_TIMEOUT_MS", 20000)
+  };
 }
