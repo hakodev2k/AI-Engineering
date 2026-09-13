@@ -1,0 +1,38 @@
+id: kinde
+name: Kinde
+upstream:
+  - rest
+official_mcp:
+  available: false
+  checked: 2026-09-13
+  note: No official Kinde MCP server was identified in the official Kinde documentation reviewed for this connector.
+api:
+  management_base: ${KINDE_DOMAIN}/api/v1
+  token_endpoint: ${KINDE_DOMAIN}/oauth2/token
+auth:
+  type: oauth2-client-credentials
+  audience: ${KINDE_AUDIENCE}
+  required_env:
+    - KINDE_DOMAIN
+    - KINDE_CLIENT_ID
+    - KINDE_CLIENT_SECRET
+    - KINDE_AUDIENCE
+capabilities:
+  - user.list
+  - user.search
+  - user.get_by_email
+  - user.create
+  - user.update
+  - organization.list
+  - organization.get
+  - organization.suspension.set
+risk:
+  default: READ
+  write_requires_approval: true
+  high_risk_requires_approval: true
+required_scope_families:
+  - read:users
+  - create:users
+  - update:users
+  - read:organizations
+  - update:organizations
