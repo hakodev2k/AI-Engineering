@@ -14,7 +14,7 @@ export interface ToolSpec {
 export const TOOL_SPECS: ToolSpec[] = [
   { name: "vapi.assistant.list", upstream: "list_assistants", description: "List Vapi assistants.", risk: "READ" },
   { name: "vapi.assistant.get", upstream: "get_assistant", description: "Get one Vapi assistant by UUID.", risk: "READ" },
-  { name: "vapi.assistant.create", upstream: "create_assistant", description: "Create a Vapi assistant using Vapi defaults plus explicitly supplied safe fields.", risk: "WRITE" },
+  { name: "vapi.assistant.create", upstream: "create_assistant", description: "Create a Vapi assistant using a narrow reviewed subset of the official MCP schema.", risk: "WRITE" },
   { name: "vapi.call.list", upstream: "list_calls", description: "List and filter Vapi calls.", risk: "READ" },
   { name: "vapi.call.get", upstream: "get_call", description: "Get call status, result and available artifacts by UUID.", risk: "READ" },
   { name: "vapi.call.create", upstream: "create_call", description: "Initiate or schedule an outbound phone call. This sends an external communication and requires explicit high-risk approval.", risk: "HIGH_RISK" },
@@ -31,10 +31,15 @@ const schemas = {
   "vapi.assistant.list": z.object({ limit: z.number().int().min(1).max(1000).optional() }).strict(),
   "vapi.assistant.get": z.object({ id: uuid }).strict(),
   "vapi.assistant.create": z.object({
-    name: z.string().min(1).max(40).optional(),
+    name: z.string().min(1).max(40),
     firstMessage: z.string().min(1).max(2000).optional(),
-    endCallMessage: z.string().min(1).max(1000).optional(),
-    maxDurationSeconds: z.number().int().min(10).max(43200).optional(),
+    firstMessageMode: z.enum([
+      "assistant-speaks-first",
+      "assistant-waits-for-user",
+      "assistant-speaks-first-with-model-generated-message"
+    ]).optional(),
+    instructions: z.string().min(1).max(12000).optional(),
+    toolIds: z.array(uuid).max(50).optional(),
     approval
   }).strict(),
   "vapi.call.list": z.object({
@@ -49,7 +54,6 @@ const schemas = {
     assistantId: uuid,
     phoneNumberId: uuid,
     customerNumber: z.string().regex(/^\+[1-9]\d{7,14}$/, "customerNumber must be E.164"),
-    customerName: z.string().min(1).max(120).optional(),
     scheduledAt: z.string().datetime().optional(),
     approval
   }).strict(),
@@ -62,11 +66,22 @@ const schemas = {
 function mapArgs(spec: ToolSpec, input: Record<string, unknown>): Record<string, unknown> {
   const args = { ...input };
   delete args.approval;
+
+  if (spec.name === "vapi.assistant.get") {
+    return { assistantId: args.id };
+  }
+  if (spec.name === "vapi.call.get") {
+    return { callId: args.id };
+  }
+  if (spec.name === "vapi.phone_number.get") {
+    return { phoneNumberId: args.id };
+  }
+  if (spec.name === "vapi.tool.get") {
+    return { toolId: args.id };
+  }
   if (spec.name === "vapi.call.create") {
-    const customer: Record<string, unknown> = { number: args.customerNumber };
-    if (args.customerName) customer.name = args.customerName;
+    const customer = { number: args.customerNumber };
     delete args.customerNumber;
-    delete args.customerName;
     args.customer = customer;
   }
   return args;
