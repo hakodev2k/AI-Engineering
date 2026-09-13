@@ -1,0 +1,45 @@
+id: have-i-been-pwned
+name: Have I Been Pwned
+version: 1.0.0
+upstream:
+  - mcp
+  - rest
+mcp:
+  endpoint: https://haveibeenpwned.com/mcp
+  auth: oauth2
+  scope: hibp.mcp
+rest:
+  base_url: https://haveibeenpwned.com/api/v3
+  pwned_passwords_base_url: https://api.pwnedpasswords.com
+  auth: api-key
+  header: hibp-api-key
+auth:
+  type: api_key_for_protected_rest
+  required_environment:
+    - HIBP_USER_AGENT
+  optional_environment:
+    - HIBP_API_KEY
+    - HIBP_TIMEOUT_MS
+    - HIBP_MAX_RETRIES
+    - HIBP_USE_OFFICIAL_MCP
+capabilities:
+  - breach.list
+  - breach.get
+  - breach.latest
+  - data_class.list
+  - password.range
+  - account.breaches
+  - account.pastes
+  - domain.breaches
+  - domain.subscriptions
+  - subscription.status
+risk:
+  default: READ
+  destructive_tools: []
+  high_risk_tools: []
+approval:
+  read: none
+notes:
+  - Public breach metadata and Pwned Passwords range lookups prefer the official HIBP MCP server and fall back to official REST APIs.
+  - Email, domain, paste and subscription lookups use the official REST API with an HIBP API key when required.
+  - Domain verification write operations and outbound verification emails are intentionally not exposed.
