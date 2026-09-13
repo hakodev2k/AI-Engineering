@@ -1,0 +1,40 @@
+id: vapi
+name: Vapi
+upstream:
+  - mcp
+mcp:
+  endpoint: https://mcp.vapi.ai/mcp
+  transport: streamable-http
+auth:
+  type: bearer_api_key
+  environment:
+    - VAPI_TOKEN
+capabilities:
+  - assistant.list
+  - assistant.read
+  - assistant.create
+  - call.list
+  - call.read
+  - call.create
+  - phone_number.list
+  - phone_number.read
+  - tool.list
+  - tool.read
+risk:
+  default: READ
+  write_requires_approval: true
+  high_risk_requires_explicit_approval: true
+  destructive_tools: disabled
+approval:
+  assistant.create: WRITE
+  call.create: HIGH_RISK
+environment:
+  - VAPI_TOKEN
+  - VAPI_MCP_URL
+  - VAPI_ALLOW_WRITES
+  - VAPI_ALLOW_HIGH_RISK
+  - VAPI_TIMEOUT_MS
+security:
+  upstream_tool_allowlist: true
+  provider_content_untrusted: true
+  credentials_never_returned: true
