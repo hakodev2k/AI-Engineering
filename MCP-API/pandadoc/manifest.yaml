@@ -24,13 +24,13 @@ capabilities:
   - document.send
   - document.remind
   - webhook.list
+  - webhook.get
   - webhook.create
-  - webhook.delete
 risk:
   default: READ
   write_requires_approval: true
   high_risk_requires_explicit_approval: true
-  destructive_disabled_by_default: true
+  destructive_tools_exposed: false
 environment:
   - PANDADOC_API_KEY
   - PANDADOC_API_BASE_URL
