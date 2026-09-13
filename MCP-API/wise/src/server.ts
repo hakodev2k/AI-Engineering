@@ -1,0 +1,3 @@
+import {McpServer} from "@modelcontextprotocol/sdk/server/mcp.js";import {StdioServerTransport} from "@modelcontextprotocol/sdk/server/stdio.js";import {loadConfig} from "./config.js";import {WiseClient} from "./client.js";import {registerTools} from "./tools.js";
+export async function main(){const c=loadConfig();const server=new McpServer({name:"wise-connector",version:"1.0.0"});registerTools(server,new WiseClient(c),c);await server.connect(new StdioServerTransport())}
+if(import.meta.url===`file://${process.argv[1]}`)main().catch(e=>{console.error(`Wise connector failed: ${e instanceof Error?e.message:String(e)}`);process.exit(1)});

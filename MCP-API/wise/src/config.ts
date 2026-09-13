@@ -1,0 +1,4 @@
+export type Config={token:string;version:string;timeoutMs:number;maxRetries:number;requireWriteApproval:boolean;allowDestructive:boolean};
+const int=(v:string|undefined,d:number)=>{const n=v?Number.parseInt(v,10):d;if(!Number.isFinite(n)||n<0)throw new Error("Invalid non-negative integer configuration");return n};
+const bool=(v:string|undefined,d:boolean)=>v===undefined?d:["1","true","yes"].includes(v.toLowerCase());
+export function loadConfig(env:NodeJS.ProcessEnv=process.env):Config{const token=env.WISE_API_TOKEN?.trim();if(!token)throw new Error("WISE_API_TOKEN is required");const version=(env.WISE_API_VERSION||"2026Q3").trim();if(!/^20\d{2}Q[1-4]$/.test(version))throw new Error("WISE_API_VERSION must look like 2026Q3");return{token,version,timeoutMs:int(env.WISE_TIMEOUT_MS,10000),maxRetries:Math.min(5,int(env.WISE_MAX_RETRIES,2)),requireWriteApproval:bool(env.WISE_REQUIRE_WRITE_APPROVAL,true),allowDestructive:bool(env.WISE_ALLOW_DESTRUCTIVE,false)}}

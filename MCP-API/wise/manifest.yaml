@@ -1,0 +1,37 @@
+id: wise
+name: Wise
+upstream:
+  - rest
+auth:
+  type: bearer-token
+  credential_env: WISE_API_TOKEN
+api:
+  base_url: https://api.wise.com
+  version_env: WISE_API_VERSION
+official_mcp:
+  available: false
+capabilities:
+  - quote.create
+  - quote.get
+  - recipient.list
+  - recipient.requirements
+  - transfer.create
+  - transfer.get
+  - transfer.cancel
+  - transfer.fund_from_balance
+  - balance.list
+  - balance.get
+  - balance.statement
+  - account_details.list
+risk:
+  default: READ
+  write_approval: configurable
+  high_risk_approval: required
+  destructive_default: disabled
+permissions:
+  - wise.read
+  - wise.write
+  - wise.execute_payment
+environment:
+  required: [WISE_API_TOKEN]
+  optional: [WISE_API_VERSION, WISE_TIMEOUT_MS, WISE_MAX_RETRIES, WISE_REQUIRE_WRITE_APPROVAL, WISE_ALLOW_DESTRUCTIVE]
