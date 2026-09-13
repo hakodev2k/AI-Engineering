@@ -1,0 +1,63 @@
+id: giphy
+name: GIPHY
+upstream:
+  - rest
+auth:
+  type: api_key
+  environment: GIPHY_API_KEY
+api:
+  base_url: https://api.giphy.com
+capabilities:
+  - gif.search
+  - gif.trending
+  - gif.random
+  - gif.translate
+  - gif.get
+  - sticker.search
+  - sticker.trending
+  - sticker.random
+  - sticker.translate
+  - tag.related
+  - search.trending_terms
+risk:
+  default: read
+tools:
+  - name: giphy.gif.search
+    risk: READ
+    approval: false
+  - name: giphy.gif.trending
+    risk: READ
+    approval: false
+  - name: giphy.gif.random
+    risk: READ
+    approval: false
+  - name: giphy.gif.translate
+    risk: READ
+    approval: false
+  - name: giphy.gif.get
+    risk: READ
+    approval: false
+  - name: giphy.sticker.search
+    risk: READ
+    approval: false
+  - name: giphy.sticker.trending
+    risk: READ
+    approval: false
+  - name: giphy.sticker.random
+    risk: READ
+    approval: false
+  - name: giphy.sticker.translate
+    risk: READ
+    approval: false
+  - name: giphy.tag.related
+    risk: READ
+    approval: false
+  - name: giphy.search.trending_terms
+    risk: READ
+    approval: false
+required_environment:
+  - GIPHY_API_KEY
+optional_environment:
+  - GIPHY_TIMEOUT_MS
+  - GIPHY_MAX_RETRIES
+  - GIPHY_DEFAULT_RATING
