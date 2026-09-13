@@ -1,0 +1,36 @@
+id: pushover
+name: Pushover
+upstream:
+  - rest
+official_mcp: false
+api_base_url: https://api.pushover.net/1
+auth:
+  type: application_token
+  environment:
+    - PUSHOVER_APP_TOKEN
+capabilities:
+  - user.validate
+  - application.limits.get
+  - sound.list
+  - message.send
+  - glance.update
+  - receipt.get
+  - receipt.cancel
+  - receipt.cancel_by_tag
+  - group.list
+  - group.get
+  - group.create
+  - group.user.add
+  - group.user.remove
+  - group.user.disable
+  - group.user.enable
+  - group.rename
+risk:
+  default: read
+  write_requires_approval: true
+  high_risk_requires_approval: true
+  destructive_disabled_by_default: true
+security:
+  credentials_visible_to_llm: false
+  fixed_upstream_origin: true
+  provider_content_untrusted: true
