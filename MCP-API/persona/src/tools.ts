@@ -24,7 +24,7 @@ export const TOOL_SPECS: ToolSpec[] = [
   { name: "persona.case.get", operation: "case.get", purpose: "Retrieve one review case by ID.", risk: "READ", permission: "case.read", approval: "none" },
   { name: "persona.verification.get", operation: "verification.get", purpose: "Retrieve a verification result by ID.", risk: "READ", permission: "verification.read", approval: "none" },
   { name: "persona.report.get", operation: "report.get", purpose: "Retrieve a generated Persona report by ID.", risk: "READ", permission: "report.read", approval: "none" },
-  { name: "persona.transaction.get", operation: "transaction.get", purpose: "Retrieve a Persona transaction by ID.", risk: "READ", permission: "transaction.read", approval: "none" },
+  { name: "persona.transaction.get", operation: "transaction.get", purpose: "Retrieve a Persona transaction by ID.", risk: "READ", permission: "txn.read", approval: "none" },
   { name: "persona.webhook.list", operation: "webhook.list", purpose: "List configured Persona webhooks without modifying them.", risk: "READ", permission: "webhook.read", approval: "none" }
 ];
 
