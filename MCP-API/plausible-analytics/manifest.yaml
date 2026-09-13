@@ -1,0 +1,47 @@
+id: plausible-analytics
+name: Plausible Analytics
+upstream:
+  - rest
+auth:
+  type: api_key
+  env:
+    - PLAUSIBLE_STATS_API_KEY
+  notes: Stats API uses team-scoped Bearer API keys; Events API does not use the Stats API key.
+endpoints:
+  stats: https://plausible.io/api/v2/query
+  events: https://plausible.io/api/event
+capabilities:
+  - stats.query
+  - stats.overview
+  - stats.timeseries
+  - stats.pages
+  - stats.sources
+  - stats.countries
+  - stats.devices
+  - stats.goals
+  - stats.realtime
+  - event.pageview
+  - event.custom
+risk:
+  default: read
+  tools:
+    plausible.stats.query: READ
+    plausible.stats.overview: READ
+    plausible.stats.timeseries: READ
+    plausible.stats.pages: READ
+    plausible.stats.sources: READ
+    plausible.stats.countries: READ
+    plausible.stats.devices: READ
+    plausible.stats.goals: READ
+    plausible.stats.realtime: READ
+    plausible.event.pageview: WRITE
+    plausible.event.custom: WRITE
+approval:
+  write_tools: explicit_human_approval
+  event_writes_disabled_by_default: true
+environment:
+  - PLAUSIBLE_STATS_API_KEY
+  - PLAUSIBLE_BASE_URL
+  - PLAUSIBLE_TIMEOUT_MS
+  - PLAUSIBLE_MAX_RETRIES
+  - PLAUSIBLE_ALLOW_EVENT_WRITES
