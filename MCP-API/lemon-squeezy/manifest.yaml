@@ -1,0 +1,43 @@
+id: lemon-squeezy
+name: Lemon Squeezy
+upstream:
+  - rest
+auth:
+  type: api_key
+  header: Authorization
+  scheme: Bearer
+api:
+  base_url: https://api.lemonsqueezy.com/v1
+  format: JSON:API
+mcp:
+  official_server: false
+capabilities:
+  - store.list
+  - store.get
+  - product.list
+  - product.get
+  - variant.list
+  - variant.get
+  - customer.list
+  - customer.get
+  - customer.create
+  - customer.update
+  - order.list
+  - order.get
+  - subscription.list
+  - subscription.get
+  - subscription.update
+risk:
+  default: READ
+  write_requires_approval: true
+  high_risk_requires_approval: true
+env:
+  required:
+    - LEMONSQUEEZY_API_KEY
+  optional:
+    - LEMONSQUEEZY_TIMEOUT_MS
+    - LEMONSQUEEZY_MAX_RETRIES
+    - LEMONSQUEEZY_ALLOW_WRITE
+    - LEMONSQUEEZY_ALLOW_HIGH_RISK
+rate_limit:
+  api_calls_per_minute: 300
