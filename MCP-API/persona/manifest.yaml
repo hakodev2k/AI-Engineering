@@ -12,6 +12,17 @@ auth:
 api_version:
   header: Persona-Version
   default: "2025-12-08"
+permissions:
+  read:
+    - inquiry.read
+    - account.read
+    - case.read
+    - verification.read
+    - report.read
+    - txn.read
+    - webhook.read
+  write:
+    - inquiry.write
 capabilities:
   - inquiry.list
   - inquiry.get
