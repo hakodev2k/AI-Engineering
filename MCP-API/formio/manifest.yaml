@@ -1,0 +1,45 @@
+id: formio
+name: Form.io
+upstream:
+  - mcp
+official_mcp:
+  package: "@formio/mcp@0.13.0"
+  transport: stdio
+auth:
+  preferred: api_key
+  environment:
+    - FORMIO_API_KEY
+    - FORMIO_PROJECT_URL
+  alternatives:
+    - cached_jwt_browser_login
+capabilities:
+  - form.list
+  - form.read
+  - form.create
+  - form.update
+  - form.revision.list
+  - form.revision.read
+  - role.list
+  - role.create
+  - role.update
+  - action.type.list
+  - action.type.read
+  - action.list
+  - action.read
+  - action.create
+  - action.update
+  - action.delete
+  - project.read
+  - project.export
+  - project.import
+risk:
+  default: READ
+  write_requires_approval: true
+  high_risk_requires_explicit_approval: true
+  destructive_disabled_by_default: true
+security:
+  discovered_upstream_tools_are_not_auto_exposed: true
+  credentials_forwarded_only_to_official_upstream_process: true
+  provider_content_is_untrusted: true
+rate_limits:
+  policy: honor upstream errors; bounded connector calls; no blind retries for writes
