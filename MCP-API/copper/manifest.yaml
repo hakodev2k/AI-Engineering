@@ -1,0 +1,55 @@
+id: copper
+name: Copper CRM
+upstream:
+  - rest
+official_mcp: false
+api:
+  base_url: https://api.copper.com/developer_api/v1
+  openapi: https://developer.copper.com/v1/openapi.json
+auth:
+  type: api_key
+  headers:
+    - X-PW-AccessToken
+    - X-PW-UserEmail
+  oauth2_supported: true
+  oauth_scope: developer/v1/all
+environment:
+  required:
+    - COPPER_API_KEY
+    - COPPER_USER_EMAIL
+  optional:
+    - COPPER_BASE_URL
+    - COPPER_TIMEOUT_MS
+    - COPPER_MAX_RETRIES
+    - COPPER_ALLOW_WRITES
+    - COPPER_ALLOW_HIGH_RISK
+capabilities:
+  - person.search
+  - person.read
+  - person.create
+  - person.update
+  - company.search
+  - company.read
+  - company.create
+  - company.update
+  - opportunity.search
+  - opportunity.read
+  - opportunity.create
+  - opportunity.update
+  - project.search
+  - project.read
+  - activity.search
+  - activity.create
+  - custom_field.list
+  - pipeline.list
+risk:
+  default: READ
+  write_requires_approval: true
+  destructive_tools: disabled
+security:
+  credential_isolation: true
+  fixed_api_host: api.copper.com
+  provider_content_untrusted: true
+transport:
+  external: mcp_stdio
+  upstream: official_rest_api
