@@ -1,0 +1,45 @@
+id: persona
+name: Persona
+upstream:
+  - mcp
+mcp:
+  endpoint: https://mcp.withpersona.com
+  official: true
+auth:
+  type: api_key_bearer
+  environment:
+    - PERSONA_API_KEY
+api_version:
+  header: Persona-Version
+  default: "2025-12-08"
+capabilities:
+  - inquiry.list
+  - inquiry.get
+  - inquiry.search
+  - inquiry.create
+  - account.list
+  - account.get
+  - case.list
+  - case.get
+  - verification.get
+  - report.get
+  - transaction.get
+  - webhook.list
+risk:
+  default: READ
+  write_requires_approval: true
+  high_risk_requires_explicit_approval: true
+  destructive_tools: disabled
+security:
+  upstream_tool_allowlist: true
+  credentials_forwarded_only_to_official_persona_mcp: true
+  provider_content_untrusted: true
+required_environment:
+  - PERSONA_API_KEY
+optional_environment:
+  - PERSONA_MCP_URL
+  - PERSONA_VERSION
+  - PERSONA_TIMEOUT_MS
+  - PERSONA_MAX_RETRIES
+  - PERSONA_ALLOW_WRITES
+  - PERSONA_ALLOW_HIGH_RISK
