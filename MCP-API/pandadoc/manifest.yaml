@@ -1,0 +1,40 @@
+id: pandadoc
+name: PandaDoc
+upstream:
+  - official-mcp-reviewed
+  - rest
+mcp:
+  official: true
+  global_endpoint: https://mcp.pandadoc.com/v1/mcp
+  eu_endpoint: https://mcp.pandadoc.eu/v1/mcp
+  strategy: reviewed-first; REST used by this headless connector for deterministic credential isolation and strict tool schemas
+api:
+  base_url: https://api.pandadoc.com/public/v1
+auth:
+  type: api_key
+  header: Authorization
+  format: API-Key ${PANDADOC_API_KEY}
+capabilities:
+  - template.list
+  - template.get
+  - document.list
+  - document.status
+  - document.get
+  - document.create_from_template
+  - document.send
+  - document.remind
+  - webhook.list
+  - webhook.create
+  - webhook.delete
+risk:
+  default: READ
+  write_requires_approval: true
+  high_risk_requires_explicit_approval: true
+  destructive_disabled_by_default: true
+environment:
+  - PANDADOC_API_KEY
+  - PANDADOC_API_BASE_URL
+  - PANDADOC_TIMEOUT_MS
+  - PANDADOC_MAX_RETRIES
+  - PANDADOC_ALLOW_WRITES
+  - PANDADOC_ALLOW_HIGH_RISK
