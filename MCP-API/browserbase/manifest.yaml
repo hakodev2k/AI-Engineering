@@ -1,0 +1,63 @@
+id: browserbase
+name: Browserbase
+runtime: node20
+upstream:
+  - mcp
+  - rest
+auth:
+  type: api_key
+  env: BROWSERBASE_API_KEY
+  header: X-BB-API-Key
+mcp:
+  endpoint: https://mcp.browserbase.com/mcp
+  auth_query_parameter: browserbaseApiKey
+api:
+  base_url: https://api.browserbase.com
+capabilities:
+  - browser.start
+  - browser.end
+  - browser.navigate
+  - browser.act
+  - browser.observe
+  - browser.extract
+  - session.list
+  - session.get
+  - session.create
+  - session.release
+  - session.logs
+  - project.get
+  - project.usage
+  - search.web
+risk:
+  default: READ
+  tools:
+    browserbase.browser.start: WRITE
+    browserbase.browser.end: WRITE
+    browserbase.browser.navigate: HIGH_RISK
+    browserbase.browser.act: HIGH_RISK
+    browserbase.browser.observe: READ
+    browserbase.browser.extract: READ
+    browserbase.session.create: WRITE
+    browserbase.session.release: HIGH_RISK
+    browserbase.search.web: READ
+approval:
+  required:
+    - browserbase.browser.start
+    - browserbase.browser.end
+    - browserbase.browser.navigate
+    - browserbase.browser.act
+    - browserbase.session.create
+    - browserbase.session.release
+required_env:
+  - BROWSERBASE_API_KEY
+optional_env:
+  - BROWSERBASE_PROJECT_ID
+  - BROWSERBASE_API_BASE_URL
+  - BROWSERBASE_MCP_URL
+  - BROWSERBASE_TIMEOUT_MS
+  - BROWSERBASE_APPROVAL_SECRET
+  - BROWSERBASE_ALLOWED_HOSTS
+security:
+  arbitrary_http_passthrough: false
+  credentials_exposed_to_llm: false
+  upstream_mcp_tool_allowlist: true
