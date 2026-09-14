@@ -1,0 +1,40 @@
+{
+  "examples": [
+    {
+      "tool": "google_calendar.calendar.list",
+      "input": { "pageSize": 25 },
+      "expected_output_shape": { "data": "official MCP result", "trust": "untrusted-provider-data" },
+      "permission": "READ",
+      "approval_required": false
+    },
+    {
+      "tool": "google_calendar.event.list",
+      "input": { "calendarId": "primary", "startTime": "2026-09-15T00:00:00+07:00", "endTime": "2026-09-16T00:00:00+07:00", "pageSize": 25 },
+      "expected_output_shape": { "data": "event page", "trust": "untrusted-provider-data" },
+      "permission": "READ",
+      "approval_required": false
+    },
+    {
+      "tool": "google_calendar.availability.suggest",
+      "input": { "attendeeEmails": ["person@example.com"], "startTime": "2026-09-15T09:00:00+07:00", "endTime": "2026-09-15T18:00:00+07:00", "durationMinutes": 30 },
+      "expected_output_shape": { "data": "suggested slots", "trust": "untrusted-provider-data" },
+      "permission": "READ",
+      "approval_required": false
+    },
+    {
+      "tool": "google_calendar.event.create",
+      "input": { "calendarId": "primary", "summary": "Project review", "startTime": "2026-09-15T14:00:00+07:00", "endTime": "2026-09-15T14:30:00+07:00", "notificationLevel": "NONE", "approvalId": "<HMAC-SHA256 approval>" },
+      "expected_output_shape": { "data": "created event", "trust": "untrusted-provider-data" },
+      "permission": "WRITE",
+      "approval_required": true
+    },
+    {
+      "tool": "google_calendar.event.delete",
+      "input": { "calendarId": "primary", "eventId": "event-id", "approvalId": "<HMAC-SHA256 approval>" },
+      "expected_output_shape": { "data": "deleted event result", "trust": "untrusted-provider-data" },
+      "permission": "DESTRUCTIVE",
+      "approval_required": true
+    }
+  ],
+  "approval_formula": "hex(HMAC-SHA256(GOOGLE_CALENDAR_APPROVAL_SECRET, action + ':' + resource))"
+}
