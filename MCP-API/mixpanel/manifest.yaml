@@ -1,0 +1,43 @@
+id: mixpanel
+name: Mixpanel
+version: 1.0.0
+runtime: node >=20
+upstream:
+  - type: mcp
+    official: true
+    transport: streamable-http
+    endpoints:
+      us: https://mcp.mixpanel.com/mcp
+      eu: https://mcp-eu.mixpanel.com/mcp
+      in: https://mcp-in.mixpanel.com/mcp
+    auth: oauth
+    usage: documented/preferred for interactive delegated-user workflows; not proxied by this headless connector
+  - type: rest
+    official: true
+    auth: service-account-basic
+    usage: implemented for bounded headless analytics reads
+auth:
+  type: service-account
+  required_environment:
+    - MIXPANEL_SERVICE_ACCOUNT_USERNAME
+    - MIXPANEL_SERVICE_ACCOUNT_SECRET
+    - MIXPANEL_PROJECT_ID
+capabilities:
+  - events.export
+  - profiles.query
+  - funnels.list
+  - funnel.query
+  - retention.query
+  - cohorts.list
+  - event.names
+  - event.properties.top
+  - segmentation.query
+  - revenue.query
+risk:
+  default: READ
+  writes_exposed: false
+security:
+  credentials_exposed_to_model: false
+  provider_content_untrusted: true
+  endpoint_allowlist: true
+  bounded_date_ranges: true
