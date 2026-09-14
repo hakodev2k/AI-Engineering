@@ -1,0 +1,43 @@
+id: pipedream
+name: Pipedream
+version: 1.0.0
+runtime: node >=20
+upstream:
+  - type: official-sdk
+    package: "@pipedream/sdk"
+    api: Pipedream Connect API
+  - type: official-mcp
+    endpoint: https://remote.mcp.pipedream.net
+    usage: documented-but-not-forwarded-by-this-connector
+auth:
+  type: oauth2-client-credentials
+  credentials:
+    - PIPEDREAM_CLIENT_ID
+    - PIPEDREAM_CLIENT_SECRET
+    - PIPEDREAM_PROJECT_ID
+    - PIPEDREAM_PROJECT_ENVIRONMENT
+  least_privilege: dedicated_project_and_environment
+capabilities:
+  - app.list
+  - app.get
+  - component.list
+  - component.get
+  - action.list
+  - action.get
+  - action.configure_prop
+  - action.reload_props
+  - account.list
+  - action.run
+risk:
+  default: READ
+  action.run: HIGH_RISK
+  high_risk_requires_approval: true
+security:
+  credentials_exposed_to_model: false
+  provider_content_untrusted: true
+  raw_proxy_exposed: false
+  dynamic_remote_mcp_passthrough: false
+reliability:
+  read_retries: bounded_exponential_backoff_by_official_sdk
+  write_retries: disabled
+  timeout_seconds_env: PIPEDREAM_TIMEOUT_SECONDS
