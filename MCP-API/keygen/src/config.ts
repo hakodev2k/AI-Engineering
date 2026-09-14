@@ -8,15 +8,15 @@ export type Config = {
   allowDestructive: boolean;
 };
 
-function bool(name: string, fallback = false) {
-  const v = process.env[name];
+function bool(env: NodeJS.ProcessEnv, name: string, fallback = false) {
+  const v = env[name];
   if (v == null || v === '') return fallback;
   if (v === 'true') return true;
   if (v === 'false') return false;
   throw new Error(`${name} must be true or false`);
 }
 
-export function loadConfig(env = process.env): Config {
+export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
   const account = env.KEYGEN_ACCOUNT?.trim();
   const token = env.KEYGEN_TOKEN?.trim();
   if (!account) throw new Error('KEYGEN_ACCOUNT is required');
@@ -31,7 +31,7 @@ export function loadConfig(env = process.env): Config {
     baseUrl,
     timeoutMs,
     approvalSecret: env.KEYGEN_APPROVAL_SECRET,
-    allowWrites: bool('KEYGEN_ALLOW_WRITES'),
-    allowDestructive: bool('KEYGEN_ALLOW_DESTRUCTIVE')
+    allowWrites: bool(env, 'KEYGEN_ALLOW_WRITES'),
+    allowDestructive: bool(env, 'KEYGEN_ALLOW_DESTRUCTIVE')
   };
 }
