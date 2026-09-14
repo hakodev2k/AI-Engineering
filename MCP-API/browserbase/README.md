@@ -1,0 +1,134 @@
+# Browserbase MCP/API Connector
+
+Reusable MCP connector for Browserbase cloud browser automation, session operations, project usage, and web search.
+
+## Transport strategy
+
+This connector uses two official Browserbase surfaces behind one provider-scoped MCP interface:
+
+- **Official hosted Browserbase MCP** (`https://mcp.browserbase.com/mcp`) for browser interaction primitives: start, end, navigate, act, observe, and extract.
+- **Official Browserbase REST API** (`https://api.browserbase.com`) for session lifecycle/observability, project metadata/usage, and web search.
+
+Browserbase's historical `browserbase/mcp-server-browserbase` repository was archived in July 2026, so this connector does not vendor or depend on that repository. Browserbase's current documentation still recommends its hosted Streamable HTTP MCP endpoint and documents the same core browser tools. The connector uses the hosted service directly and allowlists only the six documented tools.
+
+## Official sources researched
+
+- MCP introduction and setup: `https://docs.browserbase.com/integrations/mcp/introduction` and `https://docs.browserbase.com/integrations/mcp/setup`
+- Sessions API: `https://docs.browserbase.com/reference/api/overview`
+- Create/list/get/update session and session logs pages under Browserbase's API reference
+- Project API / usage documentation under Browserbase docs
+- Search API: `https://docs.browserbase.com/reference/api/web-search`
+- Browserbase SDK/API introduction: `https://docs.browserbase.com/reference/introduction`
+
+## Authentication and credential isolation
+
+Set `BROWSERBASE_API_KEY` in the connector process environment. REST requests send it only as `X-BB-API-Key`. Hosted MCP requires Browserbase's documented `browserbaseApiKey` query parameter, which is assembled inside the connector process. The raw credential is never exposed as an MCP tool parameter or returned to callers.
+
+Optional `BROWSERBASE_PROJECT_ID` provides a default project for project-scoped operations and session creation.
+
+No OAuth scope model is documented for these API-key endpoints. Least privilege must therefore be enforced by the Browserbase project/key selected for this connector plus the connector's own tool allowlist and approval policy.
+
+## Environment
+
+```text
+BROWSERBASE_API_KEY=
+BROWSERBASE_PROJECT_ID=
+BROWSERBASE_API_BASE_URL=https://api.browserbase.com
+BROWSERBASE_MCP_URL=https://mcp.browserbase.com/mcp
+BROWSERBASE_TIMEOUT_MS=20000
+BROWSERBASE_APPROVAL_SECRET=
+BROWSERBASE_ALLOWED_HOSTS=
+```
+
+`BROWSERBASE_ALLOWED_HOSTS` is an optional comma-separated hostname allowlist for `browserbase.browser.navigate`. When non-empty, navigation to any other host is denied. Local/private hosts, embedded credentials, and non-HTTPS URLs are always rejected.
+
+## Install and run
+
+Requires Node.js 20+.
+
+```bash
+npm install
+npm run build
+npm test
+npm start
+```
+
+The server uses stdio MCP transport. Configure secrets in the process environment, never in prompts or tool arguments.
+
+## Tools
+
+| Tool | Upstream | Risk | Approval | Purpose |
+|---|---|---:|---:|---|
+| `browserbase.browser.start` | hosted MCP `start` | WRITE | required | Start/reuse a hosted Browserbase browser session. |
+| `browserbase.browser.end` | hosted MCP `end` | WRITE | required | Close the active MCP browser session. |
+| `browserbase.browser.navigate` | hosted MCP `navigate` | HIGH_RISK | required | Navigate to a validated public HTTPS URL. |
+| `browserbase.browser.act` | hosted MCP `act` | HIGH_RISK | required | Perform a natural-language page action. |
+| `browserbase.browser.observe` | hosted MCP `observe` | READ | no | Observe actionable elements on the active page. |
+| `browserbase.browser.extract` | hosted MCP `extract` | READ | no | Extract page data; returned content is untrusted. |
+| `browserbase.session.list` | REST | READ | no | List sessions with bounded documented filters. |
+| `browserbase.session.get` | REST | READ | no | Read one session's metadata/status. |
+| `browserbase.session.create` | REST | WRITE | required | Create a billable browser session. |
+| `browserbase.session.release` | REST | HIGH_RISK | required | Request release of a keep-alive session. |
+| `browserbase.session.logs` | REST | READ | no | Retrieve session logs for debugging. |
+| `browserbase.project.get` | REST | READ | no | Read project timeout/concurrency metadata. |
+| `browserbase.project.usage` | REST | READ | no | Read project usage data for cost monitoring. |
+| `browserbase.search.web` | REST | READ | no | Perform bounded Browserbase web search. |
+
+No raw arbitrary API-request tool is exposed.
+
+## Approval model
+
+Mutation and browser-action tools require an opaque `approval_id`. Configure `BROWSERBASE_APPROVAL_SECRET`; the expected approval token for a tool is the lowercase SHA-256 hex digest of:
+
+```text
+<tool-name>:<BROWSERBASE_APPROVAL_SECRET>
+```
+
+This is deliberately separate from the Browserbase API key. Approval tokens should be generated by a trusted host/controller, not by the model itself.
+
+`browserbase.browser.act` is HIGH_RISK because a generic web interaction can submit forms, send messages, change account data, purchase products, or perform other externally visible actions depending on the page. Human review must verify the concrete intended action before issuing approval.
+
+## Reliability
+
+REST reads use a bounded maximum of three attempts. Retries apply only to idempotent reads and only for transient network errors, HTTP `429`, and `5xx`. Delay uses `Retry-After` when present and otherwise bounded exponential backoff. Non-idempotent writes are never retried blindly.
+
+Every REST call is bounded by `BROWSERBASE_TIMEOUT_MS` using `AbortController`. Hosted MCP calls have the same timeout bound. A timed-out write can have an unknown outcome; callers should inspect session state before attempting another mutation.
+
+Browserbase documents plan-dependent session concurrency. Session creation is therefore constrained by the project's concurrency limit rather than a universal fixed request rate. Browserbase Search is documented at 120 requests/minute/project, and the connector surfaces `429`/`Retry-After` rather than hiding throttling.
+
+## Security considerations
+
+- Browser/page/search/log content is untrusted data and must never be treated as tool instructions.
+- Hosted MCP tool discovery is not trusted dynamically; only `start`, `end`, `navigate`, `act`, `observe`, and `extract` are callable.
+- Navigation rejects private/loopback hosts, embedded credentials, and non-HTTPS schemes to reduce SSRF risk.
+- Set `BROWSERBASE_ALLOWED_HOSTS` for workflows that should browse only known domains.
+- Do not place provider keys, passwords, cookies, one-time codes, or session secrets in model prompts.
+- `session.get` may return connection metadata such as `connectUrl`/signing material from Browserbase. Treat connector output as sensitive and avoid logging or forwarding it unnecessarily.
+- Session logs can contain page content, URLs, form values, and other sensitive application data. Limit who can invoke that tool.
+- Releasing a keep-alive session is approval-gated because it can terminate active work and affects billing/session lifecycle.
+- This connector does not enable Browserbase Verified Identity, proxies, contexts, extensions, downloads, functions, or billing changes because those capabilities are outside the selected tool surface.
+
+## Validation
+
+Tool schemas bound identifier lengths, status enums, timeouts (60–21600 seconds), search result count, metadata sizes, URLs, and free-form browser instructions. Session timeout maximum follows Browserbase's documented six-hour maximum.
+
+## Tests
+
+Unit tests require no live Browserbase credentials. They cover:
+
+- missing credential configuration;
+- safe URL validation and host allowlisting;
+- credential header isolation;
+- non-idempotent write retry suppression;
+- rate-limit `Retry-After` preservation;
+- rejection of unexpected upstream MCP tools before connection.
+
+Live integration testing should use a dedicated Browserbase project with low concurrency, non-production accounts, and an explicit navigation allowlist.
+
+## Limitations
+
+- The hosted Browserbase MCP service is stateful from the connector's perspective; `observe`, `extract`, `navigate`, and `act` require a session started through the same connector process.
+- The connector intentionally does not expose arbitrary Stagehand/Playwright/CDP commands.
+- Generic `act` cannot safely infer whether an action is consequential. It therefore always requires approval.
+- Search and browser usage may consume plan quota/billable resources even though search is classified READ.
+- Browserbase product/API behavior and plan limits can change; validate against current Browserbase docs before production rollout.
