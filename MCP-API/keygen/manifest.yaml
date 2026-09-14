@@ -1,0 +1,33 @@
+id: keygen
+name: Keygen
+upstream:
+  - rest
+auth:
+  type: bearer-token
+  env:
+    - KEYGEN_ACCOUNT
+    - KEYGEN_TOKEN
+api:
+  base_url: https://api.keygen.sh/v1/accounts/{account}
+capabilities:
+  - license.list
+  - license.get
+  - license.validate
+  - license.create
+  - license.suspend
+  - license.reinstate
+  - machine.list
+  - machine.deactivate
+risk:
+  default: read
+  write_approval: required
+  destructive_approval: required
+tools:
+  keygen.license.list: READ
+  keygen.license.get: READ
+  keygen.license.validate: READ
+  keygen.license.create: WRITE
+  keygen.license.suspend: HIGH_RISK
+  keygen.license.reinstate: HIGH_RISK
+  keygen.machine.list: READ
+  keygen.machine.deactivate: DESTRUCTIVE
