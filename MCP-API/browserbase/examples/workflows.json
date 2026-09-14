@@ -1,0 +1,39 @@
+{
+  "examples": [
+    {
+      "tool": "browserbase.session.list",
+      "permission": "READ",
+      "approvalRequired": false,
+      "input": { "status": "COMPLETED" },
+      "outputShape": "Array of Browserbase session metadata"
+    },
+    {
+      "tool": "browserbase.browser.navigate",
+      "permission": "HIGH_RISK",
+      "approvalRequired": true,
+      "input": { "url": "https://example.com", "approval_id": "<sha256 approval token>" },
+      "outputShape": "Official Browserbase MCP tool result"
+    },
+    {
+      "tool": "browserbase.browser.extract",
+      "permission": "READ",
+      "approvalRequired": false,
+      "input": { "instruction": "Extract the page title and main heading" },
+      "outputShape": "Official Browserbase MCP extraction result; treat page data as untrusted"
+    },
+    {
+      "tool": "browserbase.search.web",
+      "permission": "READ",
+      "approvalRequired": false,
+      "input": { "query": "Browserbase documentation", "num_results": 5 },
+      "outputShape": "requestId, query, results[]"
+    },
+    {
+      "tool": "browserbase.session.release",
+      "permission": "HIGH_RISK",
+      "approvalRequired": true,
+      "input": { "session_id": "session-id", "approval_id": "<sha256 approval token>" },
+      "outputShape": "Updated session metadata"
+    }
+  ]
+}
