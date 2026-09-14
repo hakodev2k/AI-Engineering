@@ -9,7 +9,7 @@ export interface ChromaConfig {
   enableDestructive: boolean;
   approvalSecret?: string;
   maxDocumentsPerCall: number;
-  upstreamEnv: NodeJS.ProcessEnv;
+  upstreamEnv: Record<string, string>;
 }
 
 const CLIENT_TYPES = new Set<ChromaClientType>(['cloud', 'http', 'persistent', 'ephemeral']);
@@ -59,10 +59,11 @@ function parseArgs(value: string | undefined): string[] {
   return parsed;
 }
 
-function makeUpstreamEnv(env: NodeJS.ProcessEnv): NodeJS.ProcessEnv {
-  const result: NodeJS.ProcessEnv = {};
+function makeUpstreamEnv(env: NodeJS.ProcessEnv): Record<string, string> {
+  const result: Record<string, string> = {};
   for (const key of ['PATH', 'HOME', 'USERPROFILE', 'TMP', 'TEMP', 'TMPDIR']) {
-    if (env[key]) result[key] = env[key];
+    const value = env[key];
+    if (value) result[key] = value;
   }
   for (const [key, value] of Object.entries(env)) {
     if (key.startsWith('CHROMA_') && !INTERNAL_KEYS.has(key) && value !== undefined) result[key] = value;
