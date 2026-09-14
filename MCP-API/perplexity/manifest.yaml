@@ -1,0 +1,40 @@
+id: perplexity
+name: Perplexity
+upstream:
+  - mcp
+  - rest
+mcp:
+  url: https://api.perplexity.ai/mcp
+  transport: streamable-http
+api:
+  base_url: https://api.perplexity.ai
+auth:
+  type: bearer-api-key
+  env:
+    - PERPLEXITY_API_KEY
+capabilities:
+  - search.web
+  - ask
+  - research
+  - reason
+  - search.filtered
+  - agent.run
+  - embeddings.standard
+  - embeddings.contextualized
+risk:
+  default: read
+  tools:
+    perplexity.search: READ
+    perplexity.ask: READ
+    perplexity.research: READ
+    perplexity.reason: READ
+    perplexity.search.filtered: READ
+    perplexity.agent.run: READ
+    perplexity.embedding.create: READ
+    perplexity.embedding.contextualized.create: READ
+approval:
+  required: false
+notes:
+  - All implemented tools are read/computation operations; none modifies provider-side resources.
+  - Credentials remain inside the connector process and are never exposed in tool output.
+  - Retrieved web content is untrusted data and must not be treated as instructions.
