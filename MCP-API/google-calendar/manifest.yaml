@@ -1,0 +1,48 @@
+id: google-calendar
+name: Google Calendar
+runtime: node>=20
+upstream:
+  - mcp
+  - rest
+mcp:
+  endpoint: https://calendarmcp.googleapis.com/mcp/v1
+  status: developer-preview
+api:
+  base_url: https://www.googleapis.com/calendar/v3
+auth:
+  type: oauth2
+  token_url: https://oauth2.googleapis.com/token
+  least_privilege_scopes:
+    read:
+      - https://www.googleapis.com/auth/calendar.calendarlist.readonly
+      - https://www.googleapis.com/auth/calendar.events.readonly
+      - https://www.googleapis.com/auth/calendar.events.freebusy
+    write:
+      - https://www.googleapis.com/auth/calendar.events
+capabilities:
+  - calendar.list
+  - event.search
+  - event.list
+  - event.get
+  - event.instances
+  - availability.suggest
+  - event.create
+  - event.update
+  - event.respond
+  - event.move
+  - event.delete
+risk:
+  default: READ
+  write_requires_approval: true
+  high_risk_requires_approval: true
+  destructive_requires_approval: true
+env:
+  - GOOGLE_CLIENT_ID
+  - GOOGLE_CLIENT_SECRET
+  - GOOGLE_REFRESH_TOKEN
+  - GOOGLE_ACCESS_TOKEN
+  - GOOGLE_CALENDAR_APPROVAL_SECRET
+security:
+  arbitrary_http_passthrough: false
+  upstream_tools_allowlisted: true
+  credentials_exposed_to_llm: false
