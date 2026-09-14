@@ -1,0 +1,31 @@
+id: livekit
+name: LiveKit
+version: 1.0.0
+runtime: node >=20
+upstream:
+  - type: official-sdk
+    package: livekit-server-sdk
+    version: ^2.19.0
+    protocol: twirp
+  - type: mcp
+    availability: docs-only
+    note: LiveKit publishes an official documentation MCP server, not an operational room-management MCP server.
+auth:
+  type: api-key-secret
+  environment: [LIVEKIT_URL, LIVEKIT_API_KEY, LIVEKIT_API_SECRET]
+  grants:
+    roomList: [livekit.room.list]
+    roomCreate: [livekit.room.create, livekit.room.metadata.update, livekit.room.delete]
+    roomAdmin: [livekit.participant.list, livekit.participant.get, livekit.participant.permissions.update, livekit.participant.remove, livekit.track.mute, livekit.data.send]
+capabilities: [room.list, room.create, room.metadata.update, room.delete, participant.list, participant.get, participant.permissions.update, participant.remove, track.mute, data.send, access_token.issue, webhook.verify]
+risk:
+  default: READ
+  write_requires_approval_configurable: true
+  high_risk_requires_approval: true
+  destructive_disabled_by_default: true
+rate_limits:
+  server_api_requests_per_minute: 1000
+security:
+  credentials_exposed_to_model: false
+  provider_content_untrusted: true
+  webhook_signature_verification: true
