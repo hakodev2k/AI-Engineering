@@ -1,0 +1,54 @@
+id: runpod
+name: Runpod
+
+upstream:
+  - mcp
+
+mcp:
+  implementation: official
+  package: "@runpod/mcp-server@3.4.0"
+  transport: stdio
+  docs_endpoint: "https://docs.runpod.io/mcp"
+
+api:
+  rest_v2_base_url: "https://api.runpod.io/v2"
+  serverless_base_url: "https://api.runpod.ai/v2"
+  graphql_url: "https://api.runpod.io/graphql"
+  fallback_checked: true
+  used_by_connector: false
+
+auth:
+  type: api_key
+  environment_variable: RUNPOD_API_KEY
+  recommendation: "Use a scoped rpa_ API key with only the Runpod permissions required by enabled operations."
+
+capabilities:
+  - gpu.list
+  - datacenter.list
+  - pod.list
+  - pod.get
+  - pod.create
+  - pod.stop
+  - endpoint.list
+  - endpoint.get
+  - endpoint.health
+  - endpoint.create
+  - endpoint.job.run
+  - job.get
+  - template.list
+  - volume.list
+
+risk:
+  default: READ
+  approval_required:
+    - runpod.pod.create
+    - runpod.pod.stop
+    - runpod.endpoint.create
+    - runpod.endpoint.job.run
+  destructive_tools_exposed: false
+
+required_environment_variables:
+  - RUNPOD_API_KEY
+  - RUNPOD_APPROVAL_SECRET
+optional_environment_variables:
+  - RUNPOD_UPSTREAM_TIMEOUT_MS
