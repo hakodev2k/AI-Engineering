@@ -1,0 +1,67 @@
+id: hookdeck
+name: Hookdeck
+runtime: node>=20
+
+upstream:
+  - type: mcp
+    implementation: official Hookdeck CLI
+    command: hookdeck gateway mcp
+    source: https://github.com/hookdeck/hookdeck-cli
+  - type: api
+    endpoint: https://api.hookdeck.com
+    usage: indirect through the official CLI MCP server
+
+auth:
+  type: api_key
+  environment_variable: HOOKDECK_API_KEY
+  credential_exposed_to_llm: false
+  notes: API key is passed only to the official Hookdeck CLI subprocess.
+
+environment:
+  required:
+    - HOOKDECK_API_KEY
+  optional:
+    - HOOKDECK_CLI_COMMAND
+    - HOOKDECK_MCP_TIMEOUT_MS
+    - HOOKDECK_ENABLE_WRITES
+    - HOOKDECK_APPROVAL_SECRET
+
+capabilities:
+  - project.list
+  - project.use
+  - connection.list
+  - connection.get
+  - connection.pause
+  - connection.unpause
+  - source.list
+  - source.get
+  - destination.list
+  - destination.get
+  - transformation.list
+  - transformation.get
+  - request.list
+  - request.get
+  - event.list
+  - event.get
+  - attempt.list
+  - attempt.get
+
+risk:
+  default: READ
+  tools:
+    hookdeck.connection.pause: WRITE
+    hookdeck.connection.unpause: WRITE
+
+approval:
+  read: not_required
+  write: required
+  high_risk: required
+  destructive: disabled
+  mechanism: HMAC-SHA256 token bound to action and exact payload
+
+security:
+  upstream_tool_discovery: disabled
+  upstream_tool_allowlist: explicit
+  arbitrary_http_passthrough: disabled
+  writes_enabled_by_default: false
+  credentials_logged: false
