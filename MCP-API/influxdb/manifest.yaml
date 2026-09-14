@@ -1,0 +1,45 @@
+id: influxdb
+name: InfluxDB
+upstream:
+  - mcp
+official_mcp:
+  package: "@influxdata/influxdb3-mcp-server"
+  transport: stdio
+  repository: "https://github.com/influxdata/influxdb3_mcp_server"
+auth:
+  type: token
+  environment:
+    - INFLUX_DB_INSTANCE_URL
+    - INFLUX_DB_TOKEN
+    - INFLUX_DB_PRODUCT_TYPE
+capabilities:
+  - health.read
+  - database.list
+  - table.list
+  - table.describe
+  - query.sql
+  - query.influxql
+  - database.investigate
+  - data.write
+  - database.create
+  - database.update
+  - database.delete
+risk:
+  default: READ
+  write: approval_required
+  destructive: strong_approval_required
+tools:
+  READ:
+    - influxdb.health.get
+    - influxdb.database.list
+    - influxdb.table.list
+    - influxdb.table.describe
+    - influxdb.query.sql
+    - influxdb.query.influxql
+    - influxdb.database.investigate
+  WRITE:
+    - influxdb.data.write
+    - influxdb.database.create
+    - influxdb.database.update
+  DESTRUCTIVE:
+    - influxdb.database.delete
