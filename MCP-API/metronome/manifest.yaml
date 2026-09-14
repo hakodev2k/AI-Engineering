@@ -1,0 +1,43 @@
+id: metronome
+name: Metronome
+version: 1.0.0
+runtime: node >=20
+upstream:
+  - type: rest
+    base_url: https://api.metronome.com
+    version: v1
+    auth: bearer-token
+official_mcp:
+  available: false
+  checked: 2026-09-15
+  strategy: official REST API
+sdk:
+  official: true
+  node_major: 3
+auth:
+  type: bearer-token
+  least_privilege: true
+  notes: Tokens can be scoped by access level, environment, and endpoint through Metronome.
+environment:
+  required: [METRONOME_BEARER_TOKEN]
+  optional: [METRONOME_API_BASE_URL, METRONOME_TIMEOUT_MS, METRONOME_MAX_READ_RETRIES, METRONOME_APPROVAL_TOKEN, METRONOME_REQUIRE_WRITE_APPROVAL, METRONOME_ENABLE_DESTRUCTIVE]
+capabilities:
+  - customer.list
+  - customer.create
+  - customer.archive
+  - usage.ingest
+  - usage.search
+  - billable_metric.list
+  - billable_metric.create
+  - invoice.list
+  - alert.create
+  - contract.create
+risk:
+  default: READ
+  write_requires_approval_configurable: true
+  high_risk_requires_approval: true
+  destructive_disabled_by_default: true
+security:
+  credentials_exposed_to_model: false
+  provider_content_untrusted: true
+  arbitrary_api_passthrough: false
