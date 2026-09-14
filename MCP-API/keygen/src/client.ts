@@ -61,7 +61,7 @@ export class KeygenClient {
   listLicenses(limit = 25, page = 1, status?: string) { return this.request('GET', 'licenses', undefined, { limit, page, status }); }
   getLicense(id: string) { return this.request('GET', `licenses/${encodeURIComponent(id)}`); }
   validateLicense(id: string, fingerprint?: string) {
-    const meta = fingerprint ? { scope: { fingerprint } } : {};
+    const meta = fingerprint ? { scope: { fingerprints: [fingerprint] } } : {};
     return this.request('POST', `licenses/${encodeURIComponent(id)}/actions/validate`, { meta });
   }
   createLicense(policyId: string, name?: string, expiry?: string) {
