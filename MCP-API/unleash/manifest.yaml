@@ -1,0 +1,46 @@
+id: unleash
+name: Unleash
+version: 1.0.0
+runtime: node >=20
+upstream:
+  - type: mcp
+    implementation: official
+    package: '@unleash/mcp'
+    transport: stdio
+  - type: mcp
+    implementation: official-remote
+    endpoint: '<UNLEASH_BASE_URL>/api/admin/mcp'
+    auth: oauth2-dcr
+    note: Enterprise; host-managed OAuth recommended
+  - type: rest
+    base_url: '<UNLEASH_BASE_URL>/api/admin'
+    auth: personal-access-token-or-service-account-token
+auth:
+  preferred: service-account-token-for-automation
+  supported: [personal-access-token, service-account-token, oauth2-for-remote-mcp]
+environment:
+  required: [UNLEASH_BASE_URL, UNLEASH_PAT]
+  optional: [UNLEASH_DEFAULT_PROJECT, UNLEASH_PREFER_OFFICIAL_MCP, UNLEASH_TIMEOUT_MS, UNLEASH_MAX_RETRIES, UNLEASH_REQUIRE_WRITE_APPROVAL, UNLEASH_APPROVAL_TOKEN, UNLEASH_ENABLE_DESTRUCTIVE]
+capabilities:
+  - project.list
+  - flag.list
+  - flag.get
+  - flag.create
+  - flag.environment.get
+  - flag.environment.enable
+  - flag.environment.disable
+  - strategy.list
+  - strategy.add
+  - strategy.remove
+  - flag.archive.validate
+  - flag.archive
+  - flag.delete
+risk:
+  default: READ
+  write_requires_approval_configurable: true
+  high_risk_requires_approval: true
+  destructive_disabled_by_default: true
+security:
+  credentials_exposed_to_model: false
+  upstream_mcp_tool_allowlist: true
+  provider_content_untrusted: true
