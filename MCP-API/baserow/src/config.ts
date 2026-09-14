@@ -9,16 +9,16 @@ export type Config = {
   maxRetries: number;
 };
 
-function bool(name: string, fallback: boolean): boolean {
-  const raw = process.env[name];
+function bool(env: NodeJS.ProcessEnv, name: string, fallback: boolean): boolean {
+  const raw = env[name];
   if (raw === undefined) return fallback;
   if (raw === 'true') return true;
   if (raw === 'false') return false;
   throw new Error(`${name} must be true or false`);
 }
 
-function int(name: string, fallback: number, min: number, max: number): number {
-  const raw = process.env[name];
+function int(env: NodeJS.ProcessEnv, name: string, fallback: number, min: number, max: number): number {
+  const raw = env[name];
   const value = raw === undefined ? fallback : Number(raw);
   if (!Number.isInteger(value) || value < min || value > max) throw new Error(`${name} must be an integer between ${min} and ${max}`);
   return value;
@@ -38,22 +38,16 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
     if (!Number.isInteger(id) || id <= 0) throw new Error('BASEROW_ALLOWED_TABLE_IDS must contain positive integer table IDs');
     allowed.add(id);
   }
-  const oldEnv = process.env;
-  process.env = env;
-  try {
-    return {
-      baseUrl,
-      token,
-      allowedTableIds: allowed,
-      requireWriteApproval: bool('BASEROW_REQUIRE_WRITE_APPROVAL', true),
-      enableDelete: bool('BASEROW_ENABLE_DELETE', false),
-      approvalSecret: env.BASEROW_APPROVAL_SECRET?.trim() || undefined,
-      timeoutMs: int('BASEROW_TIMEOUT_MS', 15000, 1000, 60000),
-      maxRetries: int('BASEROW_MAX_RETRIES', 2, 0, 5)
-    };
-  } finally {
-    process.env = oldEnv;
-  }
+  return {
+    baseUrl,
+    token,
+    allowedTableIds: allowed,
+    requireWriteApproval: bool(env, 'BASEROW_REQUIRE_WRITE_APPROVAL', true),
+    enableDelete: bool(env, 'BASEROW_ENABLE_DELETE', false),
+    approvalSecret: env.BASEROW_APPROVAL_SECRET?.trim() || undefined,
+    timeoutMs: int(env, 'BASEROW_TIMEOUT_MS', 15000, 1000, 60000),
+    maxRetries: int(env, 'BASEROW_MAX_RETRIES', 2, 0, 5)
+  };
 }
 
 export function assertTableAllowed(config: Config, tableId: number): void {
