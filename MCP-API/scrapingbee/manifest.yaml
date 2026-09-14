@@ -1,0 +1,55 @@
+id: scrapingbee
+name: ScrapingBee
+version: 1.0.0
+runtime: node >=20
+upstream:
+  - type: mcp
+    endpoint: https://mcp.scrapingbee.com/mcp
+    transport: streamable-http
+    auth: api-key-query-parameter
+  - type: rest
+    base_url: https://app.scrapingbee.com/api/v1
+    auth: bearer-api-key
+auth:
+  type: api-key
+  least_privilege: account-level API key; no OAuth scopes are published for these APIs
+environment:
+  required:
+    - SCRAPINGBEE_API_KEY
+  optional:
+    - SCRAPINGBEE_API_BASE_URL
+    - SCRAPINGBEE_MCP_URL
+    - SCRAPINGBEE_PREFER_MCP
+    - SCRAPINGBEE_TIMEOUT_MS
+    - SCRAPINGBEE_MAX_RETRIES
+    - SCRAPINGBEE_MAX_RESPONSE_BYTES
+    - SCRAPINGBEE_COST_APPROVAL_TOKEN
+    - SCRAPINGBEE_REQUIRE_COST_APPROVAL
+capabilities:
+  - page.text
+  - page.html
+  - page.extract
+  - page.screenshot
+  - search.web
+  - search.google.news
+  - search.google.images
+  - search.google.maps
+  - search.google.shopping
+  - account.usage
+risk:
+  default: READ
+  mutations: none
+  destructive: none
+  conditional_approval: premium/stealth proxy options require explicit cost approval by default
+security:
+  credentials_exposed_to_model: false
+  provider_content_untrusted: true
+  target_url_ssrf_guard: true
+  upstream_mcp_tool_allowlist: true
+  upstream_mcp_endpoint_pinned: true
+reliability:
+  bounded_retries: true
+  retry_429: true
+  retry_get_5xx: true
+  timeout: true
+  response_size_limit: true
