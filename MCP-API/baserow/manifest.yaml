@@ -1,0 +1,60 @@
+id: baserow
+name: Baserow
+version: 1.0.0
+runtime: nodejs20
+upstream:
+  - rest
+upstream_notes:
+  official_mcp_available: true
+  mcp_endpoint_type: workspace-scoped credential URL
+  selected_transport: rest
+  reason: "The official MCP endpoint grants broad workspace CRUD access through a secret URL. This connector uses Baserow's official REST API with table-scoped database tokens so least-privilege allowlists, stable schemas, and per-tool approval boundaries can be enforced."
+auth:
+  type: database-token
+  header: "Authorization: Token <secret>"
+  least_privilege: true
+api:
+  base_url_env: BASEROW_BASE_URL
+  default_base_url: https://api.baserow.io
+permissions:
+  provider: "Configure database-token create/read/update/delete permissions per table."
+capabilities:
+  - table.list
+  - field.list
+  - row.list
+  - row.get
+  - row.create
+  - row.update
+  - row.move
+  - row.delete
+risk:
+  default: READ
+  tools:
+    baserow.table.list: READ
+    baserow.field.list: READ
+    baserow.row.list: READ
+    baserow.row.get: READ
+    baserow.row.create: WRITE
+    baserow.row.update: WRITE
+    baserow.row.move: WRITE
+    baserow.row.delete: DESTRUCTIVE
+approval:
+  write: configurable-default-required
+  destructive: required
+  destructive_disabled_by_default: true
+environment:
+  required:
+    - BASEROW_DATABASE_TOKEN
+  optional:
+    - BASEROW_BASE_URL
+    - BASEROW_ALLOWED_TABLE_IDS
+    - BASEROW_REQUIRE_WRITE_APPROVAL
+    - BASEROW_ENABLE_DELETE
+    - BASEROW_APPROVAL_SECRET
+    - BASEROW_TIMEOUT_MS
+    - BASEROW_MAX_RETRIES
+security:
+  credentials_exposed_to_model: false
+  arbitrary_http_passthrough: false
+  remote_http_requires_https: true
+  response_limit_bytes: 200000
