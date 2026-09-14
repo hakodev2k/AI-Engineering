@@ -1,0 +1,59 @@
+id: cloudconvert
+name: CloudConvert
+version: 1.0.0
+runtime: node >=20
+upstream:
+  - type: mcp
+    endpoint: https://mcp.cloudconvert.com
+    transport: streamable-http
+    auth: oauth2
+  - type: rest
+    base_url: https://api.cloudconvert.com/v2
+    auth: bearer-api-key
+auth:
+  supported:
+    - oauth2
+    - api-key
+  scopes:
+    user.read: [cloudconvert.user.get]
+    task.read: [cloudconvert.job.list, cloudconvert.job.get, cloudconvert.task.get]
+    task.write: [cloudconvert.file.convert, cloudconvert.file.optimize, cloudconvert.pdf.ocr, cloudconvert.website.capture, cloudconvert.job.create, cloudconvert.task.cancel]
+    webhook.read: [cloudconvert.webhook.list]
+    webhook.write: [cloudconvert.webhook.create, cloudconvert.webhook.delete]
+environment:
+  required_any:
+    - CLOUDCONVERT_MCP_ACCESS_TOKEN
+    - CLOUDCONVERT_API_KEY
+  optional:
+    - CLOUDCONVERT_API_BASE_URL
+    - CLOUDCONVERT_MCP_URL
+    - CLOUDCONVERT_PREFER_MCP
+    - CLOUDCONVERT_APPROVAL_TOKEN
+    - CLOUDCONVERT_REQUIRE_WRITE_APPROVAL
+    - CLOUDCONVERT_ENABLE_DESTRUCTIVE
+    - CLOUDCONVERT_TIMEOUT_MS
+    - CLOUDCONVERT_MAX_RETRIES
+capabilities:
+  - user.read
+  - job.list
+  - job.read
+  - task.read
+  - file.convert
+  - file.optimize
+  - pdf.ocr
+  - website.capture
+  - job.create
+  - task.cancel
+  - webhook.list
+  - webhook.create
+  - webhook.delete
+risk:
+  default: READ
+  write_requires_approval_configurable: true
+  high_risk_requires_approval: true
+  destructive_disabled_by_default: true
+security:
+  credentials_exposed_to_model: false
+  provider_content_untrusted: true
+  public_url_validation: true
+  upstream_mcp_tool_allowlist: true
