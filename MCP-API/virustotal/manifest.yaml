@@ -1,0 +1,42 @@
+id: virustotal
+name: VirusTotal
+upstream:
+  - mcp
+mcp:
+  endpoint: https://ai.virustotal.com/mcp
+  implementation: VTAI / VirusTotal MCP
+auth:
+  type: static-token
+  environment:
+    - VTAI_TOKEN
+capabilities:
+  - file.report.get
+  - url.report.get
+  - domain.report.get
+  - ip.report.get
+  - analysis.get
+  - submission.get
+  - file.submit
+risk:
+  default: READ
+  tools:
+    virustotal.file.report.get: READ
+    virustotal.url.report.get: READ
+    virustotal.domain.report.get: READ
+    virustotal.ip.report.get: READ
+    virustotal.analysis.get: READ
+    virustotal.submission.get: READ
+    virustotal.file.submit: HIGH_RISK
+approval:
+  virustotal.file.submit: required
+environment:
+  - VTAI_TOKEN
+  - VTAI_MCP_URL
+  - VIRUSTOTAL_TIMEOUT_MS
+  - VIRUSTOTAL_SUBMIT_SHA256_ALLOWLIST
+  - VIRUSTOTAL_APPROVAL_SECRET
+security:
+  upstream_tool_allowlist: true
+  credentials_exposed_to_model: false
+  untrusted_provider_content: true
+  public_sample_submission_requires_approval: true
