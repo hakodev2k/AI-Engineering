@@ -1,44 +1,51 @@
 id: inngest
 name: Inngest
 version: 1.0.0
-
+runtime: node >=20
 upstream:
-  - mcp
-  - rest
-
-transport:
-  primary:
-    type: official-mcp
+  - type: mcp
     endpoint: https://api.inngest.com/mcp
-  fallback:
-    type: official-rest-v2
+    transport: streamable-http
+    auth: bearer-api-key
+  - type: rest
     base_url: https://api.inngest.com/v2
-    status: researched-not-required-for-selected-capabilities
-
+    auth: bearer-api-key
 auth:
-  type: api-key
-  env: INNGEST_API_KEY
-  header: "Authorization: Bearer <api-key>"
-  least_privilege: Prefer an environment-scoped API key for automated agents.
-
+  preferred: api-key
+  notes: Environment-scoped Inngest API keys are recommended for AI tools; signing keys are not used by the Cloud MCP server.
+environment:
+  required:
+    - INNGEST_API_KEY
+  optional:
+    - INNGEST_API_BASE_URL
+    - INNGEST_MCP_URL
+    - INNGEST_PREFER_MCP
+    - INNGEST_APPROVAL_TOKEN
+    - INNGEST_REQUIRE_WRITE_APPROVAL
+    - INNGEST_ENABLE_DESTRUCTIVE
+    - INNGEST_TIMEOUT_MS
+    - INNGEST_MAX_RETRIES
 capabilities:
-  - app.list
-  - app.get
-  - function.list
-  - function.get
-  - run.list
-  - run.get
-  - run.trace.get
-  - event.runs.list
+  - account.read
   - environment.list
-  - insights.table.list
+  - app.list
+  - app.read
+  - function.list
+  - function.read
+  - run.list
+  - run.read
+  - run.trace.read
   - event.send
   - function.invoke
-  - run.rerun
   - run.cancel
-
+  - run.rerun
 risk:
   default: READ
-  write_requires_approval: true
+  write_requires_approval_configurable: true
   high_risk_requires_approval: true
-  destructive_tools: []
+  destructive_disabled_by_default: true
+security:
+  credentials_exposed_to_model: false
+  provider_content_untrusted: true
+  upstream_mcp_tool_allowlist: true
+  fixed_cloud_origins: true
