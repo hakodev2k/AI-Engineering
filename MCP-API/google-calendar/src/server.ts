@@ -86,7 +86,8 @@ export function createServer(config: Config, upstream = new GoogleCalendarUpstre
   });
 
   server.tool('google_calendar.event.respond', 'Accept, tentatively accept, or decline an invitation. HIGH_RISK external response; explicit approval required.', {
-    calendarId, eventId, responseStatus: z.enum(['accepted', 'tentative', 'declined']), approvalId
+    calendarId, eventId, responseStatus: z.enum(['accepted', 'tentative', 'declined']),
+    notificationLevel: z.enum(['NONE', 'EXTERNAL_ONLY', 'ALL']).default('NONE'), responseComment: z.string().max(2000).optional(), approvalId
   }, async (a) => {
     approved(config, 'google_calendar.event.respond', `${a.calendarId}/${a.eventId}:${a.responseStatus}`, a.approvalId);
     const args = { ...a }; delete args.approvalId;
