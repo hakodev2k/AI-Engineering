@@ -1,0 +1,79 @@
+id: chroma
+name: Chroma
+
+upstream:
+  - mcp
+
+transport:
+  official_mcp:
+    implementation: chroma-core/chroma-mcp
+    mode: local-stdio
+    launcher: uvx chroma-mcp
+    api_fallback: not-required-for-implemented-capabilities
+
+auth:
+  type: provider-specific
+  cloud:
+    mechanism: api-key
+    required_environment:
+      - CHROMA_TENANT
+      - CHROMA_DATABASE
+      - CHROMA_API_KEY
+  http:
+    mechanism: self-hosted-server-auth
+    required_environment:
+      - CHROMA_HOST
+    optional_environment:
+      - CHROMA_PORT
+      - CHROMA_SSL
+      - CHROMA_CUSTOM_AUTH_CREDENTIALS
+  local:
+    modes:
+      - persistent
+      - ephemeral
+
+capabilities:
+  - collection.list
+  - collection.read
+  - collection.count
+  - collection.peek
+  - collection.create
+  - collection.update
+  - collection.fork
+  - collection.delete
+  - document.query
+  - document.read
+  - document.add
+  - document.update
+  - document.delete
+
+risk:
+  default: read
+  read:
+    approval: false
+  write:
+    approval: configurable-default-required
+  destructive:
+    approval: required
+    enabled_by_default: false
+
+environment:
+  required:
+    - CHROMA_CLIENT_TYPE
+    - CHROMA_APPROVAL_SECRET
+  optional:
+    - CHROMA_UPSTREAM_COMMAND
+    - CHROMA_UPSTREAM_ARGS_JSON
+    - CHROMA_UPSTREAM_TIMEOUT_MS
+    - CHROMA_REQUIRE_WRITE_APPROVAL
+    - CHROMA_ENABLE_DESTRUCTIVE
+    - CHROMA_MAX_DOCUMENTS_PER_CALL
+
+security:
+  upstream_tool_allowlist: true
+  credential_isolation: true
+  arbitrary_http_passthrough: false
+  provider_content_is_untrusted: true
+  retries:
+    reads: bounded
+    writes: disabled
