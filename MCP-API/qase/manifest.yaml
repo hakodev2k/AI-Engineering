@@ -1,0 +1,44 @@
+id: qase
+name: Qase
+upstream:
+  - mcp
+official_mcp:
+  hosted_endpoint: https://mcp.qase.io/mcp
+  self_run_package: '@qase/mcp-server'
+  connector_mode: self-run-stdio
+auth:
+  type: api-token
+  env: QASE_API_TOKEN
+  credential_forwarding: connector-process-only
+permissions:
+  project_allowlist_env: QASE_ALLOWED_PROJECTS
+  approval_secret_env: QASE_APPROVAL_SECRET
+capabilities:
+  - project.context.read
+  - entity.read
+  - qql.search
+  - qql.help
+  - case.create_update
+  - defect.create_update
+  - run.create_update
+  - result.record
+  - ci.report
+  - regression_run.create
+risk:
+  default: read
+  writes_require_approval: true
+  destructive_tools_exposed: false
+  raw_api_escape_hatch_exposed: false
+rate_limits:
+  free_per_minute: 150
+  teams_per_minute: 600
+  enterprise_per_minute: 1000
+environment:
+  required:
+    - QASE_API_TOKEN
+    - QASE_APPROVAL_SECRET
+  optional:
+    - QASE_ALLOWED_PROJECTS
+    - QASE_UPSTREAM_TIMEOUT_MS
+    - QASE_MCP_COMMAND
+    - QASE_MCP_ARGS
