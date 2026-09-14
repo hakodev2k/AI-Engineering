@@ -1,0 +1,52 @@
+id: tavily
+name: Tavily
+version: 1.0.0
+runtime: node >=20
+upstream:
+  - type: mcp
+    endpoint: https://mcp.tavily.com/mcp/
+    transport: streamable-http
+    auth:
+      - oauth2
+      - bearer-api-key
+    official: true
+  - type: rest
+    base_url: https://api.tavily.com
+    auth: bearer-api-key
+    official: true
+auth:
+  type: api-key
+  env: TAVILY_API_KEY
+  oauth_supported_by_remote_mcp: true
+capabilities:
+  - web.search
+  - web.extract
+  - website.map
+  - website.crawl
+  - research.create
+  - research.get
+  - usage.get
+risk:
+  default: READ
+  research.create: WRITE
+  destructive_tools: []
+approval:
+  research.create: configurable-required
+environment:
+  required:
+    - TAVILY_API_KEY
+  optional:
+    - TAVILY_API_BASE_URL
+    - TAVILY_MCP_URL
+    - TAVILY_PREFER_MCP
+    - TAVILY_PROJECT_ID
+    - TAVILY_HUMAN_ID
+    - TAVILY_TIMEOUT_MS
+    - TAVILY_MAX_RETRIES
+    - TAVILY_REQUIRE_RESEARCH_APPROVAL
+    - TAVILY_APPROVAL_TOKEN
+security:
+  credentials_exposed_to_model: false
+  provider_content_untrusted: true
+  public_url_validation: true
+  upstream_mcp_allowlist: true
