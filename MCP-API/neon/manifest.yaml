@@ -1,46 +1,53 @@
 id: neon
 name: Neon
+version: 1.0.0
+runtime: node >=20
 upstream:
-  - mcp
-official_mcp:
-  endpoint: https://mcp.neon.tech/mcp
-  transport: streamable-http
-  oauth_scopes: [read, write, "*"]
-  api_key_header: Authorization
-api_fallback:
-  base_url: https://console.neon.tech/api/v2
-  status: researched-not-required-for-selected-tools
+  - type: mcp
+    endpoint: https://mcp.neon.tech/sse
+    auth: oauth2-or-api-key
+    trust: official
+  - type: rest
+    base_url: https://console.neon.tech/api/v2
+    auth: bearer-api-key
 auth:
-  type: oauth2-or-api-key
-  recommended: oauth2
-  env:
+  type: bearer-api-key
+  least_privilege: true
+  notes:
+    - Prefer project-scoped organization API keys for project-only automation.
+    - Personal and organization API keys may have broader access.
+environment:
+  required_any:
     - NEON_API_KEY
+    - NEON_MCP_ACCESS_TOKEN
+  optional:
+    - NEON_API_BASE_URL
     - NEON_MCP_URL
-    - NEON_PROJECT_ID
-    - NEON_READONLY
-    - NEON_APPROVAL_SECRET
+    - NEON_PREFER_MCP
+    - NEON_REQUIRE_WRITE_APPROVAL
+    - NEON_ENABLE_DESTRUCTIVE
+    - NEON_APPROVAL_TOKEN
     - NEON_TIMEOUT_MS
+    - NEON_MAX_RETRIES
 capabilities:
   - project.list
   - project.get
   - project.create
-  - project.delete
+  - branch.list
   - branch.get
   - branch.create
   - branch.delete
-  - branch.compute.list
-  - database.table.list
-  - database.table.describe
-  - database.query.read
-  - database.query.explain
-  - database.query.slow.list
+  - database.list
+  - database.create
+  - role.list
+  - endpoint.list
+  - operation.list
 risk:
-  default: read
-  approval:
-    write: required
-    destructive: required
+  default: READ
+  write_requires_approval_configurable: true
+  destructive_disabled_by_default: true
 security:
-  project_scoping: supported
-  readonly_mode: supported
-  credentials_exposed_to_llm: false
-  arbitrary_upstream_tools: false
+  credentials_exposed_to_model: false
+  provider_content_untrusted: true
+  arbitrary_api_passthrough: false
+  upstream_mcp_tool_allowlist: true

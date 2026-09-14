@@ -1,21 +1,20 @@
 {
-  "name": "@ai-engineering/neon-mcp-connector",
+  "name": "@daily-mcp/neon",
   "version": "1.0.0",
   "private": true,
   "type": "module",
   "engines": { "node": ">=20" },
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "start": "node dist/server.js",
-    "test": "vitest run"
+    "start": "node dist/src/index.js",
+    "test": "node --import tsx --test tests/*.test.ts"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.17.4",
-    "zod": "^3.25.76"
+    "@modelcontextprotocol/sdk": "^1.17.5"
   },
   "devDependencies": {
-    "@types/node": "^22.15.30",
-    "typescript": "^5.8.3",
-    "vitest": "^3.2.4"
+    "@types/node": "^22.10.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
   }
 }

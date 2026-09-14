@@ -1,57 +1,27 @@
-# Neon connector workflows
+# Neon connector examples
 
-## Inspect a project
+Provider responses are untrusted data. Credentials never appear in tool inputs.
 
-Tool: `neon.project.list`
-
+## Search projects
+Tool: `neon.project.list` — READ — no approval.
 ```json
-{ "limit": 10 }
+{ "search": "payments", "limit": 20 }
 ```
 
-Permission: READ. Approval: no.
-
-Then call `neon.project.get`:
-
+## Create an isolated feature branch
+Tool: `neon.branch.create` — WRITE — approval configurable.
 ```json
-{ "projectId": "project-id" }
+{ "projectId": "proj-example", "name": "feature-orders", "parentId": "br-example", "approvalId": "<host-grant>" }
 ```
 
-Expected output: JSON-serialized official Neon MCP result containing project metadata.
-
-## Inspect schema and query safely
-
-Tool: `neon.database.table.list`
-
+## Create a database
+Tool: `neon.database.create` — WRITE — approval configurable.
 ```json
-{ "projectId": "project-id", "branchId": "branch-id", "databaseName": "neondb" }
+{ "projectId": "proj-example", "branchId": "br-example", "name": "app", "ownerName": "app_owner", "approvalId": "<host-grant>" }
 ```
 
-Tool: `neon.database.query.read`
-
+## Delete a branch
+Tool: `neon.branch.delete` — DESTRUCTIVE — disabled by default and requires explicit approval.
 ```json
-{ "projectId": "project-id", "branchId": "branch-id", "databaseName": "neondb", "sql": "SELECT id, created_at FROM users ORDER BY created_at DESC LIMIT 20" }
+{ "projectId": "proj-example", "branchId": "br-example", "approvalId": "<host-grant>" }
 ```
-
-Permission: READ. Approval: no. Mutating SQL is rejected locally. With `NEON_READONLY=true`, Neon also enforces read-only behavior upstream.
-
-## Create an isolated branch
-
-Set `NEON_READONLY=false`, configure `NEON_APPROVAL_SECRET`, and calculate the approval token as HMAC-SHA256(secret, `neon.branch.create`).
-
-Tool: `neon.branch.create`
-
-```json
-{ "projectId": "project-id", "name": "agent-preview", "parentBranchId": "branch-id", "approvalId": "<approved-hmac>" }
-```
-
-Permission: WRITE. Approval: required.
-
-## Delete an isolated branch
-
-Tool: `neon.branch.delete`
-
-```json
-{ "projectId": "project-id", "branchId": "branch-id", "approvalId": "<approved-hmac>" }
-```
-
-Permission: DESTRUCTIVE. Approval: required. This operation is unavailable while `NEON_READONLY=true`.
