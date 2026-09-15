@@ -1,0 +1,40 @@
+id: umami
+name: Umami
+upstream:
+  - rest
+  - sdk
+mcp:
+  official_server: false
+api:
+  cloud_base_url: https://api.umami.is/v1
+  official_client: '@umami/api-client'
+auth:
+  type: bearer_api_key
+  env: UMAMI_API_KEY
+  note: Self-hosted instances can use bearer login tokens; this connector intentionally avoids collecting passwords.
+rate_limits:
+  cloud_api_key: 50 calls per 15 seconds
+capabilities:
+  - website.list
+  - website.get
+  - website.active
+  - analytics.stats
+  - analytics.pageviews
+  - analytics.metrics
+  - event.list
+  - event.stats
+  - realtime.get
+  - website.create
+  - website.update
+  - website.delete
+risk:
+  default: READ
+  writes: configurable approval
+  destructive: explicit approval and disabled by default
+environment:
+  - UMAMI_BASE_URL
+  - UMAMI_API_KEY
+  - UMAMI_REGION
+  - UMAMI_ALLOW_WRITES
+  - UMAMI_ALLOW_DESTRUCTIVE
+  - UMAMI_TIMEOUT_MS
