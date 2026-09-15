@@ -1,0 +1,11 @@
+import {McpServer} from '@modelcontextprotocol/sdk/server/mcp.js';import {StdioServerTransport} from '@modelcontextprotocol/sdk/server/stdio.js';import {z} from 'zod';import {VimeoClient} from './client.js';import {createTools} from './tools.js';
+const server=new McpServer({name:'vimeo-connector',version:'1.0.0'});const t=createTools(new VimeoClient());const out=(x:unknown)=>({content:[{type:'text' as const,text:JSON.stringify(x)}]});
+server.tool('vimeo.account.get','Get the authenticated Vimeo account.',{},async()=>out(await t.accountGet()));
+server.tool('vimeo.video.list','List authenticated-user videos.',{page:z.number().int().min(1).optional(),perPage:z.number().int().min(1).max(100).optional(),query:z.string().max(200).optional()},async a=>out(await t.videoList(a)));
+server.tool('vimeo.video.get','Get one video.',{videoId:z.string().regex(/^\d+$/)},async a=>out(await t.videoGet(a)));
+server.tool('vimeo.video.update','Update video name/description. WRITE; approval required.',{videoId:z.string().regex(/^\d+$/),name:z.string().max(128).optional(),description:z.string().max(5000).optional()},async a=>out(await t.videoUpdate(a)));
+server.tool('vimeo.comment.list','List comments on a video.',{videoId:z.string().regex(/^\d+$/),page:z.number().int().min(1).optional(),perPage:z.number().int().min(1).max(100).optional()},async a=>out(await t.commentList(a)));
+server.tool('vimeo.comment.create','Publish a video comment. HIGH_RISK external communication; approval required.',{videoId:z.string().regex(/^\d+$/),text:z.string().min(1).max(2000)},async a=>out(await t.commentCreate(a)));
+server.tool('vimeo.folder.list','List folders/projects.',{page:z.number().int().min(1).optional(),perPage:z.number().int().min(1).max(100).optional()},async a=>out(await t.folderList(a)));
+server.tool('vimeo.folder.video.list','List videos in a folder/project.',{folderId:z.string().regex(/^\d+$/),page:z.number().int().min(1).optional(),perPage:z.number().int().min(1).max(100).optional()},async a=>out(await t.folderVideoList(a)));
+await server.connect(new StdioServerTransport());
