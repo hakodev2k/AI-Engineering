@@ -1,0 +1,36 @@
+id: personio
+name: Personio
+upstream:
+  - rest
+auth:
+  type: client_credentials
+  token_endpoint: https://api.personio.de/v1/auth
+api:
+  base_url: https://api.personio.de
+capabilities:
+  - employee.list
+  - employee.get
+  - employee.create
+  - employee.update
+  - time_off.list
+  - time_off.create
+  - attendance.list
+  - webhook.list
+  - webhook.get
+risk:
+  default: READ
+  write_requires_approval: true
+required_env:
+  - PERSONIO_CLIENT_ID
+  - PERSONIO_CLIENT_SECRET
+optional_env:
+  - PERSONIO_BASE_URL
+  - PERSONIO_APPROVE_WRITES
+  - PERSONIO_TIMEOUT_MS
+security:
+  credentials_exposed_to_llm: false
+  retrieved_content_untrusted: true
+notes:
+  - No official Personio MCP server was identified; this connector exposes official Personio REST APIs as MCP tools.
+  - Employee readable attributes must be explicitly whitelisted in the Personio custom integration.
+  - Webhook operations require personio:webhooks scopes in API v2.
