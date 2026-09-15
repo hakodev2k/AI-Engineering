@@ -1,0 +1,42 @@
+id: sparkpost
+name: SparkPost
+runtime: node>=20
+upstream:
+  - rest
+official_mcp: false
+api_base_urls:
+  us: https://api.sparkpost.com/api/v1
+  eu: https://api.eu.sparkpost.com/api/v1
+auth:
+  type: api_key
+  header: Authorization
+  env: SPARKPOST_API_KEY
+capabilities:
+  - transmission.send
+  - transmission.cancel_campaign
+  - events.search
+  - metrics.summary
+  - template.list
+  - template.get
+  - template.create
+  - template.update
+  - suppression.search
+  - suppression.get
+  - suppression.upsert
+  - suppression.delete
+  - webhook.list
+  - webhook.get
+  - webhook.create
+  - webhook.update
+  - webhook.delete
+risk:
+  default: READ
+  write_approval_configurable: true
+  high_risk_approval_required: true
+  destructive_disabled_by_default: true
+env:
+  - SPARKPOST_API_KEY
+  - SPARKPOST_REGION
+  - SPARKPOST_TIMEOUT_MS
+  - SPARKPOST_WRITE_APPROVAL_REQUIRED
+  - SPARKPOST_DESTRUCTIVE_ENABLED
