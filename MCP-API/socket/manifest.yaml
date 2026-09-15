@@ -1,0 +1,34 @@
+id: socket
+name: Socket
+upstream:
+  - type: mcp
+    implementation: official
+    package: '@socketsecurity/mcp@latest'
+    transports: [stdio, http, remote-http]
+    remote_endpoint: https://mcp.socket.dev/
+auth:
+  type: api-token-or-oauth
+  token_env: SOCKET_API_TOKEN
+  credentials_exposed_to_model: false
+capabilities:
+  - dependency.score
+  - organization.list
+  - alert.list
+  - threat_feed.list
+  - package.files.list
+  - package.file.read
+  - package.file.search
+risk:
+  default: READ
+approval:
+  required: false
+required_environment: []
+optional_environment:
+  - SOCKET_API_TOKEN
+  - SOCKET_UPSTREAM_COMMAND
+  - SOCKET_UPSTREAM_TIMEOUT_MS
+security:
+  upstream_tool_allowlist: true
+  arbitrary_upstream_tools: false
+  retrieved_content_untrusted: true
+  credential_isolation: true
