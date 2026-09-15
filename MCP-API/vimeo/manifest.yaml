@@ -1,0 +1,42 @@
+id: vimeo
+name: Vimeo
+version: 1.0.0
+upstream:
+  - rest
+mcp:
+  official_server: false
+  note: "No official general-purpose Vimeo MCP server was found in Vimeo developer documentation during the 2026-09-15 research pass."
+api:
+  base_url: https://api.vimeo.com
+  version_header: "application/vnd.vimeo.*+json;version=3.4"
+auth:
+  type: oauth2_access_token
+  credential_isolation: true
+  required_env:
+    - VIMEO_ACCESS_TOKEN
+capabilities:
+  - account.get
+  - video.list
+  - video.get
+  - video.update
+  - comment.list
+  - comment.create
+  - folder.list
+  - folder.video.list
+risk:
+  default: READ
+  WRITE:
+    - vimeo.video.update
+  HIGH_RISK:
+    - vimeo.comment.create
+  approval_required:
+    - vimeo.video.update
+    - vimeo.comment.create
+reliability:
+  bounded_retry_for_reads: true
+  write_retry: false
+  retry_after_preserved: true
+security:
+  provider_content_untrusted: true
+  arbitrary_api_passthrough: false
+  credentials_exposed_to_llm: false
