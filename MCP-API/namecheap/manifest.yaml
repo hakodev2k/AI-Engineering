@@ -1,0 +1,22 @@
+id: namecheap
+name: Namecheap
+upstream: [rest]
+auth:
+  type: api_key_plus_ipv4_allowlist
+api:
+  production: https://api.namecheap.com/xml.response
+  sandbox: https://api.sandbox.namecheap.com/xml.response
+capabilities:
+  - domain.list
+  - domain.get
+  - domain.check
+  - domain.lock.get
+  - dns.nameserver.list
+  - dns.host.list
+  - dns.host.replace_all
+  - dns.nameserver.set_default
+  - dns.nameserver.set_custom
+risk:
+  default: read
+  high_risk_approval: true
+required_env: [NAMECHEAP_API_USER, NAMECHEAP_API_KEY, NAMECHEAP_USERNAME, NAMECHEAP_CLIENT_IP]
