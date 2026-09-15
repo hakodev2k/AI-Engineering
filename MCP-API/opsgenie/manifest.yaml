@@ -1,0 +1,43 @@
+id: opsgenie
+name: Opsgenie
+upstream:
+  - rest
+official_mcp: false
+api_base_urls:
+  us: https://api.opsgenie.com
+  eu: https://api.eu.opsgenie.com
+auth:
+  type: api-key
+  header: Authorization
+  scheme: GenieKey
+environment:
+  required: [OPSGENIE_API_KEY]
+  optional: [OPSGENIE_REGION, OPSGENIE_TIMEOUT_MS, OPSGENIE_MAX_RETRIES, OPSGENIE_ALLOWED_RISKS, OPSGENIE_ENABLE_HIGH_RISK]
+capabilities:
+  - alert.list
+  - alert.get
+  - alert.create
+  - alert.acknowledge
+  - alert.close
+  - alert.note.add
+  - team.list
+  - team.get
+  - schedule.list
+  - schedule.oncall.get
+risk:
+  default: READ
+  tools:
+    opsgenie.alert.list: READ
+    opsgenie.alert.get: READ
+    opsgenie.team.list: READ
+    opsgenie.team.get: READ
+    opsgenie.schedule.list: READ
+    opsgenie.schedule.oncall.get: READ
+    opsgenie.alert.note.add: WRITE
+    opsgenie.alert.acknowledge: WRITE
+    opsgenie.alert.create: HIGH_RISK
+    opsgenie.alert.close: HIGH_RISK
+approval:
+  WRITE: required
+  HIGH_RISK: explicit-and-enabled
+  DESTRUCTIVE: disabled
