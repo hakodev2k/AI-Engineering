@@ -1,0 +1,33 @@
+id: buttondown
+name: Buttondown
+upstream:
+  - rest
+auth:
+  type: api_key
+  header: "Authorization: Token <secret>"
+api:
+  base_url: https://api.buttondown.com/v1
+  version: "2026-04-01"
+official_mcp: false
+required_env:
+  - BUTTONDOWN_API_KEY
+capabilities:
+  - subscriber.list
+  - subscriber.get
+  - subscriber.create
+  - subscriber.update
+  - subscriber.delete
+  - email.list
+  - email.get
+  - email.create
+  - email.update
+  - email.send_draft
+  - tag.list
+risk:
+  default: READ
+  write_requires_approval: true
+  destructive_disabled_by_default: true
+permissions:
+  subscriber: subscriber_access
+  email: email_access
+  sending: sending_access
