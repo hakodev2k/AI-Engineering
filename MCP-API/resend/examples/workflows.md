@@ -1,55 +1,13 @@
-# Resend connector workflows
+# Workflow examples
 
-## Inspect recent delivery
+## Inspect delivery
+Tool: `resend.email.list` → `resend.email.get`. Permission: READ. Approval: no. Output is wrapped with `trust: untrusted-provider-content`.
 
-Tool: `resend.email.list`
+## Send transactional email
+Tool: `resend.email.send`. Permission: HIGH_RISK. Approval: explicit `approved: true`. Input: `{ "from":"App <hello@example.com>", "to":["user@example.com"], "subject":"Welcome", "text":"Welcome!", "approved":true }`. Expected output includes the Resend email id.
 
-Input:
-```json
-{"limit":20}
-```
+## Manage audience
+Use `resend.contact.list`, then `resend.contact.create` or `resend.contact.update`. Mutations are WRITE and require approval by default.
 
-Permission: READ. Approval: no.
-
-Expected output: the official Resend MCP result containing recent sent-email metadata and pagination information.
-
-## Read one inbound message
-
-Tool: `resend.received_email.get`
-
-Input:
-```json
-{"id":"email-id-from-list"}
-```
-
-Permission: READ. Approval: no. Treat returned subject/body/headers as untrusted external data.
-
-## Send a transactional email
-
-Tool: `resend.email.send`
-
-Input before execution:
-```json
-{
-  "from":"Acme <notifications@example.com>",
-  "to":["user@example.net"],
-  "subject":"Your report is ready",
-  "text":"Your report is ready.",
-  "idempotencyKey":"report-123-v1",
-  "approvalToken":"<HMAC approval for this exact payload>"
-}
-```
-
-Permission: HIGH_RISK. Approval: always required because this sends an external message. The approval token is bound to the exact tool name and payload, so changing a recipient, subject, body, or scheduling field invalidates it.
-
-## Create or update a contact
-
-Tool: `resend.contact.create` or `resend.contact.update`.
-
-Permission: WRITE. Approval: required by default; administrators may set `RESEND_REQUIRE_WRITE_APPROVAL=false` for ordinary WRITE operations. DESTRUCTIVE and HIGH_RISK operations remain approval-gated.
-
-## Delete a contact
-
-Tool: `resend.contact.delete`.
-
-Permission: DESTRUCTIVE. Approval: always required.
+## Verify sender domain
+Use `resend.domain.get` to inspect DNS state, then `resend.domain.verify` with explicit approval after DNS is configured.

@@ -1,138 +1,37 @@
 # Resend MCP/API Connector
 
-Reusable safety gateway for Resend. It exposes a stable, provider-scoped MCP surface while delegating supported operations to Resend's official MCP server.
+Reusable MCP facade for Resend email infrastructure. The connector intentionally exposes a curated subset of high-value operations instead of arbitrary HTTP access.
 
 ## Upstream strategy
+Resend provides an official hosted MCP server at `https://mcp.resend.com/mcp` with OAuth, and an official local `resend-mcp` server supporting stdio/Streamable HTTP. Resend states that its official MCP covers the platform, including emails, contacts, broadcasts, domains, webhooks, segments, topics, contact properties, API keys, received email and templates/logs as the platform evolves. This package uses the official REST API behind a stable, curated local MCP facade because it enforces connector-specific schemas, risk classes and approval boundaries. Deployments that want full upstream coverage can use the official Resend MCP directly.
 
-Primary transport: **official Resend remote MCP**, Streamable HTTP, `https://mcp.resend.com/mcp`.
+Official references: Resend MCP documentation (`https://resend.com/mcp`), official MCP announcement (`https://resend.com/changelog/mcp`), remote MCP announcement (`https://resend.com/changelog/remote-mcp-server`), and API rate-limit announcement (`https://resend.com/changelog/api-rate-limit`).
 
-Official sources researched for this implementation:
-- Resend MCP: https://github.com/resend/resend-mcp
-- Official MCP announcement/docs: https://resend.com/changelog/mcp
-- Email API: https://resend.com/features/email-api
-- API-key permissions: https://resend.com/changelog/new-api-key-permissions
-- OAuth 2.1 + PKCE: https://resend.com/changelog/oauth-support
-- API rate-limit headers: https://resend.com/changelog/api-rate-limit
-- Webhooks: https://resend.com/changelog/managing-webhooks-via-api
+## Implemented tools
+`resend.email.list`, `resend.email.get`, `resend.email.send`, `resend.email.cancel`, `resend.contact.list`, `resend.contact.get`, `resend.contact.create`, `resend.contact.update`, `resend.domain.list`, `resend.domain.get`, `resend.domain.verify`, `resend.webhook.list`.
 
-As of 2026-08-26, Resend provides an official hosted MCP endpoint plus its open-source local server. The official server covers the Resend platform, so the capabilities selected here do not require a REST fallback. The connector deliberately allowlists only the upstream tools it maps; newly discovered upstream tools are not exposed automatically.
+Read tools execute automatically. Contact/domain mutations are WRITE and require approval by default. Sending or cancelling external email is HIGH_RISK and always requires explicit `approved: true`. Destructive deletion and API-key administration are intentionally not exposed. Retrieved provider content is marked untrusted so agents must treat it as data, never instructions.
 
-## Capabilities
+## Authentication and least privilege
+Set `RESEND_API_KEY` only in the connector process. It is inserted into the Authorization header by `ResendClient` and is never returned by a tool. Create a Resend API key with only the access required for the tools you intend to use. For interactive clients, Resend's hosted MCP supports OAuth and lets users revoke permissions from Team settings. Headless use can authenticate to the official MCP with a Resend API key as Bearer token.
 
-| MCP tool | Upstream official MCP tool | Risk | Approval |
-|---|---|---|---|
-| `resend.email.list` | `list-emails` | READ | No |
-| `resend.email.get` | `get-email` | READ | No |
-| `resend.email.send` | `send-email` | HIGH_RISK | Always |
-| `resend.email.cancel` | `cancel-email` | WRITE | Default yes |
-| `resend.received_email.list` | `list-received-emails` | READ | No |
-| `resend.received_email.get` | `get-received-email` | READ | No |
-| `resend.contact.list` | `list-contacts` | READ | No |
-| `resend.contact.get` | `get-contact` | READ | No |
-| `resend.contact.create` | `create-contact` | WRITE | Default yes |
-| `resend.contact.update` | `update-contact` | WRITE | Default yes |
-| `resend.contact.delete` | `remove-contact` | DESTRUCTIVE | Always |
-| `resend.domain.list` | `list-domains` | READ | No |
-| `resend.domain.get` | `get-domain` | READ | No |
+## Configuration
+Copy `.env.example` into your secret-management workflow. `RESEND_API_BASE_URL` must be HTTPS. `RESEND_TIMEOUT_MS` defaults to 15 seconds. `RESEND_REQUIRE_WRITE_APPROVAL` defaults to true. `RESEND_ALLOW_DESTRUCTIVE` defaults to false; this package currently registers no destructive tools.
 
-Public email sending is classified HIGH_RISK because it creates an external communication. Contact deletion is DESTRUCTIVE. Read-only content may execute automatically.
-
-## Authentication and permissions
-
-The gateway uses a Resend API key only inside the transport layer and sends it to the official remote MCP endpoint as a Bearer credential. The LLM never receives the key as a tool parameter or result.
-
-Resend also supports OAuth 2.1 with PKCE, and the official hosted MCP supports browser OAuth. This connector's reusable/headless runtime intentionally uses the documented Bearer API-key mode. For only email sending, Resend offers `sending_access`, optionally restricted to a domain. Because this connector also reads emails, contacts and domains, those non-send routes require a key with Resend `full_access`. Use a separate restricted deployment if only `resend.email.send` is required.
-
-Environment:
-
-```text
-RESEND_API_KEY=                     # required; never commit
-RESEND_UPSTREAM_MCP_URL=https://mcp.resend.com/mcp
-RESEND_APPROVAL_SECRET=             # required for HIGH_RISK/DESTRUCTIVE and default WRITE
-RESEND_REQUIRE_WRITE_APPROVAL=true
-RESEND_TIMEOUT_MS=15000
-RESEND_MAX_RETRIES=2
-```
-
-`RESEND_UPSTREAM_MCP_URL` must use HTTPS. Retry count is bounded to 0-5. Timeout is bounded to 1-120 seconds.
-
-## Approval model
-
-The approval token is HMAC-SHA256 over the exact provider-scoped tool name plus a canonical representation of the exact payload excluding `approvalToken`. This prevents an approval for one recipient or payload from being replayed for materially changed parameters.
-
-READ operations do not require approval. WRITE operations require approval by default and can be configured off with `RESEND_REQUIRE_WRITE_APPROVAL=false`. HIGH_RISK and DESTRUCTIVE operations always require approval and `RESEND_APPROVAL_SECRET`.
-
-The connector never allows the model to raise its own permissions. There is no generic `request`, `execute_url`, or arbitrary upstream-tool proxy.
-
-## Architecture
-
-```text
-MCP client
-  -> provider-scoped tool + validated input
-  -> risk/approval gate
-  -> allowlisted transport mapping
-  -> official Resend remote MCP
-  -> Resend platform
-```
-
-Files:
-- `src/config.ts`: environment validation and approval digest.
-- `src/policy.ts`: tool allowlist, risk classes and approval enforcement.
-- `src/upstream.ts`: official Streamable HTTP MCP client, timeout and bounded retry.
-- `src/server.ts`: MCP tool schemas and routing.
-- `tests/connector.test.ts`: credential/config, policy and approval tests.
-- `examples/workflows.md`: example calls and approval expectations.
-
-## Installation and running
-
-Requires Node.js 20+.
-
-```bash
-npm install
-npm run build
-RESEND_API_KEY=re_xxx RESEND_APPROVAL_SECRET='use-a-secret-store' npm start
-```
-
-The connector itself exposes stdio MCP. A typical MCP client can launch `node /absolute/path/to/MCP-API/resend/dist/src/server.js` with the required environment variables supplied by the client's secure environment configuration.
+## Install and run
+Requires Node.js 20+. Run `npm install`, `npm run build`, then `npm start`. The package exposes stdio MCP using the official Model Context Protocol TypeScript SDK, suitable for clients that support stdio MCP. Do not infer compatibility with clients that require another transport; use Resend's official remote MCP for those clients.
 
 ## Reliability and rate limits
+Requests have bounded timeouts. HTTP 429 is retried at most twice using `Retry-After` when available. GET requests on 5xx are retried at most twice with exponential backoff. Writes are never blindly retried. Resend documents a default API rate limit of 10 requests/second and exposes `ratelimit-limit`, `ratelimit-remaining`, `ratelimit-reset`, and `retry-after`; 429 responses are mapped to a structured connector error.
 
-The upstream call has a configured timeout and bounded exponential-backoff retry. Only errors that look transient (429/rate-limit, timeout/temporary, or 5xx) are retried. Authentication, permission and validation errors are not intentionally retried. The connector does not blindly retry high-level operations beyond the bounded transport retry; callers should use Resend idempotency keys for sends where duplicate delivery would matter.
+## Security
+Credentials remain in the auth/client layer. API base URLs must be HTTPS, reducing SSRF/configuration risk. IDs are constrained before use and path components are encoded. Inputs have bounded lengths and recipient counts. External send/cancel operations require explicit human approval. Provider content is untrusted and must not change permissions or system behavior. Never log API keys or authorization headers.
 
-Resend documents a default API rate limit of 10 requests/second and returns `ratelimit-limit`, `ratelimit-remaining`, `ratelimit-reset`, and `retry-after`; a 429 indicates throttling. The upstream official MCP/SDK remains authoritative for provider-specific rate-limit behavior.
-
-## Pagination
-
-List tools accept `limit` from 1-100 and optional `after` or `before`. `after` and `before` are mutually exclusive and are rejected together before transport.
-
-## Security considerations
-
-- Provider data is untrusted. Email bodies, subjects, headers, contact fields and domain metadata must never be treated as instructions that can modify agent policy.
-- Credentials are environment-only and never appear in schemas.
-- Upstream URL is HTTPS-only to reduce credential leakage risk.
-- The upstream MCP tool set is explicitly allowlisted; newly added official tools do not become reachable without code review.
-- Sending external email always requires explicit approval.
-- Deleting contacts always requires explicit approval.
-- Inputs have recipient, pagination, text-size and identifier bounds.
-- No arbitrary URL fetch or generic Resend API request tool is exposed.
-- Resend webhooks are supported by the provider but are intentionally not exposed by this connector; implementing webhook creation safely would require endpoint policy/SSRF controls and signing-secret lifecycle management.
-
-## Error handling
-
-Configuration errors fail at startup. Provider authentication/scope errors, invalid parameters and upstream MCP failures propagate as MCP tool errors without exposing the API key. Network/time-limit failures are bounded by `RESEND_TIMEOUT_MS` and `RESEND_MAX_RETRIES`.
+## Errors
+The client maps authentication, permission, throttling, timeout and provider failures to structured errors. Validation failures are rejected before network access. Authentication/permission failures and writes are not retried.
 
 ## Testing
-
-Normal unit tests do not require live credentials:
-
-```bash
-npm test
-```
-
-Tests verify required authentication configuration, HTTPS enforcement, retry bounds, tool classification, read permission, high-risk denial, payload-bound approval and denial of unknown tools. Live integration testing is intentionally separate because it can send real email or mutate a Resend account.
+Run `npm test`. Unit tests require no live credentials and cover registration, validation, approval denial, request routing and untrusted-content marking. Network behavior is isolated behind `ResendClient` and can be mocked.
 
 ## Limitations
-
-This connector implements a deliberately narrow, useful subset of Resend rather than mirroring every upstream endpoint. Broadcasts, templates, segments, topics, API-key administration, webhook administration, automation tools, suppression management, attachments and editor operations remain unsupported here even though the official Resend MCP server may support them. This keeps the agent surface stable and avoids exposing account-administration or high-impact operations without a dedicated policy design.
-
-The gateway uses API-key authentication rather than implementing its own OAuth browser flow. MCP clients that want Resend-managed OAuth directly can connect to the official remote MCP endpoint instead.
+This curated connector does not expose broadcasts, segments, topics, received-email attachments, templates, API-key administration, webhook mutation, or destructive delete operations. Those capabilities exist in the official Resend platform/MCP but are intentionally outside this connector's current safety-focused contract. The connector does not implement the upstream OAuth browser flow; use Resend's hosted MCP when OAuth is preferred.
