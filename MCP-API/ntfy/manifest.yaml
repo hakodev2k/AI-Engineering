@@ -1,0 +1,45 @@
+id: ntfy
+name: ntfy
+upstream:
+  - rest
+api_base_url: configurable; defaults to https://ntfy.sh
+official_mcp: false
+auth:
+  types:
+    - bearer-token
+    - basic
+  least_privilege: true
+environment:
+  required: []
+  optional:
+    - NTFY_BASE_URL
+    - NTFY_ACCESS_TOKEN
+    - NTFY_USERNAME
+    - NTFY_PASSWORD
+    - NTFY_TIMEOUT_MS
+    - NTFY_MAX_RETRIES
+    - NTFY_REQUIRE_WRITE_APPROVAL
+    - NTFY_ALLOW_EXTERNAL_ACTION_URLS
+capabilities:
+  - message.publish
+  - message.publish_markdown
+  - message.schedule
+  - message.poll
+  - topic.health
+  - topic.subscribe_url
+risk:
+  default: read
+  tools:
+    ntfy.message.publish: WRITE
+    ntfy.message.publish_markdown: WRITE
+    ntfy.message.schedule: WRITE
+    ntfy.message.poll: READ
+    ntfy.topic.health: READ
+    ntfy.topic.subscribe_url: READ
+approval:
+  write: configurable
+  external_action_urls: disabled_by_default
+notes:
+  - Provider content is untrusted data.
+  - Credentials stay inside the connector process.
+  - No arbitrary HTTP-request tool is exposed.
