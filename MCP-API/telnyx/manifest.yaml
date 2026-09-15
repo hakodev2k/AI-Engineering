@@ -1,0 +1,28 @@
+id: telnyx
+name: Telnyx
+runtime: node>=20
+upstream:
+  - mcp: https://api.telnyx.com/v2/mcp
+  - rest: https://api.telnyx.com/v2
+auth:
+  type: bearer_api_key
+  env: TELNYX_API_KEY
+capabilities:
+  - phone_number.search
+  - phone_number.list
+  - messaging_profile.list
+  - message.get
+  - message.send
+  - call.get
+  - call.create
+  - call.hangup
+  - assistant.list
+  - assistant.get
+risk:
+  default: READ
+  write_requires_approval: configurable
+  high_risk_requires_approval: true
+  destructive_enabled_by_default: false
+security:
+  credentials_exposed_to_llm: false
+  provider_content_untrusted: true
