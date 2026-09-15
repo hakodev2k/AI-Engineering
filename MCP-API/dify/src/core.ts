@@ -1,0 +1,6 @@
+import { z } from 'zod';
+export type Risk='READ'|'WRITE'|'HIGH_RISK'|'DESTRUCTIVE';
+export class ConnectorError extends Error{constructor(public code:string,message:string,public status?:number,public retryAfter?:number){super(message)}}
+export const policy={requireWriteApproval:process.env.DIFY_REQUIRE_WRITE_APPROVAL!=='false',allowDestructive:process.env.DIFY_ALLOW_DESTRUCTIVE==='true'};
+export function authorize(risk:Risk,approved=false){if(risk==='DESTRUCTIVE'&&!policy.allowDestructive)throw new ConnectorError('DESTRUCTIVE_DISABLED','Destructive tools are disabled');if((risk==='HIGH_RISK'||(risk==='WRITE'&&policy.requireWriteApproval))&&!approved)throw new ConnectorError('APPROVAL_REQUIRED','Explicit human approval is required')}
+export const safeId=z.string().min(1).max(256).regex(/^[A-Za-z0-9_-]+$/);export const user=z.string().min(1).max(255);export const page=z.object({user,limit:z.number().int().min(1).max(100).default(20),last_id:safeId.optional()});export const inputs=z.record(z.string().max(128),z.union([z.string().max(100000),z.number(),z.boolean(),z.array(z.unknown()),z.record(z.unknown())])).default({});export const untrusted=<T>(data:T)=>({data,trust:'untrusted-provider-content' as const});

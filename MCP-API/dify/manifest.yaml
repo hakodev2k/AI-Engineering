@@ -1,0 +1,27 @@
+id: dify
+name: Dify
+upstream:
+  - rest
+official_mcp:
+  available: false
+api_base_url: https://api.dify.ai/v1
+auth:
+  type: bearer-api-key
+  environment: DIFY_API_KEY
+capabilities:
+  - app.parameters.get
+  - app.meta.get
+  - chat.send
+  - completion.create
+  - workflow.run
+  - conversation.list
+  - conversation.rename
+  - message.list
+  - message.feedback
+  - workflow.run.get
+risk:
+  default: READ
+  write_requires_approval: true
+  destructive_disabled_by_default: true
+required_environment:
+  - DIFY_API_KEY
