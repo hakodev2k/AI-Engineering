@@ -1,0 +1,58 @@
+id: fusionauth
+name: FusionAuth
+runtime: node-20+
+upstream:
+  - rest
+mcp:
+  official_server: false
+api:
+  base_url_env: FUSIONAUTH_BASE_URL
+  documentation: https://fusionauth.io/docs/apis/
+auth:
+  type: api-key
+  header: Authorization
+  credential_env: FUSIONAUTH_API_KEY
+  tenant_env: FUSIONAUTH_TENANT_ID
+  least_privilege: "Restrict API key by endpoint, HTTP method, tenant, expiration and ACL where available."
+capabilities:
+  - user.search
+  - user.get
+  - user.create
+  - user.update
+  - application.search
+  - application.get
+  - group.search
+  - group.get
+  - group.members.search
+  - webhook.search
+  - webhook.get
+  - webhook.create
+  - login.records.search
+risk:
+  default: READ
+  write_approval_env: FUSIONAUTH_APPROVE_WRITES
+  high_risk_approval_env: FUSIONAUTH_APPROVE_HIGH_RISK
+permissions:
+  read:
+    - "GET /api/user"
+    - "GET|POST /api/user/search"
+    - "GET /api/application"
+    - "GET|POST /api/application/search"
+    - "GET /api/group"
+    - "GET|POST /api/group/search"
+    - "GET|POST /api/group/member/search"
+    - "GET /api/webhook"
+    - "GET|POST /api/webhook/search"
+    - "GET|POST /api/system/login-record/search"
+  write:
+    - "POST /api/user"
+    - "PATCH /api/user/{id}"
+    - "POST /api/webhook"
+environment:
+  - FUSIONAUTH_BASE_URL
+  - FUSIONAUTH_API_KEY
+  - FUSIONAUTH_TENANT_ID
+  - FUSIONAUTH_TIMEOUT_MS
+  - FUSIONAUTH_MAX_RETRIES
+  - FUSIONAUTH_APPROVE_WRITES
+  - FUSIONAUTH_APPROVE_HIGH_RISK
