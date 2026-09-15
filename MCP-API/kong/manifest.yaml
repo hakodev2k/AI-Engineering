@@ -12,7 +12,7 @@ upstream:
   - type: rest
     official: true
     regional_api: https://{region}.api.konghq.com
-    use: deterministic fallback and catalog operations
+    use: deterministic fixed-contract implementation and catalog operations
 auth:
   type: bearer-token
   accepted: [personal-access-token, system-account-access-token]
@@ -28,7 +28,6 @@ capabilities:
   - plugin.list
   - catalog.mcp-server.list
   - catalog.mcp-server.create
-  - debug.session.create
 risk:
   default: READ
   write_requires_approval: true
