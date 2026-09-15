@@ -1,0 +1,38 @@
+id: kit
+name: Kit
+upstream:
+  - mcp
+mcp:
+  endpoint: https://app.kit.com/mcp
+  official: true
+auth:
+  type: oauth2
+  credential_env: KIT_MCP_ACCESS_TOKEN
+capabilities:
+  - account.read
+  - subscriber.list
+  - subscriber.read
+  - subscriber.create
+  - subscriber.update
+  - subscriber.tag
+  - subscriber.unsubscribe
+  - tag.list
+  - sequence.list
+  - broadcast.list
+  - broadcast.read
+  - broadcast.analytics
+  - broadcast.create
+  - broadcast.update
+  - webhook.list
+risk:
+  default: READ
+  approval:
+    WRITE: configurable
+    HIGH_RISK: required
+    DESTRUCTIVE: required
+environment:
+  - KIT_MCP_URL
+  - KIT_MCP_ACCESS_TOKEN
+  - KIT_REQUEST_TIMEOUT_MS
+  - KIT_MAX_RETRIES
+  - KIT_APPROVAL_MODE
