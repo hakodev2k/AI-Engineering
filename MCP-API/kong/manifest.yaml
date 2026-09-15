@@ -1,0 +1,40 @@
+id: kong
+name: Kong Konnect
+runtime: node-20
+upstream:
+  - type: mcp
+    official: true
+    transport: streamable-http
+    regional_endpoints:
+      us: https://us.mcp.konghq.com/
+      eu: https://eu.mcp.konghq.com/
+      au: https://au.mcp.konghq.com/
+  - type: rest
+    official: true
+    regional_api: https://{region}.api.konghq.com
+    use: deterministic fallback and catalog operations
+auth:
+  type: bearer-token
+  accepted: [personal-access-token, system-account-access-token]
+  env: KONG_KONNECT_TOKEN
+capabilities:
+  - control-plane.list
+  - control-plane.get
+  - service.list
+  - service.get
+  - route.list
+  - route.get
+  - consumer.list
+  - plugin.list
+  - catalog.mcp-server.list
+  - catalog.mcp-server.create
+  - debug.session.create
+risk:
+  default: READ
+  write_requires_approval: true
+  high_risk_requires_explicit_approval: true
+  destructive_enabled: false
+security:
+  credentials_exposed_to_llm: false
+  arbitrary_api_request_tool: false
+  provider_content_untrusted: true

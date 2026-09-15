@@ -1,0 +1,6 @@
+[
+ {"tool":"kong.control-plane.list","input":{"pageSize":25},"permission":"READ","approval":false,"output":{"data":"<control planes>","meta":"<pagination>"}},
+ {"tool":"kong.service.list","input":{"controlPlaneId":"<id>","pageSize":25},"permission":"READ","approval":false,"output":{"data":"<gateway services>"}},
+ {"tool":"kong.route.get","input":{"controlPlaneId":"<id>","routeId":"<id>"},"permission":"READ","approval":false,"output":{"id":"<route id>","paths":["/api"]}},
+ {"tool":"kong.catalog.mcp-server.create","input":{"name":"support-mcp","displayName":"Support MCP","description":"Approved support tools"},"permission":"WRITE","approval":true,"output":{"id":"<catalog id>"}}
+]
