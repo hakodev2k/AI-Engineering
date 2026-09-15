@@ -1,69 +1,35 @@
 id: launchdarkly
 name: LaunchDarkly
-version: 1.0.0
-runtime:
-  language: typescript
-  node: ">=20"
+runtime: node>=20
 upstream:
-  - type: mcp
-    implementation: official
-    hosted_endpoint: https://mcp.launchdarkly.com/mcp/launchdarkly
-    local_package: "@launchdarkly/mcp-server"
-    usage: feature-flag list/get/create/update/delete when configured
-  - type: rest
-    implementation: official
-    base_url: https://app.launchdarkly.com/api/v2
-    usage: projects, environments, REST fallback for flags, segments, webhooks
+  - mcp: https://mcp.launchdarkly.com/mcp/launchdarkly
+  - rest: https://app.launchdarkly.com/api/v2
 auth:
-  rest:
-    type: api_access_token
-    env: LAUNCHDARKLY_ACCESS_TOKEN
-    recommendation: service token with least-privilege custom role
-  hosted_mcp:
-    type: oauth2
-    env: LAUNCHDARKLY_MCP_ACCESS_TOKEN
-    note: token must be provisioned by an OAuth-capable credential broker; raw credentials are never exposed to tool callers
-permissions:
-  read:
-    - launchdarkly.project.list
-    - launchdarkly.project.get
-    - launchdarkly.environment.list
-    - launchdarkly.flag.list
-    - launchdarkly.flag.get
-    - launchdarkly.segment.list
-    - launchdarkly.segment.get
-    - launchdarkly.webhook.list
-  write:
-    - launchdarkly.flag.create
-    - launchdarkly.segment.create
-  high_risk:
-    - launchdarkly.flag.update
-    - launchdarkly.segment.update
-    - launchdarkly.webhook.create
-  destructive:
-    - launchdarkly.flag.delete
-    - launchdarkly.webhook.delete
-approval:
-  write: required
-  high_risk: required
-  destructive: required_and_disabled_by_default
-environment:
-  required:
-    - LAUNCHDARKLY_ACCESS_TOKEN
-  optional:
-    - LAUNCHDARKLY_API_BASE_URL
-    - LAUNCHDARKLY_API_VERSION
-    - LAUNCHDARKLY_TIMEOUT_MS
-    - LAUNCHDARKLY_MAX_RETRIES
-    - LAUNCHDARKLY_MCP_MODE
-    - LAUNCHDARKLY_MCP_SERVER_URL
-    - LAUNCHDARKLY_MCP_ACCESS_TOKEN
-    - LAUNCHDARKLY_APPROVAL_SECRET
-    - LAUNCHDARKLY_ALLOW_DESTRUCTIVE
+  hosted_mcp: oauth
+  rest: personal_or_service_access_token
+  least_privilege: true
+env:
+  required: [LAUNCHDARKLY_ACCESS_TOKEN]
+  optional: [LAUNCHDARKLY_API_BASE, LAUNCHDARKLY_API_VERSION, LAUNCHDARKLY_TIMEOUT_MS, LAUNCHDARKLY_APPROVE_WRITES, LAUNCHDARKLY_APPROVE_HIGH_RISK]
+capabilities:
+  - project.list
+  - project.get
+  - environment.list
+  - flag.list
+  - flag.get
+  - flag.create
+  - flag.update
+  - flag.toggle
+  - segment.list
+  - segment.get
+  - audit.list
+  - approval.list
 risk:
-  default: read
+  default: READ
+  write_requires_configurable_approval: true
+  high_risk_requires_explicit_approval: true
+  destructive_enabled: false
 security:
-  provider_content_is_untrusted: true
-  unrestricted_proxy_tools: false
-  upstream_mcp_tool_allowlist: true
-  destructive_disabled_by_default: true
+  credentials_exposed_to_llm: false
+  provider_content_untrusted: true
+  arbitrary_http: false

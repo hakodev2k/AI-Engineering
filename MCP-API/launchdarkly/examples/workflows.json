@@ -1,0 +1,5 @@
+[
+  {"tool":"launchdarkly.flag.list","input":{"projectKey":"example-project","limit":20,"offset":0},"expectedOutput":{"risk":"READ","untrustedProviderData":true,"result":{"items":[]}},"permission":"READ","approvalRequired":false},
+  {"tool":"launchdarkly.flag.create","input":{"projectKey":"example-project","key":"new-checkout","name":"New checkout"},"expectedOutput":{"risk":"WRITE","untrustedProviderData":true,"result":{"key":"new-checkout"}},"permission":"WRITE","approvalRequired":true},
+  {"tool":"launchdarkly.flag.toggle","input":{"projectKey":"example-project","flagKey":"new-checkout","environmentKey":"production","on":true},"expectedOutput":{"risk":"HIGH_RISK","untrustedProviderData":true,"result":{}},"permission":"HIGH_RISK","approvalRequired":true}
+]
