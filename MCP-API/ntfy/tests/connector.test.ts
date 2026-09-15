@@ -1,0 +1,10 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import { loadConfig } from '../src/config.js';import { NtfyClient,NtfyError } from '../src/client.js';import { handlers,schemas } from '../src/tools.js';
+const cfg=()=>loadConfig({NTFY_BASE_URL:'https://ntfy.example',NTFY_ACCESS_TOKEN:'tk_test',NTFY_REQUIRE_WRITE_APPROVAL:'true',NTFY_ALLOW_EXTERNAL_ACTION_URLS:'false'});
+test('validates topic',()=>assert.throws(()=>schemas.publish.parse({topic:'bad/topic',message:'x'})));
+test('requires write approval',async()=>{const h=handlers(new NtfyClient(cfg(),async()=>new Response('{}')) as any,cfg());await assert.rejects(()=>h.publish({topic:'ops',message:'x'}),/APPROVAL_REQUIRED/);});
+test('isolates bearer credential in client',async()=>{let auth='';const f=async(_u:any,i:any)=>{auth=i.headers.Authorization;return new Response(JSON.stringify({id:'1'}),{status:200,headers:{'content-type':'application/json'}})};const h=handlers(new NtfyClient(cfg(),f as any),cfg());await h.publish({topic:'ops',message:'ok',approved:true});assert.equal(auth,'Bearer tk_test');});
+test('poll paginated cache result is bounded',async()=>{const body=[...Array(30)].map((_,i)=>JSON.stringify({event:'message',id:String(i)})).join('\n');const c=new NtfyClient(cfg(),async()=>new Response(body,{status:200}) as any);assert.equal((await c.poll('ops',undefined,5) as any[]).length,5);});
+test('maps provider error',async()=>{const c=new NtfyClient(cfg(),async()=>new Response('denied',{status:403}) as any);await assert.rejects(()=>c.health(),(e:any)=>e instanceof NtfyError&&e.status===403);});
+test('blocks external click by default',async()=>{const h=handlers(new NtfyClient(cfg(),async()=>new Response('{}')) as any,cfg());await assert.rejects(()=>h.publish({topic:'ops',message:'x',click:'https://evil.example',approved:true}),/EXTERNAL_ACTION_DISABLED/);});
+test('429 retry is bounded',async()=>{let n=0;const c=new NtfyClient({...cfg(),NTFY_MAX_RETRIES:1} as any,async()=>{n++;return new Response('slow',{status:429,headers:{'retry-after':'0'}}) as any});await assert.rejects(()=>c.health());assert.equal(n,2);});
