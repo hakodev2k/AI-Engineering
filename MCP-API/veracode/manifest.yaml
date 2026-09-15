@@ -1,0 +1,17 @@
+id: veracode
+name: Veracode
+upstream: [rest]
+official_mcp: false
+api_base_url: https://api.veracode.com
+auth:
+  type: oauth2_client_credentials
+  env: [VERACODE_CLIENT_ID, VERACODE_CLIENT_SECRET, VERACODE_TOKEN_URL]
+capabilities: [application.list, application.get, application.policy.read, sandbox.list, finding.list, finding.get, finding.static_flaw_info, finding.dynamic_flaw_info, finding.comment]
+risk:
+  default: READ
+  write_requires_approval: true
+rate_limits:
+  rest_per_minute_per_ip: 500
+security:
+  provider_content_untrusted: true
+  arbitrary_http_disabled: true
