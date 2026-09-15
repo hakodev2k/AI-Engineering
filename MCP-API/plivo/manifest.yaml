@@ -1,0 +1,28 @@
+id: plivo
+name: Plivo
+upstream:
+  - rest
+official_mcp: false
+api_base_url: https://api.plivo.com/v1/Account/{auth_id}/
+auth:
+  type: http-basic
+  environment: [PLIVO_AUTH_ID, PLIVO_AUTH_TOKEN]
+capabilities:
+  - message.list
+  - message.get
+  - message.send
+  - call.list
+  - call.get
+  - call.create
+  - call.hangup
+  - recording.list
+  - recording.get
+  - application.list
+  - application.get
+risk:
+  default: READ
+  write_requires_approval: true
+  high_risk_requires_explicit_approval: true
+  destructive_tools_exposed: false
+rate_limits:
+  api_default: 300 requests per 5 seconds
