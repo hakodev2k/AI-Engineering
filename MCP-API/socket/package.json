@@ -1,0 +1,5 @@
+{
+  "name":"@ai-engineering/socket-mcp-connector","version":"1.0.0","private":true,"type":"module","engines":{"node":">=20"},
+  "scripts":{"start":"node src/server.js","check":"node --check src/server.js && node --check src/upstream.js && node --check src/policy.js","test":"node --test tests/*.test.js"},
+  "dependencies":{"@modelcontextprotocol/sdk":"1.29.0","zod":"3.25.76"}
+}
