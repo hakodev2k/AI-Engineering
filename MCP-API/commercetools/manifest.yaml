@@ -1,0 +1,30 @@
+id: commercetools
+name: commercetools
+upstream:
+  - mcp
+  - rest
+official_mcp:
+  commerce: managed-or-self-hosted
+  knowledge: https://docs.commercetools.com/apis/mcp
+auth:
+  type: oauth2-client-credentials
+api_base_url_env: COMMERCETOOLS_API_URL
+required_environment:
+  - COMMERCETOOLS_PROJECT_KEY
+  - COMMERCETOOLS_CLIENT_ID
+  - COMMERCETOOLS_CLIENT_SECRET
+capabilities:
+  - product.search
+  - product.get
+  - category.list
+  - cart.get
+  - cart.create
+  - cart.add_line_item
+  - order.get
+  - order.list
+  - customer.get
+  - inventory.get
+risk:
+  default: READ
+  writes_require_approval: true
+  destructive_enabled: false
