@@ -1,0 +1,9 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {loadConfig} from '../src/config.js';import {authorize,assertId} from '../src/security.js';import {FreshBooksClient,FreshBooksError} from '../src/client.js';
+const env={FRESHBOOKS_ACCESS_TOKEN:'secret',FRESHBOOKS_ACCOUNT_ID:'abc',FRESHBOOKS_ALLOW_WRITES:'false'} as NodeJS.ProcessEnv;
+test('config requires credentials',()=>assert.throws(()=>loadConfig({} as NodeJS.ProcessEnv)));
+test('writes denied by default',()=>assert.throws(()=>authorize(loadConfig(env),'WRITE')));
+test('high risk requires approval',()=>{const c=loadConfig({...env,FRESHBOOKS_ALLOW_WRITES:'true',FRESHBOOKS_APPROVAL_TOKEN:'ok'});assert.throws(()=>authorize(c,'HIGH_RISK','bad'));assert.doesNotThrow(()=>authorize(c,'HIGH_RISK','ok'));});
+test('id validation rejects path injection',()=>assert.throws(()=>assertId('../x','id')));
+test('client maps auth and pagination',async()=>{let seen:any;const f=async(input:any,init:any)=>{seen={url:String(input),init};return new Response(JSON.stringify({clients:[]}),{status:200,headers:{'content-type':'application/json'}})};const c=new FreshBooksClient(loadConfig(env),f as any);await c.listClients(2,25);assert.match(seen.url,/page=2/);assert.match(seen.url,/per_page=25/);assert.equal(seen.init.headers.Authorization,'Bearer secret');});
+test('429 retries then succeeds',async()=>{let n=0;const f=async()=>{n++;return n===1?new Response(JSON.stringify({error:'rate'}),{status:429,headers:{'retry-after':'0'}}):new Response('{}',{status:200})};const c=new FreshBooksClient(loadConfig({...env,FRESHBOOKS_MAX_RETRIES:'1'}),f as any);await c.getClient('1');assert.equal(n,2);});
+test('validation errors are not retried',async()=>{let n=0;const f=async()=>{n++;return new Response('{}',{status:400})};const c=new FreshBooksClient(loadConfig(env),f as any);await assert.rejects(()=>c.getClient('1'),FreshBooksError);assert.equal(n,1);});
