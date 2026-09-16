@@ -1,0 +1,29 @@
+id: prismic
+name: Prismic
+upstream:
+  - official-mcp-available
+  - official-sdk
+mcp:
+  endpoint: https://mcp.prismic.io/mcp
+  note: Official hosted MCP is preferred for interactive draft/edit/release workflows; this reusable server implements stable read operations with the official JavaScript SDK.
+auth:
+  type: repository-access-token
+  credential_env: PRISMIC_ACCESS_TOKEN
+  repository_env: PRISMIC_REPOSITORY_NAME
+capabilities:
+  - document.get
+  - document.get-by-uid
+  - document.list-by-type
+  - document.list-by-tag
+  - document.list-by-ids
+  - document.list-all
+  - document.search-fulltext
+  - repository.tags
+risk:
+  default: READ
+  writes: not-exposed
+environment:
+  - PRISMIC_REPOSITORY_NAME
+  - PRISMIC_ACCESS_TOKEN
+  - PRISMIC_TIMEOUT_MS
+  - PRISMIC_MAX_RETRIES
