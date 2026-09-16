@@ -1,6 +1,14 @@
-import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-import { createServer } from './app.js';
-import { loadConfig } from './config.js';
-
-const server = createServer(loadConfig());
+import {McpServer} from '@modelcontextprotocol/sdk/server/mcp.js';import {StdioServerTransport} from '@modelcontextprotocol/sdk/server/stdio.js';import {z} from 'zod';import {CircleCIClient} from './client.js';import {Tools} from './tools.js';
+const server=new McpServer({name:'circleci-connector',version:'1.0.0'});const t=new Tools(new CircleCIClient(process.env.CIRCLECI_TOKEN||''));const out=async(fn:()=>Promise<any>)=>({content:[{type:'text' as const,text:JSON.stringify(await fn())}]});
+const slug=z.string().min(3).max(300), id=z.string().uuid(), approval=z.boolean().default(false);
+server.tool('circleci.pipeline.list','List pipelines',{projectSlug:slug,branch:z.string().max(255).optional(),pageToken:z.string().max(2048).optional()},a=>out(()=>t.pipelineList(a)));
+server.tool('circleci.pipeline.get','Get pipeline',{id},a=>out(()=>t.pipelineGet(a)));
+server.tool('circleci.pipeline.trigger','Trigger pipeline; requires approval',{projectSlug:slug,branch:z.string().max(255).optional(),tag:z.string().max(255).optional(),parameters:z.record(z.union([z.string(),z.number(),z.boolean()])).optional(),approved:approval},a=>out(()=>t.pipelineTrigger(a)));
+server.tool('circleci.workflow.get','Get workflow',{id},a=>out(()=>t.workflowGet(a)));
+server.tool('circleci.workflow.jobs.list','List workflow jobs',{id,pageToken:z.string().max(2048).optional()},a=>out(()=>t.workflowJobs(a)));
+server.tool('circleci.workflow.rerun','Rerun workflow; requires approval',{id,fromFailed:z.boolean().optional(),sparseTree:z.boolean().optional(),approved:approval},a=>out(()=>t.workflowRerun(a)));
+server.tool('circleci.workflow.cancel','Cancel workflow; explicit approval required',{id,approved:approval},a=>out(()=>t.workflowCancel(a)));
+server.tool('circleci.workflow.job.approve','Approve workflow approval job; requires approval',{workflowId:id,approvalRequestId:id,approved:approval},a=>out(()=>t.workflowApprove(a)));
+server.tool('circleci.project.get','Get project',{projectSlug:slug},a=>out(()=>t.projectGet(a)));
+server.tool('circleci.project.checkout_key.list','List checkout keys metadata',{projectSlug:slug},a=>out(()=>t.checkoutKeys(a)));
 await server.connect(new StdioServerTransport());
