@@ -1,0 +1,38 @@
+id: dialpad
+name: Dialpad
+upstream:
+  official_mcp:
+    status: early-access
+    transport: streamable-http
+    us_endpoint: https://mcp-public.us.karehq.com/mcp
+    eu_endpoint: https://mcp-public.eu.karehq.com/mcp
+  rest:
+    base_url: https://dialpad.com/api/v2
+auth:
+  type: bearer_api_token
+  env: DIALPAD_API_TOKEN
+capabilities:
+  - call.list
+  - call.get
+  - call.transcript
+  - contact.get
+  - contact.list
+  - sms.send
+  - call.initiate
+  - webhook.list
+  - webhook.get
+  - webhook.create
+  - webhook.delete
+risk:
+  default: READ
+  sms.send: HIGH_RISK
+  call.initiate: HIGH_RISK
+  webhook.create: WRITE
+  webhook.delete: DESTRUCTIVE
+approval:
+  write_env: DIALPAD_APPROVE_WRITE
+  high_risk_env: DIALPAD_APPROVE_HIGH_RISK
+  destructive: disabled
+security:
+  credentials_exposed_to_model: false
+  provider_content_untrusted: true
