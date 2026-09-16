@@ -1,0 +1,41 @@
+id: logsnag
+name: LogSnag
+upstream:
+  - rest
+mcp:
+  official_server: false
+api:
+  base_url: https://api.logsnag.com
+  version: v1
+auth:
+  type: bearer_token
+  environment: LOGSNAG_API_TOKEN
+  guidance: Create a narrowly scoped API token in LogSnag settings; restrict project/channel roles where possible.
+capabilities:
+  - event.publish
+  - event.publish_notification
+  - user.identify
+  - insight.set
+  - insight.increment
+  - insight.decrement
+risk:
+  default: write
+  tools:
+    logsnag.event.publish: WRITE
+    logsnag.event.publish_notification: HIGH_RISK
+    logsnag.user.identify: WRITE
+    logsnag.insight.set: WRITE
+    logsnag.insight.increment: WRITE
+    logsnag.insight.decrement: WRITE
+approval:
+  write: configurable
+  notifications: explicit
+required_environment:
+  - LOGSNAG_API_TOKEN
+optional_environment:
+  - LOGSNAG_DEFAULT_PROJECT
+  - LOGSNAG_API_BASE_URL
+  - LOGSNAG_TIMEOUT_MS
+  - LOGSNAG_MAX_RETRIES
+  - LOGSNAG_REQUIRE_WRITE_APPROVAL
+  - LOGSNAG_ALLOW_NOTIFICATIONS
