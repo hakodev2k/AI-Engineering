@@ -1,0 +1,48 @@
+id: freshbooks
+name: FreshBooks
+upstream:
+  - rest
+official_mcp: false
+api_base_url: https://api.freshbooks.com
+auth:
+  type: oauth2
+  credential_env: FRESHBOOKS_ACCESS_TOKEN
+  refresh_tokens: supported-by-provider
+required_scopes:
+  read:
+    - user:clients:read
+    - user:invoices:read
+    - user:expenses:read
+  write:
+    - user:clients:write
+    - user:invoices:write
+    - user:expenses:write
+capabilities:
+  - client.list
+  - client.get
+  - client.create
+  - client.update
+  - invoice.list
+  - invoice.get
+  - invoice.create
+  - invoice.update
+  - invoice.send
+  - expense.list
+  - expense.get
+  - expense.create
+  - expense.update
+risk:
+  default: READ
+  write_requires_configuration: true
+  external_message_requires_approval: true
+environment:
+  - FRESHBOOKS_ACCESS_TOKEN
+  - FRESHBOOKS_ACCOUNT_ID
+  - FRESHBOOKS_TIMEOUT_MS
+  - FRESHBOOKS_MAX_RETRIES
+  - FRESHBOOKS_ALLOW_WRITES
+  - FRESHBOOKS_APPROVAL_TOKEN
+security:
+  credentials_exposed_to_llm: false
+  provider_content_untrusted: true
+  arbitrary_http_tool: false
