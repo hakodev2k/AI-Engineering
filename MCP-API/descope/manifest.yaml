@@ -1,0 +1,29 @@
+id: descope
+name: Descope
+upstream:
+  - mcp
+mcp:
+  us: https://mcp.descope.com
+  eu: https://mcp.euc1.descope.com
+auth:
+  type: oauth2.1
+  credential_input: DESCOPE_MCP_ACCESS_TOKEN
+capabilities:
+  - operation.discover
+  - session.inspect
+  - project.read
+  - project.write
+  - access_control.read
+  - access_control.write
+  - docs.search
+  - docs.ask
+risk:
+  default: read
+  write_requires_approval: true
+  destructive: disabled
+environment:
+  - DESCOPE_MCP_ACCESS_TOKEN
+  - DESCOPE_REGION
+  - DESCOPE_TIMEOUT_MS
+  - DESCOPE_ALLOW_WRITE
+  - DESCOPE_APPROVAL_SECRET
