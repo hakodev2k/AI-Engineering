@@ -1,0 +1,17 @@
+import {McpServer} from '@modelcontextprotocol/sdk/server/mcp.js';
+import {StdioServerTransport} from '@modelcontextprotocol/sdk/server/stdio.js';
+import {z} from 'zod';
+import {loadConfig,UploadcareClient,uuid} from './uploadcare.js';
+const client=new UploadcareClient(loadConfig()); const server=new McpServer({name:'uploadcare',version:'1.0.0'}); const out=(x:unknown)=>({content:[{type:'text' as const,text:JSON.stringify(x)}]});
+server.tool('uploadcare.file.list','List project files',{limit:z.number().int().min(1).max(100).default(20),offset:z.number().int().min(0).default(0),stored:z.boolean().optional()},async a=>out(await client.request('GET',`/files/?limit=${a.limit}&offset=${a.offset}${a.stored===undefined?'':`&stored=${a.stored}`}`)));
+server.tool('uploadcare.file.search','Search files by original filename',{filename:z.string().min(1).max(200),limit:z.number().int().min(1).max(100).default(20),offset:z.number().int().min(0).default(0)},async a=>out(await client.request('POST',`/files/search/?limit=${a.limit}&offset=${a.offset}`,{phrase:{original_filename:a.filename}})));
+server.tool('uploadcare.file.get','Get one file',{uuid:z.string()},async a=>out(await client.request('GET',`/files/${uuid(a.uuid)}/`)));
+server.tool('uploadcare.file.metadata.get','Get file metadata',{uuid:z.string()},async a=>out(await client.request('GET',`/files/${uuid(a.uuid)}/metadata/`)));
+server.tool('uploadcare.file.metadata.update','Replace a metadata key',{uuid:z.string(),key:z.string().regex(/^[A-Za-z0-9_-]{1,64}$/),value:z.string().max(512)},async a=>out(await client.request('PUT',`/files/${uuid(a.uuid)}/metadata/${encodeURIComponent(a.key)}/`,{value:a.value},'WRITE')));
+server.tool('uploadcare.file.store','Store a file permanently',{uuid:z.string()},async a=>out(await client.request('PUT',`/files/${uuid(a.uuid)}/storage/`,undefined,'WRITE')));
+server.tool('uploadcare.file.delete','Delete a file',{uuid:z.string(),approved:z.literal(true)},async a=>out(await client.request('DELETE',`/files/${uuid(a.uuid)}/storage/`,undefined,'DESTRUCTIVE',a.approved)));
+server.tool('uploadcare.webhook.list','List project webhooks',{},async()=>out(await client.request('GET','/webhooks/')));
+server.tool('uploadcare.webhook.create','Create a file event webhook',{targetUrl:z.string().url().max(255).refine(v=>new URL(v).protocol==='https:','HTTPS required'),event:z.enum(['file.uploaded','file.info_updated','file.stored','file.deleted']),isActive:z.boolean().default(true)},async a=>out(await client.request('POST','/webhooks/',{target_url:a.targetUrl,event:a.event,is_active:a.isActive},'WRITE')));
+server.tool('uploadcare.webhook.update','Update webhook activation',{id:z.number().int().positive(),isActive:z.boolean()},async a=>out(await client.request('PUT',`/webhooks/${a.id}/`,{is_active:a.isActive},'WRITE')));
+server.tool('uploadcare.webhook.delete','Delete a webhook',{id:z.number().int().positive(),approved:z.literal(true)},async a=>out(await client.request('DELETE',`/webhooks/${a.id}/`,undefined,'DESTRUCTIVE',a.approved)));
+await server.connect(new StdioServerTransport());

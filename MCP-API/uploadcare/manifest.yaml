@@ -1,0 +1,35 @@
+id: uploadcare
+name: Uploadcare
+upstream:
+  - rest
+auth:
+  type: api-key-hmac
+  production_scheme: Uploadcare
+  notes: Secret key remains inside connector; requests use HMAC-SHA1 signatures.
+endpoints:
+  rest: https://api.uploadcare.com/
+official_mcp: false
+capabilities:
+  - file.list
+  - file.search
+  - file.get
+  - file.metadata.get
+  - file.metadata.update
+  - file.store
+  - file.delete
+  - webhook.list
+  - webhook.create
+  - webhook.update
+  - webhook.delete
+risk:
+  default: READ
+  write_approval: configurable
+  destructive_approval: required
+environment:
+  - UPLOADCARE_PUBLIC_KEY
+  - UPLOADCARE_SECRET_KEY
+  - UPLOADCARE_API_BASE
+  - UPLOADCARE_TIMEOUT_MS
+  - UPLOADCARE_MAX_RETRIES
+  - UPLOADCARE_ALLOW_WRITES
+  - UPLOADCARE_ALLOW_DESTRUCTIVE

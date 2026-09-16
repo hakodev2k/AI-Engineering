@@ -1,0 +1,10 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {loadConfig,requireRisk,uuid,UploadcareClient,ConnectorError} from '../src/uploadcare.js';
+const env={UPLOADCARE_PUBLIC_KEY:'pk',UPLOADCARE_SECRET_KEY:'sk'} as NodeJS.ProcessEnv;
+test('auth config required',()=>assert.throws(()=>loadConfig({} as NodeJS.ProcessEnv),/required/));
+test('rejects non official base URL',()=>assert.throws(()=>loadConfig({...env,UPLOADCARE_API_BASE:'http://evil.test'}),/must be/));
+test('uuid validation',()=>assert.throws(()=>uuid('bad'),/Invalid/));
+test('write denied by default',()=>assert.throws(()=>requireRisk(loadConfig(env),'WRITE'),(e:any)=>e.code==='PERMISSION_DENIED'));
+test('destructive requires approval',()=>assert.throws(()=>requireRisk(loadConfig({...env,UPLOADCARE_ALLOW_DESTRUCTIVE:'true'}),'DESTRUCTIVE',false),(e:any)=>e.code==='APPROVAL_REQUIRED'));
+test('signed read and provider mapping',async()=>{let auth='';const f=async(_u:any,i:any)=>{auth=i.headers.Authorization;return new Response(JSON.stringify({uuid:'x'}),{status:200,headers:{'content-type':'application/json'}})};const c=new UploadcareClient(loadConfig(env),f as any);assert.deepEqual(await c.request('GET','/files/'),{uuid:'x'});assert.match(auth,/^Uploadcare pk:/)});
+test('does not retry auth failure',async()=>{let n=0;const f=async()=>{n++;return new Response('{}',{status:401})};const c=new UploadcareClient(loadConfig({...env,UPLOADCARE_MAX_RETRIES:'3'}),f as any);await assert.rejects(c.request('GET','/files/'),(e:any)=>e instanceof ConnectorError&&e.code==='AUTHENTICATION');assert.equal(n,1)});
+test('rejects arbitrary URL path',async()=>{const c=new UploadcareClient(loadConfig(env),fetch);await assert.rejects(c.request('GET','https://evil.test/'),/Invalid provider path/)});
