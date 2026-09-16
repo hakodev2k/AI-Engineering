@@ -1,0 +1,36 @@
+id: mailerlite
+name: MailerLite
+upstream:
+  - mcp
+  - rest
+official_mcp:
+  endpoint: https://mcp.mailerlite.com/mcp
+  transport: streamable-http
+  auth: oauth
+implementation:
+  transport: rest
+  api_base_url: https://connect.mailerlite.com/api
+auth:
+  type: bearer-api-token
+  env: MAILERLITE_API_TOKEN
+capabilities:
+  - subscriber.list
+  - subscriber.get
+  - subscriber.upsert
+  - subscriber.delete
+  - group.list
+  - group.get
+  - campaign.list
+  - campaign.get
+  - campaign.create
+  - campaign.schedule
+risk:
+  default: READ
+  write_requires_configurable_approval: true
+  destructive_requires_explicit_approval: true
+environment:
+  - MAILERLITE_API_TOKEN
+  - MAILERLITE_API_BASE_URL
+  - MAILERLITE_TIMEOUT_MS
+  - MAILERLITE_MAX_RETRIES
+  - MAILERLITE_APPROVE_WRITES
