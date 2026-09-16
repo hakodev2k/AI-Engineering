@@ -1,0 +1,34 @@
+id: portainer
+name: Portainer
+upstream:
+  - rest
+official_mcp:
+  status: announced
+  note: Portainer-Command is announced for Portainer 3.x; this connector uses the stable Portainer REST API until the official general-purpose MCP gateway is available.
+api:
+  base_url_env: PORTAINER_BASE_URL
+  path_prefix: /api
+auth:
+  type: personal-access-token
+  header: X-API-Key
+  token_env: PORTAINER_ACCESS_TOKEN
+capabilities:
+  - system.status
+  - environment.list
+  - environment.get
+  - stack.list
+  - stack.get
+  - stack.start
+  - stack.stop
+  - registry.list
+  - user.list
+  - container.list
+risk:
+  default: READ
+  stack.start: HIGH_RISK
+  stack.stop: HIGH_RISK
+approval:
+  writes_require: PORTAINER_ALLOW_WRITES=true and matching PORTAINER_APPROVAL_TOKEN
+required_env:
+  - PORTAINER_BASE_URL
+  - PORTAINER_ACCESS_TOKEN
