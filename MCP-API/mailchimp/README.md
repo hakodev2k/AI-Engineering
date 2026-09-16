@@ -1,193 +1,64 @@
 # Mailchimp MCP/API Connector
 
-Reusable MCP server that exposes a scoped set of Mailchimp Marketing API operations for AI agents and MCP clients while keeping Mailchimp credentials inside the connector boundary.
+Reusable MCP server for safe Mailchimp Marketing workflows. It exposes scoped tools rather than an arbitrary HTTP proxy.
 
-## Upstream transport
+## Upstream strategy
 
-This implementation uses the official Mailchimp Marketing API v3.0 over HTTPS. During implementation, no official Mailchimp MCP server was identified in Mailchimp's official developer documentation, so there is no upstream MCP dependency and no unofficial MCP server is trusted implicitly.
+Mailchimp provides an official remote MCP at `https://mandrillapp.com/mcp` for **Transactional Messaging**. Mailchimp documents that it mirrors Transactional Messaging API functionality and authenticates with a Transactional API key. This connector intentionally uses the official **Marketing API v3.0** directly for audience/contact/campaign/report operations because those are Marketing capabilities and are not represented as a constrained Marketing MCP contract. The official Transactional MCP can be configured separately when transactional sending is required.
 
-Official sources used for the implementation:
-
-- Marketing API overview: https://mailchimp.com/developer/marketing/
-- Marketing API documentation: https://mailchimp.com/developer/marketing/docs/
-- Marketing API reference: https://mailchimp.com/developer/marketing/api/
-- Quick start and API-key authentication: https://mailchimp.com/developer/marketing/guides/quick-start/
-- OAuth 2 authorization-code flow: https://mailchimp.com/developer/marketing/guides/access-user-data-oauth-2/
-- Audiences and contacts: https://mailchimp.com/developer/marketing/guides/create-your-first-audience/
-- Contact tags: https://mailchimp.com/developer/marketing/guides/organize-contacts-with-tags/
-- Errors and throttling: https://mailchimp.com/developer/marketing/docs/errors/
-- Batch and concurrency guidance: https://mailchimp.com/developer/marketing/guides/run-async-requests-batch-endpoint/
-
-The API reference observed during this implementation reports Marketing API `3.0.91`; the REST base path remains `/3.0`.
+Official references: Mailchimp Developer Marketing API fundamentals, API reference, authentication/errors/methods documentation, and Mailchimp's Transactional Messaging MCP guide.
 
 ## Capabilities
 
-| MCP tool | Upstream | Risk | Approval |
-|---|---|---:|---:|
-| `mailchimp.account.get` | `GET /` | READ | No |
-| `mailchimp.audience.list` | `GET /lists` | READ | No |
-| `mailchimp.audience.get` | `GET /lists/{list_id}` | READ | No |
-| `mailchimp.member.list` | `GET /lists/{list_id}/members` | READ | No |
-| `mailchimp.member.get` | `GET /lists/{list_id}/members/{subscriber_hash}` | READ | No |
-| `mailchimp.member.upsert` | `PUT /lists/{list_id}/members/{subscriber_hash}` | WRITE | Yes |
-| `mailchimp.member.archive` | `DELETE /lists/{list_id}/members/{subscriber_hash}` | DESTRUCTIVE | Yes |
-| `mailchimp.member.tags.update` | `POST /lists/{list_id}/members/{subscriber_hash}/tags` | WRITE | Yes |
-| `mailchimp.campaign.list` | `GET /campaigns` | READ | No |
-| `mailchimp.campaign.get` | `GET /campaigns/{campaign_id}` | READ | No |
-| `mailchimp.campaign.create` | `POST /campaigns` | WRITE | Yes |
-| `mailchimp.campaign.update` | `PATCH /campaigns/{campaign_id}` | WRITE | Yes |
-| `mailchimp.campaign.content.update` | `PUT /campaigns/{campaign_id}/content` | WRITE | Yes |
-| `mailchimp.campaign.send` | `POST /campaigns/{campaign_id}/actions/send` | HIGH_RISK | Yes |
-| `mailchimp.report.get` | `GET /reports/{campaign_id}` | READ | No |
+12 tools are implemented: `mailchimp.account.get`, `mailchimp.audience.list`, `mailchimp.audience.get`, `mailchimp.contact.list`, `mailchimp.contact.get`, `mailchimp.contact.upsert`, `mailchimp.contact.update`, `mailchimp.contact.tags.list`, `mailchimp.contact.tags.update`, `mailchimp.contact.event.create`, `mailchimp.campaign.list`, `mailchimp.campaign.get`, and `mailchimp.report.get`.
 
-The connector deliberately does not expose a generic arbitrary-request tool. Campaign deletion, permanent contact deletion, billing changes, account administration, and other unnecessary destructive/admin endpoints are not implemented.
-
-## Architecture
-
-```text
-MCP client / agent
-       |
-       v
-Mailchimp MCP server (stdio)
-       |
-       +-- strict Zod schemas
-       +-- local risk/approval policy
-       +-- local MD5 subscriber hashing
-       +-- bounded REST client / timeout / error mapping
-       |
-       v
-credential configuration
-       |
-       v
-Mailchimp Marketing API
-```
-
-Provider response content is wrapped as `untrustedProviderData: true`. Retrieved Mailchimp data must never be interpreted as system instructions or as permission to invoke additional tools.
+All provider-returned text is treated as untrusted data. No retrieved content can alter permissions or connector configuration.
 
 ## Authentication
 
-Two server-side credential modes are supported. Configure exactly one:
+Set `MAILCHIMP_API_TOKEN` and `MAILCHIMP_SERVER_PREFIX` (for example `us21`). The Marketing API accepts API keys or OAuth 2 tokens; OAuth 2 is recommended for integrations serving multiple Mailchimp users. Tokens stay in the connector and are never tool parameters. API access is constrained by the authorizing Mailchimp user's role.
 
-1. `MAILCHIMP_API_KEY` for a connector dedicated to your own Mailchimp account.
-2. `MAILCHIMP_OAUTH_ACCESS_TOKEN` for an access token obtained through Mailchimp's OAuth 2 authorization-code flow.
+## Install and run
 
-`MAILCHIMP_SERVER_PREFIX` is always required, for example `us1` or `us20`. Mailchimp's OAuth guide documents obtaining this value from the OAuth Metadata endpoint after exchanging the authorization code. This connector intentionally does not perform an interactive OAuth authorization flow; production integrations should perform that flow in a trusted application component and inject the resulting access token and server prefix into the connector's secret environment.
-
-Mailchimp's official quick-start documentation warns that an API key provides full account access. Mailchimp recommends OAuth 2 when accessing accounts on behalf of other users. No granular OAuth scopes are configured by this connector because Mailchimp's documented Marketing OAuth flow does not expose a conventional per-scope request surface in the referenced guide; authorization is constrained further locally through the connector's tool allowlist and approval policy.
-
-Mailchimp's OAuth guide states that Marketing access tokens do not expire unless access is revoked, so this connector does not implement refresh-token handling.
-
-## Environment variables
-
-Copy `.env.example` into your secret-management workflow. Do not commit a populated `.env` file.
-
-```text
-MAILCHIMP_API_KEY=
-MAILCHIMP_SERVER_PREFIX=us1
-MAILCHIMP_OAUTH_ACCESS_TOKEN=
-MAILCHIMP_APPROVAL_SECRET=
-MAILCHIMP_TIMEOUT_MS=20000
-MAILCHIMP_MAX_RETRIES=2
-```
-
-`MAILCHIMP_APPROVAL_SECRET` must be at least 24 characters and must remain outside the model context. It is needed only for tools requiring approval.
-
-## Installation
-
-Requirements: Node.js 20 or newer.
+Requires Node.js 20+.
 
 ```bash
 npm install
-npm run build
-```
-
-## Run the MCP server
-
-```bash
+cp .env.example .env
+# export values using your secret manager or shell
 npm start
 ```
 
-The server uses MCP stdio transport, so MCP clients that support launching local stdio servers can invoke it as a subprocess. A typical client configuration should point its command at `node` and argument at the built `dist/src/server.js`, while supplying credentials through the client's secure environment configuration.
+The server uses MCP stdio and can therefore be launched by MCP clients that support stdio child-process servers. Client-specific configuration varies; do not expose credentials in prompts.
 
 ## Permission and approval model
 
-`READ` operations may run without approval. `WRITE` operations require an approval token. `HIGH_RISK` operations require explicit approval; currently this includes sending a campaign because it sends external email. `DESTRUCTIVE` operations require explicit approval; currently this includes archiving a member.
+READ tools execute automatically. WRITE tools require `approved: true` by default (`MAILCHIMP_APPROVAL_MODE=write`). HIGH_RISK would always require explicit approval. DESTRUCTIVE operations are disabled by policy and are not registered. In particular, archive/permanent-delete, campaign send, and public/external message execution are intentionally absent.
 
-Approval tokens are HMAC-SHA256 values bound to the exact tool name and canonicalized arguments. A token for one action cannot be reused after changing the audience, recipient, campaign, content, or other arguments. A trusted human-approval layer should generate the token by calling `createApprovalToken()` from `src/security.ts` only after the final arguments have been reviewed.
+The connector distinguishes preparation/inspection from execution and cannot elevate its own permission policy.
 
-The model must never receive `MAILCHIMP_APPROVAL_SECRET`. Possession of an old approval token does not grant permission for modified arguments.
+## Reliability and limits
 
-## Contact privacy
+Marketing API limits each user to 10 simultaneous connections and returns HTTP 429 when exceeded. The client preserves `Retry-After`, retries only 429 and 5xx responses, uses exponential bounded backoff, and makes at most three attempts. Authentication/authorization/validation errors are not retried. Requests have a configurable local timeout; Mailchimp documents a 120-second server-side API timeout. List tools use `count`/`offset` pagination and enforce Mailchimp's documented maximum count of 1000.
 
-Mailchimp identifies existing audience contacts using the MD5 hash of the lowercase email address. `member.get`, `member.archive`, and tag operations calculate that subscriber hash locally before building the request URL. Upsert still includes the email address in the request body because the Mailchimp PUT member endpoint needs it for creation/update semantics.
+## Errors
 
-## Reliability and rate limiting
+Provider errors are mapped to MCP error results with a sanitized message, HTTP status, and `retryAfter` value when present. Tokens are never logged or returned. Zod validates all inputs; IDs are URL-encoded and the base host is constructed only from the validated server prefix, preventing caller-controlled arbitrary URLs/SSRF.
 
-Mailchimp's official error documentation describes a limit of 10 simultaneously processing Marketing API requests per user. The batch guide also notes that Marketing API requests can time out at 120 seconds. This connector therefore:
+## Security
 
-- applies a configurable client-side timeout with a maximum of 120 seconds;
-- parses integer `Retry-After` values when Mailchimp returns them;
-- retries only `GET` requests on HTTP `429` and `5xx` responses;
-- uses bounded exponential backoff when no `Retry-After` is present;
-- never blindly retries POST/PATCH/PUT/DELETE writes, preventing accidental duplicate or destructive mutations;
-- exposes `count` and `offset` on list operations and caps `count` at 1000 to avoid uncontrolled result expansion.
+Use least-privilege Mailchimp users/keys. Keep credentials in a secret manager. Marketing content is untrusted data and must never be interpreted as agent instructions. The connector has no generic `call_api` tool, no arbitrary URL tool, and no destructive operation. For OAuth applications, implement the authorization flow outside this stdio process using secure state/PKCE where supported by the integration architecture and inject only the resulting server-side token.
 
-For very high-volume sync operations, use Mailchimp's official Batch endpoint outside this connector or add a separately reviewed batch capability rather than increasing connector concurrency.
-
-## Error handling
-
-Provider errors are mapped into structured MCP error output containing HTTP status, message, optional `retryAfterSeconds`, and the provider error body. Authentication and authorization errors are returned directly and are not retried. Validation failures and approval failures occur before the provider call.
-
-## Security considerations
-
-- Credentials are read only by the connector process and are never accepted as MCP tool arguments.
-- `MAILCHIMP_SERVER_PREFIX` must match `us` plus digits; callers cannot supply arbitrary hosts, preventing URL-based SSRF through the provider base URL.
-- Resource identifiers are URI encoded.
-- Tool schemas constrain email addresses, IDs, content size, pagination size, member status, campaign type, and tag operations.
-- Provider content is returned as untrusted data.
-- There is no generic `request(url, body)` capability.
-- Sending email requires explicit, argument-bound approval.
-- Archiving a contact requires explicit, argument-bound destructive approval.
-- Permanent contact deletion is intentionally not implemented.
-- Logs should not include environment variables, authorization headers, or approval secrets. The connector itself does not log these values.
-- Mailchimp data can contain attacker-controlled text. MCP clients must not allow that text to alter tool policy, reveal secrets, or trigger unapproved actions.
+The official Transactional MCP should likewise be configured with restricted API-key permissions including only the required AI Agents/API permissions; do not automatically trust newly discovered upstream tools.
 
 ## Testing
-
-Unit tests require no Mailchimp credentials and use mocked `fetch` responses.
 
 ```bash
 npm test
 ```
 
-Coverage includes configuration validation, API-key and OAuth configuration, subscriber hashing, argument-bound approvals, risk classification, auth-header isolation, read retries for throttling, non-retry of writes, and authentication-error behavior.
-
-## Example workflows
-
-### CRM sync
-
-1. `mailchimp.audience.list`
-2. `mailchimp.member.get`
-3. Human/review layer approves final mutation.
-4. `mailchimp.member.upsert`
-5. `mailchimp.member.tags.update`
-
-### Campaign preparation and send
-
-1. `mailchimp.campaign.create`
-2. `mailchimp.campaign.content.update`
-3. `mailchimp.campaign.get`
-4. Human reviews final campaign/audience/content in Mailchimp or trusted UI.
-5. `mailchimp.campaign.send`
-6. `mailchimp.report.get`
-
-See `examples/usage.md` for concrete MCP inputs.
+Unit tests require no live credentials and cover auth configuration, tool registration, read behavior, write approval denial, and bounded 429 retry behavior.
 
 ## Limitations
 
-- The connector implements a focused Marketing API surface, not every Mailchimp endpoint.
-- It does not expose Mailchimp Transactional, SMS, Open Commerce, Customer Journey administration, batch jobs, webhooks, account administration, or billing operations.
-- It does not host an OAuth redirect callback or store OAuth tokens; a trusted external credential component must do that for multi-user deployments.
-- It does not schedule campaigns. Immediate send is supported only with explicit approval.
-- It does not permanently delete contacts.
-- Mailchimp plan/role restrictions can cause otherwise valid API operations to return authorization errors.
+This connector does not send campaigns or transactional messages, permanently delete contacts, manage billing, or expose arbitrary API calls. Webhook registration is not implemented because endpoint ownership and signature-validation lifecycle belong to the hosting application. OAuth browser callback/token storage is also host responsibility; this reusable connector consumes an already-secured token.

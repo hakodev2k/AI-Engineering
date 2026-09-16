@@ -1,0 +1,2 @@
+export const Risk=Object.freeze({READ:'READ',WRITE:'WRITE',HIGH_RISK:'HIGH_RISK',DESTRUCTIVE:'DESTRUCTIVE'});
+export function requireApproval(risk,approved,mode='write'){if(risk==='DESTRUCTIVE')throw new Error('Destructive tools are disabled');if(risk==='HIGH_RISK'&&!approved)throw new Error('Explicit human approval required');if(risk==='WRITE'&&mode==='write'&&!approved)throw new Error('Human approval required for write');}
