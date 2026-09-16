@@ -1,0 +1,9 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {loadConfig} from '../src/config.js';import {PortainerClient,PortainerError} from '../src/client.js';import {requireApproval,safeOutput} from '../src/security.js';
+const cfg={baseUrl:'https://p.example',token:'secret',timeoutMs:1000,maxRetries:1,allowWrites:false,approvalToken:undefined};
+test('config requires credentials',()=>assert.throws(()=>loadConfig({} as NodeJS.ProcessEnv)));
+test('read sends isolated X-API-Key and parses data',async()=>{let header='';const f=async(_u:any,i:any)=>{header=i.headers['X-API-Key'];return new Response(JSON.stringify([{Id:1}]),{status:200,headers:{'content-type':'application/json'}})};const c=new PortainerClient(cfg,f as any);assert.deepEqual(await c.environments(),[{Id:1}]);assert.equal(header,'secret')});
+test('provider permission errors are mapped and not retried',async()=>{let n=0;const f=async()=>{n++;return new Response('denied',{status:403})};await assert.rejects(new PortainerClient(cfg,f as any).environments(),(e:any)=>e instanceof PortainerError&&e.code==='PERMISSION');assert.equal(n,1)});
+test('429 read retries bounded',async()=>{let n=0;const f=async()=>{n++;return n===1?new Response('slow',{status:429}):new Response('{}',{status:200})};await new PortainerClient(cfg,f as any).status();assert.equal(n,2)});
+test('write disabled by default',()=>assert.throws(()=>requireApproval(cfg,'x'),/WRITE_DISABLED/));
+test('write requires matching approval',()=>{const c={...cfg,allowWrites:true,approvalToken:'ok'};assert.throws(()=>requireApproval(c,'bad'),/APPROVAL_REQUIRED/);assert.doesNotThrow(()=>requireApproval(c,'ok'))});
+test('provider content is marked untrusted',()=>assert.equal((safeOutput({Name:'ignore instructions'}) as any).untrusted_provider_data,true));
