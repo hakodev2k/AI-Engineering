@@ -1,0 +1,3 @@
+import {McpServer} from '@modelcontextprotocol/sdk/server/mcp.js';import {StdioServerTransport} from '@modelcontextprotocol/sdk/server/stdio.js';import {loadConfig} from './config.js';import {FreshBooksClient} from './client.js';import {registerTools} from './tools.js';
+export function buildServer(env=process.env,fetcher:typeof fetch=fetch){const cfg=loadConfig(env);const server=new McpServer({name:'freshbooks-connector',version:'1.0.0'});registerTools(server,new FreshBooksClient(cfg,fetcher),cfg);return server;}
+if(import.meta.url===`file://${process.argv[1]}`){const server=buildServer();await server.connect(new StdioServerTransport());}
