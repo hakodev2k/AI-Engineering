@@ -1,0 +1,7 @@
+import test from 'node:test';import assert from 'node:assert/strict';import { loadConfig } from '../src/config.js';import { LaunchDarklyClient } from '../src/client.js';import { toolDefinitions } from '../src/tools.js';
+const cfg=loadConfig({LAUNCHDARKLY_API_TOKEN:'secret',LAUNCHDARKLY_API_VERSION:'20240415',LAUNCHDARKLY_TIMEOUT_MS:'1000',LAUNCHDARKLY_MAX_RETRIES:'1',LAUNCHDARKLY_APPROVAL_MODE:'write'});
+test('config rejects missing token',()=>assert.throws(()=>loadConfig({})));
+test('registers focused tools',()=>assert.equal(toolDefinitions({},cfg).length,9));
+test('write requires approval',async()=>{const fake={request:async()=>({ok:true})};const t=toolDefinitions(fake,cfg).find(x=>x.name==='launchdarkly.flag.create');await assert.rejects(()=>t.execute({projectKey:'p',key:'f',name:'Flag'}),/approval/);assert.deepEqual(await t.execute({projectKey:'p',key:'f',name:'Flag',approved:true}),{untrustedProviderData:true,data:{ok:true}})});
+test('GET retries 429 and keeps auth isolated',async()=>{let n=0;const fetchImpl=async(_u,o)=>{n++;assert.equal(o.headers.Authorization,'secret');return n===1?new Response('{"message":"slow"}',{status:429,headers:{'retry-after':'0'}}):new Response('{"ok":true}',{status:200})};const c=new LaunchDarklyClient(cfg,fetchImpl);assert.deepEqual(await c.request('GET','/projects'),{ok:true});assert.equal(n,2)});
+test('validation blocks unsafe keys',async()=>{const t=toolDefinitions({request:async()=>({})},cfg).find(x=>x.name==='launchdarkly.project.get');await assert.rejects(()=>t.execute({projectKey:'../bad'}))});

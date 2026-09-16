@@ -1,16 +1,23 @@
 id: launchdarkly
 name: LaunchDarkly
-runtime: node>=20
 upstream:
-  - mcp: https://mcp.launchdarkly.com/mcp/launchdarkly
-  - rest: https://app.launchdarkly.com/api/v2
+  - mcp
+  - rest
+mcp:
+  hosted_endpoint: https://mcp.launchdarkly.com/mcp/launchdarkly
+  local_package: '@launchdarkly/mcp-server'
 auth:
-  hosted_mcp: oauth
-  rest: personal_or_service_access_token
-  least_privilege: true
-env:
-  required: [LAUNCHDARKLY_ACCESS_TOKEN]
-  optional: [LAUNCHDARKLY_API_BASE, LAUNCHDARKLY_API_VERSION, LAUNCHDARKLY_TIMEOUT_MS, LAUNCHDARKLY_APPROVE_WRITES, LAUNCHDARKLY_APPROVE_HIGH_RISK]
+  hosted: oauth
+  rest: access-token
+api:
+  base_url: https://app.launchdarkly.com/api/v2
+  version: '20240415'
+environment:
+  - LAUNCHDARKLY_API_TOKEN
+  - LAUNCHDARKLY_API_VERSION
+  - LAUNCHDARKLY_TIMEOUT_MS
+  - LAUNCHDARKLY_MAX_RETRIES
+  - LAUNCHDARKLY_APPROVAL_MODE
 capabilities:
   - project.list
   - project.get
@@ -19,17 +26,9 @@ capabilities:
   - flag.get
   - flag.create
   - flag.update
-  - flag.toggle
   - segment.list
   - segment.get
-  - audit.list
-  - approval.list
 risk:
-  default: READ
-  write_requires_configurable_approval: true
-  high_risk_requires_explicit_approval: true
+  default: read
+  write_requires_approval: true
   destructive_enabled: false
-security:
-  credentials_exposed_to_llm: false
-  provider_content_untrusted: true
-  arbitrary_http: false
