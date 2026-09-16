@@ -1,0 +1,4 @@
+import * as prismic from '@prismicio/client';
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+export function createPrismicClient(config,fetchImpl=globalThis.fetch){const endpoint=prismic.getRepositoryEndpoint(config.repositoryName);const safeFetch=async(input,init={})=>{for(let attempt=0;;attempt++){const ac=new AbortController();const timer=setTimeout(()=>ac.abort(),config.timeoutMs);try{const res=await fetchImpl(input,{...init,signal:ac.signal});if((res.status===429||res.status>=500)&&attempt<config.maxRetries){const retryAfter=Number(res.headers.get('retry-after'));await sleep(Number.isFinite(retryAfter)?Math.min(retryAfter*1000,30000):250*2**attempt);continue;}return res;}catch(e){if(attempt>=config.maxRetries||e?.name==='AbortError')throw e;await sleep(250*2**attempt);}finally{clearTimeout(timer);}}};return prismic.createClient(endpoint,{accessToken:config.accessToken,fetch:safeFetch});}
+export {prismic};
