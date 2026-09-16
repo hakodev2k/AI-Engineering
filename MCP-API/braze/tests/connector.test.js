@@ -1,0 +1,10 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {BrazeClient} from '../src/client.js';import {execute,defs} from '../src/tools.js';
+const response=(status,data,headers={})=>({ok:status>=200&&status<300,status,headers:{get:k=>headers[k.toLowerCase()]??null},text:async()=>JSON.stringify(data)});
+test('registers ten scoped tools',()=>assert.equal(defs.length,10));
+test('auth required',()=>assert.throws(()=>new BrazeClient({apiKey:'',baseUrl:'https://rest.iad-01.braze.com'}),/required/));
+test('rejects non-Braze endpoint',()=>assert.throws(()=>new BrazeClient({apiKey:'x',baseUrl:'https://evil.example'}),/Braze/));
+test('read operation',async()=>{const c=new BrazeClient({apiKey:'x',baseUrl:'https://rest.iad-01.braze.com',fetchImpl:async()=>response(200,{campaigns:[]})});assert.deepEqual(await execute(c,'braze.campaign.list',{}),{campaigns:[]});});
+test('write requires approval',async()=>{const c={request:async()=>({})};await assert.rejects(execute(c,'braze.user.track',{attributes:[]}),/approval/i);});
+test('approved write does not retry by contract',async()=>{let calls=0;const c=new BrazeClient({apiKey:'x',baseUrl:'https://rest.iad-01.braze.com',fetchImpl:async()=>{calls++;return response(500,{message:'bad'})}});await assert.rejects(execute(c,'braze.user.track',{attributes:[],approved:true},{approved:true}));assert.equal(calls,1);});
+test('invalid identifier rejected',async()=>await assert.rejects(execute({request:async()=>({})},'braze.campaign.details',{campaign_id:'../x'}),/Invalid/));
+test('maps rate limit',async()=>{const c=new BrazeClient({apiKey:'x',baseUrl:'https://rest.iad-01.braze.com',fetchImpl:async()=>response(429,{message:'slow'},{'retry-after':'0'})});await assert.rejects(c.request('/campaigns/list'),e=>e.status===429);});

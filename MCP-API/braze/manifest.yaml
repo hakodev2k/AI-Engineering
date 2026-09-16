@@ -1,0 +1,32 @@
+id: braze
+name: Braze
+upstream:
+  - mcp
+  - rest
+official_mcp:
+  available: true
+  mode: managed
+  note: "Official Braze MCP is preferred for supported read-only analytics/discovery capabilities. REST is used for deterministic scoped operations implemented here."
+auth:
+  type: api-key
+  header: Authorization
+  scheme: Bearer
+api_base_url_env: BRAZE_REST_ENDPOINT
+required_env:
+  - BRAZE_API_KEY
+  - BRAZE_REST_ENDPOINT
+capabilities:
+  - campaign.list
+  - campaign.details
+  - canvas.list
+  - canvas.details
+  - segment.list
+  - segment.details
+  - user.export
+  - user.track
+  - campaign.trigger
+  - canvas.trigger
+risk:
+  default: READ
+  write_requires_approval: true
+  destructive_enabled: false
