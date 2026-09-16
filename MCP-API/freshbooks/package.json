@@ -1,0 +1,1 @@
+{"name":"freshbooks-mcp-connector","version":"1.0.0","type":"module","scripts":{"build":"tsc","test":"node --test --import tsx tests/*.test.ts","start":"node dist/server.js"},"dependencies":{"@modelcontextprotocol/sdk":"^1.17.0","zod":"^3.25.0"},"devDependencies":{"@types/node":"^22.0.0","tsx":"^4.20.0","typescript":"^5.8.0"},"engines":{"node":">=20"}}
