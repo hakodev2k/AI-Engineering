@@ -1,47 +1,33 @@
 id: incident-io
 name: incident.io
-version: 1.0.0
-
 upstream:
   - mcp
-
-transport:
-  type: streamable-http
-  endpoint_env: INCIDENT_IO_MCP_URL
-  default_endpoint: https://mcp.incident.io/mcp
-  upstream_server: official
-
+  - rest
+mcp:
+  endpoint: https://mcp.incident.io/mcp
+  auth:
+    interactive: oauth
+    automated: api-key
+api:
+  base_url: https://api.incident.io
 auth:
-  type: api_key
-  scheme: bearer
-  credential_env: INCIDENT_IO_API_KEY
-  credential_isolation: connector-only
-  note: Create an incident.io API key with only the permissions required by the allowlisted tools.
-
+  type: bearer-api-key
 capabilities:
   - incident.list
   - incident.get
-  - incident.stats
   - incident.create
   - incident.update
-  - incident.update_history.list
+  - incident.timeline.create
+  - severity.list
+  - incident_type.list
+  - action.list
   - follow_up.list
-  - follow_up.create
-  - alert.list
-  - alert.get
-  - alert.stats
-  - escalation.list
-  - escalation.get
-  - escalation_path.list
-  - escalation_path.get
-  - escalation.respond
-  - schedule.list
-  - schedule.get
-  - team.list
-  - team.get
-
 risk:
-  default: READ
+  default: read
   write_requires_approval: true
-  high_risk_requires_approval: true
-  high_risk_disabled_by_default: true
+  destructive_enabled: false
+environment:
+  - INCIDENT_IO_API_KEY
+  - INCIDENT_IO_TIMEOUT_MS
+  - INCIDENT_IO_MAX_RETRIES
+  - INCIDENT_IO_APPROVAL_MODE

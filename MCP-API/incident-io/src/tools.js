@@ -1,0 +1,12 @@
+import {z} from 'zod';import{Risk,requireApproval,cleanArgs}from'./policy.js';const id=z.string().min(1).max(128).regex(/^[A-Za-z0-9_-]+$/);const page=z.object({pageSize:z.number().int().min(1).max(100).default(25),after:z.string().max(256).optional()});
+export function toolDefinitions(client,c){const d=[
+['incident-io.incident.list',Risk.READ,page,async a=>client.request('GET','/v2/incidents',{query:{page_size:a.pageSize,after:a.after}})],
+['incident-io.incident.get',Risk.READ,z.object({id}),async a=>client.request('GET',`/v2/incidents/${encodeURIComponent(a.id)}`)],
+['incident-io.incident.create',Risk.WRITE,z.object({name:z.string().min(1).max(200),summary:z.string().max(4000).optional(),severityId:id,incidentTypeId:id.optional(),mode:z.enum(['standard','retrospective','test','tutorial']).default('standard'),approved:z.boolean().optional()}),async a=>client.request('POST','/v2/incidents',{body:{name:a.name,summary:a.summary,severity_id:a.severityId,incident_type_id:a.incidentTypeId,mode:a.mode}})],
+['incident-io.incident.update',Risk.WRITE,z.object({id,name:z.string().min(1).max(200).optional(),summary:z.string().max(4000).optional(),severityId:id.optional(),approved:z.boolean().optional()}).refine(a=>a.name!==undefined||a.summary!==undefined||a.severityId!==undefined,{message:'At least one field is required'}),async a=>client.request('PATCH',`/v2/incidents/${encodeURIComponent(a.id)}`,{body:{name:a.name,summary:a.summary,severity_id:a.severityId}})],
+['incident-io.timeline.create',Risk.WRITE,z.object({incidentId:id,text:z.string().min(1).max(4000),approved:z.boolean().optional()}),async a=>client.request('POST','/v2/incident_timestamps',{body:{incident_id:a.incidentId,name:'custom',timestamp:new Date().toISOString(),metadata:{text:a.text}}})],
+['incident-io.severity.list',Risk.READ,page,async a=>client.request('GET','/v1/severities',{query:{page_size:a.pageSize,after:a.after}})],
+['incident-io.incident_type.list',Risk.READ,page,async a=>client.request('GET','/v1/incident_types',{query:{page_size:a.pageSize,after:a.after}})],
+['incident-io.action.list',Risk.READ,z.object({incidentId:id}),async a=>client.request('GET','/v2/actions',{query:{incident_id:a.incidentId}})],
+['incident-io.follow_up.list',Risk.READ,z.object({incidentId:id}),async a=>client.request('GET','/v2/follow_ups',{query:{incident_id:a.incidentId}})]
+];return d.map(([name,risk,schema,run])=>({name,risk,schema,async execute(raw){const a=schema.parse(raw);requireApproval(c,risk,a);return{untrustedProviderData:true,data:await run(cleanArgs(a))}}}))}

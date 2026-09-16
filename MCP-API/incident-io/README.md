@@ -1,116 +1,72 @@
-# incident.io MCP Connector
+# incident.io MCP/API Connector
 
-Reusable, security-focused MCP adapter for incident.io's official hosted MCP server. It exposes a stable provider-scoped allowlist for incident response, alert analysis, on-call schedules, escalation handling, teams, and follow-ups while keeping the incident.io API key inside the connector process.
+Reusable MCP server for scoped incident-response workflows with credential isolation, strict validation, approvals, pagination, bounded retries, and safe provider error mapping.
 
-## Official sources researched
-Current as of 2026-08-30:
+## Upstream strategy
 
-- Remote MCP server: https://docs.incident.io/ai/remote-mcp
-- Hosted MCP endpoint: https://mcp.incident.io/mcp
-- Public API reference: https://api-docs.incident.io/
-- Webhooks: https://docs.incident.io/integrations/webhooks
-- API close-incident permission guidance: https://docs.incident.io/integrations/api-close-incidents
-- March 31, 2026 hosted MCP release: https://incident.io/changelog/remote-mcp-server
+incident.io provides an official remote MCP server at `https://mcp.incident.io/mcp`. It is generally available as of 2026, supports interactive OAuth and API-key authentication for automated agents, and covers incidents, alerts, on-call, escalations, operational analysis and connected telemetry. The incident.io macOS app also includes a local MCP surface.
 
-incident.io's official MCP server supports OAuth for interactive users and Bearer API keys for automated systems. This connector uses the official MCP server directly; REST fallback is intentionally unnecessary for the implemented capabilities because all 20 are explicitly exposed by the official MCP surface.
+This connector exposes a stable, deliberately smaller MCP tool contract backed by the official REST API at `https://api.incident.io`. REST is used so automated deployments can enforce local approval and validation policy without dynamically trusting every upstream MCP tool. For broader operational analysis, callers may connect directly to the official remote MCP after reviewing its permissions. No unofficial MCP implementation is used.
 
-## Architecture
+Official sources researched: incident.io remote MCP documentation; incident.io API reference introduction/authentication/rate limits/errors; incident.io webhook documentation; incident.io MCP changelog.
 
-```text
-MCP client / agent
-  -> local stdio MCP connector
-     -> provider-scoped allowlist + approval policy
-        -> official MCP client over Streamable HTTP
-           -> https://mcp.incident.io/mcp
-              -> incident.io
-```
+## Tools
 
-The connector calls `tools/list`, validates that every allowlisted upstream tool still exists, reuses the upstream JSON Schema as the source of truth, and fails closed if incident.io removes or renames a required tool. Newly discovered tools are never exposed automatically.
-
-## Authentication and least privilege
-
-Set `INCIDENT_IO_API_KEY` to an incident.io API key. The official MCP documentation states that automated systems can send the key as `Authorization: Bearer <api-key>` to the hosted MCP endpoint. Create a team-scoped or otherwise least-privileged key where available and grant only the permissions needed by the enabled operations.
-
-The credential is never accepted as a tool parameter, included in LLM-visible configuration, or forwarded to callers.
-
-## Environment variables
-
-- `INCIDENT_IO_MCP_URL`: defaults to `https://mcp.incident.io/mcp`; HTTPS only.
-- `INCIDENT_IO_API_KEY`: required Bearer API key.
-- `INCIDENT_IO_TIMEOUT_MS`: request timeout; default 20000, range 1000-120000.
-- `INCIDENT_IO_APPROVAL_SECRET`: local secret used to verify payload-bound approval HMACs for writes.
-- `INCIDENT_IO_ENABLE_HIGH_RISK`: defaults to `false`; required for incident mutation and escalation response tools.
-
-## Supported tools
-
-| Connector tool | Official upstream MCP tool | Risk | Approval |
+| Tool | Upstream | Risk | Approval |
 |---|---|---|---|
-| `incident-io.incident.list` | `incident_list` | READ | no |
-| `incident-io.incident.get` | `incident_show` | READ | no |
-| `incident-io.incident.stats` | `incident_stats` | READ | no |
-| `incident-io.incident.create` | `incident_create` | WRITE | yes |
-| `incident-io.incident.update` | `incident_update` | HIGH_RISK | yes + feature gate |
-| `incident-io.incident.update_history.list` | `incident_update_list` | READ | no |
-| `incident-io.follow_up.list` | `follow_up_list` | READ | no |
-| `incident-io.follow_up.create` | `follow_up_create` | WRITE | yes |
-| `incident-io.alert.list` | `alert_list` | READ | no |
-| `incident-io.alert.get` | `alert_show` | READ | no |
-| `incident-io.alert.stats` | `alert_stats` | READ | no |
-| `incident-io.escalation.list` | `escalation_list` | READ | no |
-| `incident-io.escalation.get` | `escalation_show` | READ | no |
-| `incident-io.escalation_path.list` | `escalation_path_list` | READ | no |
-| `incident-io.escalation_path.get` | `escalation_path_show` | READ | no |
-| `incident-io.escalation.respond` | `escalation_respond` | HIGH_RISK | yes + feature gate |
-| `incident-io.schedule.list` | `schedule_list` | READ | no |
-| `incident-io.schedule.get` | `schedule_show` | READ | no |
-| `incident-io.team.list` | `team_list` | READ | no |
-| `incident-io.team.get` | `team_show` | READ | no |
+| `incident-io.incident.list` | REST | READ | No |
+| `incident-io.incident.get` | REST | READ | No |
+| `incident-io.incident.create` | REST | WRITE | Yes by default |
+| `incident-io.incident.update` | REST | WRITE | Yes by default |
+| `incident-io.timeline.create` | REST | WRITE | Yes by default |
+| `incident-io.severity.list` | REST | READ | No |
+| `incident-io.incident_type.list` | REST | READ | No |
+| `incident-io.action.list` | REST | READ | No |
+| `incident-io.follow_up.list` | REST | READ | No |
 
-## Approval behavior
+Destructive actions, incident deletion, permission changes, escalation execution, external messaging, status-page publishing and arbitrary API requests are not exposed.
 
-READ tools can execute automatically. WRITE tools require an explicit connector-local approval token. HIGH_RISK tools additionally require `INCIDENT_IO_ENABLE_HIGH_RISK=true`, which cannot be changed through MCP.
+## Authentication and permissions
 
-Approval tokens are HMAC-SHA256 values bound to the exact connector tool name and canonicalized payload, excluding `approval_token`. Any change to the incident, status, severity, escalation response, or other arguments invalidates the approval. The token is stripped before the request is sent to incident.io.
+Set `INCIDENT_IO_API_KEY` to an incident.io API key. Requests use `Authorization: Bearer`. Keys are created in Settings → API keys and can be assigned account-level and/or team-scoped permissions. Grant only permissions needed by the implemented tools. API keys remain inside the connector and are never accepted as tool parameters.
 
-## Installation and running
+The official remote MCP uses OAuth for human interactive use; actions inherit that user's permissions. Automated MCP clients can authenticate with a scoped API key as a service actor. API keys do not expire until deleted.
+
+## Permission and approval model
+
+READ may execute automatically. WRITE requires `approved: true` when `INCIDENT_IO_APPROVAL_MODE=write` (default). The host must supply approval only after a trusted human reviews the exact final action; an LLM must not self-approve. DESTRUCTIVE operations are disabled and unregistered. The connector cannot raise its own privileges.
+
+## Reliability and rate limits
+
+incident.io documents a default API limit of 1,200 requests per minute per API key, with lower limits for some endpoints involving external systems. HTTP 429 responses include rate-limit metadata and a retry time. This connector retries only GET requests on 429/transient 5xx responses, honors Retry-After/rate-limit retry timestamps, and uses bounded exponential backoff otherwise. Writes are never blindly retried. Requests have configurable AbortController timeouts and list tools expose bounded cursor pagination.
+
+## Errors
+
+The API uses standard HTTP status codes and structured JSON errors containing type/status/request ID/errors. The connector returns a sanitized MCP error with status and retry metadata. Authentication, authorization and validation failures are not retried. Tokens are never returned or logged.
+
+## Security
+
+The provider base URL is constant and IDs are validated and URI encoded, preventing caller-selected arbitrary hosts and reducing SSRF risk. Provider content is marked `untrustedProviderData`; incident descriptions, timelines and metadata must never be treated as system instructions. No generic HTTP proxy exists. Credentials are isolated in environment configuration. Unexpected MCP tools or permission requests should fail closed.
+
+incident.io webhooks use Svix-compatible signatures over webhook ID, timestamp and raw body; delivery can be retried and events may arrive out of order. Webhook registration/receiving is intentionally host responsibility and is not exposed as an agent tool. Consumers should verify signatures and fetch current API state rather than relying on webhook ordering. Private-incident webhook payloads may contain only an ID and require appropriately scoped API access to fetch details.
+
+## Install and run
 
 Requires Node.js 20+.
 
 ```bash
 npm install
-npm run check
-npm test
+cp .env.example .env
+# load secrets through your shell or secret manager
 npm start
 ```
 
-The local server uses MCP stdio transport. Any MCP client that supports stdio servers can launch it as a child process. Compatibility with a specific product depends on that product's stdio MCP support; the connector does not claim proprietary integration beyond the MCP standard.
-
-## Reliability and rate limits
-
-The connector uses the official MCP SDK's Streamable HTTP transport and a bounded request timeout. It does not blindly retry tool calls because some official MCP tools mutate incident state or respond to pages. Upstream rate limits and transient errors are returned to the MCP caller for explicit retry decisions.
-
-For direct REST integrations, incident.io documents a default API rate limit of 1200 requests/minute per API key for most endpoints, with some endpoint-specific lower limits and HTTP 429 responses. This connector does not call REST directly and therefore does not invent an independent MCP quota.
-
-## Security considerations
-
-- Official hosted MCP only; no community MCP dependency.
-- HTTPS-only upstream URL.
-- Fixed allowlist; new upstream tools are not auto-exposed.
-- Fail-closed startup schema validation for required upstream tools.
-- API key remains inside the transport layer.
-- No arbitrary `execute_request` or raw MCP-tool proxy.
-- Write and high-risk operations require payload-bound approval.
-- High-risk operations are disabled by default.
-- Provider-returned data is wrapped as `untrusted_provider_data` and should never be interpreted as system or permission instructions.
-- Common credential-shaped response keys are redacted before returning results.
-- Webhooks are not implemented by this stdio MCP server; incident.io documents Svix/HMAC webhook verification for applications that need event ingestion.
+The generated server uses MCP stdio and works with MCP hosts that support launching local stdio child processes. The official remote MCP can instead be configured directly by clients that support remote HTTP MCP.
 
 ## Testing
 
-Unit tests require no live incident.io credential. They validate configuration, allowlist/policy parity, fail-closed upstream discovery, schema reuse, write approvals, payload binding, high-risk denial, and credential-isolating approval stripping.
+Run `npm test`. Unit tests use mocks and require no live credentials. They cover authentication configuration, registration, write approval denial/allow, rate-limit retry behavior, credential isolation, and unsafe identifier validation.
 
 ## Limitations
 
-- Tool input schemas are intentionally sourced from the official MCP server at runtime instead of being copied into this repository; this prevents schema drift while preserving a fixed allowlist. If an allowlisted official tool is removed, the connector fails closed.
-- The connector does not expose `ask`, `ask_incident`, `ask_telemetry`, `analysis_start`, `investigation_sync`, or generic resource/catalog tools. Those surfaces can trigger broad agentic analysis, filesystem downloads, or wider telemetry access and are intentionally outside this connector's least-privilege contract.
-- No destructive configuration tools, workflow administration, API-key management, or permission mutation are exposed.
+This connector intentionally implements a focused incident-response API surface rather than every incident.io endpoint or every official MCP capability. It does not manage on-call schedules, execute escalations, publish status pages, delete resources, administer API keys, or query connected observability telemetry. Those capabilities should use the official remote MCP or separately reviewed official API endpoints with appropriate approval policy.
