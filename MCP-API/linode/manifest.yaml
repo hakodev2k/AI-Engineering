@@ -1,0 +1,40 @@
+id: linode
+name: Akamai Cloud Computing / Linode
+upstream:
+  - rest
+auth:
+  type: bearer_personal_access_token
+  env: LINODE_API_TOKEN
+api:
+  base_url: https://api.linode.com/v4
+mcp:
+  official: false
+  note: No Akamai/Linode-operated MCP server was identified; community MCP implementations are not trusted upstream.
+capabilities:
+  - instance.list
+  - instance.get
+  - instance.stats
+  - instance.boot
+  - instance.shutdown
+  - instance.reboot
+  - region.list
+  - type.list
+  - volume.list
+  - firewall.list
+  - domain.list
+  - instance.delete
+risk:
+  default: read
+  high_risk_requires_approval: true
+  destructive_disabled_by_default: true
+scopes:
+  read: [linodes:read_only, volumes:read_only, domains:read_only]
+  write: [linodes:read_write]
+environment:
+  - LINODE_API_TOKEN
+  - LINODE_API_BASE_URL
+  - LINODE_TIMEOUT_MS
+  - LINODE_MAX_RETRIES
+  - LINODE_ALLOW_HIGH_RISK
+  - LINODE_ALLOW_DESTRUCTIVE
+  - LINODE_APPROVAL_SECRET
