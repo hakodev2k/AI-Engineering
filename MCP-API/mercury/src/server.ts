@@ -1,0 +1,16 @@
+import {McpServer} from '@modelcontextprotocol/sdk/server/mcp.js';
+import {StdioServerTransport} from '@modelcontextprotocol/sdk/server/stdio.js';
+import {z} from 'zod'; import {MercuryClient} from './client.js';
+const token=process.env.MERCURY_API_TOKEN||''; const base=process.env.MERCURY_BASE_URL||'https://api.mercury.com/api/v1'; const client=new MercuryClient(token,base,Number(process.env.MERCURY_TIMEOUT_MS||15000));
+const server=new McpServer({name:'mercury-connector',version:'1.0.0'}); const out=(x:any)=>({content:[{type:'text' as const,text:JSON.stringify({untrusted_provider_data:true,data:x},null,2)}]});
+const page=z.object({limit:z.number().int().min(1).max(100).optional(),offset:z.number().int().min(0).optional()}); const qs=(a:any)=>{const p=new URLSearchParams(); if(a.limit)p.set('limit',String(a.limit)); if(a.offset!==undefined)p.set('offset',String(a.offset)); return p.size?'?'+p:''};
+server.tool('mercury.account.list','READ: list Mercury accounts',{},async()=>out(await client.request('/accounts')));
+server.tool('mercury.transaction.list','READ: list transactions with bounded pagination',page.shape,async(a)=>out(await client.request('/transactions'+qs(a))));
+server.tool('mercury.transaction.get','READ: get one transaction',{transactionId:z.string().min(1).max(128)},async({transactionId})=>out(await client.request(`/transaction/${encodeURIComponent(transactionId)}`)));
+server.tool('mercury.customer.list','READ: list Accounts Receivable customers',page.shape,async(a)=>out(await client.request('/ar/customers'+qs(a))));
+server.tool('mercury.customer.get','READ: get an Accounts Receivable customer',{customerId:z.string().min(1).max(128)},async({customerId})=>out(await client.request(`/ar/customers/${encodeURIComponent(customerId)}`)));
+server.tool('mercury.invoice.list','READ: list invoices',page.shape,async(a)=>out(await client.request('/ar/invoices'+qs(a))));
+server.tool('mercury.invoice.get','READ: get one invoice',{invoiceId:z.string().min(1).max(128)},async({invoiceId})=>out(await client.request(`/ar/invoices/${encodeURIComponent(invoiceId)}`)));
+const invoice=z.object({customerId:z.string().min(1),destinationAccountId:z.string().min(1),invoiceNumber:z.string().min(1).max(100),dueDate:z.string().min(8).max(32),currency:z.string().length(3),achDebitEnabled:z.boolean(),creditCardEnabled:z.boolean().optional(),useRealAccountNumber:z.boolean().optional(),sendEmailOption:z.enum(['Send','DontSend']).optional(),lineItems:z.array(z.object({name:z.string().min(1).max(200),quantity:z.number().positive(),unitPrice:z.number().nonnegative()})).min(1).max(100),approvalToken:z.string().min(1)});
+server.tool('mercury.invoice.create','HIGH_RISK WRITE: create an invoice; may email a customer and create an external financial request',invoice.shape,async(a)=>{if(process.env.MERCURY_ALLOW_WRITE!=='true')throw new Error('Write tools disabled'); const expected=process.env.MERCURY_APPROVAL_TOKEN; if(!expected||a.approvalToken!==expected)throw new Error('Explicit human approval required'); const {approvalToken,...body}=a; return out(await client.request('/ar/invoices',{method:'POST',body:JSON.stringify(body)},false));});
+await server.connect(new StdioServerTransport());
