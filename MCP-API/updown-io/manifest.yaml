@@ -1,0 +1,43 @@
+id: updown-io
+name: updown.io
+upstream:
+  - rest
+official_mcp: false
+api_base_url: https://updown.io/api
+auth:
+  type: api_key
+  header: X-API-KEY
+  least_privilege: read-only key for READ-only deployments; read-write key only when WRITE tools are enabled
+environment:
+  - UPDOWN_API_KEY
+  - UPDOWN_API_BASE_URL
+  - UPDOWN_TIMEOUT_MS
+  - UPDOWN_WRITE_APPROVAL
+  - UPDOWN_DESTRUCTIVE_ENABLED
+capabilities:
+  - check.list
+  - check.get
+  - check.downtimes
+  - check.metrics
+  - check.create
+  - check.update
+  - check.delete
+  - node.list
+  - recipient.list
+  - recipient.create
+  - recipient.delete
+  - status_page.list
+  - status_page.create
+  - status_page.update
+  - status_page.delete
+risk:
+  default: READ
+  write_approval: configurable
+  destructive_approval: required
+  destructive_enabled_by_default: false
+transport:
+  timeout_ms_default: 10000
+  retries: bounded_exponential_backoff_for_429_5xx_and_network_errors
+security:
+  credentials_exposed_to_llm: false
+  provider_content_trusted_as_instructions: false
