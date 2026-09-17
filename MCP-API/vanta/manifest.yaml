@@ -1,0 +1,33 @@
+id: vanta
+name: Vanta
+upstream:
+  - official-mcp
+  - rest
+official_mcp:
+  availability: remote
+  auth: oauth
+  note: "Official Vanta MCP is preferred for interactive compliance queries; this reusable server uses documented Manage Vanta REST endpoints for stable scoped tools."
+api:
+  base_url: https://api.vanta.com/v1
+auth:
+  type: bearer
+  env: VANTA_API_TOKEN
+  least_privilege: true
+capabilities:
+  - people.list
+  - people.offboard
+  - documents.uploads.list
+  - documents.submit
+  - integrations.resource_kinds.list
+  - trust_center.access_request.approve
+  - webhook.verify
+risk:
+  default: READ
+  writes_require_approval: true
+  destructive_disabled: true
+environment:
+  - VANTA_API_TOKEN
+  - VANTA_API_BASE_URL
+  - VANTA_APPROVAL_MODE
+  - VANTA_TIMEOUT_MS
+  - VANTA_MAX_RETRIES
