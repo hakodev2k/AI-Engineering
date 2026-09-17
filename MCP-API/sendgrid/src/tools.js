@@ -1,0 +1,14 @@
+import {z} from 'zod';import {Risk,authorize} from './policy.js';
+const email=z.string().email(), id=z.string().min(1).max(200), limit=z.number().int().min(1).max(100).default(20);
+export const tools={
+'sendgrid.mail.send':{risk:Risk.HIGH_RISK,schema:z.object({from:email,to:z.array(email).min(1).max(1000),subject:z.string().min(1).max(998),text:z.string().max(500000).optional(),html:z.string().max(1000000).optional(),templateId:z.string().regex(/^d-[a-f0-9]{62}$/i).optional(),dynamicData:z.record(z.unknown()).optional(),approved:z.boolean().default(false)}).refine(x=>x.text||x.html||x.templateId,'content or templateId required'),run:(c,x)=>c.request('/mail/send',{method:'POST',body:{from:{email:x.from},personalizations:[{to:x.to.map(email=>({email})),dynamic_template_data:x.dynamicData}],subject:x.subject,...(x.templateId?{template_id:x.templateId}:{content:[...(x.text?[{type:'text/plain',value:x.text}]:[]),...(x.html?[{type:'text/html',value:x.html}]:[]) ]})},retry:false})},
+'sendgrid.template.list':{risk:Risk.READ,schema:z.object({pageSize:limit}),run:(c,x)=>c.request(`/templates?generations=dynamic&page_size=${x.pageSize}`)},
+'sendgrid.template.get':{risk:Risk.READ,schema:z.object({id}),run:(c,x)=>c.request(`/templates/${encodeURIComponent(x.id)}`)},
+'sendgrid.contact.search':{risk:Risk.READ,schema:z.object({emails:z.array(email).min(1).max(100)}),run:(c,x)=>c.request('/marketing/contacts/search/emails',{method:'POST',body:{emails:x.emails}})},
+'sendgrid.contact.upsert':{risk:Risk.WRITE,schema:z.object({contacts:z.array(z.object({email,name:z.string().max(100).optional()})).min(1).max(30000),approved:z.boolean().default(false)}),run:(c,x)=>c.request('/marketing/contacts',{method:'PUT',body:{contacts:x.contacts.map(v=>({email:v.email,first_name:v.name}))}})},
+'sendgrid.contact.delete':{risk:Risk.DESTRUCTIVE,schema:z.object({ids:z.array(id).min(1).max(1000),approved:z.boolean()}),run:(c,x)=>c.request(`/marketing/contacts?ids=${x.ids.map(encodeURIComponent).join(',')}`,{method:'DELETE',retry:false})},
+'sendgrid.list.list':{risk:Risk.READ,schema:z.object({pageSize:limit}),run:(c,x)=>c.request(`/marketing/lists?page_size=${x.pageSize}`)},
+'sendgrid.list.get':{risk:Risk.READ,schema:z.object({id}),run:(c,x)=>c.request(`/marketing/lists/${encodeURIComponent(x.id)}`)},
+'sendgrid.suppression.get':{risk:Risk.READ,schema:z.object({email}),run:(c,x)=>c.request(`/suppression/unsubscribes/${encodeURIComponent(x.email)}`)},
+'sendgrid.suppression.delete':{risk:Risk.HIGH_RISK,schema:z.object({email,approved:z.boolean()}),run:(c,x)=>c.request(`/suppression/unsubscribes/${encodeURIComponent(x.email)}`,{method:'DELETE',retry:false})}}
+;export async function invoke(name,raw,client){const t=tools[name];if(!t)throw new Error('Unknown tool');const x=t.schema.parse(raw);authorize(t.risk,{approved:x.approved});return t.run(client,x);}
