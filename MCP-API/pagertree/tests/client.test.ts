@@ -1,0 +1,6 @@
+import test from 'node:test'; import assert from 'node:assert/strict'; import {PagerTreeClient,PagerTreeError} from '../src/client.js';
+test('requires credential',()=>assert.throws(()=>new PagerTreeClient('')));
+test('requires HTTPS',()=>assert.throws(()=>new PagerTreeClient('x','http://example.com')));
+test('injects bearer auth and returns JSON',async()=>{let auth='';const f:any=async(_u:any,i:any)=>{auth=i.headers.Authorization;return new Response(JSON.stringify({data:[1]}),{status:200,headers:{'content-type':'application/json'}})};const c=new PagerTreeClient('secret','https://api.pagertree.com/api/v4',1000,f);assert.deepEqual(await c.request('/alerts'),{data:[1]});assert.equal(auth,'Bearer secret')});
+test('maps validation/provider error without retry',async()=>{let n=0;const f:any=async()=>{n++;return new Response(JSON.stringify({error:'bad'}),{status:400})};const c=new PagerTreeClient('x','https://api.pagertree.com/api/v4',1000,f);await assert.rejects(()=>c.request('/alerts'),(e:any)=>e instanceof PagerTreeError&&e.status===400);assert.equal(n,1)});
+test('retries bounded on 5xx',async()=>{let n=0;const f:any=async()=>{n++;return n<3?new Response('oops',{status:503}):new Response('{}',{status:200})};const c=new PagerTreeClient('x','https://api.pagertree.com/api/v4',1000,f);await c.request('/alerts');assert.equal(n,3)});
