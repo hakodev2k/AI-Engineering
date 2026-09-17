@@ -1,0 +1,15 @@
+import {z} from 'zod';
+export const Risk={READ:'READ',WRITE:'WRITE',HIGH_RISK:'HIGH_RISK',DESTRUCTIVE:'DESTRUCTIVE'};
+const id=z.union([z.string().regex(/^\d+$/),z.number().int().positive()]).transform(String);const approved=z.boolean().default(false);
+export function requireApproval(risk,input,c){if(risk==='WRITE'&&c.writeApproval&&!input.approved)throw new Error('Human approval required');if((risk==='HIGH_RISK'||risk==='DESTRUCTIVE')&&!input.approved)throw new Error('Explicit human approval required');if(risk==='DESTRUCTIVE'&&!c.destructive)throw new Error('Destructive tools are disabled')}
+export function definitions(client,c){const d=(name,description,risk,schema,run)=>({name,description,risk,schema,run:async raw=>{const input=schema.parse(raw);requireApproval(risk,input,c);return run(input)}});return[
+d('uptimerobot.monitor.list','List monitors',Risk.READ,z.object({maxPages:z.number().int().min(1).max(10).default(3)}).strict(),x=>client.paginate('/monitors',x.maxPages)),
+d('uptimerobot.monitor.get','Get monitor metadata/status',Risk.READ,z.object({id}).strict(),x=>client.request('GET',`/monitors/${x.id}`)),
+d('uptimerobot.incident.list','List incidents',Risk.READ,z.object({maxPages:z.number().int().min(1).max(10).default(3)}).strict(),x=>client.paginate('/incidents',x.maxPages)),
+d('uptimerobot.status_page.list','List public status pages',Risk.READ,z.object({maxPages:z.number().int().min(1).max(10).default(3)}).strict(),x=>client.paginate('/status-pages',x.maxPages)),
+d('uptimerobot.maintenance_window.list','List maintenance windows',Risk.READ,z.object({maxPages:z.number().int().min(1).max(10).default(3)}).strict(),x=>client.paginate('/maintenance-windows',x.maxPages)),
+d('uptimerobot.monitor.create','Create a monitor',Risk.WRITE,z.object({friendlyName:z.string().min(1).max(255),url:z.string().url().refine(v=>['http:','https:'].includes(new URL(v).protocol)),type:z.string().min(1).max(40),interval:z.number().int().min(60).optional(),approved}).strict(),x=>client.request('POST','/monitors',{friendly_name:x.friendlyName,url:x.url,type:x.type,interval:x.interval},{retry:false})),
+d('uptimerobot.monitor.update','Update monitor fields',Risk.WRITE,z.object({id,friendlyName:z.string().min(1).max(255).optional(),url:z.string().url().optional(),interval:z.number().int().min(60).optional(),approved}).strict().refine(x=>x.friendlyName||x.url||x.interval,{message:'At least one field required'}),x=>client.request('PATCH',`/monitors/${x.id}`,{friendly_name:x.friendlyName,url:x.url,interval:x.interval},{retry:false})),
+d('uptimerobot.monitor.pause','Pause monitoring',Risk.WRITE,z.object({id,approved}).strict(),x=>client.request('PATCH',`/monitors/${x.id}`,{status:0},{retry:false})),
+d('uptimerobot.monitor.resume','Resume monitoring',Risk.WRITE,z.object({id,approved}).strict(),x=>client.request('PATCH',`/monitors/${x.id}`,{status:1},{retry:false})),
+d('uptimerobot.monitor.delete','Delete a monitor irreversibly',Risk.DESTRUCTIVE,z.object({id,approved:z.literal(true)}).strict(),x=>client.request('DELETE',`/monitors/${x.id}`,undefined,{retry:false}))]}
