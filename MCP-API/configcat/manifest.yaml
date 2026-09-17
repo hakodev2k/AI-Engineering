@@ -1,0 +1,25 @@
+id: configcat
+name: ConfigCat
+upstream:
+  - mcp: "official local @configcat/mcp-server over stdio"
+  - rest: "https://api.configcat.com"
+auth:
+  type: basic
+  env: [CONFIGCAT_API_USER, CONFIGCAT_API_PASS]
+capabilities:
+  - product.list
+  - environment.list
+  - config.list
+  - flag.list
+  - flag.value.get
+  - flag.value.update
+  - segment.list
+  - webhook.list
+  - integration.list
+  - audit.list
+risk:
+  default: READ
+  write: approval-required
+  high_risk: disabled-by-default
+  destructive: not-exposed
+required_env: [CONFIGCAT_API_USER, CONFIGCAT_API_PASS]
