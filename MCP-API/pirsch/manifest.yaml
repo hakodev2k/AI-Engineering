@@ -1,0 +1,30 @@
+id: pirsch
+name: Pirsch Analytics
+upstream:
+  - rest
+  - community-mcp
+api_base_url: https://api.pirsch.io
+official_mcp: false
+community_mcp: '@charpeni/pirsch-mcp (read-only; not used as trusted upstream)'
+auth:
+  type: oauth-client-or-write-access-key
+  env:
+    - PIRSCH_CLIENT_ID
+    - PIRSCH_CLIENT_SECRET
+    - PIRSCH_ACCESS_KEY
+capabilities:
+  - domain.list
+  - statistics.visitors
+  - statistics.pages
+  - statistics.referrers
+  - statistics.events
+  - statistics.countries
+  - statistics.devices
+  - traffic.page_view.track
+  - traffic.event.track
+risk:
+  default: READ
+  writes: WRITE
+approval:
+  writes: configurable
+  destructive: disabled
