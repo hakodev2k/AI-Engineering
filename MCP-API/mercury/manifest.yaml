@@ -1,0 +1,40 @@
+id: mercury
+name: Mercury
+upstream:
+  - mcp
+  - rest
+mcp:
+  official_endpoint: https://mcp.mercury.com/mcp
+  mode: hosted
+  access: read-only
+rest:
+  production_base_url: https://api.mercury.com/api/v1
+  sandbox_base_url: https://api-sandbox.mercury.com/api/v1
+auth:
+  mcp: oauth2
+  rest: bearer_api_token
+  least_privilege: true
+environment:
+  - MERCURY_API_TOKEN
+  - MERCURY_BASE_URL
+  - MERCURY_TIMEOUT_MS
+  - MERCURY_ALLOW_WRITE
+  - MERCURY_APPROVAL_TOKEN
+capabilities:
+  - account.list
+  - transaction.list
+  - transaction.get
+  - customer.list
+  - customer.get
+  - invoice.list
+  - invoice.get
+  - invoice.create
+risk:
+  default: READ
+  invoice.create: HIGH_RISK
+approval:
+  invoice.create: explicit
+notes:
+  - Official Mercury MCP is preferred for direct client read-only access.
+  - This reusable wrapper uses the official REST API to provide stable scoped MCP tools and a guarded invoice write.
+  - Production write tokens should use the minimum required scope and Mercury IP allow-listing where required.
