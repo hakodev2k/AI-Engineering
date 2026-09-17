@@ -1,0 +1,34 @@
+id: pagertree
+name: PagerTree
+upstream:
+  - rest
+auth:
+  type: api-key
+  header: Authorization
+  scheme: Bearer
+api_base_url: https://api.pagertree.com/api/v4
+official_mcp: false
+capabilities:
+  - alert.list
+  - alert.get
+  - alert.comment.list
+  - team.list
+  - team.get
+  - team.current_oncall
+  - team.alert.list
+  - schedule.list
+  - escalation_policy.list
+  - alert.create
+  - alert.acknowledge
+  - alert.resolve
+  - alert.comment.create
+risk:
+  default: READ
+  write: approval-required
+  destructive: disabled
+environment:
+  - PAGERTREE_API_KEY
+  - PAGERTREE_BASE_URL
+  - PAGERTREE_TIMEOUT_MS
+  - PAGERTREE_ALLOW_WRITE
+  - PAGERTREE_APPROVAL_TOKEN
