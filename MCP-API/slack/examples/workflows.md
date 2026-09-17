@@ -1,84 +1,11 @@
-# Slack MCP Connector Examples
+# Slack workflow examples
 
-## Read a channel
+`slack.conversation.list` with `{ "types": "public_channel", "limit": 50 }` returns Slack's conversation collection and pagination metadata. Permission: READ. Approval: no.
 
-Tool: `slack.channel.history`
+`slack.conversation.history` with `{ "channel": "C123", "limit": 50 }` returns messages plus `response_metadata.next_cursor`. Permission: READ. Approval: no.
 
-```json
-{
-  "channelId": "C0123456789",
-  "limit": 25
-}
-```
+`slack.thread.read` with `{ "channel": "C123", "ts": "1750000000.000001" }` returns the parent and replies. Permission: READ. Approval: no.
 
-Permission: `READ`  
-Approval: No
+`slack.message.send` with `{ "channel": "C123", "text": "Deployment complete", "approval": "<runtime approval secret>" }` returns the created message timestamp. Permission: WRITE. Approval: yes.
 
-Expected output: Slack `conversations.history` response serialized as JSON, including messages and pagination metadata when supplied by Slack.
-
-## Search messages
-
-Tool: `slack.message.search`
-
-```json
-{
-  "query": "deployment after:2026-08-01",
-  "count": 20,
-  "page": 1,
-  "sort": "timestamp",
-  "sortDir": "desc"
-}
-```
-
-Permission: `READ`  
-Approval: No  
-Credential: `SLACK_USER_TOKEN` with the Slack permission required for message search.
-
-## Send an approved message
-
-Tool: `slack.message.send`
-
-```json
-{
-  "channelId": "C0123456789",
-  "text": "Deployment completed successfully.",
-  "approved": true
-}
-```
-
-Permission: `WRITE`  
-Approval: Required by default
-
-Expected output: Slack `chat.postMessage` response serialized as JSON.
-
-## Reply in a thread
-
-Tool: `slack.message.send`
-
-```json
-{
-  "channelId": "C0123456789",
-  "threadTs": "1755777600.123456",
-  "text": "I checked the logs and the service is healthy.",
-  "approved": true
-}
-```
-
-Permission: `WRITE`  
-Approval: Required by default
-
-## Add a reaction
-
-Tool: `slack.reaction.add`
-
-```json
-{
-  "channelId": "C0123456789",
-  "timestamp": "1755777600.123456",
-  "emoji": "white_check_mark",
-  "approved": true
-}
-```
-
-Permission: `WRITE`  
-Approval: Required by default
+`slack.message.delete` requires channel, timestamp and approval. Permission: DESTRUCTIVE. Approval: yes. The connector never supplies the approval value itself.

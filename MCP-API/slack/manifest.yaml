@@ -1,62 +1,47 @@
 id: slack
 name: Slack
-version: 1.0.0
-runtime:
-  language: typescript
-  node: ">=20"
 upstream:
+  - mcp
   - rest
-api:
-  base_url: https://slack.com/api
+transport_strategy: "Official Slack MCP is preferred when the client/workspace supports it; this portable server uses the official Slack Web API as a deterministic fallback."
+api_base_url: https://slack.com/api
 auth:
   type: oauth2-token
-  credentials:
+  environment:
     - SLACK_BOT_TOKEN
     - SLACK_USER_TOKEN
-  notes: "Use least-privilege Slack app OAuth tokens. A user token is only needed for message search."
+scopes:
+  read:
+    - channels:read
+    - groups:read
+    - im:read
+    - mpim:read
+    - channels:history
+    - groups:history
+    - im:history
+    - mpim:history
+    - users:read
+    - reactions:read
+  write:
+    - chat:write
+    - reactions:write
 capabilities:
-  - auth.test
-  - channel.list
-  - channel.history
-  - thread.replies
-  - user.list
-  - user.get
-  - message.search
+  - conversation.list
+  - conversation.history
+  - thread.read
   - message.send
   - message.update
+  - message.delete
+  - user.get
+  - user.list
+  - reaction.get
   - reaction.add
-  - reaction.remove
-  - channel.create
-permissions:
-  read:
-    - slack.auth.test
-    - slack.channel.list
-    - slack.channel.history
-    - slack.thread.replies
-    - slack.user.list
-    - slack.user.get
-    - slack.message.search
-  write:
+risk:
+  default: read
+  approval_required:
     - slack.message.send
     - slack.message.update
     - slack.reaction.add
-    - slack.reaction.remove
-    - slack.channel.create
-approval:
-  default: required-for-write
-risk:
-  default: READ
-  destructive_tools: []
-environment:
-  required_any_of:
-    - SLACK_BOT_TOKEN
-    - SLACK_USER_TOKEN
-  optional:
-    - SLACK_APPROVAL_MODE
-    - SLACK_ALLOWED_CHANNEL_IDS
-    - SLACK_REQUEST_TIMEOUT_MS
-    - SLACK_MAX_RETRIES
-security:
-  credential_isolation: true
-  retrieved_content_is_untrusted: true
-  arbitrary_api_passthrough: false
+    - slack.message.delete
+  destructive:
+    - slack.message.delete
