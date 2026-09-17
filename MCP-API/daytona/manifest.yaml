@@ -1,0 +1,37 @@
+id: daytona
+name: Daytona
+upstream:
+  - mcp
+  - sdk
+mcp:
+  official: true
+  mode: local-cli
+  command: daytona mcp start
+api_base_url: https://app.daytona.io/api
+auth:
+  type: api_key
+  env: DAYTONA_API_KEY
+  scopes:
+    - write:sandboxes
+    - delete:sandboxes
+capabilities:
+  - sandbox.list
+  - sandbox.get
+  - sandbox.create
+  - sandbox.start
+  - sandbox.stop
+  - sandbox.execute
+  - sandbox.code_run
+  - sandbox.delete
+risk:
+  default: READ
+  write_approval: configurable
+  high_risk_approval: required
+  destructive_enabled_by_default: false
+environment:
+  - DAYTONA_API_KEY
+  - DAYTONA_API_URL
+  - DAYTONA_TARGET
+  - DAYTONA_ALLOWED_RISKS
+  - DAYTONA_REQUIRE_WRITE_APPROVAL
+  - DAYTONA_TIMEOUT_SECONDS

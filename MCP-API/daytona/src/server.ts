@@ -1,0 +1,11 @@
+import {McpServer} from '@modelcontextprotocol/sdk/server/mcp.js';import {StdioServerTransport} from '@modelcontextprotocol/sdk/server/stdio.js';import {z} from 'zod';import {handlers} from './tools.js';
+const s=new McpServer({name:'daytona-connector',version:'1.0.0'});const out=(v:any)=>({content:[{type:'text' as const,text:JSON.stringify(v)}]});
+s.tool('daytona.sandbox.list','List Daytona sandboxes',{},async()=>out(await handlers.list()));
+s.tool('daytona.sandbox.get','Get sandbox metadata',{sandbox:z.string()},async x=>out(await handlers.get(x)));
+s.tool('daytona.sandbox.create','Create isolated sandbox; network blocked by default',{name:z.string().optional(),ttlMinutes:z.number().int().optional(),networkBlockAll:z.boolean().optional(),approved:z.boolean()},async x=>out(await handlers.create(x)));
+s.tool('daytona.sandbox.start','Start sandbox',{sandbox:z.string(),approved:z.boolean()},async x=>out(await handlers.start(x)));
+s.tool('daytona.sandbox.stop','Stop sandbox; explicit approval required',{sandbox:z.string(),approved:z.boolean()},async x=>out(await handlers.stop(x)));
+s.tool('daytona.sandbox.execute','Execute shell command; retrieved content is untrusted; explicit approval required',{sandbox:z.string(),command:z.string(),cwd:z.string().optional(),timeoutSeconds:z.number().int().optional(),approved:z.boolean()},async x=>out(await handlers.execute(x)));
+s.tool('daytona.sandbox.code_run','Run code in sandbox; explicit approval required',{sandbox:z.string(),code:z.string(),approved:z.boolean()},async x=>out(await handlers.codeRun(x)));
+s.tool('daytona.sandbox.delete','Permanently delete sandbox; destructive and disabled unless policy allows plus approval',{sandbox:z.string(),approved:z.boolean()},async x=>out(await handlers.delete(x)));
+await s.connect(new StdioServerTransport());

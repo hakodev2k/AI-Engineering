@@ -1,0 +1,12 @@
+import {z} from 'zod';import {authorize,Risk} from './policy.js';import {client,retry} from './client.js';
+export const schemas={id:z.object({sandbox:z.string().min(1).max(200)}).strict(),create:z.object({name:z.string().min(1).max(100).optional(),ttlMinutes:z.number().int().min(0).max(10080).optional(),networkBlockAll:z.boolean().default(true),approved:z.boolean().default(false)}).strict(),exec:z.object({sandbox:z.string().min(1).max(200),command:z.string().min(1).max(8000),cwd:z.string().max(1000).optional(),timeoutSeconds:z.number().int().min(1).max(300).default(60),approved:z.boolean().default(false)}).strict(),code:z.object({sandbox:z.string().min(1).max(200),code:z.string().min(1).max(50000),approved:z.boolean().default(false)}).strict(),approvedId:z.object({sandbox:z.string().min(1).max(200),approved:z.boolean().default(false)}).strict()};
+const risk=(r:Risk,a=false)=>authorize(r,a);
+export const handlers={
+async list(){risk('READ');const out=[];for await(const s of client().list())out.push({id:s.id,name:s.name,state:s.state});return out;},
+async get(x:any){risk('READ');const p=schemas.id.parse(x);const s=await retry(()=>client().get(p.sandbox));return {id:s.id,name:s.name,state:s.state,labels:s.labels};},
+async create(x:any){const p=schemas.create.parse(x);risk('WRITE',p.approved);const s=await retry(()=>client().create({name:p.name,ttlMinutes:p.ttlMinutes,networkBlockAll:p.networkBlockAll}));return {id:s.id,name:s.name,state:s.state};},
+async start(x:any){const p=schemas.approvedId.parse(x);risk('WRITE',p.approved);const s=await client().get(p.sandbox);await retry(()=>s.start(60));return {ok:true};},
+async stop(x:any){const p=schemas.approvedId.parse(x);risk('HIGH_RISK',p.approved);const s=await client().get(p.sandbox);await s.stop(60,false);return {ok:true};},
+async execute(x:any){const p=schemas.exec.parse(x);risk('HIGH_RISK',p.approved);const s=await client().get(p.sandbox);const r=await s.process.executeCommand(p.command,p.cwd,p.timeoutSeconds);return {exitCode:r.exitCode,result:r.result};},
+async codeRun(x:any){const p=schemas.code.parse(x);risk('HIGH_RISK',p.approved);const s=await client().get(p.sandbox);const r=await s.process.codeRun(p.code);return {exitCode:r.exitCode,result:r.result};},
+async delete(x:any){const p=schemas.approvedId.parse(x);risk('DESTRUCTIVE',p.approved);const s=await client().get(p.sandbox);await s.delete(60,true);return {ok:true};}}

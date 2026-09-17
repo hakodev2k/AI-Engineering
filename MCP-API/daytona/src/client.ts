@@ -1,0 +1,4 @@
+import {Daytona} from '@daytona/sdk';
+export class ConnectorError extends Error{constructor(message:string,public code='DAYTONA_ERROR',public retryAfter?:number){super(message)}}
+export function client(){if(!process.env.DAYTONA_API_KEY)throw new ConnectorError('DAYTONA_API_KEY is required','AUTH');return new Daytona({apiKey:process.env.DAYTONA_API_KEY,apiUrl:process.env.DAYTONA_API_URL||'https://app.daytona.io/api',target:process.env.DAYTONA_TARGET||'us'});}
+export async function retry<T>(fn:()=>Promise<T>,attempts=3){let last:any;for(let i=0;i<attempts;i++){try{return await fn()}catch(e:any){last=e;const s=e?.statusCode??e?.status;if([400,401,403,404,409,422].includes(s))throw e;if(i===attempts-1)throw e;const ra=Number(e?.headers?.['retry-after']??e?.headers?.['Retry-After']??0);await new Promise(r=>setTimeout(r,Math.max(ra*1000,250*2**i)));}}throw last;}
