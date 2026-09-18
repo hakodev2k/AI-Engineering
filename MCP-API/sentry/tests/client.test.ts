@@ -1,0 +1,10 @@
+import {describe,it,expect,vi,beforeEach,afterEach} from 'vitest';
+import {SentryClient,approve} from '../src/client.js';
+describe('SentryClient',()=>{beforeEach(()=>{process.env.SENTRY_AUTH_TOKEN='test';process.env.SENTRY_APPROVE_WRITES='false'});afterEach(()=>vi.restoreAllMocks());
+it('requires credentials',()=>{expect(()=>new SentryClient('')).toThrow(/required/)});
+it('maps successful reads',async()=>{vi.stubGlobal('fetch',vi.fn().mockResolvedValue(new Response(JSON.stringify([{id:'1'}]),{status:200})));expect(await new SentryClient('x').request('GET','/organizations/')).toEqual([{id:'1'}])});
+it('denies writes without approval',()=>expect(()=>approve('WRITE')).toThrow(/approval/));
+it('allows approved writes',()=>{process.env.SENTRY_APPROVE_WRITES='true';expect(()=>approve('WRITE')).not.toThrow()});
+it('does not retry permission errors',async()=>{const f=vi.fn().mockResolvedValue(new Response('forbidden',{status:403}));vi.stubGlobal('fetch',f);await expect(new SentryClient('x').request('GET','/organizations/')).rejects.toMatchObject({status:403});expect(f).toHaveBeenCalledTimes(1)});
+it('retries throttled GETs boundedly',async()=>{const f=vi.fn().mockResolvedValueOnce(new Response('slow',{status:429,headers:{'retry-after':'0'}})).mockResolvedValue(new Response('[]',{status:200}));vi.stubGlobal('fetch',f);expect(await new SentryClient('x').request('GET','/organizations/')).toEqual([]);expect(f).toHaveBeenCalledTimes(2)});
+it('never retries DELETE',async()=>{const f=vi.fn().mockResolvedValue(new Response('bad',{status:500}));vi.stubGlobal('fetch',f);await expect(new SentryClient('x').request('DELETE','/issues/1/')).rejects.toBeTruthy();expect(f).toHaveBeenCalledTimes(1)});});
