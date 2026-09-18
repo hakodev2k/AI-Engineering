@@ -1,0 +1,2 @@
+import{McpServer}from'@modelcontextprotocol/sdk/server/mcp.js';import{StdioServerTransport}from'@modelcontextprotocol/sdk/server/stdio.js';import{loadConfig}from'./config.js';import{DovetailClient}from'./client.js';import{DovetailMcp}from'./upstream-mcp.js';import{registerTools}from'./tools.js';
+const c=loadConfig();const s=new McpServer({name:'dovetail-connector',version:'1.0.0'});registerTools(s,c,new DovetailClient(c),new DovetailMcp(c));await s.connect(new StdioServerTransport());
