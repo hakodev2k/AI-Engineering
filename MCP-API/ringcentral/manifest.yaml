@@ -1,0 +1,30 @@
+id: ringcentral
+name: RingCentral
+upstream: [rest]
+auth:
+  type: oauth2-jwt
+  required_env: [RC_CLIENT_ID, RC_CLIENT_SECRET, RC_JWT]
+api:
+  base_url: https://platform.ringcentral.com
+capabilities:
+  - account.read
+  - extension.list
+  - extension.read
+  - phone_number.list
+  - call_log.list
+  - message.list
+  - message.read
+  - sms.send
+  - presence.read
+  - subscription.list
+risk:
+  default: READ
+  sms.send: HIGH_RISK
+approval:
+  sms.send: explicit-human
+scopes:
+  read: [ReadAccounts, ReadCallLog, ReadMessages, ReadPresence]
+  write: [SMS]
+notes:
+  - Permissions must also be enabled for the RingCentral app and authenticating user.
+  - No official upstream MCP server is relied upon; the official REST API is used.
