@@ -1,0 +1,43 @@
+id: factorial
+name: Factorial
+upstream:
+  - rest
+  - official-sdk-available
+api:
+  base_url: https://api.factorialhr.com
+  version: 2026-07-01
+auth:
+  preferred: oauth2
+  supported: [oauth2, api-key]
+  note: OAuth scopes restrict resources; API keys are broad and should be avoided when least privilege is required.
+environment:
+  required_one_of: [FACTORIAL_TOKEN, FACTORIAL_API_KEY]
+  optional: [FACTORIAL_API_VERSION, FACTORIAL_TIMEOUT_MS, FACTORIAL_REQUIRE_WRITE_APPROVAL]
+capabilities:
+  - employee.list
+  - employee.get
+  - location.list
+  - timeoff.leave.list
+  - attendance.shift.list
+  - attendance.open_shift.list
+  - project.time_record.list
+  - webhook.list
+  - webhook.get
+  - timeoff.leave.create
+risk:
+  default: READ
+  tools:
+    factorial.timeoff.leave.create: WRITE
+approval:
+  writes: configurable-required
+  destructive: disabled
+security:
+  retrieved_content: untrusted
+  credentials_exposed_to_agent: false
+  arbitrary_http_tool: false
+sources:
+  api_docs: https://apidoc.factorialhr.com/
+  openapi: https://api.factorialhr.com/oas/?version=2026-07-01
+  sdk: https://apidoc.factorialhr.com/docs/sdks-overview
+  oauth_scopes: https://apidoc.factorialhr.com/docs/oauth-scopes
+  webhook_policies: https://apidoc.factorialhr.com/docs/webhooks-policies
