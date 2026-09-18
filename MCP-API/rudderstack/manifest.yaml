@@ -1,0 +1,34 @@
+id: rudderstack
+name: RudderStack
+runtime: nodejs-20+
+upstream:
+  - mcp
+  - rest
+mcp:
+  official: true
+  endpoint: https://mcp.rudderstack.com/mcp
+  note: Official hosted MCP is available; this reusable local server uses documented RudderStack HTTP interfaces for stable scoped event tools and workspace configuration reads.
+api:
+  data_plane_base_url_env: RUDDERSTACK_DATA_PLANE_URL
+  workspace_config_url: https://api.rudderlabs.com/workspaceConfig
+auth:
+  event_api: basic-write-key
+  workspace_config: basic-workspace-token
+capabilities:
+  - workspace.config.get
+  - event.track
+  - event.identify
+  - event.page
+  - event.screen
+  - event.group
+  - event.alias
+  - event.batch
+risk:
+  default: READ
+  write_tools: [event.track, event.identify, event.page, event.screen, event.group, event.alias, event.batch]
+approval:
+  write: configurable
+  default_required: true
+env:
+  required: [RUDDERSTACK_DATA_PLANE_URL, RUDDERSTACK_WRITE_KEY]
+  optional: [RUDDERSTACK_WORKSPACE_TOKEN, RUDDERSTACK_TIMEOUT_MS, RUDDERSTACK_MAX_RETRIES, RUDDERSTACK_REQUIRE_WRITE_APPROVAL]
