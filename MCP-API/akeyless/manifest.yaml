@@ -1,0 +1,42 @@
+id: akeyless
+name: Akeyless
+upstream:
+  - mcp
+  - rest
+mcp:
+  official: true
+  mode: local-cli
+  command: akeyless mcp
+  gateway_required: true
+rest:
+  base_urls:
+    global: https://api.akeyless.io
+    us: https://api.us.akeyless.io
+    eu: https://api.eu.akeyless.io
+auth:
+  type: api_key
+  note: API key is supported for automation but Akeyless recommends stronger workload identity methods for production.
+environment:
+  - AKEYLESS_ACCESS_ID
+  - AKEYLESS_ACCESS_KEY
+  - AKEYLESS_API_URL
+  - AKEYLESS_APPROVAL_TOKEN
+capabilities:
+  - secret.list
+  - secret.metadata
+  - secret.read_redacted
+  - secret.reveal
+  - secret.create
+  - secret.update
+  - secret.delete
+  - auth.validate
+risk:
+  default: READ
+  reveal: HIGH_RISK
+  create_update: WRITE
+  delete: DESTRUCTIVE
+approval:
+  high_risk: required
+  destructive: required
+credentials:
+  exposed_to_llm: false
