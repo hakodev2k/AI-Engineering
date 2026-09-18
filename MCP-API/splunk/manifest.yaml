@@ -1,0 +1,35 @@
+id: splunk
+name: Splunk Platform
+upstream:
+  - mcp
+auth:
+  type: oauth2-or-token
+  credential_isolation: true
+mcp:
+  implementation: official Splunk MCP Server App
+  transport: streamable-http
+  endpoint_env: SPLUNK_MCP_URL
+capabilities:
+  - instance.read
+  - user.read
+  - index.list
+  - index.read
+  - metadata.read
+  - knowledge_object.list
+  - alert.list
+  - alert.read
+  - search.run
+  - saved_search.run
+risk:
+  default: READ
+  search.run: READ
+  saved_search.run: HIGH_RISK
+approval:
+  saved_search.run: "disabled unless SPLUNK_ALLOW_EXECUTE_SAVED_SEARCH=true is set by the operator"
+environment:
+  required: [SPLUNK_MCP_URL, SPLUNK_MCP_TOKEN]
+  optional: [SPLUNK_ALLOW_EXECUTE_SAVED_SEARCH, SPLUNK_TIMEOUT_MS]
+security:
+  upstream_tool_allowlist: true
+  retrieved_content_untrusted: true
+  blocks_risky_spl_commands: true
