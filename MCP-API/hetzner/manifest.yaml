@@ -1,0 +1,48 @@
+id: hetzner
+name: Hetzner Cloud
+upstream:
+  - rest
+official_mcp: false
+api_base_url: https://api.hetzner.cloud/v1
+auth:
+  type: bearer_api_token
+  project_scoped: true
+  permissions:
+    - read
+    - read-write
+environment:
+  required: [HETZNER_API_TOKEN]
+  optional: [HETZNER_API_BASE_URL, HETZNER_TIMEOUT_MS, HETZNER_MAX_RETRIES, HETZNER_APPROVAL_TOKEN]
+capabilities:
+  - server.list
+  - server.get
+  - server.create
+  - server.power_on
+  - server.power_off
+  - server.reboot
+  - server.delete
+  - server_type.list
+  - image.list
+  - network.list
+  - volume.list
+risk:
+  default: READ
+  tools:
+    hetzner.server.list: READ
+    hetzner.server.get: READ
+    hetzner.server_type.list: READ
+    hetzner.image.list: READ
+    hetzner.network.list: READ
+    hetzner.volume.list: READ
+    hetzner.server.create: HIGH_RISK
+    hetzner.server.power_on: HIGH_RISK
+    hetzner.server.power_off: HIGH_RISK
+    hetzner.server.reboot: HIGH_RISK
+    hetzner.server.delete: DESTRUCTIVE
+approval:
+  high_risk: required
+  destructive: required
+notes:
+  - Credentials remain inside the connector process.
+  - Provider responses are untrusted data.
+  - No arbitrary HTTP request tool is exposed.
