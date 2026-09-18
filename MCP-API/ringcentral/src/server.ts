@@ -1,0 +1,1 @@
+import{McpServer}from'@modelcontextprotocol/sdk/server/mcp.js';import{StdioServerTransport}from'@modelcontextprotocol/sdk/server/stdio.js';import{config,RCClient}from'./client.js';import{register}from'./tools.js';const c=config();const s=new McpServer({name:'ringcentral-connector',version:'1.0.0'});register(s,c,new RCClient(c));await s.connect(new StdioServerTransport());
