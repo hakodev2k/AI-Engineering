@@ -1,0 +1,45 @@
+id: convertkit
+name: Kit (formerly ConvertKit)
+upstream:
+  - mcp
+  - rest
+mcp:
+  official_remote: https://app.kit.com/mcp
+  docs_remote: https://developers.kit.com/mcp
+  note: This reusable server exposes a stable scoped contract over official API v4; users may alternatively connect directly to Kit's official remote MCP.
+api:
+  base_url: https://api.kit.com/v4
+auth:
+  type: api_key
+  header: X-Kit-Api-Key
+  production_apps: OAuth is required by Kit for public third-party apps.
+environment:
+  - KIT_API_KEY
+  - KIT_BASE_URL
+  - KIT_TIMEOUT_MS
+  - KIT_MAX_RETRIES
+  - KIT_ALLOWED_PERMISSIONS
+  - KIT_APPROVAL_TOKEN
+capabilities:
+  - subscriber.list
+  - subscriber.get
+  - subscriber.upsert
+  - tag.list
+  - subscriber.tag
+  - sequence.list
+  - subscriber.sequence_add
+  - broadcast.list
+  - broadcast.get
+  - broadcast.draft_create
+  - account.growth_stats
+risk:
+  default: READ
+  write: [subscriber.upsert, subscriber.tag, subscriber.sequence_add, broadcast.draft_create]
+  high_risk: []
+  destructive: []
+approval:
+  write: configurable
+  public_send_or_publish: not exposed
+security:
+  retrieved_content_is_untrusted: true
+  credentials_never_returned: true
