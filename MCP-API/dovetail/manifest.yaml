@@ -1,0 +1,38 @@
+id: dovetail
+name: Dovetail
+upstream:
+  - mcp
+  - rest
+mcp:
+  endpoint: https://dovetail.com/api/mcp
+  transport: streamable-http
+  official: true
+api:
+  base_url: https://dovetail.com/api
+auth:
+  type: bearer-api-token
+  token_expiry: 30-days
+capabilities:
+  - workspace.search
+  - project.list
+  - project.get
+  - data.list
+  - data.get
+  - data.export
+  - doc.list
+  - doc.get
+  - doc.export
+  - doc.create
+  - doc.update
+  - doc.delete
+risk:
+  default: READ
+  write_approval: configurable
+  destructive: disabled-by-default-and-explicit-approval
+environment:
+  - DOVETAIL_API_TOKEN
+  - DOVETAIL_API_BASE
+  - DOVETAIL_MCP_URL
+  - DOVETAIL_TIMEOUT_MS
+  - DOVETAIL_WRITE_APPROVAL
+  - DOVETAIL_DESTRUCTIVE_ENABLED
