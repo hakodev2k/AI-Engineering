@@ -1,72 +1,65 @@
 # LaunchDarkly MCP/API Connector
 
-Reusable MCP server exposing a focused LaunchDarkly feature-management surface with strict validation, credential isolation, bounded retries, pagination, and approval gates.
+Reusable MCP stdio bridge for LaunchDarkly feature-management workflows. LaunchDarkly also provides an official hosted MCP server at `https://mcp.launchdarkly.com/mcp/launchdarkly` using OAuth, plus an official local MCP server. Hosted MCP supports feature management, AgentControl, and observability; it is unavailable in federal/EU instances, where LaunchDarkly documents the local server. This package deliberately uses LaunchDarkly's official REST API for its stable provider-scoped tools so API tokens stay in the connector and callers receive one deterministic contract.
 
-## Upstream strategy
+## Official sources
 
-LaunchDarkly provides an official hosted MCP server at `https://mcp.launchdarkly.com/mcp/launchdarkly`, authenticated with OAuth. It covers feature management, AgentControl, observability, and metrics. LaunchDarkly also publishes the official local package `@launchdarkly/mcp-server`; it is intended especially for Federal/EU environments where hosted MCP is unavailable and uses an API access token. The official hosted server is preferred when a client can connect directly.
+- MCP: `https://launchdarkly.com/docs/home/getting-started/mcp`
+- Hosted MCP: `https://launchdarkly.com/docs/home/getting-started/mcp-hosted`
+- Local MCP: `https://launchdarkly.com/docs/home/getting-started/mcp-local`
+- REST API/auth/rate limits/versioning: `https://launchdarkly.com/docs/api`
+- Access-token permissions: `https://launchdarkly.com/docs/home/account/api`
 
-This reusable connector uses LaunchDarkly's official REST API v2 for its stable scoped tool contract. This keeps credentials in the connector boundary, allows local approval enforcement, and works where the hosted MCP transport cannot be embedded. No unofficial MCP server is used. The connector deliberately exposes only capabilities verified in the official feature-management API.
-
-Official sources researched: LaunchDarkly MCP server documentation, hosted MCP documentation, local MCP documentation, REST API overview/reference, API access-token documentation, and REST API migration/versioning guidance.
-
-## Implemented tools
-
-| Tool | Transport | Risk | Approval |
-|---|---|---|---|
-| `launchdarkly.project.list` | REST | READ | No |
-| `launchdarkly.project.get` | REST | READ | No |
-| `launchdarkly.environment.list` | REST | READ | No |
-| `launchdarkly.flag.list` | REST | READ | No |
-| `launchdarkly.flag.get` | REST | READ | No |
-| `launchdarkly.flag.create` | REST | WRITE | Yes by default |
-| `launchdarkly.flag.update` | REST | WRITE | Yes by default |
-| `launchdarkly.segment.list` | REST | READ | No |
-| `launchdarkly.segment.get` | REST | READ | No |
-
-No generic arbitrary-request, delete, token-management, role-management, billing, or production execution tool is exposed. Destructive operations are disabled.
-
-## Authentication and least privilege
-
-REST requests use a LaunchDarkly personal or service access token in `LAUNCHDARKLY_API_TOKEN`. SDK keys, mobile keys, and client-side IDs cannot authenticate REST API calls. For long-lived integrations, prefer a service token where available and grant only the project/environment actions needed by these tools. LaunchDarkly recommends least privilege and supports base roles, custom roles, and inline policies depending on plan.
-
-Hosted MCP uses OAuth and applies the authorized user's LaunchDarkly permissions. Local official MCP uses an API access token and can be restricted with `--scope read` and explicit `--tool` allowlisting. Never put tokens in prompts or tool arguments.
-
-## API version, rate limits, reliability
-
-The connector explicitly sends `LD-API-Version: 20240415`. LaunchDarkly documents that API rate limits vary by route/authentication and are communicated through rate-limit headers; specific numeric limits are intentionally not hard-coded. HTTP 429 and transient 5xx responses are retried only for GET requests with bounded exponential backoff and `Retry-After` support. Writes are not blindly retried. Requests use an AbortController timeout. List tools expose bounded pagination.
-
-## Security
-
-Credentials are read only from connector environment configuration. The base URL is constant, resource keys are validated and URI encoded, and no caller-controlled URL is accepted, reducing SSRF risk. Provider-returned text is wrapped as `untrustedProviderData: true`; it cannot modify permissions, approval policy, or system behavior. WRITE operations require explicit `approved: true` by default. A hosting application should ensure that this boolean is supplied only after a trusted human approval event; an LLM must not self-approve.
-
-The connector does not automatically discover or trust new upstream MCP tools. If using the official MCP server directly, configure the smallest allowed scope/tool set. Unexpected upstream permissions should fail closed.
-
-## Installation and running
+## Install and run
 
 Requires Node.js 20+.
 
-```bash
+```sh
 npm install
-cp .env.example .env
-# load secrets using your shell or secret manager
-npm start
+npm run build
+LAUNCHDARKLY_ACCESS_TOKEN=... npm start
 ```
 
-The server uses MCP stdio, so it can be launched by MCP clients supporting local stdio servers, including compatible agent hosts. Compatibility depends on the client's MCP stdio support; no client-specific behavior is assumed.
+Configure any MCP client that supports a stdio server to run `node dist/server.js`. The connector does not expose credentials to tool arguments or outputs.
 
-## Environment variables
+## Authentication and permissions
 
-`LAUNCHDARKLY_API_TOKEN` is required. `LAUNCHDARKLY_API_VERSION` defaults to `20240415`; timeout defaults to 15 seconds; retries default to 2; approval mode defaults to `write`.
+REST requests use a LaunchDarkly personal or service access token in the `Authorization` header and explicitly send `LD-API-Version` (default `20240415`). SDK/mobile/client-side keys are not REST credentials. Create the narrowest LaunchDarkly role/inline policy that covers the projects/environments and operations required. Prefer Reader for read-only deployments; Writer/custom policies only where mutations are needed. Service tokens are suitable for long-lived integrations. Hosted MCP instead uses LaunchDarkly OAuth and inherits the authorized user's permissions.
 
-## Error handling
+## Tools
 
-Provider failures are converted to MCP error results with sanitized message, HTTP status, and Retry-After metadata when present. Validation and approval failures occur before provider calls. Authentication/permission errors are never retried. Credentials are never returned or logged.
+| Tool | Risk | Approval |
+|---|---|---|
+| `launchdarkly.project.list` | READ | no |
+| `launchdarkly.project.get` | READ | no |
+| `launchdarkly.environment.list` | READ | no |
+| `launchdarkly.flag.list` | READ | no |
+| `launchdarkly.flag.get` | READ | no |
+| `launchdarkly.flag.status` | READ | no |
+| `launchdarkly.flag.create` | WRITE | yes by default |
+| `launchdarkly.flag.update` | HIGH_RISK | always |
+| `launchdarkly.flag.archive` | HIGH_RISK | always |
 
-## Testing
+Update accepts bounded JSON Patch operations and blocks permission-like paths. Archive is implemented as the documented flag archived-state patch rather than deletion. No destructive tool is exposed.
 
-`npm test` uses mocks only and requires no live LaunchDarkly credentials. Tests cover auth configuration, tool registration, approval denial, successful approved write, 429 retry behavior, credential isolation, and unsafe-key validation.
+## Reliability and errors
+
+Requests have configurable timeouts and cancellation through `AbortController`. Pagination is bounded to 100 items. HTTP 429 and transient 5xx responses receive at most two retries with jitter/backoff; `Retry-After` and LaunchDarkly reset headers are honored when present. Authentication, permission and validation failures are never retried. Errors are mapped to `AUTH`, `PERMISSION`, `RATE_LIMIT`, `TIMEOUT`, or `PROVIDER` without leaking the token.
+
+LaunchDarkly uses global, route, token, and IP rate limits. Exact quotas are intentionally not hard-coded because LaunchDarkly documents them as variable; the connector reacts to returned headers.
+
+## Security
+
+Provider responses are treated as untrusted data. Credentials are connector-side only. Paths are fixed under LaunchDarkly's API origin, preventing caller-controlled SSRF. Keys, pagination, patch count/path, and text sizes are validated. Writes require approval; high-risk flag changes always require explicit approval. Retrieved provider text never changes permissions, tool registration, or runtime configuration. Logs do not contain credentials.
+
+## Tests
+
+```sh
+npm test
+```
+
+Unit tests use fake fetch responses and no live credentials. They cover auth configuration, registration, validation, read behavior, approval denial, pagination bounds, provider auth errors, and rate-limit retry.
 
 ## Limitations
 
-This connector intentionally focuses on feature-management discovery/read and controlled flag mutation. It does not expose AgentControl, observability, metrics, flag deletion, environment deletion, access-token administration, custom-role administration, or webhooks. Use the official hosted/local MCP server directly for broader supported MCP capabilities after reviewing its permissions. REST API authorization remains subject to the permissions attached to the configured LaunchDarkly token.
+This connector intentionally covers feature-management operations only. AgentControl and observability remain available through LaunchDarkly's official MCP but are not proxied here. Webhooks, access-token administration, role changes, billing, deletion, and arbitrary REST calls are not exposed. API permissions and availability still depend on the LaunchDarkly account plan and token role.

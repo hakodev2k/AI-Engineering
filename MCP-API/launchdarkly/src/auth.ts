@@ -1,2 +1,1 @@
-export interface CredentialProvider{getAccessToken():Promise<string>}
-export class EnvCredentialProvider implements CredentialProvider{async getAccessToken(){const v=process.env.LAUNCHDARKLY_ACCESS_TOKEN?.trim();if(!v)throw new Error('LAUNCHDARKLY_ACCESS_TOKEN is required');return v}}
+export function accessToken(env=process.env){const v=env.LAUNCHDARKLY_ACCESS_TOKEN?.trim();if(!v)throw new Error('AUTH_REQUIRED: LAUNCHDARKLY_ACCESS_TOKEN is missing');return v} export function apiVersion(env=process.env){return env.LAUNCHDARKLY_API_VERSION?.trim()||'20240415'}
