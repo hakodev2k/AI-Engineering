@@ -1,42 +1,35 @@
 id: uptimerobot
 name: UptimeRobot
 upstream:
+  - mcp
   - rest
 mcp:
-  official_server: false
-  note: "No official UptimeRobot MCP server was found in current official documentation as of 2026-08-22."
+  endpoint: https://mcp.uptimerobot.com/mcp
+  note: Official remote MCP; delete operations are intentionally not exposed upstream.
 api:
   base_url: https://api.uptimerobot.com/v3
-  version: v3
 auth:
-  type: bearer_api_key
-  required_env:
-    - UPTIMEROBOT_API_KEY
-  key_modes:
-    - account-specific
-    - read-only
+  type: api_key_bearer
+  env: UPTIMEROBOT_API_KEY
+  least_privilege: Use read-only key for READ-only deployments; Main API key is required for writes.
+rate_limits:
+  free: 10 requests/minute
+  pro: monitor-limit * 2 requests/minute, maximum 5000 requests/minute
+  headers: [X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset, Retry-After]
 capabilities:
   - monitor.list
   - monitor.get
   - monitor.create
   - monitor.update
+  - monitor.pause
+  - monitor.start
   - monitor.delete
-  - maintenance_window.list
-  - maintenance_window.get
-  - status_page.list
-  - status_page.get
-  - integration.list
-  - integration.get
+  - incident.list
+  - status-page.list
+  - maintenance-window.list
 risk:
   default: READ
-  writes_require_operator_approval: true
-  destructive_disabled_by_default: true
-rate_limits:
-  free: 10 requests/minute
-  pro: "monitor limit * 2 requests/minute, max 5000 requests/minute"
-optional_env:
-  - UPTIMEROBOT_API_BASE_URL
-  - UPTIMEROBOT_TIMEOUT_MS
-  - UPTIMEROBOT_APPROVAL_MODE
-  - UPTIMEROBOT_APPROVED_ACTIONS
-  - UPTIMEROBOT_ALLOW_DESTRUCTIVE
+  write_approval: configurable
+  destructive: disabled_by_default
+required_env:
+  - UPTIMEROBOT_API_KEY

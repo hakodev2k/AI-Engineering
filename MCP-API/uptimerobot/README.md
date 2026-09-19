@@ -1,257 +1,83 @@
-# UptimeRobot MCP/API Connector
+# UptimeRobot MCP connector
 
-Reusable MCP server for UptimeRobot monitoring workflows. It exposes a stable, provider-scoped tool contract for monitors, maintenance windows, public status pages, and alert integrations while keeping the UptimeRobot API key inside the connector process.
+Reusable local MCP stdio server for UptimeRobot monitoring workflows. UptimeRobot has an official remote MCP server at `https://mcp.uptimerobot.com/mcp` and an official REST API v3. This package deliberately uses API v3 behind a stable, narrowly scoped MCP interface because it includes a guarded delete capability that the official MCP intentionally does not expose, while keeping the same agent-facing contract. The official MCP remains the preferred upstream for interactive non-destructive use.
 
-## Transport strategy
+## Official sources
 
-No official UptimeRobot MCP server was found in UptimeRobot's current official API, help-center, or CLI documentation as of 2026-08-22. UptimeRobot does provide an official v3 REST API and an official CLI built on that API. This connector therefore uses the official v3 REST API behind a local MCP stdio server.
+- MCP guide: https://help.uptimerobot.com/en/articles/12928342-uptimerobot-mcp-integration-guide
+- API v3: https://uptimerobot.com/api/v3/
+- API overview: https://uptimerobot.com/api/
+- Official CLI / API safety patterns: https://uptimerobot.com/cli/
 
-Official sources researched:
-
-- UptimeRobot API v3 documentation: https://uptimerobot.com/api/v3/
-- UptimeRobot API overview: https://uptimerobot.com/api/
-- UptimeRobot v3 launch notes: https://uptimerobot.com/blog/introducing-the-uptimerobot-v3-api/
-- UptimeRobot API help: https://help.uptimerobot.com/en/articles/11620152-how-to-use-uptimerobot-s-api
-- Official UptimeRobot CLI: https://github.com/uptimerobot/uptimerobot-cli
-- Webhook integration and v3 integration API examples: https://help.uptimerobot.com/en/articles/14498593-webhook-integration
-- Multi-location v3 examples: https://help.uptimerobot.com/en/articles/11358522-understanding-uptimerobot-locations-and-multi-location-feature
-
-## Runtime
-
-- Node.js 20+
-- TypeScript
-- `@modelcontextprotocol/sdk`
-- MCP stdio transport
-- Native `fetch` for UptimeRobot REST calls
-
-Install and verify:
-
-```bash
-npm install
-npm run typecheck
-npm test
-npm run build
-npm start
-```
-
-For development:
-
-```bash
-npm run dev
-```
-
-## Authentication
-
-UptimeRobot v3 uses an API key presented as a bearer credential:
-
-```text
-Authorization: Bearer <UPTIMEROBOT_API_KEY>
-```
-
-UptimeRobot documents account-specific keys, monitor-specific keys, and read-only keys. For this connector:
-
-- use a read-only key when only read tools are needed;
-- use an account-specific key only when create/update/delete monitor operations are enabled;
-- monitor-specific keys are too narrow for the complete connector surface.
-
-Never expose the key to the LLM. Inject it into the connector process from an environment secret or secret manager.
-
-## Environment variables
-
-See `.env.example`.
-
-- `UPTIMEROBOT_API_KEY`: required.
-- `UPTIMEROBOT_API_BASE_URL`: defaults to `https://api.uptimerobot.com/v3`.
-- `UPTIMEROBOT_TIMEOUT_MS`: per-request timeout, default 15 seconds.
-- `UPTIMEROBOT_APPROVAL_MODE`: `required` by default.
-- `UPTIMEROBOT_APPROVED_ACTIONS`: comma-separated write actions approved by an operator.
-- `UPTIMEROBOT_ALLOW_DESTRUCTIVE`: `false` by default.
-
-Approval state is external configuration, not a model-controlled tool argument.
-
-## Implemented tools
-
-| Tool | Upstream | Risk | Approval |
-|---|---|---:|---|
-| `uptimerobot.monitor.list` | REST `GET /monitors` | READ | No |
-| `uptimerobot.monitor.get` | REST `GET /monitors/{id}` | READ | No |
-| `uptimerobot.monitor.create` | REST `POST /monitors` | WRITE | Required by default |
-| `uptimerobot.monitor.update` | REST `PATCH /monitors/{id}` | WRITE | Required by default |
-| `uptimerobot.monitor.delete` | REST `DELETE /monitors/{id}` | DESTRUCTIVE | Required and disabled by default |
-| `uptimerobot.maintenance_window.list` | REST `GET /maintenance-windows` | READ | No |
-| `uptimerobot.maintenance_window.get` | REST `GET /maintenance-windows/{id}` | READ | No |
-| `uptimerobot.status_page.list` | REST `GET /psps` | READ | No |
-| `uptimerobot.status_page.get` | REST `GET /psps/{id}` | READ | No |
-| `uptimerobot.integration.list` | REST `GET /integrations` | READ | No |
-| `uptimerobot.integration.get` | REST `GET /integrations/{id}` | READ | No |
-
-The monitor mutation schema intentionally exposes a practical typed subset of v3 fields. It does not expose an arbitrary JSON body or generic HTTP escape hatch.
-
-## Real-world workflows
-
-Typical agent workflows include:
-
-```text
-List monitors
--> inspect one monitor
--> recommend a change
--> request approval
--> update interval or endpoint
-```
-
-and:
-
-```text
-List maintenance windows
--> inspect planned maintenance
--> compare with monitor state
--> report expected alert suppression window
-```
-
-or:
-
-```text
-List public status pages
--> inspect one page
--> correlate with monitor data
--> summarize customer-facing status
-```
+Official documentation states that MCP uses the same API quota, monitor lists are paginated at 100/page, and delete operations are not exposed through MCP. API v3 supports monitor create/update/delete plus status pages and maintenance windows. Current published limits are 10 requests/minute on Free and `monitor limit * 2`, capped at 5,000/minute, on Pro; `X-RateLimit-*` and `Retry-After` headers are returned.
 
 ## Architecture
 
-```text
-MCP client
-   |
-   v
-src/server.ts       typed MCP tools + validation
-   |
-   +--> src/config.ts   secrets + approval policy
-   |
-   +--> src/client.ts   REST transport + retry/error policy
-   |
-   v
-UptimeRobot API v3
+MCP client -> this stdio server -> strict validation/approval policy -> UptimeRobot API v3. Credentials remain in the process environment and are never MCP arguments or outputs. Provider responses are explicitly marked as untrusted data.
+
+## Authentication and least privilege
+
+Set `UPTIMEROBOT_API_KEY`. Use a read-only API key for read-only deployments. Creating, updating, pausing, starting, or deleting requires a Main API key. UptimeRobot API keys do not use OAuth scopes; the key type defines privilege, so no fictional scopes are documented. API v3 uses bearer authentication. Never place the key in prompts or repository files.
+
+## Install and run
+
+Requires Node.js 20+.
+
+```sh
+npm install
+npm run build
+UPTIMEROBOT_API_KEY='...' npm start
 ```
 
-## Permission and approval model
+Any MCP client capable of stdio can launch `node dist/src/server.js`. Compatibility depends on the client supporting standard MCP stdio transport.
 
-Default policy:
+## Tools
 
-```text
-READ         -> automatic
-WRITE        -> operator approval by default
-HIGH_RISK    -> explicit approval
-DESTRUCTIVE  -> explicit approval + destructive flag
-```
+| Tool | Upstream | Risk | Approval |
+|---|---|---|---|
+| `uptimerobot.monitor.list` | API v3 | READ | no |
+| `uptimerobot.monitor.get` | API v3 | READ | no |
+| `uptimerobot.monitor.create` | API v3 | WRITE | required by default |
+| `uptimerobot.monitor.update` | API v3 | WRITE | required by default |
+| `uptimerobot.monitor.pause` | API v3 | WRITE | required by default |
+| `uptimerobot.monitor.start` | API v3 | WRITE | required by default |
+| `uptimerobot.monitor.delete` | API v3 | DESTRUCTIVE | explicit + feature enabled |
+| `uptimerobot.incident.list` | API v3 | READ | no |
+| `uptimerobot.status-page.list` | API v3 | READ | no |
+| `uptimerobot.maintenance-window.list` | API v3 | READ | no |
 
-To approve monitor creation temporarily:
+The official remote MCP can cover many non-destructive monitor, incident, status-page, maintenance-window, group, and comment workflows. This implementation does not proxy arbitrary upstream MCP tools: that prevents dynamic tool expansion and unexpected permissions. It uses API v3 for the selected stable surface and the API-only delete gap.
 
-```text
-UPTIMEROBOT_APPROVED_ACTIONS=uptimerobot.monitor.create
-```
+## Configuration and approval
 
-Monitor deletion additionally requires:
+`UPTIMEROBOT_WRITE_APPROVAL=required` is the default. Setting it to `optional` permits ordinary WRITE tools without per-call `approved:true`. Destructive deletion is always separately gated: `UPTIMEROBOT_DESTRUCTIVE_ENABLED=true` plus `approved:true` are both required. Tool calls cannot change policy.
 
-```text
-UPTIMEROBOT_APPROVED_ACTIONS=uptimerobot.monitor.delete
-UPTIMEROBOT_ALLOW_DESTRUCTIVE=true
-```
+`UPTIMEROBOT_API_BASE_URL` defaults to the official HTTPS v3 endpoint and rejects non-HTTPS configuration. `UPTIMEROBOT_TIMEOUT_MS` defaults to 15000.
 
-Remove temporary approvals after the intended change window.
+## Reliability
 
-## Rate limits and reliability
+GET/HEAD operations use at most three attempts with bounded exponential backoff for network/5xx/throttling failures. Mutations are never automatically retried, avoiding duplicate side effects. Authentication, permission and validation failures are not retried. HTTP 429 preserves `Retry-After`. List tools expose bounded cursor/limit inputs instead of silently traversing all pages. Requests are cancellable internally through timeout-backed `AbortController`.
 
-UptimeRobot publishes plan-based API limits:
+Provider failures map to stable `AUTHENTICATION`, `PERMISSION`, `VALIDATION`, `RATE_LIMIT`, `TIMEOUT`, `NETWORK`, or `PROVIDER_ERROR` classes. Error text does not include the API key.
 
-- Free: 10 requests per minute.
-- Pro: monitor limit x 2 requests per minute, capped at 5,000 requests per minute.
+## Security
 
-The API may return:
+There is no arbitrary HTTP/request tool. Provider paths are fixed by handlers and reject traversal/absolute URLs. Monitor targets accept only HTTP(S) URLs. Inputs use strict schemas and bounded lengths. Retrieved monitor names, URLs, incident text and other provider content are untrusted data, never instructions. The connector never discovers tools dynamically, changes its permissions from provider content, logs credentials, or forwards credentials to MCP clients. Destructive actions require two independent gates.
 
-- `X-RateLimit-Limit`
-- `X-RateLimit-Remaining`
-- `X-RateLimit-Reset`
-- `Retry-After`
+## Tests
 
-The connector retries read-only GET operations up to three total attempts on throttling or transient network failures. It honors `Retry-After` or the reset epoch with a bounded wait. Mutation requests are never retried automatically because their outcome may be uncertain and repeating them could duplicate or repeat a destructive action.
+`npm test` runs credential-free unit tests with mocked fetch. Coverage includes auth configuration, HTTPS enforcement, tool registration, strict ID validation, read behavior, approval and destructive gates, authentication mapping, rate-limit metadata, and mutation no-retry behavior.
 
-Every request has a timeout. Authentication, authorization, validation, and normal provider errors fail without retry.
+## Example workflow
 
-List tools expose bounded pagination parameters to avoid accidental unbounded API consumption.
+1. Call `uptimerobot.monitor.list` with `{ "limit": 50 }` (READ, no approval).
+2. Call `uptimerobot.monitor.get` with a returned numeric ID (READ).
+3. Prepare an HTTP monitor and call `uptimerobot.monitor.create` with `friendlyName`, HTTP(S) `url`, `interval`, and `approved:true` (WRITE).
+4. Pause/start it only with WRITE approval.
+5. Deletion requires both administrator configuration and explicit call approval.
 
-## Error handling
-
-Expected error categories include:
-
-- configuration validation failures for missing credentials;
-- `APPROVAL_REQUIRED` for writes without operator approval;
-- `DESTRUCTIVE_DISABLED` for deletion without the explicit destructive flag;
-- `VALIDATION_ERROR` for empty monitor updates;
-- `NETWORK_OR_TIMEOUT` after bounded transient read retries;
-- `UptimeRobotApiError` with provider HTTP status and response details.
-
-Secrets are never intentionally included in surfaced errors.
-
-## Security considerations
-
-- The API key never appears in MCP tool schemas.
-- Tool inputs cannot choose arbitrary HTTP origins.
-- No generic raw-request tool is exposed.
-- Retrieved monitor names, URLs, status-page content, integration configuration, and provider errors are untrusted data, not instructions.
-- Integration reads can contain sensitive configuration. Do not forward those values to prompts, logs, or issue trackers unless explicitly required and authorized.
-- Write approval state lives outside the model request.
-- Destructive monitor deletion is disabled by default.
-- Mutation requests are not retried.
-- Inputs use bounded strings, IDs, intervals, timeouts, and page sizes.
-- The connector cannot widen its own UptimeRobot credentials or permissions.
-
-For production, prefer a read-only API key for read-only agent workflows and a separately controlled account-level key for approved mutations.
-
-## Testing
-
-Tests require no live UptimeRobot credentials. They cover:
-
-- missing credential validation;
-- approved and denied writes;
-- destructive-action default denial;
-- bearer credential placement;
-- authorization-error handling;
-- no retries for writes;
-- bounded retry for rate limiting;
-- expected tool registration;
-- absence of a generic API escape hatch.
-
-Run:
-
-```bash
-npm test
-```
-
-## Usage examples
-
-See `examples/tool-calls.md` for representative tool inputs, required credential class, and approval behavior.
-
-## MCP client configuration
-
-Any MCP client that can launch a local stdio server can run the built connector. Example shape:
-
-```json
-{
-  "command": "node",
-  "args": ["/absolute/path/to/MCP-API/uptimerobot/dist/src/server.js"],
-  "env": {
-    "UPTIMEROBOT_API_KEY": "provided-by-secret-manager"
-  }
-}
-```
-
-Do not check real credentials into MCP client configuration.
+Outputs are JSON envelopes containing `ok`, provider `data`, and `untrustedProviderContent:true`.
 
 ## Limitations
 
-- This is not a complete UptimeRobot API wrapper.
-- No official UptimeRobot MCP server was found, so all implemented capabilities use REST.
-- Monitor create/update exposes a deliberate typed subset of v3 fields.
-- Maintenance-window, public-status-page, and integration mutations are intentionally not exposed in this version.
-- Integration reads may return sensitive configuration and should be tightly permissioned.
-- Account administration, billing, credential management, and arbitrary webhook creation are not exposed.
+This connector intentionally implements ten common workflows rather than UptimeRobot's entire API. It does not expose alert-contact mutation, integrations, incident comments, monitor groups, tags, billing, raw requests, or public-content publishing. Some provider resources depend on subscription plan. Status-page image uploads are not supported by official MCP. The official MCP's non-destructive feature breadth may exceed this connector; use it directly when those additional trusted capabilities are needed.
