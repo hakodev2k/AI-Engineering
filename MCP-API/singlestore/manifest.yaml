@@ -13,19 +13,18 @@ auth:
   type: api_key
   env: SINGLESTORE_API_KEY
 capabilities:
-  - project.list
   - region.list
-  - cluster_group.list
-  - cluster_group.get
-  - cluster.list
-  - cluster.get
-  - cluster.outbound_allowlist.get
-  - cluster.suspend
-  - cluster.resume
-  - cluster.delete
+  - workspace_group.list
+  - workspace_group.get
+  - workspace.list
+  - workspace.get
+  - workspace.outbound_allowlist.get
+  - workspace.suspend
+  - workspace.resume
+  - workspace.delete
 risk:
   default: READ
-  writes_require_approval: true
+  writes_require_approval: configurable
   high_risk_requires_approval: true
   destructive_disabled_by_default: true
 required_env:
