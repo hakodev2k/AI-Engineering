@@ -1,0 +1,51 @@
+id: growthbook
+name: GrowthBook
+version: 1.0.0
+runtime: node>=20
+upstream:
+  - official-mcp
+  - rest
+official_mcp:
+  repository: https://github.com/growthbook/growthbook-mcp
+  package: "@growthbook/mcp"
+  transports: [stdio, streamable-http]
+  auth: api-key-or-oauth
+  note: "Official MCP is a thin authenticated REST bridge with skills. This connector intentionally exposes a fixed allow-listed contract instead of the upstream free-form API request tool."
+api:
+  base_url: https://api.growthbook.io
+auth:
+  type: bearer-api-key-or-personal-access-token
+  env: GB_API_KEY
+  credential_isolation: connector-only
+capabilities:
+  - project.list
+  - feature.list
+  - feature.get
+  - feature.create
+  - feature.toggle
+  - experiment.list
+  - experiment.get
+  - experiment.results
+  - experiment.create
+  - experiment.stop
+risk:
+  default: READ
+  write_requires_approval: true
+  high_risk_disabled_by_default: true
+approval:
+  WRITE: required-by-default
+  HIGH_RISK: explicit-and-enabled
+required_environment:
+  - GB_API_KEY
+optional_environment:
+  - GB_API_URL
+  - GROWTHBOOK_TIMEOUT_MS
+  - GROWTHBOOK_MAX_RETRIES
+  - GROWTHBOOK_REQUIRE_WRITE_APPROVAL
+  - GROWTHBOOK_APPROVAL_SECRET
+  - GROWTHBOOK_ENABLE_HIGH_RISK
+security:
+  credentials_exposed_to_llm: false
+  arbitrary_api_tool: false
+  provider_content_untrusted: true
+  fixed_origin: true
