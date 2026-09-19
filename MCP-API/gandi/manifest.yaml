@@ -1,0 +1,31 @@
+id: gandi
+name: Gandi
+upstream:
+  - rest
+api_base_url: https://api.gandi.net/v5
+official_mcp: false
+auth:
+  type: personal_access_token
+  env: GANDI_PAT
+  scheme: Bearer
+capabilities:
+  - domain.list
+  - domain.get
+  - domain.livedns_status
+  - dns.record.list
+  - dns.record.get
+  - dns.record.create
+  - dns.record.replace
+  - dns.record.delete
+  - dns.zone.snapshot
+  - organization.list
+risk:
+  default: READ
+  writes: approval_required
+  destructive: disabled_by_default
+environment:
+  - GANDI_PAT
+  - GANDI_API_BASE
+  - GANDI_TIMEOUT_MS
+  - GANDI_ALLOW_WRITES
+  - GANDI_ALLOW_DESTRUCTIVE
