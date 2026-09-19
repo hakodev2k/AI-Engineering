@@ -1,0 +1,32 @@
+id: loom
+name: Loom
+upstream:
+  - mcp
+transport:
+  mcp:
+    endpoint: https://mcp.atlassian.com/v1/mcp/preview
+    provider: Atlassian Rovo MCP
+    status: preview-for-loom
+    auth: oauth2.1
+capabilities:
+  - recording.search
+  - recording.read
+  - transcript.read
+  - comments.read
+  - ai_brief.read
+  - action_items.read
+  - recording.update
+  - recording.move
+  - comment.create
+risk:
+  default: READ
+  write_requires_approval: true
+  destructive_enabled: false
+security:
+  credential_isolation: true
+  upstream_tool_allowlist: true
+  untrusted_content: true
+environment:
+  - LOOM_MCP_URL
+  - LOOM_APPROVAL_MODE
+  - LOOM_TIMEOUT_MS

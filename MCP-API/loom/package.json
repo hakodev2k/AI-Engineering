@@ -1,0 +1,1 @@
+{"name":"loom-mcp-connector","version":"1.0.0","type":"module","scripts":{"build":"tsc -p tsconfig.json","test":"npm run build && node --test dist/tests/*.test.js","start":"node dist/src/server.js"},"dependencies":{"@modelcontextprotocol/sdk":"^1.17.0","zod":"^3.25.0"},"devDependencies":{"@types/node":"^22.0.0","typescript":"^5.9.0"},"engines":{"node":">=20"}}
