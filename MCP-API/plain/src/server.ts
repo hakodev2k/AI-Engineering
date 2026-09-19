@@ -1,0 +1,3 @@
+import {McpServer} from '@modelcontextprotocol/sdk/server/mcp.js';import {StdioServerTransport} from '@modelcontextprotocol/sdk/server/stdio.js';import {tools} from './tools.js';
+export function buildServer(){const s=new McpServer({name:'plain-connector',version:'1.0.0'});for(const t of tools){const shape=(t.schema as any)._def.shape();s.tool(t.name,t.description,shape,async(input:any)=>{const p=t.schema.parse(input);const data=await t.run(p);return{content:[{type:'text' as const,text:JSON.stringify({risk:t.risk,data,untrustedProviderContent:true})}]};});}return s;}
+if(process.env.NODE_ENV!=='test')await buildServer().connect(new StdioServerTransport());

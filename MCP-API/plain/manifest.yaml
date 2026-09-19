@@ -1,0 +1,26 @@
+id: plain
+name: Plain
+upstream:
+  - official-typescript-sdk
+  - graphql
+  - official-mcp
+api:
+  graphql: https://core-api.uk.plain.com/graphql/v1
+auth:
+  type: api-key
+  least_privilege: permission-scoped machine user key
+capabilities:
+  - customer.upsert
+  - customer.delete
+  - thread.create
+  - thread.reply
+  - thread.assign
+  - thread.unassign
+  - thread.event.create
+  - thread.priority.update
+risk:
+  default: READ
+  write_requires_approval: true
+  high_risk_requires_explicit_approval: true
+  destructive_disabled_by_default: true
+env: [PLAIN_API_KEY, PLAIN_APPROVE_WRITES, PLAIN_TIMEOUT_MS, PLAIN_MAX_RETRIES]
