@@ -1,0 +1,40 @@
+id: kintone
+name: Kintone
+upstream:
+  - rest
+mcp:
+  official_server: false
+api:
+  base_url: https://{subdomain}.kintone.com/k/v1
+auth:
+  type: api_token
+  header: X-Cybozu-API-Token
+  least_privilege: per-app token permissions
+environment:
+  required: [KINTONE_SUBDOMAIN, KINTONE_API_TOKENS]
+  optional: [KINTONE_GUEST_SPACE_ID, KINTONE_TIMEOUT_MS, KINTONE_MAX_RETRIES, KINTONE_REQUIRE_WRITE_APPROVAL, KINTONE_ENABLE_DESTRUCTIVE]
+capabilities:
+  - app.get
+  - fields.get
+  - record.get
+  - records.list
+  - record.create
+  - record.update
+  - records.delete
+  - comments.list
+  - comment.add
+  - status.update
+  - permissions.evaluate
+risk:
+  default: READ
+  write_requires_approval_by_default: true
+  destructive_disabled_by_default: true
+limits:
+  concurrent_requests_per_domain: 100
+  requests_per_app_per_day: 10000
+  get_records_max_per_request: 500
+  mutate_records_max_per_request: 100
+security:
+  provider_content_untrusted: true
+  arbitrary_urls_disabled: true
+  credentials_hidden_from_tool_inputs: true
