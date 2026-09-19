@@ -1,0 +1,37 @@
+id: jotform
+name: Jotform
+upstream:
+  official_mcp:
+    endpoint: https://mcp.jotform.com
+    auth: oauth2
+    note: Official hosted MCP exists; this reusable gateway uses the official REST API for a deterministic scoped tool contract and API-key credential isolation.
+  rest:
+    standard: https://api.jotform.com
+    eu: https://eu-api.jotform.com
+    hipaa: https://hipaa-api.jotform.com
+auth:
+  type: api_key
+  header: APIKEY
+  env: JOTFORM_API_KEY
+capabilities:
+  - form.list
+  - form.get
+  - form.questions.list
+  - form.submissions.list
+  - submission.get
+  - form.create
+  - form.question.create
+  - form.submission.create
+  - form.webhook.create
+  - submission.update
+  - submission.delete
+risk:
+  default: READ
+  write_requires_approval: true
+  destructive_requires_approval: true
+environment:
+  - JOTFORM_API_KEY
+  - JOTFORM_REGION
+  - JOTFORM_TIMEOUT_MS
+  - JOTFORM_WRITE_APPROVAL
+  - JOTFORM_DESTRUCTIVE_APPROVAL
