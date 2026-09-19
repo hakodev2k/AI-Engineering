@@ -1,0 +1,41 @@
+id: travis-ci
+name: Travis CI
+runtime: nodejs-20+
+upstream:
+  - rest
+mcp:
+  official_server: false
+api:
+  version: v3
+  base_url_env: TRAVIS_API_BASE_URL
+  default_base_url: https://api.travis-ci.com
+auth:
+  type: api-token
+  environment_variable: TRAVIS_TOKEN
+  header: "Authorization: token <redacted>"
+capabilities:
+  - repository.list
+  - repository.get
+  - build.list
+  - build.get
+  - branch.list
+  - job.get
+  - job.log.read
+  - build.trigger
+  - build.restart
+  - build.cancel
+risk:
+  default: READ
+  tools:
+    travis.build.trigger: HIGH_RISK
+    travis.build.restart: HIGH_RISK
+    travis.build.cancel: HIGH_RISK
+approval:
+  writes_require_runtime_enable: true
+  high_risk_requires_explicit_approval: true
+environment:
+  required: [TRAVIS_TOKEN]
+  optional: [TRAVIS_API_BASE_URL, TRAVIS_TIMEOUT_MS, TRAVIS_MAX_RETRIES, TRAVIS_ALLOWED_PERMISSIONS, TRAVIS_ENABLE_WRITES]
+official_docs:
+  api: https://developer.travis-ci.com/
+  authentication: https://developer.travis-ci.com/authentication
