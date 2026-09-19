@@ -1,0 +1,36 @@
+id: singlestore
+name: SingleStore
+upstream:
+  official_mcp:
+    available: true
+    mode: local-stdio
+    package: singlestore-mcp-server
+    auth: browser-oauth-or-api-key
+  rest:
+    base_url: https://api.singlestore.com
+    auth: bearer-api-key
+auth:
+  type: api_key
+  env: SINGLESTORE_API_KEY
+capabilities:
+  - project.list
+  - region.list
+  - cluster_group.list
+  - cluster_group.get
+  - cluster.list
+  - cluster.get
+  - cluster.outbound_allowlist.get
+  - cluster.suspend
+  - cluster.resume
+  - cluster.delete
+risk:
+  default: READ
+  writes_require_approval: true
+  high_risk_requires_approval: true
+  destructive_disabled_by_default: true
+required_env:
+  - SINGLESTORE_API_KEY
+security:
+  credentials_exposed_to_llm: false
+  provider_content_untrusted: true
+  arbitrary_http_disabled: true
