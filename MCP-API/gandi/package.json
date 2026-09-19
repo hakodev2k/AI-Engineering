@@ -1,0 +1,1 @@
+{"name":"@ai-engineering/gandi-mcp-connector","version":"1.0.0","private":true,"type":"module","engines":{"node":">=20"},"scripts":{"start":"node src/server.js","check":"node --check src/*.js","test":"node --test"},"dependencies":{"@modelcontextprotocol/sdk":"^1.18.0","zod":"^3.25.0"}}
