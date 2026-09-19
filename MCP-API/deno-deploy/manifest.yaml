@@ -1,0 +1,33 @@
+id: deno-deploy
+name: Deno Deploy
+runtime: node>=24
+upstream:
+  - sdk
+mcp:
+  official_server: false
+sdk:
+  package: '@deno/sandbox'
+  docs: https://docs.deno.com/sandbox/
+auth:
+  type: organization-token
+  environment: DENO_DEPLOY_TOKEN
+capabilities:
+  - app.list
+  - app.get
+  - app.create
+  - app.update
+  - app.delete
+  - volume.list
+  - volume.get
+  - volume.create
+  - volume.delete
+  - volume.snapshot
+  - snapshot.list
+  - snapshot.delete
+risk:
+  default: READ
+  write_approval: configurable
+  destructive_approval: required
+  destructive_enabled_by_default: false
+required_environment:
+  - DENO_DEPLOY_TOKEN
