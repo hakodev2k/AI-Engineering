@@ -1,6 +1,6 @@
 {
   "name":"sentry-mcp-connector","version":"1.0.0","type":"module","private":true,
   "scripts":{"start":"tsx src/server.ts","test":"vitest run"},
-  "dependencies":{"@modelcontextprotocol/sdk":"^1.17.5","zod":"^3.25.76"},
-  "devDependencies":{"tsx":"^4.20.5","typescript":"^5.9.2","vitest":"^3.2.4"}
+  "dependencies":{"@modelcontextprotocol/sdk":"^1.17.5","zod":"^4.6.5"},
+  "devDependencies":{"tsx":"^4.23.13","typescript":"^5.9.2","vitest":"^5.0.1"}
 }
