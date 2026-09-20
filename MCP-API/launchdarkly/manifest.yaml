@@ -1,12 +1,18 @@
 id: launchdarkly
 name: LaunchDarkly
 upstream:
-  - mcp: https://mcp.launchdarkly.com/mcp/launchdarkly
-  - rest: https://app.launchdarkly.com/api/v2
+  - mcp
+  - rest
+official_mcp:
+  hosted: https://mcp.launchdarkly.com/mcp/launchdarkly
+  local_package: '@launchdarkly/mcp-server'
+api:
+  base_url: https://app.launchdarkly.com/api/v2
+  version: '20240415'
 auth:
-  hosted_mcp: oauth2
-  rest: personal-or-service-access-token
-api_version: '20240415'
+  type: access_token
+  env: LAUNCHDARKLY_ACCESS_TOKEN
+  least_privilege: true
 capabilities:
   - project.list
   - project.get
@@ -15,17 +21,15 @@ capabilities:
   - flag.get
   - flag.create
   - flag.update
-  - flag.archive
-  - flag.status
+  - flag.delete
+  - segment.list
+  - segment.get
+  - segment.create
+  - segment.update
+  - segment.delete
 risk:
   default: READ
-  write_approval: configurable
-  high_risk_approval: required
-environment:
+  write_requires_config: true
+  destructive_requires_explicit_approval: true
+required_environment:
   - LAUNCHDARKLY_ACCESS_TOKEN
-  - LAUNCHDARKLY_API_VERSION
-  - LAUNCHDARKLY_TIMEOUT_MS
-  - LAUNCHDARKLY_APPROVE_WRITES
-notes:
-  - Hosted official MCP is preferred for interactive OAuth clients and supports feature management, AgentControl, and observability.
-  - This reusable stdio bridge uses the official REST API so credentials remain connector-side and tool contracts stay deterministic.
