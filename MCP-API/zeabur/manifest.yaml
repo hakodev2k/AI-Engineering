@@ -1,0 +1,34 @@
+id: zeabur
+name: Zeabur
+upstream:
+  - mcp
+official_mcp:
+  package: "@zeabur/mcp-server"
+  transport: stdio
+auth:
+  type: bearer-api-token
+  env: ZEABUR_TOKEN
+api:
+  graphql: https://api.zeabur.com/graphql
+capabilities:
+  - project.list
+  - project.create
+  - service.list
+  - service.status
+  - environment.configure
+  - domain.bind
+  - deployment.logs
+  - application.deploy
+permissions:
+  READ: [project.list, service.list, service.status, deployment.logs]
+  WRITE: [project.create, environment.configure, domain.bind]
+  HIGH_RISK: [application.deploy]
+approval:
+  WRITE: ZEABUR_APPROVE_WRITE
+  HIGH_RISK: ZEABUR_APPROVE_HIGH_RISK
+risk:
+  default: read
+security:
+  credential_isolation: true
+  discovered_tool_allowlist: true
+  retrieved_content_untrusted: true
