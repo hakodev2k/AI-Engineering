@@ -1,0 +1,32 @@
+id: browserless
+name: Browserless
+upstream:
+  - official-mcp
+  - rest
+official_mcp:
+  endpoint: https://mcp.browserless.io/mcp
+  auth: oauth2-or-bearer-token
+api:
+  base_url_env: BROWSERLESS_BASE_URL
+  default_base_url: https://production-sfo.browserless.io
+auth:
+  type: bearer-api-token
+  env: BROWSERLESS_TOKEN
+capabilities:
+  - page.content
+  - page.screenshot
+  - page.pdf
+  - page.scrape
+  - web.search
+  - site.map
+  - site.crawl
+  - page.export
+risk:
+  default: READ
+  page.export: WRITE
+approval:
+  page.export: configurable
+security:
+  credentials_isolated: true
+  retrieved_content_untrusted: true
+  arbitrary_code_execution: false
