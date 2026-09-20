@@ -1,30 +1,55 @@
 id: mailgun
 name: Mailgun
+version: 1.0.0
 upstream:
-  - mcp
   - rest
 auth:
-  type: api-key
-  required_env: [MAILGUN_API_KEY]
-official_mcp:
-  available: true
-  mode: local
-  note: Official Mailgun MCP exists; this connector uses the official REST API for a fixed, auditable tool contract.
-api_base_urls:
-  us: https://api.mailgun.net
-  eu: https://api.eu.mailgun.net
+  type: basic-api-key
+  username: api
+  env:
+    - MAILGUN_API_KEY
+    - MAILGUN_REGION
+api:
+  us_base_url: https://api.mailgun.net
+  eu_base_url: https://api.eu.mailgun.net
+mcp:
+  official_upstream: false
 capabilities:
   - domain.list
   - domain.get
+  - domain.verify
   - event.list
-  - stats.get
-  - suppression.bounce.list
-  - suppression.complaint.list
-  - mailing_list.list
+  - message.send
   - template.list
   - template.get
-  - email.send
+  - webhook.list
+  - webhook.get
+  - webhook.set
+  - webhook.delete
 risk:
   default: READ
-  write_approval: required
-  destructive: disabled
+  tools:
+    mailgun.domain.list: READ
+    mailgun.domain.get: READ
+    mailgun.domain.verify: WRITE
+    mailgun.event.list: READ
+    mailgun.message.send: HIGH_RISK
+    mailgun.template.list: READ
+    mailgun.template.get: READ
+    mailgun.webhook.list: READ
+    mailgun.webhook.get: READ
+    mailgun.webhook.set: HIGH_RISK
+    mailgun.webhook.delete: DESTRUCTIVE
+approval:
+  WRITE: configurable
+  HIGH_RISK: required
+  DESTRUCTIVE: required_and_disabled_by_default
+environment:
+  - MAILGUN_API_KEY
+  - MAILGUN_REGION
+  - MAILGUN_DEFAULT_DOMAIN
+  - MAILGUN_TIMEOUT_MS
+  - MAILGUN_MAX_RETRIES
+  - MAILGUN_ALLOW_WRITE
+  - MAILGUN_ALLOW_HIGH_RISK
+  - MAILGUN_ALLOW_DESTRUCTIVE

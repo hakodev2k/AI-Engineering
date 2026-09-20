@@ -1,1 +1,52 @@
-import{MailgunAuth}from'./auth.js'; export class MailgunError extends Error{constructor(public status:number,message:string,public retryAt?:number){super(message)}} export class MailgunClient{constructor(private auth=new MailgunAuth(),private f:typeof fetch=fetch,private env=process.env){} base(){const r=this.env.MAILGUN_REGION??'us';if(!['us','eu'].includes(r))throw new Error('MAILGUN_REGION_INVALID');return r==='eu'?'https://api.eu.mailgun.net':'https://api.mailgun.net'} async request(path:string,init:RequestInit={},retry=true){if(!path.startsWith('/v3/'))throw new Error('MAILGUN_PATH_INVALID');const max=Math.min(5,Math.max(0,Number(this.env.MAILGUN_MAX_RETRIES??3)));for(let a=0;;a++){const c=new AbortController(),t=setTimeout(()=>c.abort(),Number(this.env.MAILGUN_TIMEOUT_MS??10000));try{const r=await this.f(this.base()+path,{...init,signal:c.signal,headers:{Authorization:this.auth.header(),...(init.headers??{})}});const tx=await r.text();let d:any={};try{d=tx?JSON.parse(tx):{}}catch{d={message:tx}}if(r.ok)return d;const reset=Number(r.headers.get('x-ratelimit-reset')??0);const e=new MailgunError(r.status,String(d.message??'Mailgun request failed'),reset||undefined);if(!retry||![429,500,502,503,504].includes(r.status)||a>=max)throw e;const wait=reset?Math.max(0,Math.min(5000,reset-Date.now())):Math.min(5000,250*2**a);await new Promise(x=>setTimeout(x,wait))}catch(e){if(e instanceof MailgunError)throw e;if(!retry||a>=max)throw e;await new Promise(x=>setTimeout(x,Math.min(5000,250*2**a)))}finally{clearTimeout(t)}}} async get(path:string,params:Record<string,string|number|undefined>={}){const q=new URLSearchParams();for(const[k,v]of Object.entries(params))if(v!==undefined)q.set(k,String(v));return this.request(path+(q.size?'?'+q:''))} async send(domain:string,fields:Record<string,string>){const body=new URLSearchParams(fields);return this.request(`/v3/${encodeURIComponent(domain)}/messages`,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body},false)}}
+import { config } from './config.js';
+
+export class MailgunError extends Error {
+  constructor(public status: number, message: string, public retryAfter?: number) { super(message); }
+}
+
+type RequestOptions = { method?: string; query?: Record<string, string | number | undefined>; form?: Record<string, string | number | string[] | undefined>; retryable?: boolean };
+
+export class MailgunClient {
+  private readonly baseUrl: string;
+  constructor(private readonly fetchImpl: typeof fetch = fetch) {
+    if (!config.apiKey) throw new Error('MAILGUN_API_KEY is required.');
+    this.baseUrl = config.region === 'eu' ? 'https://api.eu.mailgun.net' : 'https://api.mailgun.net';
+  }
+
+  async request(path: string, options: RequestOptions = {}): Promise<any> {
+    const method = options.method ?? 'GET';
+    const url = new URL(path, this.baseUrl);
+    for (const [k, v] of Object.entries(options.query ?? {})) if (v !== undefined) url.searchParams.set(k, String(v));
+    const headers: Record<string,string> = { Authorization: `Basic ${Buffer.from(`api:${config.apiKey}`).toString('base64')}` };
+    let body: BodyInit | undefined;
+    if (options.form) {
+      const form = new FormData();
+      for (const [k, v] of Object.entries(options.form)) {
+        if (v === undefined) continue;
+        if (Array.isArray(v)) for (const item of v) form.append(k, item); else form.append(k, String(v));
+      }
+      body = form;
+    }
+    const max = options.retryable === false || !['GET','HEAD'].includes(method) ? 0 : config.maxRetries;
+    for (let attempt = 0; ; attempt++) {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), config.timeoutMs);
+      try {
+        const res = await this.fetchImpl(url, { method, headers, body, signal: controller.signal });
+        const text = await res.text();
+        const data = text ? (() => { try { return JSON.parse(text); } catch { return { message: text }; } })() : {};
+        if (res.ok) return data;
+        const retryAfter = Number(res.headers.get('retry-after') ?? 0) || undefined;
+        if ((res.status === 429 || res.status >= 500) && attempt < max) {
+          const delay = retryAfter ? retryAfter * 1000 : Math.min(1000 * 2 ** attempt, 5000);
+          await new Promise(r => setTimeout(r, delay));
+          continue;
+        }
+        throw new MailgunError(res.status, data?.message ?? `Mailgun API error ${res.status}`, retryAfter);
+      } catch (err: any) {
+        if (err?.name === 'AbortError') throw new Error(`Mailgun request timed out after ${config.timeoutMs}ms`);
+        throw err;
+      } finally { clearTimeout(timer); }
+    }
+  }
+}

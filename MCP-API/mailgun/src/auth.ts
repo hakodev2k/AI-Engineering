@@ -1,1 +1,0 @@
-export class MailgunAuth{constructor(private env=process.env){} key(){const k=this.env.MAILGUN_API_KEY?.trim();if(!k)throw new Error('MAILGUN_AUTH_MISSING');return k} header(){return 'Basic '+Buffer.from('api:'+this.key()).toString('base64')}}
