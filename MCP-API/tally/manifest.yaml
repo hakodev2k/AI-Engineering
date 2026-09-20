@@ -1,0 +1,28 @@
+id: tally
+name: Tally
+upstream:
+  - official-mcp
+  - rest
+official_mcp:
+  remote: https://api.tally.so/mcp
+  auth: oauth2-or-api-key
+rest:
+  base_url: https://api.tally.so
+  version_header: tally-version
+auth:
+  type: bearer-api-key
+  env: TALLY_API_KEY
+capabilities:
+  - workspace.list
+  - workspace.get
+  - form.list
+  - form.search
+  - form.get
+  - form.create
+  - form.update
+  - submission.list
+risk:
+  default: READ
+  write_approval: required
+  destructive: disabled
+rate_limit: 100 requests/minute

@@ -1,0 +1,1 @@
+export class TallyAuth{constructor(private env=process.env){}token(){const v=this.env.TALLY_API_KEY?.trim();if(!v)throw new Error("TALLY_AUTH_MISSING");return v}headers(){return{Authorization:`Bearer ${this.token()}`,Accept:"application/json","tally-version":this.env.TALLY_API_VERSION??"2025-02-01"}}}

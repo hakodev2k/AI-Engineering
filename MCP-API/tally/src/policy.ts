@@ -1,0 +1,1 @@
+export type Risk="READ"|"WRITE"|"HIGH_RISK"|"DESTRUCTIVE";export function requireApproval(risk:Risk,approved:boolean,env=process.env){if(risk==="DESTRUCTIVE")throw new Error("TALLY_DESTRUCTIVE_DISABLED");if((risk==="HIGH_RISK"||(risk==="WRITE"&&(env.TALLY_WRITE_APPROVAL??"required")==="required"))&&!approved)throw new Error("TALLY_APPROVAL_REQUIRED")}
