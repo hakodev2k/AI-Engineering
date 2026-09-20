@@ -1,0 +1,3 @@
+export type Config={port:number;token:string;timeoutMs:number;requireExecApproval:boolean};
+const yes=(v:string|undefined,d:boolean)=>v===undefined?d:/^(1|true|yes)$/i.test(v);
+export function loadConfig(e=process.env):Config{const port=Number(e.DAGGER_SESSION_PORT),token=e.DAGGER_SESSION_TOKEN?.trim();if(!Number.isInteger(port)||port<1||port>65535)throw new Error("DAGGER_SESSION_PORT is required");if(!token)throw new Error("DAGGER_SESSION_TOKEN is required");const timeoutMs=Number(e.DAGGER_TIMEOUT_MS??30000);if(!Number.isFinite(timeoutMs)||timeoutMs<1000||timeoutMs>120000)throw new Error("DAGGER_TIMEOUT_MS out of range");return{port,token,timeoutMs,requireExecApproval:yes(e.DAGGER_REQUIRE_EXEC_APPROVAL,true)}}
