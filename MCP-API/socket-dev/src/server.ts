@@ -1,0 +1,16 @@
+import {McpServer} from '@modelcontextprotocol/sdk/server/mcp.js';
+import {StdioServerTransport} from '@modelcontextprotocol/sdk/server/stdio.js';
+import {z} from 'zod'; import {fromEnv} from './client.js';
+const api=fromEnv(); const orgDefault=process.env.SOCKET_ORG_SLUG;
+const s=new McpServer({name:'socket-dev-connector',version:'1.0.0'});
+const org=z.string().min(1).max(120).regex(/^[A-Za-z0-9._-]+$/); const id=z.string().min(1).max(200); const purl=z.string().min(5).max(1000).startsWith('pkg:');
+const out=(x:unknown)=>({content:[{type:'text' as const,text:JSON.stringify({data:x,trust:'untrusted-provider-data'},null,2)}]}); const resolve=(x?:string)=>x||orgDefault||(()=>{throw new Error('org_slug or SOCKET_ORG_SLUG is required')})();
+s.tool('socket.quota.get','Read current Socket API quota.',{},async()=>out(await api.quota()));
+s.tool('socket.organization.list','List organizations visible to the token.',{},async()=>out(await api.organizations()));
+s.tool('socket.alert.list','List security alerts. READ; scope alerts:list.',{org_slug:org.optional(),severity:z.enum(['low','medium','high','critical']).optional(),status:z.enum(['open','cleared']).optional(),category:z.enum(['supplyChainRisk','maintenance','quality','license','vulnerability']).optional(),per_page:z.number().int().min(1).max(5000).default(100),cursor:z.string().max(500).optional()},async a=>out(await api.alerts(resolve(a.org_slug),a)));
+s.tool('socket.repository.list','List repositories. READ; scope repo:list.',{org_slug:org.optional(),page:z.number().int().min(1).optional(),per_page:z.number().int().min(1).max(100).optional()},async a=>out(await api.repositories(resolve(a.org_slug),a)));
+s.tool('socket.full_scan.list','List dependency full scans. READ; scope full-scans:list.',{org_slug:org.optional(),page:z.number().int().min(1).optional(),per_page:z.number().int().min(1).max(100).optional()},async a=>out(await api.fullScans(resolve(a.org_slug),a)));
+s.tool('socket.full_scan.get','Read a full scan and SBOM artifacts. READ; scope full-scans:list.',{org_slug:org.optional(),full_scan_id:id},async a=>out(await api.fullScan(resolve(a.org_slug),a.full_scan_id)));
+s.tool('socket.package.inspect','Inspect a Package URL. READ semantics; Socket uses POST; scope packages:list. Connector still requires write gate because POST is conservatively gated.',{org_slug:org.optional(),purl},async a=>out(await api.inspectPackage(resolve(a.org_slug),a.purl)));
+s.tool('socket.full_scan.create','Create a full dependency scan. WRITE; scope full-scans:create; explicit approval required.',{org_slug:org.optional(),repo:z.string().min(1).max(200),scan:z.record(z.unknown()),approved:z.literal(true)},async a=>out(await api.createFullScan(resolve(a.org_slug),a.repo,a.scan,a.approved)));
+await s.connect(new StdioServerTransport());
