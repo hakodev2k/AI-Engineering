@@ -1,0 +1,37 @@
+id: vault
+name: HashiCorp Vault
+upstream:
+  - rest
+api:
+  base_url_env: VAULT_ADDR
+  prefix: /v1
+auth:
+  type: vault-client-token
+  token_env: VAULT_TOKEN
+  namespace_env: VAULT_NAMESPACE
+capabilities:
+  - system.health
+  - system.leader
+  - auth.list
+  - kv.list
+  - kv.read
+  - kv.write
+  - kv.delete-latest
+  - kv.undelete
+risk:
+  default: READ
+  tools:
+    vault.system.health: READ
+    vault.system.leader: READ
+    vault.auth.list: READ
+    vault.kv.list: READ
+    vault.kv.read: READ
+    vault.kv.write: WRITE
+    vault.kv.delete-latest: DESTRUCTIVE
+    vault.kv.undelete: WRITE
+approval:
+  write: configurable
+  destructive: explicit-and-disabled-by-default
+mcp:
+  official_server: none-confirmed
+  strategy: official-http-api
