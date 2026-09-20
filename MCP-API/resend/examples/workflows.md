@@ -1,13 +1,6 @@
-# Workflow examples
+# Workflows
 
-## Inspect delivery
-Tool: `resend.email.list` → `resend.email.get`. Permission: READ. Approval: no. Output is wrapped with `trust: untrusted-provider-content`.
-
-## Send transactional email
-Tool: `resend.email.send`. Permission: HIGH_RISK. Approval: explicit `approved: true`. Input: `{ "from":"App <hello@example.com>", "to":["user@example.com"], "subject":"Welcome", "text":"Welcome!", "approved":true }`. Expected output includes the Resend email id.
-
-## Manage audience
-Use `resend.contact.list`, then `resend.contact.create` or `resend.contact.update`. Mutations are WRITE and require approval by default.
-
-## Verify sender domain
-Use `resend.domain.get` to inspect DNS state, then `resend.domain.verify` with explicit approval after DNS is configured.
+- `resend.email.list` — `{ "limit": 50 }`; READ; no approval; returns provider email records as untrusted data.
+- `resend.domain.get` — `{ "id": "00000000-0000-0000-0000-000000000000" }`; READ; no approval.
+- `resend.email.send` — `{ "from":"sender@example.com","to":["user@example.com"],"subject":"Welcome","text":"Hello","approved":true }`; WRITE; explicit approval required.
+- `resend.contact.create` — `{ "email":"user@example.com","firstName":"Ada","approved":true }`; WRITE; explicit approval required.
