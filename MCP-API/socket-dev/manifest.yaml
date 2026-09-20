@@ -1,0 +1,42 @@
+id: socket-dev
+name: Socket.dev
+upstream:
+  - rest
+auth:
+  type: organization-token
+  header: "Authorization: Bearer <token>"
+api_base_url: https://api.socket.dev/v0
+official_mcp:
+  available: true
+  note: "SocketDev/socket-mcp exists; this connector uses the official REST API to provide a constrained, stable tool contract and explicit approval boundaries."
+environment:
+  - SOCKET_API_TOKEN
+  - SOCKET_ORG_SLUG
+  - SOCKET_API_BASE_URL
+  - SOCKET_TIMEOUT_MS
+  - SOCKET_APPROVE_WRITES
+capabilities:
+  - quota.read
+  - organization.list
+  - alert.list
+  - repository.list
+  - full_scan.list
+  - full_scan.read
+  - full_scan.create
+  - package.inspect
+risk:
+  default: READ
+tools:
+  socket.quota.get: { risk: READ, approval: false }
+  socket.organization.list: { risk: READ, approval: false }
+  socket.alert.list: { risk: READ, approval: false, scope: "alerts:list" }
+  socket.repository.list: { risk: READ, approval: false, scope: "repo:list" }
+  socket.full_scan.list: { risk: READ, approval: false, scope: "full-scans:list" }
+  socket.full_scan.get: { risk: READ, approval: false, scope: "full-scans:list" }
+  socket.package.inspect: { risk: READ, approval: false, scope: "packages:list" }
+  socket.full_scan.create: { risk: WRITE, approval: true, scope: "full-scans:create" }
+security:
+  credentials_exposed_to_llm: false
+  provider_content_untrusted: true
+  arbitrary_http_disabled: true
+  destructive_tools: disabled
