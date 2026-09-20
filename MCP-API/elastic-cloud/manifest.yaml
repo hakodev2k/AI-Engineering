@@ -1,0 +1,45 @@
+id: elastic-cloud
+name: Elastic Cloud
+upstream:
+  - rest
+auth:
+  type: api-key
+  header: Authorization
+  scheme: ApiKey
+api:
+  base_url: https://api.elastic-cloud.com
+  documentation: https://www.elastic.co/docs/api/doc/cloud/
+official_mcp:
+  status: not-used
+  note: Connector uses the official Elastic Cloud REST API for deterministic cloud control-plane operations.
+capabilities:
+  - deployment.list
+  - deployment.get
+  - deployment.create
+  - deployment.update
+  - deployment.shutdown
+  - deployment.delete
+  - deployment.resource.list
+  - deployment.resource.get
+  - deployment.activity.list
+  - region.list
+  - stack_version.list
+  - traffic_filter.list
+  - traffic_filter.get
+risk:
+  default: read
+  write_approval: configurable
+  high_risk_approval: required
+  destructive_disabled_by_default: true
+environment:
+  - ELASTIC_CLOUD_API_KEY
+  - ELASTIC_CLOUD_API_BASE
+  - ELASTIC_CLOUD_TIMEOUT_MS
+  - ELASTIC_CLOUD_APPROVE_WRITES
+  - ELASTIC_CLOUD_APPROVE_HIGH_RISK
+  - ELASTIC_CLOUD_ALLOW_DESTRUCTIVE
+security:
+  credential_isolation: true
+  cross_origin_requests: blocked
+  provider_content_untrusted: true
+  bounded_retries: true
