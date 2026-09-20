@@ -1,1 +1,0 @@
-export class ResendAuth{constructor(private env=process.env){} token(){const v=this.env.RESEND_API_KEY?.trim();if(!v)throw new Error("RESEND_AUTH_MISSING");return v} headers(){return{Authorization:`Bearer ${this.token()}`,Accept:"application/json"}}}
