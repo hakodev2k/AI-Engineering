@@ -1,91 +1,17 @@
-import { z } from 'zod';
-import type { Config } from './config.js';
-import { assertApproval, TOOL_POLICY } from './policy.js';
-import type { Upstream } from './upstream.js';
-
-export const emailAddress = z.string().email().max(320);
-const date = z.string().regex(/^\d{4}-\d{2}-\d{2}$/);
-const approval = z.string().regex(/^[a-f0-9]{64}$/).optional();
-const bounceType = z.enum(['AddressChange','AutoResponder','BadEmailAddress','Blocked','ChallengeVerification','DMARCPolicy','DnsError','HardBounce','InboundError','ManuallyDeactivated','OpenRelayTest','SMTPApiError','SoftBounce','SpamComplaint','SpamNotification','Subscribe','TemplateRenderingFailed','Transient','Unconfirmed','Unknown','Unsubscribe','VirusNotification']);
-
-export const schemas = {
-  empty: z.object({}).strict(),
-  emailSearch: z.object({
-    recipient: emailAddress.optional(), fromEmail: emailAddress.optional(), tag: z.string().max(100).optional(),
-    subject: z.string().max(500).optional(), status: z.enum(['queued','sent','processed']).optional(),
-    messageStream: z.string().max(100).optional(), fromDate: date.optional(), toDate: date.optional(),
-    count: z.number().int().min(1).max(500).default(50), offset: z.number().int().min(0).default(0)
-  }).strict(),
-  messageGet: z.object({ messageId: z.string().uuid() }).strict(),
-  diagnose: z.object({ recipient: emailAddress, messageId: z.string().uuid().optional(), fromDate: date.optional(), toDate: date.optional(), messageStream: z.string().max(100).optional() }).strict(),
-  bounceSearch: z.object({
-    type: bounceType.optional(), inactive: z.boolean().optional(), emailFilter: z.string().max(320).optional(), tag: z.string().max(100).optional(),
-    messageID: z.string().uuid().optional(), messageStream: z.string().max(100).optional(), fromDate: date.optional(), toDate: date.optional(),
-    count: z.number().int().min(1).max(500).default(50), offset: z.number().int().min(0).default(0)
-  }).strict(),
-  stats: z.object({ stat: z.enum(['summary','overview','sent','bounces','spam','tracked','opens','openPlatforms','openClients','openReadTimes','clicks','clickBrowsers','clickPlatforms','clickLocation']).default('summary'), tag: z.string().max(100).optional(), fromDate: date.optional(), toDate: date.optional(), messageStream: z.string().max(100).optional() }).strict(),
-  templateGet: z.object({ templateIdOrAlias: z.union([z.number().int().positive(), z.string().min(1).max(100)]) }).strict(),
-  emailSend: z.object({
-    to: z.union([emailAddress, z.array(emailAddress).min(1).max(50)]), subject: z.string().min(1).max(1000),
-    textBody: z.string().max(2_000_000).optional(), htmlBody: z.string().max(5_000_000).optional(),
-    from: emailAddress.optional(), cc: z.string().max(5000).optional(), bcc: z.string().max(5000).optional(), replyTo: emailAddress.optional(), tag: z.string().max(100).optional(), approval
-  }).strict(),
-  templateSend: z.object({
-    to: z.union([emailAddress, z.array(emailAddress).min(1).max(50)]), templateId: z.number().int().positive().optional(), templateAlias: z.string().min(1).max(100).optional(),
-    templateModel: z.record(z.unknown()).default({}), from: emailAddress.optional(), tag: z.string().max(100).optional(), approval
-  }).strict(),
-  webhookList: z.object({ messageStream: z.string().max(100).optional() }).strict(),
-  webhookCreate: z.object({
-    url: z.string().url(), messageStream: z.string().max(100).optional(), openEnabled: z.boolean().optional(), clickEnabled: z.boolean().optional(), deliveryEnabled: z.boolean().optional(), bounceEnabled: z.boolean().optional(), spamComplaintEnabled: z.boolean().optional(), subscriptionChangeEnabled: z.boolean().optional(), approval
-  }).strict(),
-  webhookDelete: z.object({ webhookId: z.number().int().positive(), approval }).strict()
-};
-
-function recipients(value: string | string[]): string[] { return Array.isArray(value) ? value : [value]; }
-const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-
-export function assertRecipientsAllowed(config: Config, value: string | string[]): void {
-  if (!config.recipientDomainAllowlist.length) return;
-  for (const address of recipients(value)) {
-    const domain = address.split('@')[1]?.toLowerCase();
-    if (!domain || !config.recipientDomainAllowlist.includes(domain)) throw new Error(`Recipient domain is not allowlisted: ${domain ?? 'invalid'}`);
-  }
-}
-
-export function assertWebhookAllowed(config: Config, value: string): void {
-  const url = new URL(value);
-  if (url.protocol !== 'https:') throw new Error('Webhook URL must use HTTPS');
-  if (config.webhookUrlAllowlist.length && !config.webhookUrlAllowlist.some(prefix => value.toLowerCase().startsWith(prefix))) throw new Error('Webhook URL is not allowlisted');
-}
-
-function isTransient(error: unknown): boolean {
-  const text = error instanceof Error ? error.message : String(error);
-  return /429|rate.?limit|timeout|timed.?out|ECONNRESET|EAI_AGAIN|503|temporar/i.test(text);
-}
-
-async function callWithPolicy(upstream: Upstream, tool: string, upstreamTool: string, args: Record<string, unknown>): Promise<unknown> {
-  const readOnly = TOOL_POLICY[tool]?.risk === 'READ';
-  const attempts = readOnly ? 3 : 1;
-  let last: unknown;
-  for (let i = 0; i < attempts; i++) {
-    try { return await upstream.call(upstreamTool, args); }
-    catch (error) {
-      last = error;
-      if (!readOnly || !isTransient(error) || i === attempts - 1) throw error;
-      await sleep(250 * (2 ** i));
-    }
-  }
-  throw last;
-}
-
-export async function invoke(upstream: Upstream, config: Config, tool: string, upstreamTool: string, args: Record<string, unknown>): Promise<unknown> {
-  if (tool === 'postmark.email.send' && !args.textBody && !args.htmlBody) throw new Error('textBody or htmlBody is required');
-  if (tool === 'postmark.template.send' && Number(Boolean(args.templateId)) + Number(Boolean(args.templateAlias)) !== 1) throw new Error('exactly one of templateId or templateAlias is required');
-  if (tool === 'postmark.webhook.create' && !['openEnabled','clickEnabled','deliveryEnabled','bounceEnabled','spamComplaintEnabled','subscriptionChangeEnabled'].some(k => args[k] === true)) throw new Error('at least one webhook trigger must be enabled');
-  assertApproval(config.approvalSecret, tool, args, typeof args.approval === 'string' ? args.approval : undefined);
-  const clean = { ...args };
-  delete clean.approval;
-  if (tool === 'postmark.email.send' || tool === 'postmark.template.send') assertRecipientsAllowed(config, clean.to as string | string[]);
-  if (tool === 'postmark.webhook.create') assertWebhookAllowed(config, clean.url as string);
-  return callWithPolicy(upstream, tool, upstreamTool, clean);
-}
+import {z} from "zod";import {PostmarkClient} from "./client.js";import {requireApproval,Risk} from "./policy.js";
+export type Tool={name:string,description:string,risk:Risk,approval:boolean,schema:z.AnyZodObject,run:(x:any)=>Promise<any>};
+const page=z.object({count:z.number().int().min(1).max(500).default(100),offset:z.number().int().min(0).default(0)}).strict();const id=z.string().min(1).max(200).regex(/^[A-Za-z0-9_-]+$/);const email=z.string().email().max(320);
+export function tools(c=new PostmarkClient()):Tool[]{const read=(name:string,description:string,schema:z.AnyZodObject,run:(x:any)=>Promise<any>):Tool=>({name,description,risk:"READ",approval:false,schema,run});const write=(name:string,description:string,schema:z.AnyZodObject,run:(x:any)=>Promise<any>):Tool=>({name,description,risk:"WRITE",approval:true,schema,run});return[
+read("postmark.server.get","Get the authenticated server.",z.object({}).strict(),()=>c.request("/server")),
+read("postmark.template.list","List templates.",page,x=>c.paged("/templates?TemplateType=All",x.count,x.offset)),
+read("postmark.template.get","Get template by ID or alias.",z.object({template:id}).strict(),x=>c.request("/templates/"+encodeURIComponent(x.template))),
+read("postmark.message.outbound.list","List outbound messages.",page,x=>c.paged("/messages/outbound",x.count,x.offset)),
+read("postmark.message.outbound.get","Get outbound message details.",z.object({messageId:z.string().uuid()}).strict(),x=>c.request("/messages/outbound/"+x.messageId+"/details")),
+read("postmark.bounce.list","List bounces.",page,x=>c.paged("/bounces",x.count,x.offset)),
+read("postmark.bounce.get","Get bounce.",z.object({bounceId:z.number().int().positive()}).strict(),x=>c.request("/bounces/"+x.bounceId)),
+read("postmark.webhook.list","List webhooks for a message stream.",z.object({messageStream:z.string().min(1).max(100).default("outbound")}).strict(),x=>c.request("/webhooks?MessageStream="+encodeURIComponent(x.messageStream))),
+read("postmark.webhook.get","Get webhook.",z.object({webhookId:z.number().int().positive()}).strict(),x=>c.request("/webhooks/"+x.webhookId)),
+read("postmark.webhook.statistics","Get webhook delivery statistics.",z.object({webhookId:z.number().int().positive()}).strict(),x=>c.request("/webhooks/"+x.webhookId+"/statistics")),
+write("postmark.email.send","Send transactional email; external side effect requires approval.",z.object({from:email,to:email,subject:z.string().min(1).max(998),textBody:z.string().max(100000).optional(),htmlBody:z.string().max(100000).optional(),messageStream:z.string().min(1).max(100).default("outbound"),approved:z.literal(true)}).strict(),async x=>{if(!x.textBody&&!x.htmlBody)throw new Error("POSTMARK_BODY_REQUIRED");requireApproval("WRITE",x.approved);return c.request("/email",{method:"POST",body:JSON.stringify({From:x.from,To:x.to,Subject:x.subject,TextBody:x.textBody,HtmlBody:x.htmlBody,MessageStream:x.messageStream})},false)}),
+write("postmark.email.send_template","Send transactional template email; requires approval.",z.object({from:email,to:email,templateAlias:id,templateModel:z.record(z.unknown()),messageStream:z.string().min(1).max(100).default("outbound"),approved:z.literal(true)}).strict(),async x=>{requireApproval("WRITE",x.approved);return c.request("/email/withTemplate",{method:"POST",body:JSON.stringify({From:x.from,To:x.to,TemplateAlias:x.templateAlias,TemplateModel:x.templateModel,MessageStream:x.messageStream})},false)})
+]}
