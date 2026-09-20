@@ -1,35 +1,7 @@
-# Example workflows
+# Examples
 
-## Delivery investigation
+`mailgun.domain.list` input `{ "limit": 50 }` is READ and requires no approval.
 
-Tool: `mailgun.event.list`
+`mailgun.event.list` input `{ "domain": "example.com", "limit": 100, "event": "failed" }` is READ and returns provider data as untrusted content.
 
-Input:
-```json
-{"domain":"mg.example.com","event":"failed","limit":100,"severity":"permanent"}
-```
-Permission: READ. Approval: no.
-
-Expected shape: Mailgun event response with `items` and `paging` fields.
-
-## Approved transactional send
-
-Tool: `mailgun.message.send`
-
-Input:
-```json
-{"domain":"mg.example.com","from":"App <postmaster@mg.example.com>","to":["user@example.net"],"subject":"Your receipt","text":"Receipt ready.","approved":true}
-```
-Permission: HIGH_RISK. Approval: explicit human approval required and `MAILGUN_ALLOW_HIGH_RISK=true`.
-
-Expected shape: Mailgun send acknowledgement containing provider message/id fields.
-
-## Configure delivery webhook
-
-Tool: `mailgun.webhook.set`
-
-Input:
-```json
-{"domain":"mg.example.com","type":"delivered","urls":["https://hooks.example.com/mailgun"],"approved":true}
-```
-Permission: HIGH_RISK. Approval: explicit human approval required.
+`mailgun.email.send` input `{ "domain":"mg.example.com", "from":"sender@example.com", "to":"user@example.net", "subject":"Hello", "text":"Hi", "approved":true }` is WRITE and requires explicit approval. Expected success contains Mailgun's message id and status wrapped as untrusted provider data.
