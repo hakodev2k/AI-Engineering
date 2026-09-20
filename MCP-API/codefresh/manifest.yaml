@@ -1,0 +1,33 @@
+id: codefresh
+name: Codefresh
+upstream:
+  - rest
+official_mcp: false
+api_base_url: https://g.codefresh.io/api
+auth:
+  type: api_key
+  header: Authorization
+  required_scopes:
+    read: [Build, Pipeline]
+    write: [Build, Pipeline]
+environment:
+  required: [CODEFRESH_API_KEY]
+  optional: [CODEFRESH_API_BASE, CODEFRESH_TIMEOUT_MS, CODEFRESH_APPROVE_WRITES]
+capabilities:
+  - pipeline.list
+  - pipeline.get
+  - pipeline.run
+  - build.list
+  - build.get
+  - build.context
+  - build.logs
+  - build.terminate
+risk:
+  default: READ
+  tools:
+    codefresh.pipeline.run: HIGH_RISK
+    codefresh.build.terminate: HIGH_RISK
+approval:
+  write: explicit
+  high_risk: explicit
+  destructive: disabled
