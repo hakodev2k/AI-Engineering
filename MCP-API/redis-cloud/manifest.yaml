@@ -1,0 +1,41 @@
+id: redis-cloud
+name: Redis Cloud
+upstream:
+  - mcp
+  - rest
+mcp:
+  official: true
+  implementation: https://github.com/redis/mcp-redis-cloud
+  scope: Redis Cloud administration
+api:
+  base_url: https://api.redislabs.com/v1
+auth:
+  type: api-keys
+  headers:
+    account: x-api-key
+    user: x-api-secret-key
+capabilities:
+  - subscription.list
+  - subscription.get
+  - database.list
+  - database.get
+  - database.create
+  - database.update
+  - database.delete
+  - task.get
+risk:
+  default: READ
+  tools:
+    redis-cloud.subscription.list: READ
+    redis-cloud.subscription.get: READ
+    redis-cloud.database.list: READ
+    redis-cloud.database.get: READ
+    redis-cloud.task.get: READ
+    redis-cloud.database.create: HIGH_RISK
+    redis-cloud.database.update: HIGH_RISK
+    redis-cloud.database.delete: DESTRUCTIVE
+approval:
+  high_risk: explicit
+  destructive: explicit-and-disabled-by-default
+rate_limit:
+  account_api_key: 400 requests/minute
