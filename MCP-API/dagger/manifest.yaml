@@ -1,0 +1,38 @@
+id: dagger
+name: Dagger
+upstream:
+  - graphql
+sdk:
+  official:
+    - "@dagger.io/dagger"
+api:
+  type: graphql
+  endpoint: "http://127.0.0.1:${DAGGER_SESSION_PORT}/query"
+auth:
+  type: session-token-basic-auth
+  token_env: DAGGER_SESSION_TOKEN
+capabilities:
+  - engine.version
+  - container.inspect
+  - container.exec
+  - container.file.read
+  - git.ref.inspect
+  - git.tree.entries
+  - git.file.read
+  - cache.volume.inspect
+risk:
+  default: READ
+  tools:
+    dagger.engine.version: READ
+    dagger.container.inspect: READ
+    dagger.container.exec: HIGH_RISK
+    dagger.container.file.read: READ
+    dagger.git.ref.inspect: READ
+    dagger.git.tree.entries: READ
+    dagger.git.file.read: READ
+    dagger.cache.volume.inspect: READ
+approval:
+  high_risk: explicit
+mcp:
+  official_server: none-confirmed
+  strategy: official-graphql-api
