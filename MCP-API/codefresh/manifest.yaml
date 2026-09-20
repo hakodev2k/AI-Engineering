@@ -2,6 +2,7 @@ id: codefresh
 name: Codefresh
 upstream:
   - rest
+  - official-cli
 official_mcp: false
 api_base_url: https://g.codefresh.io/api
 auth:
@@ -21,12 +22,10 @@ capabilities:
   - build.get
   - build.context
   - build.logs
-  - build.terminate
 risk:
   default: READ
   tools:
     codefresh.pipeline.run: HIGH_RISK
-    codefresh.build.terminate: HIGH_RISK
 approval:
   write: explicit
   high_risk: explicit
