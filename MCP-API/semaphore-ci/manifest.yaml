@@ -1,0 +1,30 @@
+id: semaphore-ci
+name: Semaphore CI
+upstream: [rest]
+api_base: "${SEMAPHORE_BASE_URL}/api/v1alpha"
+auth:
+  type: api_token
+  header: "Authorization: Token <credential>"
+required_env: [SEMAPHORE_BASE_URL, SEMAPHORE_API_TOKEN]
+capabilities:
+  - project.list
+  - project.get
+  - workflow.list
+  - workflow.get
+  - workflow.run
+  - pipeline.list
+  - pipeline.get
+  - pipeline.stop
+  - pipeline.validate_yaml
+  - task.run
+risk:
+  default: READ
+  workflow.run: HIGH_RISK
+  pipeline.stop: HIGH_RISK
+  task.run: HIGH_RISK
+  pipeline.validate_yaml: READ
+approval:
+  write: configurable
+  high_risk: required
+  destructive: disabled
+transport_notes: "No official Semaphore MCP server was identified; connector uses documented Semaphore v1alpha REST API."
