@@ -1,0 +1,1 @@
+export type Risk='READ'|'WRITE'|'HIGH_RISK'|'DESTRUCTIVE';export function requireApproval(r:Risk,ok:boolean,env=process.env){if(r==='DESTRUCTIVE')throw new Error('PERMIT_DESTRUCTIVE_DISABLED');if(r==='HIGH_RISK'&&!ok)throw new Error('PERMIT_APPROVAL_REQUIRED');if(r==='WRITE'&&(env.PERMIT_WRITE_APPROVAL??'required')==='required'&&!ok)throw new Error('PERMIT_APPROVAL_REQUIRED')}

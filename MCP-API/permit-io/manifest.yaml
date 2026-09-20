@@ -1,0 +1,33 @@
+id: permit-io
+name: Permit.io
+upstream:
+  - mcp
+  - rest
+auth:
+  type: bearer-api-key
+  required_env: [PERMIT_API_KEY]
+official_mcp:
+  available: true
+  modes: [local, hosted]
+  capabilities: [access_requests, operation_approvals, resource_instances]
+api_base_urls:
+  us: https://api.permit.io
+  eu: https://api.eu.permit.io
+capabilities:
+  - project.list
+  - environment.list
+  - resource.list
+  - resource.get
+  - role.list
+  - role.get
+  - user.list
+  - user.get
+  - tenant.list
+  - tenant.get
+  - role_assignment.list
+  - user.create
+  - tenant.create
+risk:
+  default: READ
+  write_approval: required
+  destructive: disabled

@@ -1,0 +1,1 @@
+export class PermitAuth{constructor(private env=process.env){}key(){const v=this.env.PERMIT_API_KEY?.trim();if(!v)throw new Error('PERMIT_AUTH_MISSING');return v}header(){return `Bearer ${this.key()}`}}
