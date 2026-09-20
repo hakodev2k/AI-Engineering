@@ -1,0 +1,38 @@
+id: netbird
+name: NetBird
+upstream:
+  - rest
+official_mcp:
+  checked: true
+  used: false
+  reason: "No official NetBird MCP server is documented in the official API documentation; the connector uses the official Public REST API."
+api:
+  base_url: https://api.netbird.io
+  path_prefix: /api
+auth:
+  types: [personal_access_token, oauth2_bearer]
+  recommended: personal_access_token_service_user
+  env: [NETBIRD_API_URL, NETBIRD_AUTH_TYPE, NETBIRD_TOKEN]
+rate_limit:
+  cloud: "120 requests/minute with burst of 1200 (official documentation)"
+risk:
+  default: READ
+  permissions: [READ, WRITE, HIGH_RISK]
+capabilities:
+  - peers.list
+  - peers.get
+  - groups.list
+  - groups.get
+  - groups.create
+  - groups.update
+  - policies.list
+  - policies.get
+  - events.list
+  - setup_keys.list
+approval:
+  required:
+    - netbird.group.create
+    - netbird.group.update
+security:
+  credentials_exposed_to_model: false
+  arbitrary_api_proxy: false
