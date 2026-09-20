@@ -1,0 +1,22 @@
+id: fullstory
+name: Fullstory
+upstream: [mcp, rest]
+mcp:
+  endpoint: https://api.fullstory.com/mcp/fullstory
+  status: beta
+  auth: oauth2-or-bearer-api-key
+api:
+  base_url: https://api.fullstory.com
+  version: v2
+  auth: api-key-basic-header
+environment: [FULLSTORY_API_KEY, FULLSTORY_MCP_BEARER_TOKEN, FULLSTORY_MCP_URL, FULLSTORY_API_BASE_URL, FULLSTORY_ALLOW_WRITES, FULLSTORY_REQUIRE_WRITE_APPROVAL]
+capabilities: [analytics.segment.build, analytics.metric.build, analytics.metric.compute, analytics.metric.update, analytics.sessions.find, user.list, session.list, session.events.read, user.upsert, event.create]
+risk:
+  default: READ
+  writes: WRITE
+approval:
+  user.upsert: required-by-default
+  event.create: required-by-default
+notes:
+  - Fullstory MCP is read-only and currently beta.
+  - REST writes are disabled unless FULLSTORY_ALLOW_WRITES=true.
