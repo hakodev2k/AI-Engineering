@@ -1,0 +1,3 @@
+export type Config={apiKey:string;baseUrl:string;timeoutMs:number;maxRetries:number;allowWrites:boolean;allowDestructive:boolean};
+const bool=(v:string|undefined)=>v?.toLowerCase()==='true';
+export function loadConfig(env=process.env):Config{const apiKey=env.DUB_API_KEY?.trim();if(!apiKey)throw new Error('DUB_API_KEY is required');const baseUrl=(env.DUB_API_BASE_URL||'https://api.dub.co').replace(/\/$/,'');if(baseUrl!=='https://api.dub.co')throw new Error('DUB_API_BASE_URL must be https://api.dub.co to prevent credential exfiltration');return{apiKey,baseUrl,timeoutMs:Number(env.DUB_TIMEOUT_MS||10000),maxRetries:Math.min(3,Math.max(0,Number(env.DUB_MAX_RETRIES||2))),allowWrites:bool(env.DUB_ALLOW_WRITES),allowDestructive:bool(env.DUB_ALLOW_DESTRUCTIVE)}}
