@@ -1,37 +1,4 @@
-import Stripe from 'stripe';
-import type { StripeConfig } from './config.js';
-
-export class StripeClient {
-  readonly sdk: Stripe;
-
-  constructor(config: StripeConfig) {
-    this.sdk = new Stripe(config.apiKey, {
-      apiVersion: config.apiVersion as Stripe.LatestApiVersion | undefined,
-      maxNetworkRetries: 2,
-      timeout: 20_000,
-      appInfo: { name: 'ai-engineering-stripe-mcp', version: '1.0.0' }
-    });
-  }
-
-  accountGet(id: string) { return this.sdk.accounts.retrieve(id); }
-  customerList(limit = 20, startingAfter?: string) { return this.sdk.customers.list({ limit, starting_after: startingAfter }); }
-  customerGet(id: string) { return this.sdk.customers.retrieve(id); }
-  customerCreate(input: { email?: string; name?: string; description?: string }) { return this.sdk.customers.create(input); }
-  paymentIntentList(limit = 20, startingAfter?: string) { return this.sdk.paymentIntents.list({ limit, starting_after: startingAfter }); }
-  paymentIntentGet(id: string) { return this.sdk.paymentIntents.retrieve(id); }
-  refundCreate(input: { payment_intent: string; amount?: number; reason?: 'duplicate' | 'fraudulent' | 'requested_by_customer' }) {
-    return this.sdk.refunds.create(input, { idempotencyKey: `mcp-refund-${input.payment_intent}-${input.amount ?? 'full'}` });
-  }
-  productList(limit = 20, startingAfter?: string) { return this.sdk.products.list({ limit, starting_after: startingAfter, active: true }); }
-  priceList(limit = 20, startingAfter?: string) { return this.sdk.prices.list({ limit, starting_after: startingAfter, active: true }); }
-  subscriptionList(limit = 20, startingAfter?: string) { return this.sdk.subscriptions.list({ limit, starting_after: startingAfter }); }
-  subscriptionGet(id: string) { return this.sdk.subscriptions.retrieve(id); }
-}
-
-export function mapStripeError(error: unknown): Error {
-  if (error instanceof Stripe.errors.StripeError) {
-    const retry = error.statusCode === 429 ? ' Retry after the provider-provided interval.' : '';
-    return new Error(`Stripe ${error.type}: ${error.message}.${retry}`);
-  }
-  return error instanceof Error ? error : new Error('Unknown Stripe error');
-}
+import type {Config} from './config.js';
+export class StripeError extends Error{constructor(public status:number,public code:string,message:string,public requestId?:string,public retryAfter?:number){super(message);this.name='StripeError'}}
+function encode(params:Record<string,unknown>):URLSearchParams{const out=new URLSearchParams();for(const [k,v] of Object.entries(params)){if(v===undefined||v===null)continue;if(Array.isArray(v))v.forEach(x=>out.append(`${k}[]`,String(x)));else if(typeof v==='object')for(const [sk,sv] of Object.entries(v as Record<string,unknown>))if(sv!==undefined)out.set(`${k}[${sk}]`,String(sv));else out.set(k,String(v));}return out}
+export class StripeClient{constructor(private c:Config,private fetcher:typeof fetch=fetch){}async request(method:'GET'|'POST',path:string,params:Record<string,unknown>={},idempotencyKey?:string){let attempt=0;for(;;){const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),this.c.timeoutMs);try{const q=encode(params);const url=`https://api.stripe.com/v1${path}${method==='GET'&&q.size?`?${q}`:''}`;const headers:Record<string,string>={Authorization:`Bearer ${this.c.secretKey}`};if(this.c.apiVersion)headers['Stripe-Version']=this.c.apiVersion;if(method==='POST'){headers['Content-Type']='application/x-www-form-urlencoded';if(idempotencyKey)headers['Idempotency-Key']=idempotencyKey}const r=await this.fetcher(url,{method,headers,body:method==='POST'?q:undefined,signal:controller.signal});const text=await r.text();let data:any;try{data=text?JSON.parse(text):{}}catch{data={message:text}}if(r.ok)return data;const retryAfter=Number(r.headers.get('retry-after')??'0')||undefined;const err=new StripeError(r.status,data?.error?.code??data?.error?.type??'stripe_error',data?.error?.message??`Stripe HTTP ${r.status}`,r.headers.get('request-id')??undefined,retryAfter);if(!this.retryable(r.status)||attempt>=this.c.maxRetries)throw err;await this.sleep(retryAfter?retryAfter*1000:250*2**attempt);attempt++;}catch(e){if(e instanceof StripeError)throw e;if(attempt>=this.c.maxRetries)throw e;await this.sleep(250*2**attempt);attempt++;}finally{clearTimeout(timer)}}}private retryable(s:number){return s===409||s===429||s>=500}private sleep(ms:number){return new Promise(r=>setTimeout(r,Math.min(ms,5000)))}}

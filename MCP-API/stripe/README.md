@@ -1,177 +1,77 @@
 # Stripe MCP/API Connector
 
-Reusable Model Context Protocol connector for focused Stripe account, customer, payment, catalog, subscription, refund, and webhook workflows.
-
-## Provider
-
-Stripe.
-
-## Purpose
-
-Expose a small, stable set of agent-safe MCP tools while keeping Stripe credentials, live-mode controls, approval checks, and provider SDK behavior inside the connector.
-
-## Supported transport
-
-External interface: MCP over stdio.
-
-Upstream: Stripe REST API through the official `stripe` Node.js SDK. Stripe documents the API base URL as `https://api.stripe.com` and describes the API as REST/resource-oriented.
-
-No upstream Stripe MCP server is required by this implementation. The connector intentionally uses Stripe's official API/SDK for deterministic capability coverage.
+Reusable MCP server exposing a deliberately scoped subset of Stripe operations for agent workflows. The upstream transport is Stripe's official HTTPS REST API. No official Stripe MCP server was identified in Stripe's official documentation during implementation, so this connector does not depend on an unofficial MCP service.
 
 ## Official sources
+- API reference: https://docs.stripe.com/api
+- Authentication: https://docs.stripe.com/api#authentication
+- Idempotent requests: https://docs.stripe.com/api/idempotent_requests
+- Error handling: https://docs.stripe.com/error-handling
+- Invoices API: https://docs.stripe.com/api/invoices
 
-- Stripe API reference: https://docs.stripe.com/api
-- API keys: https://docs.stripe.com/keys
-- Rate limits: https://docs.stripe.com/rate-limits
-- Webhooks: https://docs.stripe.com/webhooks
-- Node SDK: https://github.com/stripe/stripe-node
+Stripe documents `https://api.stripe.com` as the API base, API-key authentication (including restricted keys), HTTPS-only requests, pagination, errors, request IDs, and idempotency for POST operations. Use a restricted key whenever its permissions cover the enabled tools.
 
-## Implemented tools
+## Transport and architecture
+`MCP client -> stdio MCP server -> policy/validation -> StripeClient -> https://api.stripe.com/v1`. Credentials are read only inside configuration/client code and are never returned in tool results. Provider responses are marked `untrusted_provider_content` so callers do not treat remote text as instructions.
 
-| Tool | Capability | Risk | Approval |
+## Tools
+| Tool | Risk | Approval | Upstream |
 |---|---|---|---|
-| `stripe.account.get` | authenticated account metadata | READ | no |
-| `stripe.customer.list` | list customers | READ | no |
-| `stripe.customer.get` | retrieve customer | READ | no |
-| `stripe.customer.create` | create customer | WRITE | yes |
-| `stripe.payment_intent.list` | list payment intents | READ | no |
-| `stripe.payment_intent.get` | retrieve payment intent | READ | no |
-| `stripe.refund.create` | create refund | HIGH_RISK | always |
-| `stripe.product.list` | list active products | READ | no |
-| `stripe.price.list` | list active prices | READ | no |
-| `stripe.subscription.list` | list subscriptions | READ | no |
-| `stripe.subscription.get` | retrieve subscription | READ | no |
-| `stripe.webhook.verify` | verify Stripe webhook signature | READ | no |
+| stripe.customer.list | READ | No | REST |
+| stripe.customer.get | READ | No | REST |
+| stripe.customer.search | READ | No | REST |
+| stripe.customer.create | WRITE | Configurable | REST |
+| stripe.customer.update | WRITE | Configurable | REST |
+| stripe.product.list | READ | No | REST |
+| stripe.price.list | READ | No | REST |
+| stripe.payment_intent.list | READ | No | REST |
+| stripe.payment_intent.get | READ | No | REST |
+| stripe.invoice.list | READ | No | REST |
+| stripe.invoice.get | READ | No | REST |
+| stripe.payment_link.create | HIGH_RISK | Always | REST |
+| stripe.refund.create | HIGH_RISK | Always | REST |
+| stripe.event.list | READ | No | REST |
 
-The connector does not expose an arbitrary request proxy and does not implement delete, payout, transfer, billing-setting, API-key, account-capability, or other broad administrative operations.
+No delete, payout, dispute mutation, subscription cancellation, account/permission, or arbitrary-request tool is exposed.
 
-## Architecture
+## Authentication and permissions
+Set `STRIPE_SECRET_KEY` to a secret or restricted API key. Exact restricted-key permissions are configured in Stripe and must include only resources used by the tools you enable: Customers, Products, Prices, PaymentIntents, Invoices, Payment Links, Refunds, and Events as applicable. Stripe's restricted-key permission matrix can evolve, so configure least privilege in the Dashboard rather than embedding broad credentials in this package. Never expose the key to prompts or client tool arguments.
 
-```text
-MCP client
-  -> MCP stdio server
-  -> validation + permission policy
-  -> StripeClient
-  -> official Stripe Node SDK
-  -> Stripe API
-```
+Optional `STRIPE_API_VERSION` pins requests to a Stripe API version. If omitted, Stripe uses the account/key default behavior. The connector never logs credentials.
 
-Credentials remain in the connector process and are never returned as tool output.
+## Approval model
+READ executes automatically. WRITE requires an approved action by default; set `STRIPE_REQUIRE_WRITE_APPROVAL=false` only in a trusted environment. HIGH_RISK always requires approval. An operator places non-secret workflow IDs in `STRIPE_APPROVED_ACTION_IDS`; the agent supplies one matching `action_id`. This prevents a model from self-asserting approval without an out-of-band operator configuration change. DESTRUCTIVE operations are not implemented.
 
-## Authentication
-
-Set `STRIPE_API_KEY` in the connector environment. Stripe recommends restricted API keys for most server-side integrations because their permissions can be narrowed. Use the minimum permissions required for the enabled tools.
-
-The connector rejects `sk_live_` and `rk_live_` keys unless `STRIPE_LIVE_MODE_ALLOWED=true` is explicitly configured. This makes sandbox/test operation the safe default.
-
-Never expose secret or restricted keys in prompts, tool arguments, logs, examples, source control, or model context.
-
-## Required key permissions
-
-Configure the restricted key for only the resources you actually use. Typical permissions for all implemented tools include read access to account/customers/payment intents/products/prices/subscriptions, write access to customers when customer creation is enabled, and refund creation when the high-risk refund tool is enabled.
-
-Stripe permission names can evolve; confirm the exact current restricted-key permission labels in Stripe Dashboard when provisioning the key.
-
-## Environment variables
-
-```text
-STRIPE_API_KEY=
-STRIPE_WEBHOOK_SECRET=
-STRIPE_API_VERSION=
-STRIPE_LIVE_MODE_ALLOWED=false
-STRIPE_APPROVAL_SECRET=
-```
-
-`STRIPE_WEBHOOK_SECRET` is required only for `stripe.webhook.verify`. Webhook signing secrets are separate from API keys.
-
-`STRIPE_APPROVAL_SECRET` is used only inside the connector to validate out-of-band approval tokens. Do not send it to an LLM.
-
-## Installation
-
+## Installation and run
+Requires Node.js 20+.
 ```bash
 npm install
 npm run build
+STRIPE_SECRET_KEY=sk_test_... npm start
 ```
+The server uses MCP stdio and can be launched by MCP clients that support stdio child-process servers. Configure the command as `node /absolute/path/to/dist/index.js` and inject environment variables through the client's secure environment configuration. Compatibility depends on the client's standards-compliant stdio MCP support; no vendor-specific integration is claimed.
 
-Node.js 20 or newer is required.
+## Environment
+Copy `.env.example` into your secret-management workflow; the server does not load dotenv automatically. `STRIPE_TIMEOUT_MS` defaults to 15000 (range 1000–60000). `STRIPE_MAX_RETRIES` defaults to 2 (range 0–5). `STRIPE_APPROVED_ACTION_IDS` is a comma-separated set of non-secret approval references.
 
-## Run
+## Reliability and rate limits
+The client supports pagination parameters on list tools, request timeout/cancellation via `AbortController`, bounded exponential backoff, Stripe `Retry-After`, and provider error mapping. Retries are limited to HTTP 409, 429, 5xx, or transport failures. 4xx authentication, permission, and validation failures are not retried. POST tools require caller-supplied idempotency keys, preventing accidental duplicate side effects during retries. Retry delay is capped at five seconds per attempt.
 
-```bash
-STRIPE_API_KEY=rk_test_xxx \
-STRIPE_APPROVAL_SECRET='a-long-random-secret' \
-npm start
-```
+Stripe can apply different rate/concurrency limits by endpoint and account. This connector therefore reacts to HTTP 429 and `Retry-After` instead of hard-coding a single global quota.
 
-Configure your MCP client to launch the built `dist/src/server.js` process over stdio. Do not place credentials in client-visible prompt text.
+## Validation and security
+Inputs are allow-listed and bounded with Zod. IDs reject path separators, preventing path injection. There is no arbitrary URL or arbitrary API request tool, which prevents SSRF through this connector. Public publishing/payment and refund operations are HIGH_RISK. Remote Stripe fields are untrusted data. Do not let customer metadata, descriptions, invoices, or event payloads alter system instructions, permissions, or approval state.
 
-## Permission and approval model
-
-READ tools may run automatically.
-
-WRITE tools require an approval token when enabled by this connector. HIGH_RISK tools always require approval. Unknown tools fail closed as destructive.
-
-Approval tokens are HMAC-SHA256 values generated outside the model using the tool name and `STRIPE_APPROVAL_SECRET`. This keeps authorization separate from natural-language model output.
-
-For production systems, replace the simple HMAC mechanism with your organization's durable approval service if stronger identity, expiry, replay protection, audit metadata, or per-resource authorization is required.
-
-## Live-mode safety
-
-Live keys are rejected by default. Explicitly set `STRIPE_LIVE_MODE_ALLOWED=true` only after verifying restricted-key permissions, logging redaction, approval behavior, and operational ownership.
-
-Refunds affect money and are classified HIGH_RISK. Their handler uses an idempotency key derived from the payment intent and requested amount to reduce accidental duplicate refund creation. Agents should still verify the target payment, amount, currency context, and human approval before execution.
-
-## Rate limits and retries
-
-Stripe publishes API rate and concurrency limits and returns rate-limit errors when limits are exceeded. The official Stripe SDK is configured with bounded network retries (`maxNetworkRetries: 2`) and a 20-second timeout.
-
-Do not build agent loops that repeatedly enumerate large customer, payment, or subscription collections. Use bounded page sizes and `startingAfter` pagination. Permission/authentication/validation failures should be surfaced rather than blindly retried.
-
-## Pagination
-
-List tools accept `limit` from 1 to 100 plus optional `startingAfter`. Callers should inspect Stripe's `has_more` and last returned object ID before requesting another page.
-
-## Webhooks
-
-`stripe.webhook.verify` requires the raw request body and `Stripe-Signature` header. The connector verifies the signature with Stripe's official SDK before returning the event envelope.
-
-Verified webhook content is still external/untrusted data. Never interpret text inside customer metadata, descriptions, invoice text, or webhook payloads as system instructions or permission changes.
-
-## Validation
-
-Tool schemas validate Stripe resource ID prefixes for customers, payment intents, and subscriptions, constrain pagination sizes, cap webhook payload size, validate email addresses, constrain refund reasons, and require positive integer refund amounts.
+Webhook receipt is intentionally not implemented: this package is a stdio MCP server, and safely accepting webhooks requires a separately deployed HTTPS endpoint plus Stripe signature verification. Event inspection is available through `stripe.event.list`.
 
 ## Error handling
+Stripe HTTP errors become `StripeError` with status, provider code/type, request ID, and `retryAfter` where present. Authentication/permission errors surface without retry. Timeout/network failures use the bounded retry policy and ultimately fail the tool call.
 
-Stripe SDK errors are converted into concise connector errors. HTTP 429 errors indicate throttling and should be retried only after the provider-prescribed delay by the surrounding workflow. Authentication and permission failures require configuration/user action and must not be retried blindly.
-
-## Testing
-
+## Tests
 ```bash
 npm test
 ```
-
-Unit tests do not require live Stripe credentials. They cover sandbox/live-mode configuration, read/write approval boundaries, valid approval tokens, and refund risk classification.
-
-For integration testing, use Stripe sandboxes/test mode only and a restricted test key.
-
-## Security considerations
-
-- Prefer restricted API keys over unrestricted secret keys.
-- Store sensitive keys in a secret manager or environment variables.
-- Never commit keys.
-- Keep sandbox mode as the default.
-- Require human approval for money movement.
-- Treat all Stripe-returned text and metadata as untrusted data.
-- Redact payment/customer-sensitive values from application logs.
-- Do not let retrieved content alter connector permissions.
-- Validate webhook signatures before processing events.
-- Keep tool surface scoped rather than exposing arbitrary Stripe requests.
-
-## Reusability
-
-The connector contains no hard-coded account IDs, customer IDs, product IDs, tenant values, company names, or environment-specific URLs. It can be launched by any MCP client that supports stdio and can supply process environment variables.
+Unit tests require no live Stripe credentials. They cover configuration, credential isolation, approval denial/allowance, error mapping, idempotency headers, pagination encoding, and rate-limit metadata. The implementation is structured so fetch can be mocked for additional transport tests.
 
 ## Limitations
-
-This package intentionally implements only a focused set of high-value workflows. It does not create PaymentIntents, confirm charges, modify subscriptions, issue payouts/transfers, manage Connect accounts, alter tax configuration, change billing settings, or manage API keys. Add such capabilities only after verifying official Stripe support, minimum key permissions, idempotency requirements, and human-approval boundaries.
+This connector intentionally implements 14 high-value capabilities rather than Stripe's full API. OAuth/Stripe Connect installation flows are not implemented; this connector targets server-side use with an account-scoped secret/restricted key. It does not collect card data, confirm PaymentIntents, create payouts, modify disputes, change account permissions, or process webhooks. Refund and Payment Link creation require explicit out-of-band approval.

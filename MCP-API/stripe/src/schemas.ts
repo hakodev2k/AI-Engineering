@@ -1,0 +1,2 @@
+import {z} from 'zod';
+export const id=z.string().regex(/^[A-Za-z0-9_\-]{3,255}$/);export const limit=z.number().int().min(1).max(100).default(10);export const actionId=z.string().min(3).max(128).optional();export const email=z.string().email().max(320);export const currency=z.string().regex(/^[a-zA-Z]{3}$/).transform(v=>v.toLowerCase());export const positiveAmount=z.number().int().positive().max(99999999999);export const idem=z.string().min(8).max(255);

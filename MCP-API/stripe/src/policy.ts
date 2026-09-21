@@ -1,28 +1,4 @@
-import { createHmac, timingSafeEqual } from 'node:crypto';
-
-export type Risk = 'READ' | 'WRITE' | 'HIGH_RISK' | 'DESTRUCTIVE';
-
-export const TOOL_RISK: Record<string, Risk> = {
-  'stripe.account.get': 'READ',
-  'stripe.customer.list': 'READ',
-  'stripe.customer.get': 'READ',
-  'stripe.customer.create': 'WRITE',
-  'stripe.payment_intent.list': 'READ',
-  'stripe.payment_intent.get': 'READ',
-  'stripe.refund.create': 'HIGH_RISK',
-  'stripe.product.list': 'READ',
-  'stripe.price.list': 'READ',
-  'stripe.subscription.list': 'READ',
-  'stripe.subscription.get': 'READ',
-  'stripe.webhook.verify': 'READ'
-};
-
-export function assertApproval(tool: string, approvalId: string | undefined, secret: string | undefined): void {
-  const risk = TOOL_RISK[tool] ?? 'DESTRUCTIVE';
-  if (risk === 'READ') return;
-  if (!secret || !approvalId) throw new Error(`${tool} requires explicit approval`);
-  const expected = createHmac('sha256', secret).update(tool).digest('hex');
-  const a = Buffer.from(approvalId);
-  const b = Buffer.from(expected);
-  if (a.length !== b.length || !timingSafeEqual(a, b)) throw new Error(`Invalid approval for ${tool}`);
-}
+import type {Config} from './config.js';
+export type Risk='READ'|'WRITE'|'HIGH_RISK'|'DESTRUCTIVE';
+export class ApprovalError extends Error{constructor(message='Explicit human approval is required'){super(message);this.name='ApprovalError'}}
+export function enforce(config:Config,risk:Risk,actionId?:string){if(risk==='READ')return;if(risk==='DESTRUCTIVE')throw new ApprovalError('Destructive operations are disabled');const required=risk==='HIGH_RISK'||config.requireWriteApproval;if(required&&(!actionId||!config.approvedActionIds.has(actionId)))throw new ApprovalError('Action is not present in STRIPE_APPROVED_ACTION_IDS');}
