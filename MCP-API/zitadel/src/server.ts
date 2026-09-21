@@ -1,0 +1,3 @@
+import {McpServer} from '@modelcontextprotocol/sdk/server/mcp.js';import {StdioServerTransport} from '@modelcontextprotocol/sdk/server/stdio.js';import {loadConfig} from './config.js';import {registerTools} from './tools.js';
+export function buildServer(){const c=loadConfig();const s=new McpServer({name:'zitadel-connector',version:'1.0.0'});registerTools(s,c);return s}
+if(import.meta.url===`file://${process.argv[1]}`){const s=buildServer();await s.connect(new StdioServerTransport());}
