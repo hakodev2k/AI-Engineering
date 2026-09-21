@@ -1,0 +1,3 @@
+import type {Config} from './config.js';
+export type Risk='READ'|'WRITE'|'DESTRUCTIVE';
+export function authorize(config:Config,risk:Risk,approved=false){if(risk==='READ')return;if(!approved)throw new Error('Human approval is required for this operation');if(risk==='WRITE'&&!config.allowWrites)throw new Error('Write operations are disabled; set DUB_ALLOW_WRITES=true');if(risk==='DESTRUCTIVE'&&!config.allowDestructive)throw new Error('Destructive operations are disabled; set DUB_ALLOW_DESTRUCTIVE=true');}
