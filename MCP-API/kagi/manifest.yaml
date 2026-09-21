@@ -1,0 +1,34 @@
+id: kagi
+name: Kagi
+upstream:
+  - official-mcp
+  - rest
+auth:
+  type: api-token
+  env: KAGI_API_TOKEN
+api:
+  search_base_url: https://kagi.com/api/v1
+  legacy_base_url: https://kagi.com/api/v0
+mcp:
+  availability: official
+  note: Official Kagi MCP currently covers Search and Extract; this connector uses documented REST contracts to keep validation, retries, and approval boundaries local and deterministic.
+capabilities:
+  - search.web
+  - enrich.web
+  - enrich.news
+  - answer.fastgpt
+  - summarize.url
+  - summarize.text
+risk:
+  default: READ
+  paid_generation: WRITE
+tools:
+  kagi.search.web: { risk: READ, approval: false }
+  kagi.enrich.web: { risk: READ, approval: false }
+  kagi.enrich.news: { risk: READ, approval: false }
+  kagi.answer.fastgpt: { risk: WRITE, approval: true }
+  kagi.summarize.url: { risk: WRITE, approval: true }
+  kagi.summarize.text: { risk: WRITE, approval: true }
+environment:
+  required: [KAGI_API_TOKEN]
+  optional: [KAGI_TIMEOUT_MS, KAGI_MAX_RETRIES, KAGI_ALLOW_PAID_WRITES, KAGI_APPROVAL_TOKEN]
