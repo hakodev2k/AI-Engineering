@@ -1,0 +1,26 @@
+id: apollo
+name: Apollo.io
+upstream:
+  - mcp
+  - rest
+mcp:
+  endpoint: https://mcp.apollo.io/mcp
+  transport: streamable-http
+  auth: oauth2
+rest:
+  base_url: https://api.apollo.io/api/v1
+capabilities:
+  - people.search
+  - people.enrich
+  - contact.create
+  - contact.update
+  - sequence.list
+  - sequence.enroll
+  - task.list
+  - analytics.read
+risk:
+  default: READ
+  writes: WRITE
+  outreach: HIGH_RISK
+approval:
+  outreach: required
