@@ -1,0 +1,13 @@
+import type {McpServer} from '@modelcontextprotocol/sdk/server/mcp.js';import type {Config} from './config.js';import {ZitadelClient} from './client.js';import {authorize} from './permissions.js';import * as s from './schemas.js';
+const out=(x:unknown)=>({content:[{type:'text' as const,text:JSON.stringify(x,null,2)}]});
+export function registerTools(server:McpServer,c:Config,api=new ZitadelClient(c)){
+server.tool('zitadel.organization.list','List organizations visible to the caller.',s.orgList.shape,async a=>out(await api.listOrganizations(a.limit)));
+server.tool('zitadel.project.list','List projects visible to the caller.',s.projectList.shape,async a=>out(await api.listProjects(a.limit)));
+server.tool('zitadel.user.list','List/search SCIM users in one organization.',s.userList.shape,async a=>out(await api.listUsers(a.orgId,a.startIndex,a.count,a.filter)));
+server.tool('zitadel.user.get','Read one SCIM user.',s.userGet.shape,async a=>out(await api.getUser(a.orgId,a.userId)));
+server.tool('zitadel.user.create','Create a human user. WRITE; approval required.',s.userCreate.shape,async a=>{authorize(c,'WRITE',a.approved);return out(await api.createUser(a.orgId,{userName:a.userName,name:{givenName:a.givenName,familyName:a.familyName},displayName:a.displayName,emails:[{value:a.email,primary:true}],active:a.active}))});
+server.tool('zitadel.user.update','Update safe profile fields. WRITE; approval required.',s.userPatch.shape,async a=>{authorize(c,'WRITE',a.approved);const ops:any[]=[];if(a.displayName)ops.push({op:'replace',path:'displayName',value:a.displayName});if(a.givenName)ops.push({op:'replace',path:'name.givenName',value:a.givenName});if(a.familyName)ops.push({op:'replace',path:'name.familyName',value:a.familyName});return out(await api.patchUser(a.orgId,a.userId,ops))});
+server.tool('zitadel.user.activate','Activate a user. HIGH_RISK; explicit approval required.',s.userState.shape,async a=>{authorize(c,'HIGH_RISK',a.approved);return out(await api.patchUser(a.orgId,a.userId,[{op:'replace',path:'active',value:true}]))});
+server.tool('zitadel.user.deactivate','Deactivate a user. HIGH_RISK; explicit approval required.',s.userState.shape,async a=>{authorize(c,'HIGH_RISK',a.approved);return out(await api.patchUser(a.orgId,a.userId,[{op:'replace',path:'active',value:false}]))});
+server.tool('zitadel.user.delete','Permanently delete a user. DESTRUCTIVE; disabled by default and approval required.',s.userState.shape,async a=>{authorize(c,'DESTRUCTIVE',a.approved);return out(await api.deleteUser(a.orgId,a.userId))});
+}
