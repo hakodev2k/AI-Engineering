@@ -1,0 +1,14 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {loadConfig} from '../src/auth.js';import {SignNowClient,SignNowError} from '../src/client.js';import {requireApproval,Risk,assertId} from '../src/policy.js';import {toolCatalog} from '../src/tools.js';
+const env={SIGNNOW_ACCESS_TOKEN:'secret',SIGNNOW_API_BASE_URL:'https://api.signnow.com',SIGNNOW_TIMEOUT_MS:'50',SIGNNOW_MAX_RETRIES:'1'};
+test('auth requires isolated token',()=>{assert.throws(()=>loadConfig({}),/required/);assert.equal(loadConfig(env).token,'secret');});
+test('rejects non-official base URL',()=>assert.throws(()=>loadConfig({...env,SIGNNOW_API_BASE_URL:'https://evil.test'}),/official/));
+test('registers eight scoped tools',()=>{assert.equal(toolCatalog.length,8);assert.equal(new Set(toolCatalog.map(x=>x[0])).size,8);});
+test('READ allowed and WRITE denied by default',()=>{assert.doesNotThrow(()=>requireApproval(loadConfig(env),Risk.READ));assert.throws(()=>requireApproval(loadConfig(env),Risk.WRITE,true),/disabled/);});
+test('WRITE requires explicit approval',()=>{const c=loadConfig({...env,SIGNNOW_ALLOW_WRITES:'true'});assert.throws(()=>requireApproval(c,Risk.WRITE,false),/approved=true/);assert.doesNotThrow(()=>requireApproval(c,Risk.WRITE,true));});
+test('validates identifiers',()=>{assert.equal(assertId('abc_1234'),'abc_1234');assert.throws(()=>assertId('../bad'),/Invalid/);});
+test('read operation maps auth and pagination',async()=>{let seen;const f=async(u,o)=>{seen={u:String(u),o};return new Response(JSON.stringify({documents:[]}),{status:200,headers:{'content-type':'application/json'}})};const c=new SignNowClient(loadConfig(env),f);await c.documents({page:2,perPage:25});assert.match(seen.u,/page=2/);assert.equal(seen.o.headers.Authorization,'Bearer secret');});
+test('rate limit retries bounded for GET',async()=>{let n=0;const f=async()=>{n++;return n===1?new Response('{}',{status:429,headers:{'retry-after':'0'}}):new Response('{"ok":true}',{status:200})};const c=new SignNowClient(loadConfig(env),f);assert.deepEqual(await c.user(),{ok:true});assert.equal(n,2);});
+test('auth errors are not retried',async()=>{let n=0;const f=async()=>{n++;return new Response('{"error":"unauthorized"}',{status:401})};const c=new SignNowClient(loadConfig(env),f);await assert.rejects(()=>c.user(),e=>e instanceof SignNowError&&e.status===401);assert.equal(n,1);});
+test('timeout maps to controlled error',async()=>{const f=async(_u,o)=>new Promise((_,rej)=>o.signal.addEventListener('abort',()=>rej(Object.assign(new Error('aborted'),{name:'AbortError'}))));const c=new SignNowClient(loadConfig(env),f);await assert.rejects(()=>c.user(),/timed out/);});
+test('write operation is never blindly retried',async()=>{let n=0;const f=async()=>{n++;return new Response('{}',{status:503})};const c=new SignNowClient(loadConfig(env),f);await assert.rejects(()=>c.updateDocument('abcd1234',{name:'x'}));assert.equal(n,1);});
