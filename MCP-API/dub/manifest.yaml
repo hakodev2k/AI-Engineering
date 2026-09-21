@@ -1,0 +1,31 @@
+id: dub
+name: Dub
+upstream:
+  - rest
+  - mcp-available-not-proxied
+api_base_url: https://api.dub.co
+official_mcp: https://mcp.dub.co/mcp
+auth:
+  type: workspace-api-key
+  environment: DUB_API_KEY
+  guidance: use a restricted workspace API key or machine user with only required scopes
+capabilities:
+  - link.list
+  - link.get
+  - link.create
+  - link.update
+  - link.delete
+  - analytics.retrieve
+  - domain.list
+  - tag.list
+risk:
+  default: READ
+  write_requires_approval: true
+  destructive_disabled_by_default: true
+environment:
+  - DUB_API_KEY
+  - DUB_API_BASE_URL
+  - DUB_TIMEOUT_MS
+  - DUB_MAX_RETRIES
+  - DUB_ALLOW_WRITES
+  - DUB_ALLOW_DESTRUCTIVE
