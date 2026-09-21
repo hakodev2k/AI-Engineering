@@ -2,9 +2,11 @@ id: dub
 name: Dub
 upstream:
   - rest
-  - mcp-available-not-proxied
+  - official-mcp-available
 api_base_url: https://api.dub.co
-official_mcp: https://mcp.dub.co/mcp
+official_mcp:
+  status: available
+  note: hosted official MCP exists; this connector uses the REST API for its narrowly scoped link-management contract
 auth:
   type: workspace-api-key
   environment: DUB_API_KEY
