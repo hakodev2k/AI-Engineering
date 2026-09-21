@@ -1,0 +1,30 @@
+id: sendbird
+name: Sendbird
+upstream:
+  - rest
+auth:
+  type: api-token
+  header: Api-Token
+api:
+  base_url: https://api-{application_id}.sendbird.com/v3
+environment:
+  - SENDBIRD_APPLICATION_ID
+  - SENDBIRD_API_TOKEN
+  - SENDBIRD_TIMEOUT_MS
+  - SENDBIRD_WRITE_APPROVAL_REQUIRED
+capabilities:
+  - user.list
+  - user.get
+  - user.create
+  - user.update
+  - channel.list
+  - channel.get
+  - channel.create
+  - message.list
+  - message.send
+risk:
+  default: READ
+  write_requires_approval: true
+notes:
+  official_mcp: false
+  content_is_untrusted: true
