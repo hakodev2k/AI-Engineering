@@ -1,0 +1,10 @@
+import test from 'node:test'; import assert from 'node:assert/strict';
+import { loadConfig, requireApproval } from '../src/config.js'; import { MakeClient, MakeApiError } from '../src/client.js';
+const env={MAKE_API_TOKEN:'secret',MAKE_ZONE:'eu1.make.com'} as NodeJS.ProcessEnv;
+test('requires token',()=>assert.throws(()=>loadConfig({}))); 
+test('rejects arbitrary zone',()=>assert.throws(()=>loadConfig({...env,MAKE_ZONE:'evil.example.com'})));
+test('write approval fails closed',()=>{const c=loadConfig(env);assert.throws(()=>requireApproval(c,'make.scenario.run','HIGH_RISK'),/APPROVAL_REQUIRED/)});
+test('approved action passes',()=>{const c=loadConfig({...env,MAKE_APPROVED_ACTIONS:'make.scenario.run'});assert.doesNotThrow(()=>requireApproval(c,'make.scenario.run','HIGH_RISK'))});
+test('auth stays in provider header and read works',async()=>{let auth='';const f:typeof fetch=async(_u,i)=>{auth=new Headers(i?.headers).get('Authorization')??'';return new Response(JSON.stringify({ok:true}),{status:200,headers:{'content-type':'application/json'}})};const r=await new MakeClient(loadConfig(env),f).request('GET','/organizations');assert.equal(auth,'Token secret');assert.equal((r.data as any).ok,true)});
+test('403 is not retried',async()=>{let n=0;const f:typeof fetch=async()=>{n++;return new Response('forbidden',{status:403})};await assert.rejects(()=>new MakeClient(loadConfig({...env,MAKE_MAX_RETRIES:'5'}),f).request('GET','/organizations'),MakeApiError);assert.equal(n,1)});
+test('writes are never retried',async()=>{let n=0;const f:typeof fetch=async()=>{n++;return new Response('busy',{status:503})};await assert.rejects(()=>new MakeClient(loadConfig({...env,MAKE_MAX_RETRIES:'5'}),f).request('POST','/scenarios/1/run',undefined,{}),MakeApiError);assert.equal(n,1)});
