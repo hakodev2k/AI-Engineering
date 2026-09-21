@@ -1,0 +1,38 @@
+id: make
+name: Make
+upstream:
+  - mcp
+  - rest
+mcp:
+  official: true
+  transport: streamable-http
+  purpose: scenario-tools-and-account-management
+rest:
+  base_url: https://<MAKE_ZONE>/api/v2
+auth:
+  type: api-token
+  header: "Authorization: Token <secret>"
+scopes:
+  read: [organizations:read, teams:read, scenarios:read]
+  execute: [scenarios:read, scenarios:write, scenarios:run]
+risk:
+  default: READ
+  approval_required: [make.scenario.run, make.scenario.activate, make.scenario.deactivate]
+  destructive_enabled_by_default: false
+env:
+  required: [MAKE_API_TOKEN]
+  optional: [MAKE_ZONE, MAKE_TIMEOUT_MS, MAKE_MAX_RETRIES, MAKE_APPROVAL_MODE, MAKE_APPROVED_ACTIONS, MAKE_ALLOW_DESTRUCTIVE]
+capabilities:
+  - organization.list
+  - team.list
+  - team.get
+  - scenario.list
+  - scenario.get
+  - scenario.blueprint.get
+  - scenario.run
+  - scenario.activate
+  - scenario.deactivate
+  - scenario.usage
+  - execution.list
+  - execution.get
+  - folder.list
