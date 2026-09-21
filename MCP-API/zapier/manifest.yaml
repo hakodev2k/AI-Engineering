@@ -1,0 +1,27 @@
+id: zapier
+name: Zapier
+upstream:
+  - mcp
+mcp:
+  transport: streamable-http
+  endpoint_env: ZAPIER_MCP_URL
+auth:
+  type: zapier-hosted
+  credential_isolation: true
+capabilities:
+  - tool.list
+  - tool.invoke.read
+  - tool.invoke.write
+risk:
+  default: read
+  write_requires_approval: true
+  high_risk_requires_approval: true
+  destructive_disabled: true
+environment:
+  - ZAPIER_MCP_URL
+  - ZAPIER_MCP_ALLOWED_TOOLS
+  - ZAPIER_MCP_TIMEOUT_MS
+  - ZAPIER_APPROVAL_SECRET
+notes:
+  - Upstream tools are explicitly allowlisted; newly discovered tools are never trusted automatically.
+  - Zapier-hosted app connections keep third-party credentials outside this connector and the LLM.
