@@ -1,0 +1,3 @@
+import type { Config } from './config.js';
+export type Risk='READ'|'WRITE'|'HIGH_RISK'|'DESTRUCTIVE';
+export function authorize(c:Config,risk:Risk,approved=false){if(risk==='READ')return;if(risk==='DESTRUCTIVE'&&!c.allowDestructive)throw new Error('DESTRUCTIVE_DISABLED');if((risk==='HIGH_RISK'||risk==='DESTRUCTIVE'||(risk==='WRITE'&&c.requireWriteApproval))&&!approved)throw new Error('HUMAN_APPROVAL_REQUIRED');}
