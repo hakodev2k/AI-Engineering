@@ -1,0 +1,29 @@
+id: signnow
+name: airSlate SignNow
+upstream:
+  - rest
+auth:
+  type: oauth2-bearer
+  env: SIGNNOW_ACCESS_TOKEN
+api:
+  base_url_env: SIGNNOW_API_BASE_URL
+  default_base_url: https://api.signnow.com
+capabilities:
+  - user.read
+  - document.list
+  - document.read
+  - document.upload
+  - document.update
+  - document.invite
+  - webhook.list
+  - webhook.create
+risk:
+  default: read
+  write_requires_approval: true
+  external_message_requires_explicit_approval: true
+environment:
+  - SIGNNOW_ACCESS_TOKEN
+  - SIGNNOW_API_BASE_URL
+  - SIGNNOW_TIMEOUT_MS
+  - SIGNNOW_MAX_RETRIES
+  - SIGNNOW_ALLOW_WRITES
