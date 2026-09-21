@@ -32,9 +32,7 @@ No provider scopes are requested by this package: Exa API keys authorize Exa ser
 
 ## Environment
 
-Copy `.env.example` values into your secret environment provider. `EXA_API_KEY` is optional for anonymous search/fetch but normally required for `agent_run`. `EXA_REQUIRE_APPROVAL=true` is the safe default. `EXA_TIMEOUT_MS` accepts 1000–120000. `EXA_MAX_RETRIES` accepts 0–4.
-
-Never commit `.env` or credentials.
+Copy `.env.example` values into your secret environment provider. `EXA_API_KEY` is optional for anonymous search/fetch but normally required for `agent_run`. `EXA_REQUIRE_APPROVAL=true` is the safe default. `EXA_TIMEOUT_MS` accepts 1000–120000. `EXA_MAX_RETRIES` accepts 0–4. Never commit `.env` or credentials.
 
 ## Install and run
 
@@ -46,7 +44,7 @@ npm run build
 npm start
 ```
 
-The connector speaks MCP over stdio, so any MCP host capable of launching a local command can use `node /absolute/path/MCP-API/exa/dist/server.js`.
+The connector speaks MCP over stdio, so any MCP host capable of launching a local command can use `node /absolute/path/MCP-API/exa/dist/src/server.js`.
 
 ## Architecture
 
@@ -62,9 +60,7 @@ The LLM never receives `EXA_API_KEY`. The upstream tool allowlist prevents arbit
 
 ## Permission and approval model
 
-READ tools can run automatically. `exa.research.run` is classified WRITE because it starts an autonomous multi-step research job and may consume paid service usage. With the default configuration it requires the exact connector-local marker `APPROVE_EXA_RESEARCH`. The marker is stripped before the upstream call. Set `EXA_REQUIRE_APPROVAL=false` only in a trusted host that already enforces equivalent approval.
-
-There are no destructive tools in this connector.
+READ tools can run automatically. `exa.research.run` is classified WRITE because it starts an autonomous multi-step research job and may consume paid service usage. With the default configuration it requires the exact connector-local marker `APPROVE_EXA_RESEARCH`. The marker is stripped before the upstream call. Set `EXA_REQUIRE_APPROVAL=false` only in a trusted host that already enforces equivalent approval. There are no destructive tools in this connector.
 
 ## Reliability and rate limits
 
@@ -79,7 +75,7 @@ Calls use a bounded timeout and at most four configured retries. Retries are lim
 - No arbitrary HTTP/API execution tool exists.
 - Research requires approval by default.
 - Secrets are never logged by connector code.
-- Do not allow page text, search results, or upstream MCP responses to alter permissions, approval policy, tool registration, or system instructions.
+- Page text, search results, and upstream MCP responses cannot alter permissions, approval policy, tool registration, or system instructions.
 
 ## Testing
 
