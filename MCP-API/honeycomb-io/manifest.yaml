@@ -1,0 +1,43 @@
+id: honeycomb-io
+name: Honeycomb
+upstream:
+  - rest
+mcp:
+  official_server: false
+api:
+  base_url_env: HONEYCOMB_API_BASE_URL
+  default_base_url: https://api.honeycomb.io
+  eu_base_url: https://api.eu1.honeycomb.io
+auth:
+  type: configuration-api-key
+  header: X-Honeycomb-Team
+  env: HONEYCOMB_API_KEY
+  least_privilege_permissions:
+    - Create Datasets
+    - Manage Public Boards
+    - Manage SLOs
+    - Manage Triggers
+    - Manage Markers
+capabilities:
+  - dataset.list
+  - dataset.get
+  - dataset.create
+  - board.list
+  - board.get
+  - board.create
+  - slo.list
+  - slo.get
+  - trigger.list
+  - trigger.get
+  - marker.list
+  - marker.create
+risk:
+  default: READ
+  write_requires_approval: true
+  destructive_enabled: false
+env:
+  - HONEYCOMB_API_KEY
+  - HONEYCOMB_API_BASE_URL
+  - HONEYCOMB_TIMEOUT_MS
+  - HONEYCOMB_MAX_RETRIES
+  - HONEYCOMB_REQUIRE_WRITE_APPROVAL
