@@ -1,0 +1,4 @@
+export type Risk='READ'|'WRITE'|'HIGH_RISK'|'DESTRUCTIVE';
+export class ConnectorError extends Error{constructor(public code:string,message:string,public status?:number,public retryAfter?:number){super(message)}}
+export function requireApproval(risk:Risk,approved?:boolean){if(risk==='READ')return;if(process.env.HARVEST_ALLOW_WRITES!=='true')throw new ConnectorError('WRITE_DISABLED','Writes are disabled by configuration');if(!approved)throw new ConnectorError('APPROVAL_REQUIRED','Explicit human approval is required')}
+export function auth(){const token=process.env.HARVEST_ACCESS_TOKEN,account=process.env.HARVEST_ACCOUNT_ID,agent=process.env.HARVEST_USER_AGENT;if(!token||!account||!agent)throw new ConnectorError('AUTH_CONFIG','HARVEST_ACCESS_TOKEN, HARVEST_ACCOUNT_ID and HARVEST_USER_AGENT are required');return{Authorization:`Bearer ${token}`,'Harvest-Account-Id':account,'User-Agent':agent,'Content-Type':'application/json'}}
