@@ -1,0 +1,36 @@
+id: exa
+name: Exa
+upstream:
+  - mcp
+mcp:
+  endpoint: https://mcp.exa.ai/mcp
+  transport: streamable-http
+  official: true
+auth:
+  type: oauth2-or-api-key-or-anonymous
+  api_key_env: EXA_API_KEY
+  credential_forwarding: connector-only
+capabilities:
+  - web.search
+  - web.search_advanced
+  - web.fetch
+  - research.run
+risk:
+  default: READ
+  tools:
+    exa.web.search: READ
+    exa.web.search_advanced: READ
+    exa.web.fetch: READ
+    exa.research.run: WRITE
+approval:
+  exa.research.run: configurable
+required_env:
+  - EXA_TIMEOUT_MS
+  - EXA_MAX_RETRIES
+optional_env:
+  - EXA_API_KEY
+  - EXA_REQUIRE_APPROVAL
+security:
+  retrieved_content_is_untrusted: true
+  arbitrary_upstream_tools_allowed: false
+  credentials_exposed_to_model: false
