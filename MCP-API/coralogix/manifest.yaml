@@ -1,0 +1,35 @@
+id: coralogix
+name: Coralogix
+upstream:
+  - mcp
+mcp:
+  remote: true
+  endpoint_env: CORALOGIX_MCP_URL
+  version: v2
+auth:
+  type: bearer_api_key
+  env: CORALOGIX_API_KEY
+  alternatives:
+    - oauth2.1_oidc
+capabilities:
+  - telemetry.logs.query
+  - telemetry.metrics.query
+  - telemetry.traces.query
+  - telemetry.schema.read
+  - dataprime.docs.read
+risk:
+  default: READ
+  writes_enabled: false
+permissions:
+  principle: inherit Coralogix user/personal API-key RBAC with least privilege
+env:
+  - CORALOGIX_MCP_URL
+  - CORALOGIX_API_KEY
+  - CORALOGIX_MCP_VERSION
+  - CORALOGIX_TIMEOUT_MS
+  - CORALOGIX_MAX_RETRIES
+approvals:
+  READ: none
+  WRITE: not_exposed
+  HIGH_RISK: not_exposed
+  DESTRUCTIVE: not_exposed
