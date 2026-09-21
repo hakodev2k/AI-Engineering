@@ -1,0 +1,36 @@
+id: dropbox-sign
+name: Dropbox Sign
+upstream:
+  - rest
+auth:
+  type: api-key-or-oauth2
+  credential_isolation: true
+api:
+  base_url: https://api.hellosign.com/v3
+mcp:
+  official: false
+capabilities:
+  - account.read
+  - signature_request.list
+  - signature_request.read
+  - signature_request.files
+  - signature_request.send
+  - signature_request.send_with_template
+  - signature_request.cancel
+  - signature_request.remind
+  - template.list
+  - template.read
+risk:
+  default: read
+  write_requires_approval: true
+  destructive_requires_approval: true
+env:
+  - DROPBOX_SIGN_API_KEY
+  - DROPBOX_SIGN_ACCESS_TOKEN
+  - DROPBOX_SIGN_CLIENT_ID
+  - DROPBOX_SIGN_APPROVE_WRITES
+  - DROPBOX_SIGN_TIMEOUT_MS
+rate_limits:
+  standard_per_minute: 100
+  high_tier_per_minute: 25
+  test_mode_per_minute: 10
