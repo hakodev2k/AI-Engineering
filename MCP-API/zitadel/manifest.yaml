@@ -1,0 +1,31 @@
+id: zitadel
+name: ZITADEL
+upstream:
+  - rest
+  - scim
+mcp:
+  official_server: false
+api_base_url: ${ZITADEL_BASE_URL}
+auth:
+  type: service-account
+  methods: [personal-access-token, oauth2-client-credentials]
+  audience_scope: urn:zitadel:iam:org:project:id:zitadel:aud
+capabilities:
+  - organization.list
+  - user.list
+  - user.get
+  - user.create
+  - user.update
+  - user.activate
+  - user.deactivate
+  - user.delete
+  - project.list
+risk:
+  default: READ
+  write_requires_approval: true
+  destructive_disabled_by_default: true
+environment:
+  required: [ZITADEL_BASE_URL]
+  secrets: [ZITADEL_PAT, ZITADEL_CLIENT_ID, ZITADEL_CLIENT_SECRET]
+rate_limits:
+  cloud_api: 50 requests/second averaged over one minute
