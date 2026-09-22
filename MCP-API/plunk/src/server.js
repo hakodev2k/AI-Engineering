@@ -1,0 +1,5 @@
+#!/usr/bin/env node
+import {McpServer} from '@modelcontextprotocol/sdk/server/mcp.js';import {StdioServerTransport} from '@modelcontextprotocol/sdk/server/stdio.js';import {loadConfig} from './config.js';import {PlunkClient} from './client.js';import {toolDefinitions} from './tools.js';
+const config=loadConfig();const client=new PlunkClient(config);const server=new McpServer({name:'plunk-safe-connector',version:'1.0.0'});
+for(const t of toolDefinitions(client,config))server.tool(t.name,t.description,t.inputSchema.shape,async args=>{try{const data=await t.run(args);return{content:[{type:'text',text:JSON.stringify({ok:true,data,trust:'untrusted_provider_data'})}],structuredContent:{ok:true,data}}}catch(e){return{isError:true,content:[{type:'text',text:JSON.stringify({ok:false,error:{name:e.name,message:e.message,status:e.status,code:e.code,retryAfter:e.retryAfter}})}]}}});
+const transport=new StdioServerTransport();await server.connect(transport);process.on('SIGINT',()=>process.exit(0));process.on('SIGTERM',()=>process.exit(0));
