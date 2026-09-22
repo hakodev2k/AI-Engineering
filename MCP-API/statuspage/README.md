@@ -1,80 +1,64 @@
-# Atlassian Statuspage MCP/API Connector
+# Atlassian Statuspage MCP Connector
 
-Reusable MCP stdio connector for Atlassian Statuspage incident and component workflows. It exposes a small, stable tool surface over the official Statuspage Manage REST API instead of exposing arbitrary HTTP requests.
+Reusable MCP server for the Atlassian Statuspage Manage REST API. It exposes ten scoped tools for reading page/components/incidents and, with explicit policy plus human approval, updating components and publishing/updating/resolving incidents or scheduled maintenance.
 
-## Official transport research
-Research date: 2026-08-30.
+## Upstream and official sources
 
-- Statuspage REST API: https://developer.statuspage.io/
-- Statuspage API overview and API-key guidance: https://support.atlassian.com/statuspage/docs/what-are-the-different-apis-under-statuspage/
-- Atlassian Rovo MCP: https://developer.atlassian.com/cloud/rovo-mcp/guides/getting-started/
+Transport is direct HTTPS REST to `https://api.statuspage.io/v1`; no official Statuspage MCP server was identified during implementation, so this connector does not depend on community MCP servers. Official references: Statuspage API (`https://developer.statuspage.io/`), Atlassian Support API overview (`https://support.atlassian.com/statuspage/docs/what-are-the-different-apis-under-statuspage/`), and API-key guidance (`https://support.atlassian.com/statuspage/docs/create-and-manage-api-keys/`).
 
-Atlassian provides an official Rovo MCP server for supported Atlassian product tools, but current official Statuspage developer documentation exposes Statuspage through its REST API and does not document Statuspage-specific MCP tools. This connector therefore uses the official REST API for all implemented capabilities.
+Statuspage documents an authenticated Manage API and page-level Status API. This package uses only the Manage API. As of September 2026, Atlassian requires API keys in the Authorization header; query-parameter keys are discontinued. Manage API keys are powerful and Statuspage does not provide read-only API keys, so credential isolation and local permission gating are important.
 
-## Authentication and permissions
-Set `STATUSPAGE_API_TOKEN` to a token generated from the Statuspage management interface. The Manage API authenticates with `Authorization: OAuth <token>`. Statuspage documents these organization-level API keys as full read/write keys and does not provide a read-only API key, so the connector narrows effective capability at the tool layer.
+## Tools
 
-Credentials never appear in tool arguments, tool results, logs produced by this package, or agent prompts. Use a dedicated service account where possible and protect the environment containing the token.
+| Tool | Risk | Approval |
+|---|---|---|
+| `statuspage.page.get` | READ | no |
+| `statuspage.component.list` | READ | no |
+| `statuspage.component.get` | READ | no |
+| `statuspage.component.update` | WRITE | yes |
+| `statuspage.incident.list` | READ | no |
+| `statuspage.incident.get` | READ | no |
+| `statuspage.incident.create` | HIGH_RISK | explicit |
+| `statuspage.incident.update` | HIGH_RISK | explicit |
+| `statuspage.incident.resolve` | HIGH_RISK | explicit |
+| `statuspage.maintenance.create` | HIGH_RISK | explicit |
 
-## Capabilities
-| Tool | Method | Risk | Approval |
-|---|---:|---|---|
-| `statuspage.page.get` | GET page | READ | no |
-| `statuspage.component.list` | GET components | READ | no |
-| `statuspage.component.get` | GET component | READ | no |
-| `statuspage.component.update` | PUT component | WRITE | yes |
-| `statuspage.incident.list` | GET incidents | READ | no |
-| `statuspage.incident.get` | GET incident | READ | no |
-| `statuspage.incident.create` | POST incident | HIGH_RISK | yes |
-| `statuspage.incident.update` | PATCH incident | HIGH_RISK | yes |
-| `statuspage.incident.delete` | DELETE incident | DESTRUCTIVE | yes + disabled by default |
+Publishing incident/maintenance content is externally visible and therefore HIGH_RISK. No delete operation is exposed.
 
-Creating or updating incidents is HIGH_RISK because Statuspage can publish customer-visible content and send notifications. Deletion is disabled unless `STATUSPAGE_ENABLE_DESTRUCTIVE=true` is set before the process starts.
+## Authentication and configuration
+
+Create an organization API key in Statuspage API info and copy it at creation time. The connector sends it only as `Authorization: OAuth <key>` from its credential layer; the token is never accepted as a tool argument or returned to the model.
+
+Environment variables: `STATUSPAGE_API_KEY` and `STATUSPAGE_PAGE_ID` are required. `STATUSPAGE_ALLOW_WRITES=true` enables the write policy; write/high-risk calls must additionally pass `approved:true`. `STATUSPAGE_TIMEOUT_MS` defaults to 10000.
+
+Statuspage API keys are not scope-granular/read-only. Use a dedicated, expiring key, restrict process/environment access, rotate it, and leave writes disabled unless needed.
 
 ## Install and run
+
 Requires Node.js 20+.
 
 ```bash
 npm install
-npm run check
-npm test
-npm start
+npm run build
+STATUSPAGE_API_KEY=... STATUSPAGE_PAGE_ID=... npm start
 ```
 
-The server uses MCP stdio transport and can be configured by any MCP client that supports local stdio servers.
+The server uses MCP stdio and can be launched by MCP clients that support stdio servers. Configure the command/environment in the client; compatibility depends on that client's stdio MCP support.
 
-## Environment variables
-- `STATUSPAGE_API_TOKEN` — required Statuspage Manage API token.
-- `STATUSPAGE_API_URL` — defaults to `https://api.statuspage.io/v1`; HTTPS only.
-- `STATUSPAGE_TIMEOUT_MS` — default 15000, bounded to 1–120 seconds.
-- `STATUSPAGE_MAX_RETRIES` — default 3, maximum 5.
-- `STATUSPAGE_APPROVAL_SECRET` — secret used by the external approval service/operator to create payload-bound HMAC approvals.
-- `STATUSPAGE_ENABLE_DESTRUCTIVE` — defaults to false.
+## Architecture and safety
 
-## Approval behavior
-READ tools execute without approval. WRITE/HIGH_RISK/DESTRUCTIVE tools require `approval_token`, an HMAC-SHA256 of the exact tool name and canonicalized request payload, excluding the approval token itself. Any change to page, component, incident, notification setting, or message invalidates the approval. Destructive execution also requires the environment gate.
-
-## Validation
-Tool schemas reject unknown top-level parameters, bound identifiers and pagination, constrain documented Statuspage component/incident statuses, cap text and arrays, and do not accept provider URLs or credentials. There is no `raw_request` or arbitrary endpoint tool.
+`auth.ts` loads credentials/configuration; `client.ts` owns HTTPS, timeout, error mapping and bounded retry; `security.ts` enforces risk policy; `tools.ts` validates scoped operations; `server.ts` exposes MCP tools. Provider text is returned with `untrustedProviderContent:true` and must never be interpreted as instructions or permission changes. There is no arbitrary URL/request tool, which avoids an SSRF escape hatch. Identifiers are validated and the API base is fixed.
 
 ## Rate limits and reliability
-Statuspage documents the Manage API limit as one request per second per token over a rolling 60-second window (60 requests/minute). The client handles both documented 420 and 429 throttling responses and honors integer `Retry-After` headers. Safe GET requests use bounded exponential backoff for 420/429/502/503/504. Mutating calls are not blindly retried because duplicate incident publication or repeated state transitions can have external effects. Requests use local timeouts and MCP cancellation signals.
 
-## Error handling
-Provider HTTP errors become structured MCP errors containing HTTP status, retryability, and `Retry-After` when present. Authentication and validation failures are not retried. Provider-returned data is marked `untrusted_provider_data`; token/secret/password/credential/API-key-shaped response fields are redacted.
+Official API documentation states one request/second measured over a 60-second rolling window and documents HTTP 420/429 for throttling; Atlassian's support overview describes the Manage API as 60 requests/minute. The client honors `Retry-After` when present and retries GET requests only, at most twice, with exponential backoff. It also retries transient 5xx GET failures. Mutations are never blindly retried. Requests have an AbortController timeout. List incidents supports bounded pagination (`perPage` 1–100).
 
-## Security considerations
-- Treat all Statuspage content as untrusted data, not instructions.
-- Statuspage Manage API keys are broad; tool-level policy is the effective least-privilege boundary.
-- Public incident publication and notification-producing actions always require explicit approval.
-- Incident deletion is disabled by default.
-- HTTPS is mandatory for the configured API base URL.
-- The connector cannot change its own approval or destructive settings through MCP.
-- Subscriber management is intentionally omitted to reduce exposure of customer email/phone data.
-- User/permission administration is intentionally omitted; Statuspage notes user-management endpoints are being deprecated as accounts migrate to Atlassian accounts.
+401/403 errors are surfaced without retry so operators can correct credentials/permissions. Validation and approval failures occur before network access.
 
-## Tests
-Unit tests use mocked `fetch` and require no live credentials. They cover tool registration, configuration, approval binding, destructive denial, sanitization, authentication headers, encoded paths, authentication errors, rate limiting, and no blind retry of mutations.
+## Testing
+
+`npm test` uses Vitest and mocked `fetch`; no live credentials are needed. Tests cover missing authentication, tool registration, permission denial, explicit approval, successful reads, rate-limit retry, and maintenance validation.
 
 ## Limitations
-The connector intentionally does not expose subscriber CRUD, account/user administration, page deletion, component deletion, metrics mutation, arbitrary API calls, or undocumented Atlassian MCP capabilities. Statuspage API access and some notification features vary by plan.
+
+This connector intentionally omits destructive deletion, subscribers/team-member management, metrics, and generic endpoint execution. It does not implement OAuth because Statuspage's Manage API authentication documented for this integration is API-key based. It does not expose the separate page-level Status API. API-key privileges are controlled by Statuspage account/organization roles rather than fine-grained API scopes.

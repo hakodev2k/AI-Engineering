@@ -1,37 +1,34 @@
 id: statuspage
 name: Atlassian Statuspage
-version: 1.0.0
-
 upstream:
   - rest
-
-official_mcp:
-  available_for_statuspage: false
-  note: Atlassian publishes Rovo MCP for supported Atlassian products, but current official Statuspage integration documentation exposes the Statuspage REST API rather than Statuspage-specific MCP tools.
-
-api:
-  base_url: https://api.statuspage.io/v1
-  auth_header: "Authorization: OAuth <api-token>"
-  rate_limit: "1 request/second per API token, measured over a 60-second rolling window"
-
 auth:
-  type: api_token
-  env: STATUSPAGE_API_TOKEN
-  credential_isolation: connector-only
-  note: Statuspage Manage API keys are full read/write keys; Statuspage does not provide read-only API keys.
-
+  type: api_key
+  header: "Authorization: OAuth <token>"
+api_base_url: https://api.statuspage.io/v1
+mcp:
+  official_server: false
 capabilities:
-  - page.get
+  - page.read
   - component.list
-  - component.get
+  - component.read
   - component.update
   - incident.list
-  - incident.get
+  - incident.read
   - incident.create
   - incident.update
-  - incident.delete
-
+  - incident.resolve
+  - maintenance.create
 risk:
   default: READ
-  write_requires_approval: true
-  destructive_disabled_by_default: true
+  writes_require_approval: true
+env:
+  - STATUSPAGE_API_KEY
+  - STATUSPAGE_PAGE_ID
+  - STATUSPAGE_ALLOW_WRITES
+  - STATUSPAGE_TIMEOUT_MS
+rate_limit:
+  policy: "Manage API: 1 request/second over a 60-second rolling window; 420/429 indicate throttling"
+security:
+  credentials_exposed_to_model: false
+  arbitrary_http: false
