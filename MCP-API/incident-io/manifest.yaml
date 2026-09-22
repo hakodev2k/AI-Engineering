@@ -2,32 +2,33 @@ id: incident-io
 name: incident.io
 upstream:
   - mcp
-  - rest
 mcp:
   endpoint: https://mcp.incident.io/mcp
-  auth:
-    interactive: oauth
-    automated: api-key
-api:
-  base_url: https://api.incident.io
+  official: true
 auth:
   type: bearer-api-key
-capabilities:
-  - incident.list
-  - incident.get
-  - incident.create
-  - incident.update
-  - incident.timeline.create
-  - severity.list
-  - incident_type.list
-  - action.list
-  - follow_up.list
+  note: "Interactive clients may use incident.io OAuth with PKCE; this reusable automation connector uses a scoped API key service actor."
+environment:
+  required: [INCIDENT_IO_API_KEY]
+  optional: [INCIDENT_IO_MCP_URL, INCIDENT_IO_ALLOW_WRITES, INCIDENT_IO_TIMEOUT_MS]
 risk:
   default: read
-  write_requires_approval: true
-  destructive_enabled: false
-environment:
-  - INCIDENT_IO_API_KEY
-  - INCIDENT_IO_TIMEOUT_MS
-  - INCIDENT_IO_MAX_RETRIES
-  - INCIDENT_IO_APPROVAL_MODE
+  write_requires: [INCIDENT_IO_ALLOW_WRITES, approved]
+  destructive: disabled
+capabilities:
+  - incident.list
+  - incident.show
+  - incident.stats
+  - alert.list
+  - alert.show
+  - alert.stats
+  - on_call.query
+  - action.list
+  - incident.create
+  - incident.update
+  - action.create
+  - status_page.update.draft
+security:
+  upstream_tool_allowlist: true
+  credentials_forwarded_only_to: https://mcp.incident.io
+  provider_content_untrusted: true
