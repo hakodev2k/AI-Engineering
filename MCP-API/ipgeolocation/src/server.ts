@@ -1,0 +1,13 @@
+import {McpServer} from '@modelcontextprotocol/sdk/server/mcp.js';import{StdioServerTransport}from'@modelcontextprotocol/sdk/server/stdio.js';import{z}from'zod';import{IpGeoClient}from'./client.js';
+const c=new IpGeoClient();const s=new McpServer({name:'ipgeolocation',version:'1.0.0'});const out=(v:unknown)=>({content:[{type:'text' as const,text:JSON.stringify(v,null,2)}]});
+const ip=z.string().min(1).max(253);const coord=z.number().min(-180).max(180);
+s.tool('ipgeolocation.ip.lookup','Geolocate an IPv4, IPv6, or domain.',{ip},async a=>out(await c.request('/v3/ipgeo',{query:{ip:a.ip}})));
+s.tool('ipgeolocation.ip.bulk_lookup','Bulk geolocation. Approval/config gate because it can consume many credits.',{ips:z.array(ip).min(1).max(1000)},async a=>out(await c.request('/v3/ipgeo-bulk',{method:'POST',body:{ips:a.ips},bulk:true})));
+s.tool('ipgeolocation.security.lookup','Threat intelligence for an IP; paid/credit-sensitive module.',{ip},async a=>out(await c.request('/v3/security',{query:{ip:a.ip},paid:true})));
+s.tool('ipgeolocation.asn.lookup','Resolve ASN/network information by IP or ASN.',{ip:z.string().min(1).max(253)},async a=>out(await c.request('/v3/asn',{query:{ip:a.ip}})));
+s.tool('ipgeolocation.abuse.lookup','Retrieve responsible abuse-contact data for an IP.',{ip},async a=>out(await c.request('/v3/abuse',{query:{ip:a.ip},paid:true})));
+s.tool('ipgeolocation.timezone.lookup','Get timezone data by IP or coordinates.',{ip:z.string().optional(),lat:coord.optional(),long:coord.optional()},async a=>{if(!a.ip&&(a.lat===undefined||a.long===undefined))throw new Error('Provide ip or both lat and long');return out(await c.request('/v3/timezone',{query:a}))});
+s.tool('ipgeolocation.timezone.convert','Convert a date-time between IANA timezones.',{time:z.string().min(1),tz_from:z.string().min(1),tz_to:z.string().min(1)},async a=>out(await c.request('/v3/timezone/convert',{query:a})));
+s.tool('ipgeolocation.astronomy.lookup','Get sun/moon astronomy data for coordinates and optional date.',{lat:coord,long:coord,date:z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional()},async a=>out(await c.request('/v3/astronomy',{query:a})));
+s.tool('ipgeolocation.user_agent.parse','Parse a user-agent string; paid/credit-sensitive module.',{user_agent:z.string().min(1).max(4096)},async a=>out(await c.request('/v3/user-agent',{query:{userAgent:a.user_agent},paid:true})));
+await s.connect(new StdioServerTransport());
