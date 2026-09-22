@@ -1,0 +1,1 @@
+{"name":"@daily-mcp/uploadthing","version":"1.0.0","private":true,"type":"module","scripts":{"build":"tsc -p tsconfig.json","start":"node dist/index.js","test":"vitest run"},"dependencies":{"@modelcontextprotocol/sdk":"^1.17.5","uploadthing":"^7.7.4","zod":"^3.25.76"},"devDependencies":{"@types/node":"^22.18.6","typescript":"^5.9.2","vitest":"^3.2.4"},"engines":{"node":">=20"}}
