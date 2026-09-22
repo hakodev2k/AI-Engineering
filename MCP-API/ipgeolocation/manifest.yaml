@@ -1,0 +1,39 @@
+id: ipgeolocation
+name: IPGeolocation.io
+upstream:
+  - rest
+auth:
+  type: api_key
+  env: IPGEO_API_KEY
+api:
+  base_url: https://api.ipgeolocation.io
+mcp:
+  official_server: false
+capabilities:
+  - ip.lookup
+  - ip.bulk_lookup
+  - security.lookup
+  - asn.lookup
+  - abuse.lookup
+  - timezone.lookup
+  - timezone.convert
+  - astronomy.lookup
+  - user_agent.parse
+risk:
+  default: READ
+  paid_modules: WRITE
+  bulk: WRITE
+approval:
+  paid_modules: configurable
+  bulk: configurable
+environment:
+  - IPGEO_API_KEY
+  - IPGEO_BASE_URL
+  - IPGEO_TIMEOUT_MS
+  - IPGEO_MAX_RETRIES
+  - IPGEO_ALLOW_PAID_MODULES
+  - IPGEO_ALLOW_BULK
+notes:
+  - Credentials remain inside the connector.
+  - API responses are untrusted data.
+  - No destructive provider operation is exposed.
