@@ -18,16 +18,17 @@ capabilities:
   - contact.get
   - contact.create
   - contact.update
-  - contact.subscribe
-  - contact.unsubscribe
   - email.verify
   - email.send
   - template.list
   - campaign.list
   - campaign.get
   - campaign.stats
+  - campaign.test
+  - campaign.send
   - segment.list
-  - domain.list
+  - activity.list
+  - analytics.timeseries
 risk:
   default: READ
   writes_require: PLUNK_ALLOW_WRITES
