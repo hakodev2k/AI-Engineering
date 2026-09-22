@@ -1,0 +1,31 @@
+id: logz-io
+name: Logz.io
+upstream:
+  - rest
+auth:
+  type: api-key
+  header: X-API-TOKEN
+api:
+  base_url_env: LOGZ_IO_API_BASE_URL
+capabilities:
+  - log.search
+  - alert.list
+  - alert.get
+  - alert.triggered.list
+  - alert.create
+  - alert.update
+  - alert.delete
+  - dashboard.list
+  - dashboard.get
+risk:
+  default: read
+  write_approval: true
+  destructive_disabled_by_default: true
+environment:
+  - LOGZ_IO_API_TOKEN
+  - LOGZ_IO_API_BASE_URL
+  - LOGZ_IO_TIMEOUT_MS
+  - LOGZ_IO_MAX_READ_RETRIES
+  - LOGZ_IO_REQUIRE_WRITE_APPROVAL
+  - LOGZ_IO_ENABLE_DESTRUCTIVE
+  - LOGZ_IO_APPROVAL_SECRET
