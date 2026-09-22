@@ -1,0 +1,28 @@
+id: mapbox
+name: Mapbox
+upstream:
+  - mcp
+  - rest
+mcp:
+  official: true
+  mode: local
+  documentation: https://docs.mapbox.com/location-ai/mcp-servers/mcp-server/
+api:
+  base_url: https://api.mapbox.com
+auth:
+  type: access_token
+  environment: MAPBOX_ACCESS_TOKEN
+risk:
+  default: READ
+  writes_exposed: false
+capabilities:
+  - geocoding.forward
+  - geocoding.reverse
+  - directions.route
+  - matrix.calculate
+  - isochrone.calculate
+  - optimization.trip
+  - map_matching.match
+  - tilequery.query
+required_environment:
+  - MAPBOX_ACCESS_TOKEN
