@@ -1,0 +1,27 @@
+id: motherduck
+name: MotherDuck
+upstream:
+  - mcp
+auth:
+  type: bearer-token-or-oauth
+  env_token: MOTHERDUCK_TOKEN
+mcp:
+  endpoint: https://api.motherduck.com/mcp
+  official: true
+capabilities:
+  - database.list
+  - share.list
+  - table.list
+  - column.list
+  - catalog.search
+  - docs.ask
+  - query.read
+  - query.write
+risk:
+  default: READ
+  approval:
+    WRITE: required_by_default
+    HIGH_RISK: required
+environment:
+  required: [MOTHERDUCK_TOKEN]
+  optional: [MOTHERDUCK_MCP_URL, MOTHERDUCK_TIMEOUT_MS, MOTHERDUCK_REQUIRE_WRITE_APPROVAL]
