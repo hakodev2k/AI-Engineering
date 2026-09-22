@@ -1,0 +1,26 @@
+id: frontegg
+name: Frontegg
+upstream:
+  - rest
+auth:
+  type: environment-client-credentials
+  endpoint: /auth/vendor
+api:
+  regions: [eu, us, ca, au]
+capabilities:
+  - user.list
+  - user.get
+  - tenant.list
+  - tenant.get
+  - tenant.create
+  - tenant.update
+  - role.list
+  - permission.list
+risk:
+  default: READ
+  WRITE: [frontegg.tenant.create, frontegg.tenant.update]
+approval:
+  WRITE: configurable-required
+env:
+  required: [FRONTEGG_CLIENT_ID, FRONTEGG_API_KEY]
+  optional: [FRONTEGG_REGION, FRONTEGG_TIMEOUT_MS, FRONTEGG_REQUIRE_WRITE_APPROVAL, FRONTEGG_APPROVAL_TOKEN]

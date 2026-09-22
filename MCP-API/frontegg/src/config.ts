@@ -1,0 +1,5 @@
+import {z} from 'zod';
+const S=z.object({FRONTEGG_CLIENT_ID:z.string().min(1),FRONTEGG_API_KEY:z.string().min(1),FRONTEGG_REGION:z.enum(['eu','us','ca','au']).default('eu'),FRONTEGG_TIMEOUT_MS:z.coerce.number().int().min(1000).max(60000).default(10000),FRONTEGG_REQUIRE_WRITE_APPROVAL:z.enum(['true','false']).default('true'),FRONTEGG_APPROVAL_TOKEN:z.string().optional()});
+export type Config={clientId:string;apiKey:string;region:'eu'|'us'|'ca'|'au';timeoutMs:number;requireWriteApproval:boolean;approvalToken?:string};
+export function loadConfig(env=process.env):Config{const v=S.parse(env);return{clientId:v.FRONTEGG_CLIENT_ID,apiKey:v.FRONTEGG_API_KEY,region:v.FRONTEGG_REGION,timeoutMs:v.FRONTEGG_TIMEOUT_MS,requireWriteApproval:v.FRONTEGG_REQUIRE_WRITE_APPROVAL==='true',approvalToken:v.FRONTEGG_APPROVAL_TOKEN};}
+export function host(c:Config){return c.region==='eu'?'https://api.frontegg.com':`https://api.${c.region}.frontegg.com`;}

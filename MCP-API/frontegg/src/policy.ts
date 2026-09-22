@@ -1,0 +1,3 @@
+import {createHash,timingSafeEqual} from 'node:crypto';import type{Config}from'./config.js';
+export type Risk='READ'|'WRITE';
+export function enforce(c:Config,risk:Risk,approval?:string){if(risk==='READ'||!c.requireWriteApproval)return;if(!c.approvalToken)throw new Error('WRITE_DISABLED: configure FRONTEGG_APPROVAL_TOKEN');if(!approval)throw new Error('APPROVAL_REQUIRED');const a=createHash('sha256').update(approval).digest(),b=createHash('sha256').update(c.approvalToken).digest();if(!timingSafeEqual(a,b))throw new Error('APPROVAL_INVALID');}

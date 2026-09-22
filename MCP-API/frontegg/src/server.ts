@@ -1,0 +1,2 @@
+import{McpServer}from'@modelcontextprotocol/sdk/server/mcp.js';import{StdioServerTransport}from'@modelcontextprotocol/sdk/server/stdio.js';import{loadConfig}from'./config.js';import{FronteggClient}from'./client.js';import{registerTools}from'./tools.js';
+const cfg=loadConfig(),server=new McpServer({name:'frontegg-connector',version:'1.0.0'});registerTools(server,new FronteggClient(cfg),cfg);const transport=new StdioServerTransport();await server.connect(transport);const stop=async()=>{await server.close();process.exit(0)};process.on('SIGINT',stop);process.on('SIGTERM',stop);
