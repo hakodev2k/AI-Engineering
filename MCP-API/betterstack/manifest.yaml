@@ -1,0 +1,33 @@
+id: betterstack
+name: Better Stack Uptime
+upstream:
+  - rest
+auth:
+  type: bearer_token
+api_base_url: https://uptime.betterstack.com/api/v3
+environment:
+  - BETTERSTACK_API_TOKEN
+  - BETTERSTACK_API_BASE_URL
+  - BETTERSTACK_TIMEOUT_MS
+  - BETTERSTACK_MAX_RETRIES
+  - BETTERSTACK_ALLOW_WRITES
+  - BETTERSTACK_ALLOW_DESTRUCTIVE
+capabilities:
+  - monitor.list
+  - monitor.get
+  - monitor.create
+  - monitor.update
+  - monitor.delete
+  - incident.list
+  - incident.get
+  - incident.create
+  - incident.acknowledge
+  - incident.resolve
+  - incident.escalate
+  - metadata.list
+  - metadata.update
+risk:
+  default: read
+  write_requires_approval: true
+  high_risk_requires_approval: true
+  destructive_disabled_by_default: true

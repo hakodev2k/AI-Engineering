@@ -1,0 +1,2 @@
+export type Risk="READ"|"WRITE"|"HIGH_RISK"|"DESTRUCTIVE";
+export function authorize(risk:Risk,approved?:boolean,env=process.env){if(risk==="READ")return;if(env.BETTERSTACK_ALLOW_WRITES!=="true")throw new Error("Write operations are disabled");if(!approved)throw new Error("Explicit human approval is required");if(risk==="DESTRUCTIVE"&&env.BETTERSTACK_ALLOW_DESTRUCTIVE!=="true")throw new Error("Destructive operations are disabled");}
