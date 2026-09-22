@@ -1,0 +1,2 @@
+export function token(env=process.env){const value=env.RETOOL_API_TOKEN?.trim();if(!value)throw new Error("RETOOL_API_TOKEN is required");return value;}
+export function baseUrl(env=process.env){const raw=(env.RETOOL_BASE_URL||"https://api.retool.com").replace(/\/$/,"");const u=new URL(raw);if(u.protocol!=="https:")throw new Error("RETOOL_BASE_URL must use HTTPS");return u.toString().replace(/\/$/,"");}

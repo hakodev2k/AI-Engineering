@@ -1,0 +1,29 @@
+id: retool
+name: Retool
+upstream:
+  - rest
+auth:
+  type: bearer_token
+api_base_url: https://api.retool.com/api/v2
+environment:
+  - RETOOL_BASE_URL
+  - RETOOL_API_TOKEN
+  - RETOOL_TIMEOUT_MS
+  - RETOOL_MAX_RETRIES
+capabilities:
+  - app.list
+  - app.get
+  - workflow.list
+  - workflow.get
+  - folder.list
+  - folder.get
+  - group.list
+  - group.get
+  - resource.list
+  - resource.get
+risk:
+  default: read
+  writes_exposed: false
+notes:
+  official_mcp: not_required_for_this_connector
+  transport: official_management_rest_api
