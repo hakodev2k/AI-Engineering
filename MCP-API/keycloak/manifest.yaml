@@ -1,0 +1,31 @@
+id: keycloak
+name: Keycloak
+upstream:
+  - rest
+auth:
+  type: oauth2-client-credentials-or-bearer
+  token_endpoint: "${KEYCLOAK_BASE_URL}/realms/${KEYCLOAK_AUTH_REALM}/protocol/openid-connect/token"
+api:
+  base_url: "${KEYCLOAK_BASE_URL}/admin/realms/${KEYCLOAK_REALM}"
+capabilities:
+  - user.search
+  - user.get
+  - user.create
+  - user.update
+  - user.disable
+  - user.delete
+  - group.list
+  - group.get
+  - group.create
+  - group.member.add
+  - group.member.remove
+  - client.list
+  - client.get
+risk:
+  default: read
+  write_approval: configurable
+  high_risk_approval: required
+  destructive_approval: required-disabled-by-default
+env:
+  required: [KEYCLOAK_BASE_URL, KEYCLOAK_REALM]
+  credentials: [KEYCLOAK_ACCESS_TOKEN, KEYCLOAK_CLIENT_ID, KEYCLOAK_CLIENT_SECRET]
