@@ -1,0 +1,41 @@
+id: plunk
+name: Plunk
+runtime: node>=20
+upstream:
+  - official_mcp
+  - rest
+official_mcp:
+  package: "@plunk/mcp"
+  mode: local-stdio
+api:
+  base_url: "https://next-api.useplunk.com"
+auth:
+  type: bearer_api_key
+  credential_env: PLUNK_API_KEY
+  required_key: secret
+capabilities:
+  - contact.list
+  - contact.get
+  - contact.create
+  - contact.update
+  - contact.subscribe
+  - contact.unsubscribe
+  - email.verify
+  - email.send
+  - template.list
+  - campaign.list
+  - campaign.get
+  - campaign.stats
+  - segment.list
+  - domain.list
+risk:
+  default: READ
+  writes_require: PLUNK_ALLOW_WRITES
+  external_send_requires: PLUNK_ALLOW_SENDS
+  destructive: disabled
+required_env:
+  - PLUNK_API_KEY
+security:
+  read_only_mode: PLUNK_READ_ONLY
+  credentials_exposed_to_llm: false
+  retrieved_content_trust: untrusted
