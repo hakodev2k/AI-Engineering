@@ -1,0 +1,29 @@
+id: bunny
+name: bunny.net
+upstream:
+  - rest
+auth:
+  type: api_key
+  header: AccessKey
+api_base_url: https://api.bunny.net
+environment:
+  - BUNNY_API_KEY
+  - BUNNY_API_BASE_URL
+  - BUNNY_TIMEOUT_MS
+  - BUNNY_MAX_RETRIES
+  - BUNNY_ALLOW_WRITES
+capabilities:
+  - pullzone.list
+  - pullzone.get
+  - pullzone.create
+  - pullzone.update
+  - pullzone.delete
+  - cache.purge_url
+  - cache.purge_zone
+  - dnszone.list
+  - dnszone.get
+  - statistics.get
+risk:
+  default: read
+  write_requires_approval: true
+  destructive_disabled_by_default: true

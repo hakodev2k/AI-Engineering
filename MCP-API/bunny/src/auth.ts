@@ -1,0 +1,1 @@
+export function apiKey(env=process.env){const key=env.BUNNY_API_KEY?.trim();if(!key)throw new Error("BUNNY_API_KEY is required");return key;}
