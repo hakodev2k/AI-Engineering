@@ -1,0 +1,36 @@
+id: uploadthing
+name: UploadThing
+upstream:
+  - sdk
+  - rest
+official_mcp: false
+api_base_url: https://api.uploadthing.com
+auth:
+  type: token
+  env: UPLOADTHING_TOKEN
+capabilities:
+  - file.list
+  - usage.get
+  - file.upload_url
+  - file.rename
+  - file.acl_update
+  - file.signed_url
+  - file.delete
+risk:
+  default: read
+  tools:
+    uploadthing.file.list: READ
+    uploadthing.usage.get: READ
+    uploadthing.file.signed_url: READ
+    uploadthing.file.upload_url: WRITE
+    uploadthing.file.rename: WRITE
+    uploadthing.file.acl_update: HIGH_RISK
+    uploadthing.file.delete: DESTRUCTIVE
+approval:
+  WRITE: required
+  HIGH_RISK: required
+  DESTRUCTIVE: required
+env:
+  - UPLOADTHING_TOKEN
+  - UPLOADTHING_APPROVED_TOOLS
+  - UPLOADTHING_TIMEOUT_MS
