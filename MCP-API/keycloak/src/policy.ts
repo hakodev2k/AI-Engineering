@@ -1,0 +1,2 @@
+export type Risk='READ'|'WRITE'|'HIGH_RISK'|'DESTRUCTIVE';
+export function assertAllowed(risk:Risk,approved:boolean,env=process.env){if(risk==='READ')return;if(risk==='WRITE'&&env.KEYCLOAK_ALLOW_WRITE==='true'&&approved)return;if(risk==='HIGH_RISK'&&env.KEYCLOAK_ALLOW_HIGH_RISK==='true'&&approved)return;if(risk==='DESTRUCTIVE'&&env.KEYCLOAK_ALLOW_DESTRUCTIVE==='true'&&approved)return;throw new Error(`${risk} operation denied: enable the matching connector permission and provide explicit approval`)}
