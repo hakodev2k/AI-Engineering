@@ -1,0 +1,1 @@
+export function token(env=process.env){const v=env.FASTMAIL_API_TOKEN?.trim();if(!v)throw new Error("FASTMAIL_API_TOKEN is required");return v;}

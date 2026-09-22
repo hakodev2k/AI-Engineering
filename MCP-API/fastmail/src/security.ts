@@ -1,0 +1,2 @@
+export type Risk="READ"|"WRITE"|"HIGH_RISK"|"DESTRUCTIVE";
+export function authorize(risk:Risk,approved:boolean|undefined,env=process.env){if(risk==="READ")return;if(env.FASTMAIL_ALLOW_WRITES!=="true")throw new Error("Writes are disabled");if(!approved)throw new Error("Explicit human approval is required");if(risk==="HIGH_RISK"&&env.FASTMAIL_ALLOW_EXTERNAL_SEND!=="true")throw new Error("External send is disabled");if(risk==="DESTRUCTIVE"&&env.FASTMAIL_ALLOW_DESTRUCTIVE!=="true")throw new Error("Destructive operations are disabled");}

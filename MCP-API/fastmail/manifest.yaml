@@ -1,0 +1,35 @@
+id: fastmail
+name: Fastmail
+upstream:
+  - jmap
+auth:
+  type: bearer_api_token
+  oauth2_supported: true
+  scopes:
+    - urn:ietf:params:jmap:core
+    - urn:ietf:params:jmap:mail
+    - urn:ietf:params:jmap:submission
+session_url: https://api.fastmail.com/jmap/session
+environment:
+  - FASTMAIL_API_TOKEN
+  - FASTMAIL_SESSION_URL
+  - FASTMAIL_TIMEOUT_MS
+  - FASTMAIL_MAX_RETRIES
+  - FASTMAIL_ALLOW_WRITES
+  - FASTMAIL_ALLOW_EXTERNAL_SEND
+  - FASTMAIL_ALLOW_DESTRUCTIVE
+capabilities:
+  - session.get
+  - mailbox.list
+  - email.search
+  - email.get
+  - email.create_draft
+  - email.mark_read
+  - email.move
+  - email.send
+  - email.delete
+risk:
+  default: read
+  write_requires_approval: true
+  external_send_requires_approval: true
+  destructive_disabled_by_default: true
