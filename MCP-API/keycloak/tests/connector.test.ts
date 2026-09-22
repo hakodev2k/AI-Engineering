@@ -1,0 +1,8 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {loadConfig,KeycloakClient} from '../src/client.js';import {assertAllowed} from '../src/policy.js';
+test('requires base URL and realm',()=>{assert.throws(()=>loadConfig({} as any));assert.throws(()=>loadConfig({KEYCLOAK_BASE_URL:'https://id.example',KEYCLOAK_REALM:''} as any))});
+test('rejects insecure remote URL',()=>assert.throws(()=>loadConfig({KEYCLOAK_BASE_URL:'http://id.example',KEYCLOAK_REALM:'r'} as any)));
+test('policy denies writes by default',()=>assert.throws(()=>assertAllowed('WRITE',true,{} as any)));
+test('policy requires approval even when enabled',()=>assert.throws(()=>assertAllowed('HIGH_RISK',false,{KEYCLOAK_ALLOW_HIGH_RISK:'true'} as any)));
+test('policy allows approved enabled write',()=>assert.doesNotThrow(()=>assertAllowed('WRITE',true,{KEYCLOAK_ALLOW_WRITE:'true'} as any)));
+test('bearer credential stays in transport',async()=>{let auth='';const fake=async(_u:any,i:any)=>{auth=i.headers.authorization;return new Response(JSON.stringify([{id:'u1'}]),{status:200,headers:{'content-type':'application/json'}})};const c=new KeycloakClient({baseUrl:'https://id.example',realm:'r',authRealm:'r',accessToken:'secret',timeoutMs:1000,maxRetries:0},fake as any);await c.request('/users');assert.equal(auth,'Bearer secret')});
+test('mutations are not retried',async()=>{let n=0;const fake=async()=>{n++;return new Response('fail',{status:503})};const c=new KeycloakClient({baseUrl:'https://id.example',realm:'r',authRealm:'r',accessToken:'x',timeoutMs:1000,maxRetries:3},fake as any);await assert.rejects(()=>c.request('/users',{method:'POST',body:'{}'}));assert.equal(n,1)});
