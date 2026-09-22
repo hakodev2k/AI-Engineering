@@ -1,0 +1,48 @@
+id: opensearch
+name: OpenSearch
+upstream:
+  - mcp
+mcp:
+  type: built-in
+  transport: streamable-http
+  endpoint: ${OPENSEARCH_URL}/_plugins/_ml/mcp
+auth:
+  type: header
+  supported:
+    - basic
+    - bearer
+capabilities:
+  - index.list
+  - index.mapping
+  - document.search
+  - document.count
+  - cluster.health
+  - shard.list
+  - search.multi
+  - query.explain
+risk:
+  default: READ
+  write: []
+  high_risk: []
+  destructive: []
+approval:
+  required: []
+environment:
+  required:
+    - OPENSEARCH_URL
+  optional:
+    - OPENSEARCH_USERNAME
+    - OPENSEARCH_PASSWORD
+    - OPENSEARCH_BEARER_TOKEN
+    - OPENSEARCH_TIMEOUT_MS
+security:
+  dynamic_tool_discovery: disabled
+  allowed_upstream_tools:
+    - ListIndexTool
+    - IndexMappingTool
+    - SearchIndexTool
+    - CountTool
+    - ClusterHealthTool
+    - GetShardsTool
+    - MsearchTool
+    - ExplainTool
