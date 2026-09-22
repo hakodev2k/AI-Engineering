@@ -1,0 +1,36 @@
+id: gainsight
+name: Gainsight CS
+upstream:
+  - mcp
+  - rest
+implemented_transport: rest
+mcp:
+  status: official
+  note: "Gainsight CS MCP is live; public product documentation does not expose a stable reusable endpoint/tool schema for this package."
+api:
+  base_url_env: GAINSIGHT_BASE_URL
+  authentication: access-key
+  header: accesskey
+auth:
+  type: api_key
+  env: GAINSIGHT_ACCESS_KEY
+capabilities:
+  - company.describe
+  - company.query
+  - company.create
+  - company.update
+  - relationship.query
+  - relationship.create
+  - relationship.update
+  - relationship.upsert
+risk:
+  default: read
+  writes_require_approval: true
+  destructive_exposed: false
+environment:
+  - GAINSIGHT_BASE_URL
+  - GAINSIGHT_ACCESS_KEY
+  - GAINSIGHT_TIMEOUT_MS
+  - GAINSIGHT_MAX_RETRIES
+  - GAINSIGHT_ALLOW_WRITES
+  - GAINSIGHT_APPROVAL_SECRET
