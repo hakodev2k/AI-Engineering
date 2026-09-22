@@ -13,10 +13,11 @@ capabilities:
   - alert.get
   - alert.triggered.list
   - alert.create
-  - alert.update
   - alert.delete
   - dashboard.list
-  - dashboard.get
+  - dashboard.folder.get
+  - dashboard.folder.list_dashboards
+  - dashboard.creators.list
 risk:
   default: read
   write_approval: true
