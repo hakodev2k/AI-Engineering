@@ -1,3 +1,21 @@
-import {ResendAuth} from "./auth.js";
-export class ResendError extends Error{constructor(public status:number,public code:string,message:string,public retryAfter?:number){super(message)}}
-export class ResendClient{constructor(private auth=new ResendAuth(),private fetcher:typeof fetch=fetch,private env=process.env){} private base(){const u=this.env.RESEND_API_BASE_URL??"https://api.resend.com";if(u!=="https://api.resend.com")throw new Error("RESEND_BASE_URL_REJECTED");return u;} async request(path:string,init:RequestInit={},retryable=true){if(!path.startsWith("/"))throw new Error("RESEND_PATH_INVALID");const max=Math.max(0,Math.min(5,Number(this.env.RESEND_MAX_RETRIES??3)));for(let a=0;;a++){const c=new AbortController();const t=setTimeout(()=>c.abort(),Number(this.env.RESEND_TIMEOUT_MS??10000));try{const r=await this.fetcher(this.base()+path,{...init,signal:c.signal,headers:{...this.auth.headers(),...(init.body?{"Content-Type":"application/json"}:{}),...(init.headers??{})}});const text=await r.text();const data=text?JSON.parse(text):{};if(r.ok)return data;const ra=Number(r.headers.get("retry-after")??r.headers.get("ratelimit-reset")??0);const err=new ResendError(r.status,String(data.name??data.statusCode??"HTTP_"+r.status),String(data.message??"Resend request failed"),ra||undefined);if(!retryable||![429,500,502,503,504].includes(r.status)||a>=max)throw err;await new Promise(x=>setTimeout(x,Math.min(5000,ra?ra*1000:250*2**a)));}catch(e){if(e instanceof ResendError)throw e;if(!retryable||a>=max)throw e;await new Promise(x=>setTimeout(x,Math.min(5000,250*2**a)));}finally{clearTimeout(t)}}} async list(path:string,limit=100,after?:string){if(limit<1||limit>100)throw new Error("RESEND_PAGINATION_INVALID");const q=new URLSearchParams({limit:String(limit)});if(after)q.set("after",after);return this.request(path+"?"+q);}}
+import {config} from './security.js';
+export class ResendClient{
+  private c=config();
+  async request(method:string,path:string,body?:unknown,signal?:AbortSignal){
+    let last:unknown;
+    for(let i=0;i<=this.c.maxRetries;i++){
+      const ctrl=new AbortController(); const timer=setTimeout(()=>ctrl.abort(),this.c.timeout);
+      const combined=signal?AbortSignal.any([signal,ctrl.signal]):ctrl.signal;
+      try{
+        const r=await fetch(`https://api.resend.com${path}`,{method,headers:{Authorization:`Bearer ${this.c.apiKey}`,'Content-Type':'application/json','User-Agent':'daily-mcp-resend/1.0'},body:body===undefined?undefined:JSON.stringify(body),signal:combined});
+        const text=await r.text(); const data=text?JSON.parse(text):{};
+        if(r.ok) return data;
+        const retryable=r.status===429||r.status>=500;
+        if(!retryable||i===this.c.maxRetries) throw new Error(`Resend ${r.status}: ${data?.message??text}`);
+        const ra=Number(r.headers.get('retry-after')); await new Promise(x=>setTimeout(x,Number.isFinite(ra)&&ra>0?ra*1000:250*2**i));
+      }catch(e){last=e;if(i===this.c.maxRetries || (e instanceof Error && /Resend 4(?!29)/.test(e.message))) throw e;await new Promise(x=>setTimeout(x,250*2**i));}
+      finally{clearTimeout(timer)}
+    }
+    throw last;
+  }
+}

@@ -1,40 +1,85 @@
 # Resend MCP/API Connector
 
-Reusable MCP stdio server exposing a deliberately constrained Resend surface for agent workflows.
+Reusable MCP server for Resend email workflows. The connector uses Resend's official HTTPS API directly; no official Resend MCP server was relied on. Credentials remain in the connector process and are never tool inputs.
 
-## Official transport research
-Resend launched its official MCP server on 2026-04-07. It provides full platform tool groups and supports local `resend-mcp` plus Streamable HTTP. On 2026-07-07 Resend launched the hosted remote server at `https://mcp.resend.com/mcp` with OAuth; headless clients can instead use a Resend API key as a Bearer token. Resend states the remote server covers emails, templates, broadcasts, contacts, logs, webhooks and more. This package records that official MCP availability but uses the official REST API internally to keep a fixed, auditable allowlist, credential isolation, strict schemas, and connector-owned approval boundaries.
+## Official sources
 
-Official sources: https://resend.com/mcp ; https://resend.com/changelog/mcp ; https://resend.com/changelog/remote-mcp-server ; https://resend.com/docs/api-reference ; https://resend.com/changelog/api-rate-limit
+- API: https://resend.com/docs/api-reference/introduction
+- API keys/authentication: https://resend.com/docs/dashboard/api-keys/introduction
+- Emails: https://resend.com/docs/api-reference/emails/send-email
+- Domains: https://resend.com/docs/api-reference/domains/list-domains
+- Contacts: https://resend.com/docs/api-reference/contacts/list-contacts
+- Webhooks: https://resend.com/docs/dashboard/webhooks/introduction
 
-## Capabilities
-Twelve MCP tools: email list/get; domain list/get; contact list/get; segment list/get; webhook list/get; email send; contact create. This is intentional coverage, not a proxy for Resend's 85+ official MCP tools. Destructive, API-key management, broadcast send, domain mutation, webhook mutation, batch send, and arbitrary API requests are not exposed.
+## Transport and architecture
 
-## Architecture
-MCP client -> stdio server -> strict Zod schema -> approval policy -> Resend REST client -> `https://api.resend.com`. Returned provider content is wrapped as `untrustedProviderData`; it is data, never instructions.
+MCP clients communicate over stdio. `src/server.ts` registers strict provider-scoped tools; `src/client.ts` performs authenticated HTTPS calls to `https://api.resend.com`; `src/security.ts` isolates credentials and enforces approvals. Provider responses are treated as untrusted data.
 
-## Authentication and scopes
-Set `RESEND_API_KEY`. REST calls use `Authorization: Bearer`. The key never enters tool parameters. Resend API keys can be created with Full access or Sending access; the read/management tools require a key permitted for those API resources, while a least-privilege sending-only deployment should expose only send workflows operationally. The hosted official MCP can use OAuth, but this connector does not collect or persist OAuth tokens.
+## Authentication
 
-## Environment / installation
-Copy `.env.example`. Node.js 20+ is required. Run `npm install`, `npm run build`, then `npm start`. The API origin is pinned to prevent SSRF. `RESEND_TIMEOUT_MS`, `RESEND_MAX_RETRIES`, and `RESEND_WRITE_APPROVAL` configure reliability/policy without exposing secrets.
+Create a Resend API key with the minimum permission needed in the Resend dashboard and set `RESEND_API_KEY`. Resend API keys are bearer credentials; never place them in prompts or tool arguments. Use a Sending Access key where only sending is required and Full Access only when management endpoints used by this connector are required.
 
-## Tools and permissions
-READ (automatic): `resend.email.list`, `resend.email.get`, `resend.domain.list`, `resend.domain.get`, `resend.contact.list`, `resend.contact.get`, `resend.segment.list`, `resend.segment.get`, `resend.webhook.list`, `resend.webhook.get`.
+## Install and run
 
-WRITE (approval required by default): `resend.email.send`, `resend.contact.create`. Email sends are external communications and always require `approved:true`. Destructive actions are disabled and not registered.
+Requires Node.js 22+.
 
-## Rate limits and reliability
-Resend documents a default API limit of 10 requests/second and returns `ratelimit-limit`, `ratelimit-remaining`, `ratelimit-reset`, and `retry-after`; exceeding the window yields HTTP 429. The client parses retry timing, uses bounded exponential backoff for retryable READ failures, limits configured retries to five, bounds list pages to 100, and uses abort-based timeouts. Mutating calls are not blindly retried, preventing duplicate sends/contacts. Authentication, validation, permission, and non-transient provider failures are not retried.
+```bash
+npm install
+npm run build
+RESEND_API_KEY=re_xxx npm start
+```
 
-## Errors
-Provider errors map to `ResendError` with status, provider code/name, message, and optional retry delay internally. MCP callers receive bounded error text. Invalid origin, pagination, schemas, or approval fail before provider mutation.
+Copy `.env.example` into your secret-management workflow; this package does not load dotenv automatically.
 
-## Security
-Credentials stay in the auth layer. No arbitrary URL/request tool exists. API origin is allowlisted. Provider content is untrusted. Inputs are strict and bounded. Writes require approval. Retrieved content cannot alter permissions. No API-key creation/deletion, account administration, destructive action, permission escalation, or automatic trust of newly discovered upstream MCP tools is permitted.
+## Tools
 
-## Tests
-`npm test` requires no live credentials. Tests cover auth configuration, tool registration, strict validation, permission denial, pagination, provider error mapping, 429 retry, and non-retry of writes.
+| Tool | Risk | Approval |
+|---|---|---|
+| `resend.email.send` | HIGH_RISK | required |
+| `resend.email.get` | READ | no |
+| `resend.email.list` | READ | no |
+| `resend.email.cancel` | HIGH_RISK | required |
+| `resend.email.update` | WRITE | required |
+| `resend.domain.list` | READ | no |
+| `resend.domain.get` | READ | no |
+| `resend.contact.list` | READ | no |
+| `resend.contact.get` | READ | no |
+| `resend.contact.create` | WRITE | required |
+| `resend.contact.update` | WRITE | required |
+| `resend.contact.delete` | DESTRUCTIVE | explicit `approved: true` |
+
+Approval defaults on via `RESEND_REQUIRE_WRITE_APPROVAL=true`. Sending email is HIGH_RISK because it sends an external message. Deletion is destructive.
+
+## Reliability and rate limits
+
+The client uses configurable request timeouts, bounded exponential backoff, and honors `Retry-After` for HTTP 429. It retries throttling, transient server/network failures only; normal 4xx validation/authorization failures are not retried. Resend publishes account/API-specific rate-limit behavior via its API responses; callers should avoid high fan-out and paginate list operations where the endpoint supports cursors.
+
+## Errors and security
+
+Provider HTTP errors are normalized to MCP errors without exposing the API key. Inputs are constrained with Zod. No arbitrary URL/request tool exists, preventing SSRF through tool parameters. Retrieved email/contact/domain content is data, not instructions. The connector does not accept dynamic MCP tool discovery or forward credentials upstream beyond `api.resend.com`.
+
+## Testing
+
+```bash
+npm test
+```
+
+Unit tests require no live credentials and verify registration, validation, and approval boundaries. Integration testing with a real Resend account is intentionally separate.
+
+## Example workflow
+
+```json
+{"tool":"resend.email.send","input":{"from":"Product <noreply@example.com>","to":["user@example.net"],"subject":"Welcome","text":"Welcome!","approved":true}}
+```
+
+Expected output is the provider response (normally containing the created email identifier). Sending requires explicit approval.
+
+```json
+{"tool":"resend.email.get","input":{"id":"email-id"}}
+```
+
+This is READ and requires no approval.
 
 ## Limitations
-This connector intentionally does not proxy the official Resend MCP server, implement OAuth, receive/verify webhooks, download inbound attachments, manage API keys, mutate domains/webhooks, or execute broadcasts. Those capabilities exist upstream but are excluded to keep this reusable agent-facing contract least-privileged and auditable.
+
+This connector intentionally does not expose broadcasts, audience deletion, domain mutation, webhook mutation, arbitrary API calls, or inbound-email automation. OAuth is not used by these API-key endpoints. Provider features and limits can change; verify the linked official documentation before expanding scopes or adding tools.

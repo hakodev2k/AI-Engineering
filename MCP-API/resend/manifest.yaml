@@ -1,32 +1,29 @@
 id: resend
 name: Resend
-upstream:
-  - mcp
-  - rest
-official_mcp:
-  remote: https://mcp.resend.com/mcp
-  local: resend-mcp
-auth:
-  types:
-    - oauth2
-    - api-key
-  required_env:
-    - RESEND_API_KEY
+upstream: [rest, sdk]
 api_base_url: https://api.resend.com
+auth:
+  type: api_key
+  environment: RESEND_API_KEY
 capabilities:
-  - email.list
+  - email.send
   - email.get
+  - email.cancel
+  - email.update
+  - email.list
   - domain.list
   - domain.get
   - contact.list
   - contact.get
-  - segment.list
-  - segment.get
-  - webhook.list
-  - webhook.get
-  - email.send
   - contact.create
+  - contact.update
+  - contact.delete
 risk:
-  default: READ
-  write_approval: required
-  destructive: disabled
+  default: read
+  write_requires_approval: true
+  destructive_requires_approval: true
+environment:
+  - RESEND_API_KEY
+  - RESEND_TIMEOUT_MS
+  - RESEND_MAX_RETRIES
+  - RESEND_REQUIRE_WRITE_APPROVAL
