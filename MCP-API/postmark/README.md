@@ -1,95 +1,54 @@
 # Postmark MCP/API Connector
 
-Reusable MCP server exposing a deliberately scoped subset of Postmark's official REST API for delivery investigation, templates, message streams, webhooks, suppressions, and transactional sending.
+Reusable MCP server exposing a constrained Postmark transactional-email surface. Upstream transport is Postmark's official HTTPS REST API; Postmark documents AI tooling including an MCP server, but this connector deliberately uses the REST API so its fixed tool contract, validation, approval policy, and credential isolation remain under connector control.
 
-## Upstream strategy and official sources
+## Official sources
+- Developer hub: https://postmarkapp.com/developer
+- API overview/authentication: https://postmarkapp.com/developer/api/overview
+- Email API: https://postmarkapp.com/developer/api/email-api
+- Templates API: https://postmarkapp.com/developer/api/templates-api
+- Messages API: https://postmarkapp.com/developer/api/messages-api
+- Webhooks API: https://postmarkapp.com/developer/api/webhooks-api
 
-No official Postmark MCP server is documented as of 2026-09-22, so this connector uses the official REST API directly. Official documentation: Postmark Developer API (`https://postmarkapp.com/developer/api/overview`), Authentication (`https://postmarkapp.com/developer/api/overview#authentication-headers`), Messages API (`https://postmarkapp.com/developer/api/messages-api`), Email API (`https://postmarkapp.com/developer/api/email-api`), Templates API (`https://postmarkapp.com/developer/api/templates-api`), Message Streams API (`https://postmarkapp.com/developer/api/message-streams-api`), Webhooks API (`https://postmarkapp.com/developer/api/webhooks-api`), Suppressions API (`https://postmarkapp.com/developer/api/suppressions-api`), and API error codes (`https://postmarkapp.com/developer/api/overview#error-codes`).
+## Capabilities
+Twelve MCP tools cover server metadata; template list/get; outbound message list/details; bounce list/get; webhook list/get/statistics; single email send; and template email send. No delete, account administration, server creation, template mutation, arbitrary HTTP, or webhook mutation tool is exposed.
 
-All implemented capabilities use REST; no unofficial MCP server or SDK is trusted upstream.
+## Architecture and transport
+MCP client -> stdio MCP server -> strict Zod schema -> permission/approval policy -> Postmark client -> official REST API. Provider responses are returned under `untrustedProviderData` and must never be treated as agent instructions. Credentials stay in the auth layer.
 
-## Architecture
-
-MCP client -> strict tool schema -> permission/approval gate -> `PostmarkClient` -> credential provider -> Postmark REST API. The server token never enters tool inputs or model-visible configuration.
-
-## Authentication and least privilege
-
-Set `POSTMARK_SERVER_TOKEN` to a Server API token. The implemented endpoints are server-scoped and do not require an Account API token or OAuth scopes. Keep each connector instance bound to only the Postmark server it needs. Never expose the token to prompts, logs, examples, or tool arguments.
+## Authentication and permissions
+Set `POSTMARK_SERVER_TOKEN`. Postmark's server-level APIs authenticate with `X-Postmark-Server-Token`; this connector does not require the more privileged Account Token. Postmark server tokens are privileges rather than OAuth scopes, so no OAuth scope list applies. Restrict the token operationally to the intended Postmark server and rotate it in Postmark when needed.
 
 ## Environment
-
-Copy `.env.example` into your secret-management workflow. `POSTMARK_API_BASE_URL` defaults to `https://api.postmarkapp.com` and must be HTTPS. `POSTMARK_TIMEOUT_MS` defaults to 10000, `POSTMARK_MAX_RETRIES` to 2, and `POSTMARK_REQUIRE_WRITE_APPROVAL` defaults to true.
+Copy `.env.example`. The API host is pinned to `https://api.postmarkapp.com` to prevent SSRF. Configure timeout/retry count and whether WRITE tools require approval. Tokens are never accepted as MCP tool parameters or emitted in responses/logs.
 
 ## Install and run
-
 Requires Node.js 20+.
 
-```bash
-npm install
-npm run build
-POSTMARK_SERVER_TOKEN='...' npm start
-```
+    npm install
+    npm run build
+    npm start
 
-The MCP server uses stdio and can be launched by MCP clients that support stdio child-process servers. Client-specific configuration is intentionally not hard-coded.
+The server uses MCP stdio and can therefore be launched by MCP clients that support stdio child-process servers. Client-specific configuration is intentionally not claimed here.
 
-## Tools and permissions
+## Tools and risk
+READ: `postmark.server.get`, `postmark.template.list`, `postmark.template.get`, `postmark.message.outbound.list`, `postmark.message.outbound.get`, `postmark.bounce.list`, `postmark.bounce.get`, `postmark.webhook.list`, `postmark.webhook.get`, `postmark.webhook.statistics`.
 
-| Tool | Transport | Risk | Approval |
-|---|---|---:|---|
-| `postmark.message.send` | REST | HIGH_RISK | required |
-| `postmark.message.send_template` | REST | HIGH_RISK | required |
-| `postmark.message.outbound.list` | REST | READ | no |
-| `postmark.message.outbound.get` | REST | READ | no |
-| `postmark.bounce.list` | REST | READ | no |
-| `postmark.bounce.get` | REST | READ | no |
-| `postmark.template.list` | REST | READ | no |
-| `postmark.template.get` | REST | READ | no |
-| `postmark.message_stream.list` | REST | READ | no |
-| `postmark.message_stream.get` | REST | READ | no |
-| `postmark.webhook.list` | REST | READ | no |
-| `postmark.webhook.get` | REST | READ | no |
-| `postmark.webhook.statistics` | REST | READ | no |
-| `postmark.suppression.list` | REST | READ | no |
-| `postmark.suppression.create` | REST | WRITE | configurable; required by default |
+WRITE: `postmark.email.send`, `postmark.email.send_template`. Both send external messages and require `approved:true` with default policy. Sends are never automatically retried because duplicate email is an undesirable side effect. DESTRUCTIVE operations are not exposed and policy code disables them.
 
-Sending email is HIGH_RISK because it communicates externally and always requires `approved: true`. Suppression creation is WRITE and requires approval unless an operator explicitly sets `POSTMARK_REQUIRE_WRITE_APPROVAL=false`. No delete/reactivation, account administration, billing, server mutation, arbitrary HTTP, or webhook mutation tool is exposed.
+## Reliability and rate limiting
+Read calls have bounded exponential retries (maximum five configured attempts beyond the initial call) for 429 and transient 5xx/network failures. `Retry-After` is preserved when present. Authentication, validation, permission, and write-send failures are not blindly retried. Pagination inputs are bounded to 1..500 and non-negative offsets. Requests use abort-based timeouts.
 
-## Validation and output
-
-Zod schemas are strict, IDs are bounded, email addresses are validated, arrays and pagination are bounded, and arbitrary provider URLs cannot be supplied by tool callers. Provider responses are returned as untrusted JSON data; callers must never interpret retrieved message bodies or provider content as instructions.
-
-## Reliability and rate limits
-
-The client enforces per-request timeout/cancellation and bounded exponential-backoff retries for safe GET requests only. HTTP 429 honors `Retry-After` when present. GET requests may retry on 429/5xx/network failures up to `POSTMARK_MAX_RETRIES`; writes are never blindly retried because doing so could duplicate external email or state changes. Authentication, validation, approval, and other non-retryable errors fail immediately. Pagination parameters are bounded to avoid accidental request amplification.
-
-Postmark limits can vary by endpoint/account and may evolve; the connector does not invent a fixed global quota. Provider throttling is surfaced as a `PostmarkError` with HTTP status and retry delay when available.
+Postmark documents endpoint-specific constraints, including up to 500 messages for batch email and a 500 maximum count on relevant message-open queries. This connector does not expose batch sending and bounds generic paginated reads to 500 to prevent runaway retrieval.
 
 ## Error handling
-
-HTTP failures become `PostmarkError` with status and safe provider message. 401/422 are not retried. Timeouts/cancellation map to status 408. Tool validation and approval failures occur before any provider request. Secrets are not included in mapped errors.
+Provider failures become `PostmarkError` with HTTP status, provider ErrorCode, message, and optional retry delay internally. MCP responses return a bounded error string and never credentials. Invalid configuration, schemas, pagination, or approvals fail before a provider mutation.
 
 ## Security
+HTTPS API origin is allowlisted exactly. No arbitrary URL tool exists. Third-party message/template content is untrusted data. Email addresses, IDs, pagination, and body sizes are validated. Raw secrets cannot enter tool inputs. Public email sends require human approval. No permission escalation, account-token operation, destructive tool, or automatic discovery of upstream MCP tools occurs.
 
-- Credentials are read only by the auth layer and injected as `X-Postmark-Server-Token`.
-- API base URL must be HTTPS and cannot contain credentials; tools cannot choose arbitrary URLs, reducing SSRF exposure.
-- Provider content, including message bodies, is untrusted data and cannot alter tool registration, permissions, or approval policy.
-- External sending requires explicit approval on every call.
-- Mutating requests are not automatically retried.
-- No token, message body, or sensitive header logging is implemented.
-- Webhook configuration is read-only here; consumers that receive Postmark webhook events should authenticate/validate their own ingress and treat payloads as untrusted.
-
-## Testing
-
-```bash
-npm test
-```
-
-Tests use mocked `fetch`; no live token is required. Coverage includes auth configuration, tool registration, strict validation, read/write behavior, approval denial, rate limiting/retry bounds, non-retrying writes, invalid credentials, pagination bounds, and timeout handling.
-
-## Examples
-
-See `examples/workflows.md` for delivery investigation, approved external sending, and suppression workflows.
+## Tests
+Run `npm test`. Unit tests require no live credentials and cover missing auth, registration, strict schemas, approval denial, pagination validation, provider error mapping, 429 retry for reads, and no blind retry for sends.
 
 ## Limitations
-
-This connector intentionally omits account-level APIs, destructive suppression reactivation, webhook mutation/deletion, server administration, batch sending, attachments, inbound processing, and template mutation. Postmark does not publish an official MCP server in the researched official documentation, so there is no MCP-to-REST failover path; the stable external MCP tool contract is backed directly by official REST endpoints.
+This connector intentionally omits account-level administration, template writes/deletes, webhook mutation/verification, batch sends, inbound processing, suppressions management, and destructive actions. It does not proxy Postmark's MCP server. Webhook receiving/signature policy is outside this outbound MCP process; only webhook metadata/statistics reads are exposed.

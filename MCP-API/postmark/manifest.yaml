@@ -5,32 +5,24 @@ upstream:
 auth:
   type: server-token
   header: X-Postmark-Server-Token
-  scopes: []
-api:
-  base_url: https://api.postmarkapp.com
-mcp:
-  official_server: false
+  required_env:
+    - POSTMARK_SERVER_TOKEN
+api_base_url: https://api.postmarkapp.com
+official_mcp: none-required-by-this-connector
 capabilities:
-  - message.send
-  - message.send_template
+  - server.get
+  - template.list
+  - template.get
   - message.outbound.list
   - message.outbound.get
   - bounce.list
   - bounce.get
-  - template.list
-  - template.get
-  - message_stream.list
-  - message_stream.get
   - webhook.list
   - webhook.get
   - webhook.statistics
-  - suppression.list
-  - suppression.create
+  - email.send
+  - email.send_template
 risk:
   default: READ
-  approval:
-    WRITE: configurable
-    HIGH_RISK: required
-environment:
-  required: [POSTMARK_SERVER_TOKEN]
-  optional: [POSTMARK_API_BASE_URL, POSTMARK_TIMEOUT_MS, POSTMARK_MAX_RETRIES, POSTMARK_REQUIRE_WRITE_APPROVAL]
+  write_approval: required
+  destructive: disabled

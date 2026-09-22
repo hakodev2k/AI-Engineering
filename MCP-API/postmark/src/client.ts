@@ -1,57 +1,8 @@
-import { PostmarkAuth } from './auth.js';
-import { safeBaseUrl } from './security.js';
-
-export class PostmarkError extends Error {
-  constructor(message: string, public readonly status: number, public readonly retryAfter?: number) { super(message); }
-}
-
-export interface ClientOptions { baseUrl?: string; timeoutMs?: number; maxRetries?: number; fetchImpl?: typeof fetch; }
-
-export class PostmarkClient {
-  private readonly base: URL;
-  private readonly timeoutMs: number;
-  private readonly maxRetries: number;
-  private readonly fetchImpl: typeof fetch;
-  constructor(private readonly auth: PostmarkAuth, options: ClientOptions = {}) {
-    this.base = safeBaseUrl(options.baseUrl ?? 'https://api.postmarkapp.com');
-    this.timeoutMs = options.timeoutMs ?? 10000;
-    this.maxRetries = options.maxRetries ?? 2;
-    this.fetchImpl = options.fetchImpl ?? fetch;
-  }
-
-  async request<T>(method: string, path: string, body?: unknown, signal?: AbortSignal): Promise<T> {
-    if (!path.startsWith('/') || path.startsWith('//')) throw new Error('Invalid API path');
-    const retryable = method === 'GET';
-    for (let attempt = 0; ; attempt++) {
-      const timeout = AbortSignal.timeout(this.timeoutMs);
-      const combined = signal ? AbortSignal.any([signal, timeout]) : timeout;
-      try {
-        const res = await this.fetchImpl(new URL(path, this.base), { method, headers: this.auth.headers(), body: body === undefined ? undefined : JSON.stringify(body), signal: combined });
-        const text = await res.text();
-        let data: unknown = null;
-        if (text) { try { data = JSON.parse(text); } catch { data = { Message: text }; } }
-        if (res.ok) return data as T;
-        const retryAfter = this.retryAfter(res);
-        const msg = typeof data === 'object' && data && 'Message' in data ? String((data as {Message: unknown}).Message) : `Postmark HTTP ${res.status}`;
-        if (retryable && attempt < this.maxRetries && (res.status === 429 || res.status >= 500)) {
-          await this.sleep(retryAfter ?? Math.min(250 * 2 ** attempt, 2000), signal);
-          continue;
-        }
-        throw new PostmarkError(msg, res.status, retryAfter);
-      } catch (err) {
-        if (err instanceof PostmarkError) throw err;
-        if (combined.aborted) throw new PostmarkError('Postmark request timed out or was cancelled', 408);
-        if (retryable && attempt < this.maxRetries) { await this.sleep(Math.min(250 * 2 ** attempt, 2000), signal); continue; }
-        throw new PostmarkError(err instanceof Error ? err.message : 'Network failure', 0);
-      }
-    }
-  }
-
-  private retryAfter(res: Response): number | undefined {
-    const raw = res.headers.get('retry-after'); if (!raw) return undefined;
-    const seconds = Number(raw); return Number.isFinite(seconds) ? Math.max(0, seconds * 1000) : undefined;
-  }
-  private sleep(ms: number, signal?: AbortSignal): Promise<void> {
-    return new Promise((resolve, reject) => { const id = setTimeout(resolve, ms); signal?.addEventListener('abort', () => { clearTimeout(id); reject(new Error('cancelled')); }, { once: true }); });
-  }
+import {PostmarkAuth} from "./auth.js";
+export class PostmarkError extends Error{constructor(public status:number,public code:string,message:string,public retryAfter?:number){super(message)}}
+export class PostmarkClient{
+ constructor(private auth=new PostmarkAuth(),private fetcher:typeof fetch=fetch,private env=process.env){}
+ private base(){const u=this.env.POSTMARK_API_BASE_URL??"https://api.postmarkapp.com";if(u!=="https://api.postmarkapp.com")throw new Error("POSTMARK_BASE_URL_REJECTED");return u;}
+ async request(path:string,init:RequestInit={},retryable=true){if(!path.startsWith("/"))throw new Error("POSTMARK_PATH_INVALID");const max=Math.max(0,Math.min(5,Number(this.env.POSTMARK_MAX_RETRIES??3)));for(let a=0;;a++){const c=new AbortController();const t=setTimeout(()=>c.abort(),Number(this.env.POSTMARK_TIMEOUT_MS??10000));try{const r=await this.fetcher(this.base()+path,{...init,signal:c.signal,headers:{...this.auth.headers(),...(init.body?{"Content-Type":"application/json"}:{}),...(init.headers??{})}});const text=await r.text();const data=text?JSON.parse(text):{};if(r.ok)return data;const ra=Number(r.headers.get("retry-after")??0);const err=new PostmarkError(r.status,String(data.ErrorCode??"HTTP_"+r.status),String(data.Message??"Postmark request failed"),ra||undefined);if(!retryable||![429,500,502,503,504].includes(r.status)||a>=max)throw err;await new Promise(x=>setTimeout(x,Math.min(5000,(ra?ra*1000:250*2**a))));}catch(e){if(e instanceof PostmarkError)throw e;if(a>=max||!retryable)throw e;await new Promise(x=>setTimeout(x,Math.min(5000,250*2**a)));}finally{clearTimeout(t)}}}
+ async paged(path:string,count=100,offset=0){if(count<1||count>500||offset<0)throw new Error("POSTMARK_PAGINATION_INVALID");const s=path.includes("?")?"&":"?";return this.request(path+s+new URLSearchParams({count:String(count),offset:String(offset)}));}
 }

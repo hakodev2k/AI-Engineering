@@ -1,23 +1,9 @@
-import { describe, expect, it, vi } from 'vitest';
-import { PostmarkAuth } from '../src/auth.js';
-import { PostmarkClient, PostmarkError } from '../src/client.js';
-import { ApprovalError } from '../src/security.js';
-import { createTools } from '../src/tools.js';
-
-const auth = new PostmarkAuth('test-token');
-const find = (tools: ReturnType<typeof createTools>, name: string) => tools.find(t=>t.name===name)!;
-
-describe('Postmark connector', () => {
-  it('rejects missing credentials', () => expect(()=>new PostmarkAuth('')).toThrow());
-  it('isolates credential in request headers', () => expect(auth.headers()['X-Postmark-Server-Token']).toBe('test-token'));
-  it('registers 15 scoped tools', () => { const c = new PostmarkClient(auth,{fetchImpl:vi.fn() as any}); expect(createTools(c)).toHaveLength(15); });
-  it('rejects invalid input before API call', async () => { const f=vi.fn(); const t=find(createTools(new PostmarkClient(auth,{fetchImpl:f as any})),'postmark.message.outbound.get'); await expect(t.run({messageId:''})).rejects.toThrow(); expect(f).not.toHaveBeenCalled(); });
-  it('requires approval for external email', async () => { const t=find(createTools(new PostmarkClient(auth,{fetchImpl:vi.fn() as any})),'postmark.message.send'); await expect(t.run({from:'a@example.com',to:'b@example.com',subject:'x',textBody:'y'})).rejects.toBeInstanceOf(ApprovalError); });
-  it('executes approved write', async () => { const f=vi.fn(async()=>new Response(JSON.stringify({MessageID:'m1'}),{status:200})); const t=find(createTools(new PostmarkClient(auth,{fetchImpl:f as any})),'postmark.message.send'); const r:any=await t.run({from:'a@example.com',to:'b@example.com',subject:'x',textBody:'y',approved:true}); expect(r.MessageID).toBe('m1'); expect(f).toHaveBeenCalledOnce(); });
-  it('executes read without approval', async () => { const f=vi.fn(async()=>new Response(JSON.stringify({TotalCount:0,Messages:[]}),{status:200})); const t=find(createTools(new PostmarkClient(auth,{fetchImpl:f as any})),'postmark.message.outbound.list'); await t.run({}); expect(f).toHaveBeenCalledOnce(); });
-  it('retries GET on 429 and honors bounded retries', async () => { const f=vi.fn().mockResolvedValueOnce(new Response('{}',{status:429,headers:{'retry-after':'0'}})).mockResolvedValueOnce(new Response('{"ok":true}',{status:200})); const c=new PostmarkClient(auth,{fetchImpl:f as any,maxRetries:1}); await expect(c.request('GET','/bounces')).resolves.toEqual({ok:true}); expect(f).toHaveBeenCalledTimes(2); });
-  it('does not retry writes', async () => { const f=vi.fn(async()=>new Response('{"Message":"busy"}',{status:500})); const c=new PostmarkClient(auth,{fetchImpl:f as any,maxRetries:2}); await expect(c.request('POST','/email',{})).rejects.toBeInstanceOf(PostmarkError); expect(f).toHaveBeenCalledOnce(); });
-  it('maps invalid credentials without retry', async () => { const f=vi.fn(async()=>new Response('{"Message":"Unauthorized"}',{status:401})); const c=new PostmarkClient(auth,{fetchImpl:f as any,maxRetries:2}); await expect(c.request('GET','/bounces')).rejects.toMatchObject({status:401}); expect(f).toHaveBeenCalledOnce(); });
-  it('bounds pagination inputs', async () => { const t=find(createTools(new PostmarkClient(auth,{fetchImpl:vi.fn() as any})),'postmark.bounce.list'); await expect(t.run({count:501,offset:0})).rejects.toThrow(); });
-  it('reports timeout', async () => { const f=vi.fn((_u:any,o:any)=>new Promise((_r,reject)=>o.signal.addEventListener('abort',()=>reject(new Error('aborted'))))); const c=new PostmarkClient(auth,{fetchImpl:f as any,timeoutMs:5,maxRetries:0}); await expect(c.request('GET','/bounces')).rejects.toMatchObject({status:408}); });
-});
+import test from "node:test";import assert from "node:assert/strict";import {PostmarkAuth} from "../src/auth.js";import {PostmarkClient,PostmarkError} from "../src/client.js";import {requireApproval} from "../src/policy.js";import {tools} from "../src/tools.js";
+test("auth requires token",()=>assert.throws(()=>new PostmarkAuth({} as any).token(),/AUTH_MISSING/));
+test("registers scoped tools",()=>{const names=tools({} as any).map(x=>x.name);assert.equal(names.length,12);assert(names.every(x=>x.startsWith("postmark.")))});
+test("write requires approval",()=>assert.throws(()=>requireApproval("WRITE",false,{POSTMARK_WRITE_APPROVAL:"required"} as any),/APPROVAL_REQUIRED/));
+test("strict validation rejects extra fields",()=>assert.equal(tools({} as any)[0].schema.safeParse({x:1}).success,false));
+test("pagination validation",async()=>{const c=new PostmarkClient(new PostmarkAuth({POSTMARK_SERVER_TOKEN:"x"} as any),fetch,{POSTMARK_API_BASE_URL:"https://api.postmarkapp.com"} as any);await assert.rejects(()=>c.paged("/bounces",501,0),/PAGINATION_INVALID/)});
+test("maps API error",async()=>{const f=async()=>new Response(JSON.stringify({ErrorCode:10,Message:"bad"}),{status:422,headers:{"content-type":"application/json"}});const c=new PostmarkClient(new PostmarkAuth({POSTMARK_SERVER_TOKEN:"x"} as any),f as any,{POSTMARK_API_BASE_URL:"https://api.postmarkapp.com",POSTMARK_MAX_RETRIES:"0"} as any);await assert.rejects(()=>c.request("/server"),e=>e instanceof PostmarkError&&e.status===422)});
+test("rate limit retries read",async()=>{let n=0;const f=async()=>{n++;return n===1?new Response(JSON.stringify({Message:"slow"}),{status:429,headers:{"retry-after":"0"}}):new Response(JSON.stringify({ID:1}),{status:200})};const c=new PostmarkClient(new PostmarkAuth({POSTMARK_SERVER_TOKEN:"x"} as any),f as any,{POSTMARK_API_BASE_URL:"https://api.postmarkapp.com",POSTMARK_MAX_RETRIES:"1"} as any);assert.equal((await c.request("/server")).ID,1);assert.equal(n,2)});
+test("send does not blindly retry",async()=>{let n=0;const f=async()=>{n++;return new Response(JSON.stringify({Message:"slow"}),{status:429})};const c=new PostmarkClient(new PostmarkAuth({POSTMARK_SERVER_TOKEN:"x"} as any),f as any,{POSTMARK_API_BASE_URL:"https://api.postmarkapp.com",POSTMARK_MAX_RETRIES:"3"} as any);await assert.rejects(()=>c.request("/email",{method:"POST"},false));assert.equal(n,1)});
