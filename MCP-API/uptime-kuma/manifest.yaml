@@ -1,0 +1,41 @@
+id: uptime-kuma
+name: Uptime Kuma
+upstream:
+  - socket.io
+  - rest
+official_mcp: false
+api_base_url: configurable
+auth:
+  type: username-password-or-login-token
+  notes: Socket.IO uses login/loginByToken; API keys only protect /metrics.
+environment:
+  - UPTIME_KUMA_URL
+  - UPTIME_KUMA_USERNAME
+  - UPTIME_KUMA_PASSWORD
+  - UPTIME_KUMA_TOKEN
+  - UPTIME_KUMA_TIMEOUT_MS
+  - UPTIME_KUMA_ALLOW_WRITE
+  - UPTIME_KUMA_ALLOW_DESTRUCTIVE
+capabilities:
+  - monitor.list
+  - monitor.get
+  - monitor.create
+  - monitor.update
+  - monitor.pause
+  - monitor.resume
+  - monitor.delete
+  - heartbeat.list
+  - maintenance.list
+  - status_page.list
+  - notification.list
+  - tag.list
+risk:
+  default: read
+  write_requires_approval: true
+  destructive_disabled_by_default: true
+security:
+  retrieved_content_untrusted: true
+  credentials_isolated: true
+limitations:
+  - Uptime Kuma management API is internal Socket.IO and may change between releases.
+  - No official Uptime Kuma MCP server is published by the project.
