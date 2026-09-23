@@ -1,0 +1,44 @@
+id: dixa
+name: Dixa
+upstream:
+  - rest
+  - mcp-available-not-used-by-default
+official_mcp:
+  endpoint: https://dixa-mcp-public.fastmcp.app/mcp
+  status: beta
+  note: "Documented by Dixa but open-source beta and not supported by Dixa support; direct API is used for stable scoped contracts."
+api:
+  base_url: https://dev.dixa.io
+auth:
+  type: bearer-token
+  env: DIXA_API_TOKEN
+capabilities:
+  - conversation.read
+  - conversation.messages.list
+  - conversation.notes.list
+  - conversation.note.create
+  - conversation.reopen
+  - conversation.transfer.queue
+  - conversation.linked.list
+  - enduser.list
+  - enduser.read
+  - enduser.conversations.list
+  - agent.list
+  - agent.read
+  - queue.list
+  - queue.read
+  - tag.list
+risk:
+  default: READ
+  writes: WRITE
+  external_routing: HIGH_RISK
+approval:
+  WRITE: configurable
+  HIGH_RISK: required
+env:
+  - DIXA_API_TOKEN
+  - DIXA_API_BASE_URL
+  - DIXA_TIMEOUT_MS
+  - DIXA_MAX_RETRIES
+  - DIXA_ALLOW_WRITES
+  - DIXA_APPROVAL_TOKEN
