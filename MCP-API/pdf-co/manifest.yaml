@@ -1,0 +1,38 @@
+id: pdf-co
+name: PDF.co
+upstream:
+  - mcp
+upstream_mcp:
+  implementation: pdfdotco/pdfco-mcp
+  transport: stdio
+  command: uvx
+  package: pdfco-mcp
+auth:
+  type: api_key
+  environment: PDFCO_API_KEY
+  upstream_environment: X_API_KEY
+api_base_url: https://api.pdf.co
+capabilities:
+  - pdf.convert.to_text
+  - pdf.convert.to_json
+  - pdf.info.read
+  - pdf.form.fields.read
+  - pdf.text.find
+  - pdf.merge
+  - pdf.split
+  - pdf.ocr.make_searchable
+  - pdf.invoice.parse
+  - pdf.form.fill
+risk:
+  default: READ
+permissions:
+  READ: [pdf.convert.to_text, pdf.convert.to_json, pdf.info.read, pdf.form.fields.read, pdf.text.find]
+  WRITE: [pdf.merge, pdf.split, pdf.ocr.make_searchable, pdf.invoice.parse]
+  HIGH_RISK: [pdf.form.fill]
+approval:
+  WRITE: configurable
+  HIGH_RISK: required
+environment:
+  - PDFCO_API_KEY
+  - PDFCO_UVX_COMMAND
+  - PDFCO_REQUIRE_WRITE_APPROVAL
