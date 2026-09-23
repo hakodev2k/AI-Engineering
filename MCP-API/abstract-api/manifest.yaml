@@ -1,0 +1,38 @@
+id: abstract-api
+name: Abstract API
+upstream:
+  - rest
+official_mcp: false
+api_docs: https://www.abstractapi.com/docs
+auth:
+  type: api_key
+  credential_isolation: environment
+capabilities:
+  - email.validate
+  - phone.validate
+  - ip.lookup
+  - ip.risk
+  - company.enrich
+  - holiday.list
+  - timezone.current
+  - exchange.live
+risk:
+  default: READ
+  write_tools: []
+approval:
+  required: false
+  note: Connector intentionally exposes read-only validation/enrichment operations.
+environment:
+  - ABSTRACT_EMAIL_API_KEY
+  - ABSTRACT_PHONE_API_KEY
+  - ABSTRACT_IP_API_KEY
+  - ABSTRACT_COMPANY_API_KEY
+  - ABSTRACT_HOLIDAYS_API_KEY
+  - ABSTRACT_TIMEZONE_API_KEY
+  - ABSTRACT_EXCHANGE_API_KEY
+  - ABSTRACT_REQUEST_TIMEOUT_MS
+  - ABSTRACT_MAX_RETRIES
+security:
+  credentials_forwarded_to_model: false
+  arbitrary_url_requests: false
+  provider_content_untrusted: true
