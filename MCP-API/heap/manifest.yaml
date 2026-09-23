@@ -1,0 +1,34 @@
+id: heap
+name: Heap
+upstream:
+  - rest
+official_mcp: false
+api:
+  us_base_url: https://heapanalytics.com
+  eu_base_url: https://c.eu.heap-api.com
+auth:
+  ingestion: app_id
+  privacy: basic_to_bearer_token
+  environment_variables:
+    - HEAP_APP_ID
+    - HEAP_API_KEY
+capabilities:
+  - event.track
+  - event.track_batch
+  - user.properties.update
+  - user.identify
+  - privacy.user_deletion.request
+  - privacy.user_deletion.status
+risk:
+  default: write
+  tools:
+    heap.event.track: WRITE
+    heap.event.track_batch: WRITE
+    heap.user.properties.update: WRITE
+    heap.user.identify: HIGH_RISK
+    heap.privacy.user_deletion.request: DESTRUCTIVE
+    heap.privacy.user_deletion.status: READ
+approval:
+  write: configurable
+  high_risk: required
+  destructive: required_and_disabled_by_default
