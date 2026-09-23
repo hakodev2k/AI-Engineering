@@ -1,65 +1,57 @@
 # Algolia MCP/API Connector
 
-Reusable MCP server for Algolia search, analytics, selected index administration, and tightly controlled writes. It exposes stable provider-scoped tools while keeping Algolia credentials inside the connector.
+Reusable MCP server for Algolia. It exposes a stable provider-scoped interface while keeping credentials inside the connector.
 
-## Transport strategy
+## Upstream strategy
 
-Algolia provides official managed MCP offerings. As of August 2026, Algolia documents Public MCP for application-scoped search/recommend and Productivity MCP at `https://mcp.algolia.com/mcp` for OAuth-authenticated, user-scoped, read-only search and analytics. Public MCP endpoints are created in the Algolia dashboard and use `https://{APP_ID}.algolia.net/mcp/1/{UNIQ_ID}/mcp`.
+As researched on 2026-09-23, Algolia provides an official remote **Productivity MCP** at `https://mcp.algolia.com/mcp` for account-aware read operations, plus official APIs for index writes. This connector therefore routes reads to the official MCP and the two intentionally narrow writes to the official REST API. Algolia also operates the separate no-auth DocSearch MCP at `https://mcp.algolia.com/1/docsearch/mcp`; it searches public developer documentation and is not used for private application/index operations.
 
-This connector uses an explicitly configured official MCP URL for `algolia.record.search` when a compatible Algolia search tool is exposed. Otherwise it falls back to the official Search API. CRUD/settings and deterministic analytics use official APIs because Productivity MCP is read-only and Public MCP is scoped to search/recommend.
-
-Official documentation:
-- https://www.algolia.com/doc/guides/model-context-protocol
-- https://www.algolia.com/doc/guides/model-context-protocol/public-mcp
-- https://www.algolia.com/doc/guides/model-context-protocol/productivity-mcp
-- https://www.algolia.com/doc/rest-api
-- https://www.algolia.com/developers/search-api-javascript
+Official sources: Algolia MCP product/docs (`https://www.algolia.com/developers/lp-mcp`), official implementation guidance (`https://github.com/algolia/implementation-skills`), DocSearch MCP (`https://docsearch.algolia.com/docs/mcp/overview/`), and Algolia API documentation (`https://www.algolia.com/doc/rest-api/search/`).
 
 ## Tools
 
 | Tool | Transport | Risk | Approval |
 |---|---|---|---|
-| `algolia.index.list` | REST | READ | No |
-| `algolia.record.search` | official MCP first, REST fallback | READ | No |
-| `algolia.record.get` | REST | READ | No |
-| `algolia.facet.search` | REST | READ | No |
-| `algolia.settings.get` | REST | READ | No |
-| `algolia.analytics.top_searches` | Analytics REST | READ | No |
-| `algolia.analytics.no_results` | Analytics REST | READ | No |
-| `algolia.record.save` | REST | WRITE | Yes |
-| `algolia.settings.set` | REST | HIGH_RISK | Yes |
-| `algolia.record.delete` | REST | DESTRUCTIVE | Yes |
+| `algolia.application.list` | official MCP | READ | no |
+| `algolia.index.list` | official MCP | READ | no |
+| `algolia.index.settings.get` | official MCP | READ | no |
+| `algolia.record.search` | official MCP | READ | no |
+| `algolia.analytics.top_searches` | official MCP | READ | no |
+| `algolia.analytics.no_results_rate` | official MCP | READ | no |
+| `algolia.record.create` | REST | WRITE | yes |
+| `algolia.record.partial_update` | REST | WRITE | yes |
 
-## Authentication and scopes
+No delete, index deletion, ACL, billing, API-key management, or arbitrary-request tool is exposed.
 
-Set `ALGOLIA_APPLICATION_ID`. Configure `ALGOLIA_SEARCH_API_KEY` for read operations using only required ACLs such as `search`, `browse`, and `analytics` where applicable. Configure `ALGOLIA_ADMIN_API_KEY` only for enabled write/settings tools, preferably as a restricted key with only `addObject`, `deleteObject`, and/or `settings` ACLs required by the deployment.
+## Authentication and least privilege
 
-`ALGOLIA_MCP_URL` is optional and must point to an Algolia-managed MCP endpoint. Productivity MCP uses OAuth in the MCP client; Public MCP URLs are dashboard-generated capability URLs and should be protected even when configured as no-auth.
+For MCP reads, obtain an OAuth access token through Algolia's supported authorization flow and inject it as `ALGOLIA_MCP_ACCESS_TOKEN`; the token is never accepted as a tool argument. For REST writes, set `ALGOLIA_APP_ID` and an Algolia API key restricted to only the target indices and ACLs needed for `addObject`/record updates. Do not use an Admin API key unless unavoidable. The LLM never receives either credential.
 
-Credentials are injected only into outbound provider requests and are never returned in MCP responses.
-
-## Approval boundaries
-
-All mutations require a payload-bound approval token. Store `ALGOLIA_APPROVAL_SECRET` outside the LLM trust boundary. A trusted approval component derives HMAC-SHA256 over the tool name and canonical payload. Any payload change invalidates approval. `algolia.record.delete` is destructive and its provider request is never automatically retried.
-
-## Reliability and rate limits
-
-Requests use bounded timeouts and `ALGOLIA_MAX_RETRIES` (0-4). Safe operations retry 429 and transient 5xx responses with bounded exponential backoff and honor `Retry-After` when present. Validation, authentication, and permission failures are not retried. Pagination is explicit to prevent unbounded retrieval. Official MCP calls count toward Algolia usage; quotas depend on the Algolia account and plan.
-
-## Security
-
-The connector exposes no arbitrary URL or raw-request tool. Index names, IDs, page sizes, dates, filters, and facets are validated. Provider data is treated as untrusted content, never instructions. Upstream MCP tool discovery is restricted to expected Algolia search tool names. Retrieved content cannot elevate permissions. High-risk and destructive actions require explicit approval.
+Copy `.env.example` to your secret environment provider. Set `ALGOLIA_WRITE_ENABLED=true` only after reviewing your agent policy. Every write additionally requires literal `approved: true` in the call, representing explicit human approval supplied by the host application.
 
 ## Install and run
 
+Requires Node.js 20+.
+
 ```bash
 npm install
-cp .env.example .env
 npm run build
-node dist/src/server.js
+npm start
 ```
 
-For stdio MCP clients, configure the command to run `node dist/src/server.js` and inject environment variables using the client or secret manager.
+The connector uses MCP stdio, so any MCP client that supports launching a local stdio server can run `node /absolute/path/dist/server.js`. Client-specific configuration is intentionally not hard-coded.
+
+## Reliability
+
+REST writes use an AbortController timeout (1–30 seconds), retry at most twice after the first attempt for HTTP 429 and 5xx, honor `Retry-After` when present, and use exponential backoff otherwise. Validation, 400, 401, and 403 failures are not retried. Writes are never retried beyond this bounded request budget. Read-side rate limiting and pagination are handled by Algolia's official MCP implementation; callers should keep search result sizes bounded (`hitsPerPage <= 100`).
+
+## Security
+
+The upstream MCP URL is restricted to HTTPS on `mcp.algolia.com`, and only six known read tools are allowlisted. Tool discovery cannot silently expand connector permissions. Provider results are untrusted data and must not be treated as instructions. Index names/object IDs are validated; REST hosts derive only from a validated application ID, limiting SSRF. Secrets are never logged or returned. Write capability is disabled by default and separately approval-gated. No destructive capability exists.
+
+## Examples
+
+See `examples/workflows.md`. Typical flow: list applications → list indices → inspect settings → search → inspect analytics → optionally create or partially update a record after human approval.
 
 ## Testing
 
@@ -67,12 +59,8 @@ For stdio MCP clients, configure the command to run `node dist/src/server.js` an
 npm test
 ```
 
-Tests use mocked HTTP and require no live credentials. They cover required configuration, permission classification, payload-bound approval, read-key isolation, throttling retry, and destructive-operation retry suppression.
-
-## Error handling
-
-Provider errors are mapped to normal MCP tool failures. HTTP status and Algolia message are preserved by the client error type. Timeouts abort requests. OAuth/login interaction for Productivity MCP remains owned by the upstream MCP client; this wrapper never captures OAuth secrets.
+Unit tests require no live credentials. They cover unsafe input rejection, write policy/approval, non-retryable auth failure, 429 retry behavior, and credential isolation.
 
 ## Limitations
 
-This connector intentionally omits index deletion, API-key administration, billing, crawler administration, and unrestricted raw REST access. Recommend is left to the official Algolia MCP because recommendation models and strategy-specific inputs vary. The analytics implementation uses the documented US analytics host; deployments requiring another region should parameterize the analytics hostname before production use.
+The Productivity MCP OAuth access token must be provisioned by the host; this package does not collect browser credentials or refresh tokens. Upstream MCP tool contracts can evolve; the connector fails closed if a non-allowlisted tool is requested. Public DocSearch is intentionally outside this private-data connector. Webhooks, rules, synonyms, API-key administration, index deletion, and destructive record deletion are not exposed.
