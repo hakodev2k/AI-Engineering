@@ -1,0 +1,11 @@
+import { io, type Socket } from 'socket.io-client';
+import type { Config } from './config.js';
+
+export class KumaError extends Error{constructor(message:string,public code='UPSTREAM_ERROR'){super(message)}}
+export class KumaClient{
+ private socket?:Socket; constructor(private cfg:Config){}
+ async connect(){if(this.socket?.connected)return; const s=io(this.cfg.url,{transports:['websocket'],reconnection:true,reconnectionAttempts:3,timeout:this.cfg.timeoutMs}); this.socket=s; await new Promise<void>((res,rej)=>{const t=setTimeout(()=>rej(new KumaError('Connection timeout','TIMEOUT')),this.cfg.timeoutMs);s.once('connect',()=>{clearTimeout(t);res()});s.once('connect_error',(e)=>{clearTimeout(t);rej(new KumaError(e.message,'NETWORK'))})}); await this.login();}
+ private async login(){const event=this.cfg.token?'loginByToken':'login';const payload=this.cfg.token?this.cfg.token:{username:this.cfg.username,password:this.cfg.password,token:''};const r=await this.call(event,payload);if(r?.ok===false)throw new KumaError(r.msg??'Authentication failed','AUTH');}
+ async call(event:string,...args:any[]):Promise<any>{if(!this.socket?.connected && event!=='login'&&event!=='loginByToken')await this.connect();const s=this.socket!;return new Promise((res,rej)=>{const t=setTimeout(()=>rej(new KumaError(`Timeout: ${event}`,'TIMEOUT')),this.cfg.timeoutMs);s.emit(event,...args,(r:any)=>{clearTimeout(t);if(r?.ok===false)rej(new KumaError(r.msg??event));else res(r)})});}
+ async listMonitors(){return this.call('getMonitorList');} async getMonitor(id:number){return this.call('getMonitor',id);} async addMonitor(v:any){return this.call('add',v);} async editMonitor(v:any){return this.call('editMonitor',v);} async pause(id:number){return this.call('pauseMonitor',id);} async resume(id:number){return this.call('resumeMonitor',id);} async remove(id:number){return this.call('deleteMonitor',id);} async heartbeats(id:number,period=24){return this.call('getMonitorBeats',id,period);} async maintenances(){return this.call('getMaintenanceList');} async statusPages(){return this.call('getStatusPageList');} async notifications(){return this.call('getNotificationList');} async tags(){return this.call('getTags');} close(){this.socket?.disconnect();}
+}
