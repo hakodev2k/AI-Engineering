@@ -1,0 +1,12 @@
+import {afterEach,describe,expect,it,vi} from 'vitest';import {DixaClient} from '../src/client.js';import {tools} from '../src/tools.js';
+afterEach(()=>{vi.unstubAllGlobals();delete process.env.DIXA_ALLOW_WRITES;delete process.env.DIXA_APPROVAL_TOKEN});
+describe('Dixa connector',()=>{
+it('registers useful scoped tools',()=>expect(Object.keys(tools).length).toBe(15));
+it('validates conversation ids',()=>expect(()=>tools['dixa.conversation.get'].schema.parse({conversationId:0})).toThrow());
+it('requires token',()=>expect(()=>new DixaClient({token:'',base:'https://dev.dixa.io',timeout:100,retries:0})).toThrow());
+it('reads with bearer auth',async()=>{const f=vi.fn().mockResolvedValue(new Response(JSON.stringify({data:{id:42}}),{status:200,headers:{'content-type':'application/json'}}));vi.stubGlobal('fetch',f);const c=new DixaClient({token:'secret',base:'https://dev.dixa.io',timeout:100,retries:0});await tools['dixa.conversation.get'].run(c,{conversationId:42});expect(f.mock.calls[0][1].headers.Authorization).toBe('Bearer secret')});
+it('denies writes by default',async()=>{const c=new DixaClient({token:'x',base:'https://dev.dixa.io',timeout:100,retries:0});await expect(tools['dixa.conversation.note.create'].run(c,{conversationId:1,text:'note'})).rejects.toThrow(/Writes disabled/)});
+it('requires explicit approval for queue transfer',async()=>{process.env.DIXA_ALLOW_WRITES='true';process.env.DIXA_APPROVAL_TOKEN='approved';const c=new DixaClient({token:'x',base:'https://dev.dixa.io',timeout:100,retries:0});await expect(tools['dixa.conversation.transfer.queue'].run(c,{conversationId:1,queueId:'123e4567-e89b-12d3-a456-426614174000',approval:'wrong'})).rejects.toThrow(/approval/)});
+it('retries bounded read throttling',async()=>{const f=vi.fn().mockResolvedValueOnce(new Response('{}',{status:429})).mockResolvedValueOnce(new Response('{"data":[]}',{status:200}));vi.stubGlobal('fetch',f);const c=new DixaClient({token:'x',base:'https://dev.dixa.io',timeout:1000,retries:1});await tools['dixa.queue.list'].run(c,{});expect(f).toHaveBeenCalledTimes(2)});
+it('does not retry write failures',async()=>{process.env.DIXA_ALLOW_WRITES='true';const f=vi.fn().mockResolvedValue(new Response('{}',{status:500}));vi.stubGlobal('fetch',f);const c=new DixaClient({token:'x',base:'https://dev.dixa.io',timeout:100,retries:2});await expect(tools['dixa.conversation.note.create'].run(c,{conversationId:1,text:'x'})).rejects.toThrow();expect(f).toHaveBeenCalledTimes(1)});
+});
