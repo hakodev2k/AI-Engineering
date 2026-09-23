@@ -1,0 +1,32 @@
+id: airbrake
+name: Airbrake
+upstream:
+  - rest
+auth:
+  type: api-key
+  read_credential: AIRBRAKE_USER_KEY
+  deploy_credential: AIRBRAKE_PROJECT_KEY
+api:
+  base_url: https://api.airbrake.io/api/v4
+capabilities:
+  - project.list
+  - project.get
+  - group.list
+  - group.get
+  - group.mute
+  - group.unmute
+  - notice.list
+  - notice.status
+  - deploy.list
+  - deploy.get
+  - deploy.create
+  - activity.list
+risk:
+  default: read
+  write_requires_approval: true
+  destructive_tools_enabled: false
+environment:
+  - AIRBRAKE_USER_KEY
+  - AIRBRAKE_PROJECT_KEY
+  - AIRBRAKE_WRITE_ENABLED
+  - AIRBRAKE_REQUEST_TIMEOUT_MS
