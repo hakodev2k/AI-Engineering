@@ -1,0 +1,39 @@
+id: getstream
+name: Stream (GetStream)
+upstream:
+  - sdk
+api_base_url: https://chat.stream-io-api.com
+official_mcp: false
+auth:
+  type: api-key-and-secret
+  environment:
+    - GETSTREAM_API_KEY
+    - GETSTREAM_API_SECRET
+capabilities:
+  - user.query
+  - channel.query
+  - message.search
+  - message.get
+  - message.send
+  - message.update
+  - message.delete
+  - user.ban
+risk:
+  default: READ
+  tools:
+    getstream.user.query: READ
+    getstream.channel.query: READ
+    getstream.message.search: READ
+    getstream.message.get: READ
+    getstream.message.send: WRITE
+    getstream.message.update: WRITE
+    getstream.message.delete: DESTRUCTIVE
+    getstream.user.ban: HIGH_RISK
+approval:
+  WRITE: required
+  HIGH_RISK: required
+  DESTRUCTIVE: required
+security:
+  credentials_exposed_to_llm: false
+  retrieved_content_is_untrusted: true
+  hard_delete_supported: false
