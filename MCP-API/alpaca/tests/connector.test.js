@@ -1,0 +1,10 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {config,assertAuth} from '../src/config.js';import {AlpacaClient} from '../src/client.js';import {toolset} from '../src/tools.js';
+const cfg={...config({ALPACA_API_KEY:'k',ALPACA_SECRET_KEY:'s',ALPACA_PAPER:'true',ALPACA_APPROVAL_TOKEN:'approve'}),retries:0};
+test('auth rejects missing keys',()=>assert.throws(()=>assertAuth({}),/Missing/));
+test('paper is secure default',()=>assert.equal(config({ALPACA_API_KEY:'k',ALPACA_SECRET_KEY:'s'}).paper,true));
+test('registers useful tool coverage',()=>{const t=toolset({request:async()=>({})},cfg);assert.ok(Object.keys(t).length>=15);assert.ok(t['alpaca.order.create']);});
+test('write requires approval',async()=>{const t=toolset({request:async()=>({})},cfg);await assert.rejects(t['alpaca.watchlist.create'].run({name:'AI'}),/approval/);});
+test('order validates qty xor notional',async()=>{const t=toolset({request:async()=>({})},cfg);await assert.rejects(t['alpaca.order.create'].run({symbol:'AAPL',side:'buy',type:'market',time_in_force:'day',qty:1,notional:10,approval_token:'approve'}));});
+test('read operation maps API response',async()=>{const t=toolset({request:async()=>({buying_power:'1000'})},cfg);assert.equal((await t['alpaca.account.get'].run({})).buying_power,'1000');});
+test('client sends isolated credentials',async()=>{let headers;const f=async(_u,o)=>{headers=o.headers;return new Response('{}',{status:200,headers:{'content-type':'application/json'}})};await new AlpacaClient(cfg,f).request('GET','/v2/account');assert.equal(headers['APCA-API-KEY-ID'],'k');assert.equal(headers['APCA-API-SECRET-KEY'],'s');});
+test('429 is surfaced without blind write retry when retries disabled',async()=>{const f=async()=>new Response('{"message":"rate limited"}',{status:429,headers:{'retry-after':'3'}});await assert.rejects(new AlpacaClient(cfg,f).request('GET','/v2/account'),e=>e.status===429&&e.retryAfter===3);});

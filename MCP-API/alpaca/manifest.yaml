@@ -1,0 +1,39 @@
+id: alpaca
+name: Alpaca
+upstream:
+  - official-mcp
+  - rest
+official_mcp:
+  repository: https://github.com/alpacahq/alpaca-mcp-server
+  version_family: v2
+  remote_hosted: false
+api:
+  trading_base_paper: https://paper-api.alpaca.markets
+  trading_base_live: https://api.alpaca.markets
+  data_base: https://data.alpaca.markets
+auth:
+  type: api-key
+  environment:
+    - ALPACA_API_KEY
+    - ALPACA_SECRET_KEY
+capabilities:
+  - account.get
+  - position.list
+  - position.get
+  - order.list
+  - order.get
+  - order.create
+  - order.cancel
+  - asset.search
+  - asset.get
+  - market.clock
+  - market.calendar
+  - watchlist.list
+  - watchlist.get
+  - watchlist.create
+  - watchlist.add_asset
+risk:
+  default: READ
+  write_requires_approval: true
+  live_trading_requires_approval: true
+  destructive_requires_approval: true

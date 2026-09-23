@@ -1,0 +1,2 @@
+export function config(env=process.env){const paper=(env.ALPACA_PAPER??'true').toLowerCase()!=='false';return {key:env.ALPACA_API_KEY,secret:env.ALPACA_SECRET_KEY,paper,base:paper?'https://paper-api.alpaca.markets':'https://api.alpaca.markets',timeout:Number(env.ALPACA_TIMEOUT_MS||10000),retries:Number(env.ALPACA_MAX_RETRIES||2),approvalToken:env.ALPACA_APPROVAL_TOKEN};}
+export function assertAuth(c){if(!c.key||!c.secret)throw new Error('Missing ALPACA_API_KEY or ALPACA_SECRET_KEY');}

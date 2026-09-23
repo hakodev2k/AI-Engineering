@@ -1,0 +1,1 @@
+{"name":"alpaca-mcp-connector","version":"1.0.0","private":true,"type":"module","scripts":{"start":"node src/server.js","test":"node --test"},"dependencies":{"@modelcontextprotocol/sdk":"^1.17.0","zod":"^3.25.0"},"engines":{"node":">=20"}}
