@@ -1,0 +1,31 @@
+id: groundcover
+name: groundcover
+upstream:
+  - rest
+  - prometheus-http
+auth:
+  type: api-key
+  header: Authorization
+  format: Bearer ${GROUNDCOVER_API_KEY}
+  least_privilege: service-account permissions required only for queried resources
+endpoints:
+  api: https://api.groundcover.com
+  prometheus: https://app.groundcover.com/api/prometheus
+environment:
+  required: [GROUNDCOVER_API_KEY, GROUNDCOVER_BACKEND_ID]
+  optional: [GROUNDCOVER_API_BASE_URL, GROUNDCOVER_PROMETHEUS_BASE_URL, GROUNDCOVER_TIMEOUT_MS, GROUNDCOVER_MAX_RETRIES]
+risk:
+  default: READ
+capabilities:
+  - { tool: groundcover.clusters.list, risk: READ, approval: false }
+  - { tool: groundcover.namespaces.list, risk: READ, approval: false }
+  - { tool: groundcover.workloads.list, risk: READ, approval: false }
+  - { tool: groundcover.nodes.list, risk: READ, approval: false }
+  - { tool: groundcover.workflows.list, risk: READ, approval: false }
+  - { tool: groundcover.monitors.summary, risk: READ, approval: false }
+  - { tool: groundcover.metrics.query, risk: READ, approval: false }
+  - { tool: groundcover.metrics.query_range, risk: READ, approval: false }
+security:
+  credentials_exposed_to_model: false
+  retrieved_content_untrusted: true
+  destructive_tools: disabled
