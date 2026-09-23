@@ -1,0 +1,33 @@
+id: weatherapi
+name: WeatherAPI.com
+upstream:
+  - rest
+  - official-mcp-available
+api_base_url: https://api.weatherapi.com/v1
+official_mcp:
+  package: weatherapi-mcp
+  note: Official MCP exists; this connector uses the official REST API behind a strict local allowlist for stable schemas and credential isolation.
+auth:
+  type: api_key
+  env: WEATHERAPI_KEY
+capabilities:
+  - location.search
+  - weather.current
+  - weather.forecast
+  - weather.history
+  - weather.future
+  - weather.alerts
+  - marine.forecast
+  - astronomy.get
+  - timezone.get
+  - ip.lookup
+risk:
+  default: READ
+  writes: false
+approval:
+  required: false
+environment:
+  - WEATHERAPI_KEY
+  - WEATHERAPI_BASE_URL
+  - WEATHERAPI_TIMEOUT_MS
+  - WEATHERAPI_MAX_RETRIES

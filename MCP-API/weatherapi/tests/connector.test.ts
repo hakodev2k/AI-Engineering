@@ -1,0 +1,10 @@
+import {describe,it,expect,vi,beforeEach,afterEach} from 'vitest'; import {handlers} from '../src/tools.js'; import {WeatherApiClient} from '../src/client.js';
+const old={...process.env}; beforeEach(()=>{process.env.WEATHERAPI_KEY='test-key';process.env.WEATHERAPI_TIMEOUT_MS='50';process.env.WEATHERAPI_MAX_RETRIES='0';}); afterEach(()=>{process.env={...old};vi.restoreAllMocks();});
+describe('WeatherAPI connector',()=>{
+ it('registers ten read-only scoped tools',()=>{const ts=handlers({} as any);expect(ts).toHaveLength(10);expect(ts.every(t=>t.risk==='READ'&&!t.approval)).toBe(true);});
+ it('validates forecast days',async()=>{const t=handlers({get:vi.fn()} as any).find(x=>x.name==='weatherapi.weather.forecast')!;await expect(t.run({q:'Hanoi',days:15})).rejects.toThrow();});
+ it('passes validated current-weather request to client',async()=>{const get=vi.fn().mockResolvedValue({current:{temp_c:30}});const t=handlers({get} as any).find(x=>x.name==='weatherapi.weather.current')!;await t.run({q:'Hanoi'});expect(get).toHaveBeenCalledWith('current.json',expect.objectContaining({q:'Hanoi'}));});
+ it('isolates API key and parses provider response',async()=>{vi.stubGlobal('fetch',vi.fn().mockResolvedValue(new Response(JSON.stringify({location:{name:'Hanoi'}}),{status:200,headers:{'content-type':'application/json'}})));const c=new WeatherApiClient();const r:any=await c.get('search.json',{q:'Hanoi'});expect(r.location.name).toBe('Hanoi');const url=String((fetch as any).mock.calls[0][0]);expect(url).toContain('key=test-key');});
+ it('does not retry validation/auth failures',async()=>{vi.stubGlobal('fetch',vi.fn().mockResolvedValue(new Response(JSON.stringify({error:{message:'bad key'}}),{status:401,headers:{'content-type':'application/json'}})));const c=new WeatherApiClient();await expect(c.get('current.json',{q:'x'})).rejects.toMatchObject({code:'AUTH'});expect(fetch).toHaveBeenCalledTimes(1);});
+ it('rejects non-allowlisted endpoints',async()=>{const c=new WeatherApiClient();await expect(c.get('admin.json',{})).rejects.toMatchObject({code:'VALIDATION'});});
+});
