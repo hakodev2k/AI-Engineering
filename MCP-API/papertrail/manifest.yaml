@@ -1,0 +1,41 @@
+id: papertrail
+name: Papertrail
+upstream:
+  - rest
+official_mcp: false
+api_base_url: https://papertrailapp.com/api/v1
+auth:
+  type: api_token
+  header: X-Papertrail-Token
+  env: PAPERTRAIL_API_TOKEN
+capabilities:
+  - event.search
+  - system.list
+  - system.get
+  - group.list
+  - group.get
+  - search.list
+  - search.get
+  - search.create
+  - search.update
+  - archive.list
+  - usage.get
+risk:
+  default: READ
+  writes:
+    - papertrail.search.create
+    - papertrail.search.update
+approval:
+  writes: configurable
+  high_risk: explicit
+  destructive: disabled
+required_env:
+  - PAPERTRAIL_API_TOKEN
+optional_env:
+  - PAPERTRAIL_API_BASE_URL
+  - PAPERTRAIL_TIMEOUT_MS
+  - PAPERTRAIL_MAX_RETRIES
+  - PAPERTRAIL_ALLOW_WRITES
+security:
+  credentials_exposed_to_llm: false
+  provider_content_untrusted: true
