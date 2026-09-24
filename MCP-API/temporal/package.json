@@ -1,16 +1,1 @@
-{
-  "name": "@ai-engineering/temporal-mcp-connector",
-  "version": "1.0.0",
-  "private": true,
-  "type": "module",
-  "engines": { "node": ">=20" },
-  "scripts": {
-    "start": "node src/server/index.js",
-    "check": "node --check src/server/index.js && node --check src/client/temporal-client.js && node --check src/auth/config.js && node --check src/tools/definitions.js && node --check src/tools/policy.js",
-    "test": "node --test"
-  },
-  "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.17.4",
-    "@temporalio/client": "^1.13.2"
-  }
-}
+{"name":"temporal-mcp-connector","version":"1.0.0","private":true,"type":"module","scripts":{"build":"tsc -p tsconfig.json","start":"node dist/src/server.js","test":"npm run build && node --test dist/tests/*.test.js"},"dependencies":{"@modelcontextprotocol/sdk":"^1.17.0","@temporalio/client":"^1.13.0","zod":"^3.25.0"},"devDependencies":{"@types/node":"^22.0.0","typescript":"^5.9.0"},"engines":{"node":">=20"}}
