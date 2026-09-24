@@ -1,0 +1,10 @@
+import {McpServer} from '@modelcontextprotocol/sdk/server/mcp.js';import {StdioServerTransport} from '@modelcontextprotocol/sdk/server/stdio.js';import {z} from 'zod';import {AlgoliaClient} from './client.js';import {authorize} from './policy.js';
+const s=new McpServer({name:'algolia-connector',version:'1.0.0'});const c=new AlgoliaClient();const out=(v:unknown)=>({content:[{type:'text' as const,text:JSON.stringify({untrusted_provider_data:v})}]});
+s.tool('algolia.index.search','Search an Algolia index (READ)',{index:z.string(),query:z.string().max(1000),page:z.number().int().min(0).default(0),hitsPerPage:z.number().int().min(1).max(100).default(20)},async a=>out(await c.search(a.index,a.query,a.page,a.hitsPerPage)));
+s.tool('algolia.object.get','Get one indexed object (READ)',{index:z.string(),objectID:z.string()},async a=>out(await c.getObject(a.index,a.objectID)));
+s.tool('algolia.settings.get','Read index settings (READ)',{index:z.string()},async a=>out(await c.getSettings(a.index)));
+s.tool('algolia.object.save','Create/replace object (WRITE; approval required)',{index:z.string(),objectID:z.string(),object:z.record(z.unknown()),approved:z.boolean()},async a=>{authorize('WRITE',a.approved);return out(await c.saveObject(a.index,a.objectID,a.object))});
+s.tool('algolia.object.partial_update','Partially update object (WRITE; approval required)',{index:z.string(),objectID:z.string(),object:z.record(z.unknown()),approved:z.boolean()},async a=>{authorize('WRITE',a.approved);return out(await c.partialUpdate(a.index,a.objectID,a.object))});
+s.tool('algolia.settings.update','Update index settings (WRITE; approval required)',{index:z.string(),settings:z.record(z.unknown()),approved:z.boolean()},async a=>{authorize('WRITE',a.approved);return out(await c.updateSettings(a.index,a.settings))});
+s.tool('algolia.object.delete','Delete object (DESTRUCTIVE; disabled by default)',{index:z.string(),objectID:z.string(),approved:z.boolean()},async a=>{authorize('DESTRUCTIVE',a.approved);return out(await c.deleteObject(a.index,a.objectID))});
+await s.connect(new StdioServerTransport());

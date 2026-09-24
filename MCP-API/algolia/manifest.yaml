@@ -1,36 +1,29 @@
 id: algolia
 name: Algolia
-runtime: nodejs-20
 upstream:
   - mcp
   - rest
 official_mcp:
-  productivity_endpoint: https://mcp.algolia.com/mcp
-  public_endpoint_template: https://{APP_ID}.algolia.net/mcp/1/{UNIQ_ID}/mcp
-  configured_env: ALGOLIA_MCP_URL
-  note: Productivity MCP is OAuth user-scoped and read-only; Public MCP is application-scoped search/recommend. Search prefers MCP when configured and compatible, REST otherwise.
-api:
-  search_base_url_template: https://{APP_ID}-dsn.algolia.net
-  analytics_base_url: https://analytics.us.algolia.com
+  docsearch_endpoint: https://mcp.algolia.com/1/docsearch/mcp
+api_base_url: https://{applicationId}-dsn.algolia.net
 auth:
-  type: api_key
-  headers: [x-algolia-application-id, x-algolia-api-key]
-  env: [ALGOLIA_APPLICATION_ID, ALGOLIA_SEARCH_API_KEY, ALGOLIA_ADMIN_API_KEY, ALGOLIA_MCP_URL, ALGOLIA_APPROVAL_SECRET]
-least_privilege:
-  read_acl: [search, browse, analytics]
-  write_acl: [addObject, deleteObject, settings]
-risk:
-  default: READ
-  approval_required: [algolia.record.save, algolia.settings.set, algolia.record.delete]
-  destructive: [algolia.record.delete]
+  type: api-key
+  env: [ALGOLIA_APPLICATION_ID, ALGOLIA_API_KEY]
 capabilities:
-  - index.list
-  - record.search
-  - record.get
-  - facet.search
+  - index.search
+  - object.get
+  - object.save
+  - object.partial_update
+  - object.delete
   - settings.get
-  - analytics.top_searches
-  - analytics.no_results
-  - record.save
-  - settings.set
-  - record.delete
+  - settings.update
+risk:
+  default: read
+  write_requires_approval: true
+  destructive_disabled_by_default: true
+env:
+  ALGOLIA_APPLICATION_ID: required
+  ALGOLIA_API_KEY: required
+  ALGOLIA_ALLOW_WRITE: optional
+  ALGOLIA_ALLOW_DESTRUCTIVE: optional
+  ALGOLIA_REQUEST_TIMEOUT_MS: optional

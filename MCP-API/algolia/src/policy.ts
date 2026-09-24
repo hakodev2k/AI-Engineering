@@ -1,23 +1,9 @@
-import crypto from 'node:crypto';
-import { approvalToken } from './config.js';
-
-export type Risk = 'READ' | 'WRITE' | 'HIGH_RISK' | 'DESTRUCTIVE';
-export const POLICY: Record<string, { risk: Risk; approval: boolean }> = {
-  'algolia.index.list': { risk: 'READ', approval: false },
-  'algolia.record.search': { risk: 'READ', approval: false },
-  'algolia.record.get': { risk: 'READ', approval: false },
-  'algolia.facet.search': { risk: 'READ', approval: false },
-  'algolia.settings.get': { risk: 'READ', approval: false },
-  'algolia.analytics.top_searches': { risk: 'READ', approval: false },
-  'algolia.analytics.no_results': { risk: 'READ', approval: false },
-  'algolia.record.save': { risk: 'WRITE', approval: true },
-  'algolia.settings.set': { risk: 'HIGH_RISK', approval: true },
-  'algolia.record.delete': { risk: 'DESTRUCTIVE', approval: true }
-};
-export function assertApproval(tool: string, payload: unknown, supplied: string | undefined, secret: string | undefined) {
-  if (!POLICY[tool]?.approval) return;
-  if (!secret) throw new Error(`${tool} requires ALGOLIA_APPROVAL_SECRET`);
-  if (!supplied) throw new Error(`${tool} requires explicit approval`);
-  const a = Buffer.from(supplied), b = Buffer.from(approvalToken(secret, tool, payload));
-  if (a.length !== b.length || !crypto.timingSafeEqual(a, b)) throw new Error(`Invalid approval for ${tool}`);
+export type Risk='READ'|'WRITE'|'DESTRUCTIVE';
+export function authorize(risk:Risk, approved=false, env=process.env){
+ if(risk==='READ') return;
+ if(risk==='WRITE' && env.ALGOLIA_ALLOW_WRITE==='true' && approved) return;
+ if(risk==='DESTRUCTIVE' && env.ALGOLIA_ALLOW_DESTRUCTIVE==='true' && approved) return;
+ throw new Error(`Permission denied: ${risk} requires explicit approval and enabled policy`);
 }
+export function safeIndex(v:string){if(!/^[A-Za-z0-9_-]{1,128}$/.test(v)) throw new Error('Invalid index name'); return v;}
+export function safeObjectId(v:string){if(!v||v.length>256||/[\r\n]/.test(v)) throw new Error('Invalid objectID'); return v;}
