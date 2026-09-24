@@ -1,0 +1,43 @@
+id: dapr
+name: Dapr
+upstream:
+  - rest
+mcp:
+  official_server: false
+  note: Dapr can consume MCPServer resources, but its building-block API is exposed through official HTTP/gRPC APIs.
+api:
+  base_url_env: DAPR_HTTP_ENDPOINT
+  default_base_url: http://127.0.0.1:3500
+  docs: https://docs.dapr.io/reference/api/
+auth:
+  type: optional-shared-token
+  token_env: DAPR_API_TOKEN
+  header: dapr-api-token
+capabilities:
+  - metadata.read
+  - health.read
+  - state.read
+  - state.save
+  - state.delete
+  - secret.read
+  - pubsub.publish
+  - service.invoke
+  - lock.acquire
+  - lock.release
+risk:
+  default: read
+permissions:
+  READ: [dapr.metadata.get, dapr.health.get, dapr.state.get, dapr.secret.get]
+  WRITE: [dapr.state.save, dapr.pubsub.publish, dapr.lock.acquire, dapr.lock.release]
+  HIGH_RISK: [dapr.state.delete, dapr.service.invoke]
+  DESTRUCTIVE: []
+approval:
+  write_env: DAPR_ALLOW_WRITES
+  high_risk_env: DAPR_ALLOW_HIGH_RISK
+environment:
+  - DAPR_HTTP_ENDPOINT
+  - DAPR_API_TOKEN
+  - DAPR_TIMEOUT_MS
+  - DAPR_MAX_RETRIES
+  - DAPR_ALLOW_WRITES
+  - DAPR_ALLOW_HIGH_RISK
