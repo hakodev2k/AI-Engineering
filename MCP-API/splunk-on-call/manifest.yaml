@@ -1,0 +1,35 @@
+id: splunk-on-call
+name: Splunk On-Call
+upstream:
+  - rest
+official_mcp: none_identified
+api_base_url: https://api.victorops.com
+auth:
+  type: api_id_and_api_key
+  headers:
+    - X-VO-Api-Id
+    - X-VO-Api-Key
+required_env:
+  - SPLUNK_ON_CALL_API_ID
+  - SPLUNK_ON_CALL_API_KEY
+capabilities:
+  - incident.list
+  - incident.get
+  - incident.create
+  - alert.get
+  - user.list
+  - user.get
+  - team.list
+  - team.get
+  - team.members.list
+  - oncall.current
+  - routing_key.list
+  - maintenance.get
+risk:
+  default: READ
+  incident.create: HIGH_RISK
+approval:
+  incident.create: explicit_human_approval
+security:
+  arbitrary_requests: disabled
+  credentials_as_tool_inputs: forbidden
