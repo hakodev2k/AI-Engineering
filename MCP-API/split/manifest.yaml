@@ -1,0 +1,25 @@
+id: split
+name: Split
+upstream: [rest]
+auth:
+  type: bearer-admin-api-key
+  env: SPLIT_ADMIN_API_KEY
+  least_privilege_roles: [API_FEATURE_FLAG_VIEWER, API_FEATURE_FLAG_EDITOR]
+api:
+  base_url: https://api.split.io
+capabilities:
+  - project.list
+  - environment.list
+  - traffic_type.list
+  - feature_flag.list
+  - feature_flag.get
+  - feature_flag.definition.get
+  - feature_flag.create
+  - feature_flag.definition.create
+  - feature_flag.definition.update
+  - feature_flag.tags.set
+risk:
+  default: READ
+  writes_require: CONNECTOR_ALLOW_WRITES
+  high_risk_requires: approved=true
+env: [SPLIT_ADMIN_API_KEY, SPLIT_API_BASE_URL, SPLIT_TIMEOUT_MS, SPLIT_ALLOW_WRITES]
