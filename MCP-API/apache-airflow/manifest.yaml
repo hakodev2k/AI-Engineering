@@ -1,0 +1,36 @@
+id: apache-airflow
+name: Apache Airflow
+upstream:
+  - rest
+official_mcp: false
+api:
+  base_url: "${AIRFLOW_BASE_URL}/api/v2"
+  docs: https://airflow.apache.org/docs/apache-airflow/stable/security/api_permissions_ref.html
+auth:
+  type: bearer-token
+  env: AIRFLOW_TOKEN
+capabilities:
+  - dag.list
+  - dag.get
+  - dag_run.list
+  - dag_run.get
+  - dag_run.trigger
+  - task_instance.list
+  - task_log.read
+  - pool.list
+  - variable.list
+  - variable.get
+  - audit_event.list
+risk:
+  default: READ
+  WRITE:
+    - airflow.dag_run.trigger
+approval:
+  write: required
+environment:
+  - AIRFLOW_BASE_URL
+  - AIRFLOW_TOKEN
+  - AIRFLOW_TIMEOUT_MS
+  - AIRFLOW_MAX_RETRIES
+  - AIRFLOW_ALLOW_WRITE
+  - AIRFLOW_APPROVAL_TOKEN
