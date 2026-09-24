@@ -1,19 +1,5 @@
-export type Risk = "READ" | "WRITE" | "HIGH_RISK" | "DESTRUCTIVE";
-
-export class PolicyError extends Error {
-  constructor(message: string) { super(message); this.name = "PolicyError"; }
-}
-
-export function requirePermission(risk: Risk, approved = false, env = process.env): void {
-  if (risk === "READ") return;
-  if (risk === "WRITE") {
-    if (env.IMGIX_ALLOW_WRITE !== "true") throw new PolicyError("WRITE operations are disabled. Set IMGIX_ALLOW_WRITE=true explicitly.");
-    return;
-  }
-  if (risk === "HIGH_RISK") {
-    if (env.IMGIX_ALLOW_HIGH_RISK !== "true") throw new PolicyError("HIGH_RISK operations are disabled. Set IMGIX_ALLOW_HIGH_RISK=true explicitly.");
-    if (!approved) throw new PolicyError("Explicit human approval is required for this HIGH_RISK operation.");
-    return;
-  }
-  throw new PolicyError("DESTRUCTIVE operations are not implemented by this connector.");
-}
+import { createHmac,timingSafeEqual } from "node:crypto"; import type { Config } from "./config.js";
+export type Risk="READ"|"WRITE"|"HIGH_RISK";
+const stable=(v:any):string=>Array.isArray(v)?`[${v.map(stable).join(",")}]`:v&&typeof v==="object"?`{${Object.keys(v).sort().map(k=>JSON.stringify(k)+":"+stable(v[k])).join(",")}}`:JSON.stringify(v);
+export function fingerprint(secret:string,tool:string,args:any){const clean={...args};delete clean.approvalToken;return createHmac("sha256",secret).update(tool+"\n"+stable(clean)).digest("hex")}
+export function authorize(c:Config,tool:string,risk:Risk,args:any){if(risk==="READ")return;if(!c.allowWrite)throw new Error("WRITE_DISABLED");if(risk==="HIGH_RISK"&&!c.allowHighRisk)throw new Error("HIGH_RISK_DISABLED");if(!c.approvalSecret||!args.approvalToken)throw new Error("APPROVAL_REQUIRED");const a=Buffer.from(fingerprint(c.approvalSecret,tool,args));const b=Buffer.from(String(args.approvalToken));if(a.length!==b.length||!timingSafeEqual(a,b))throw new Error("APPROVAL_INVALID")}

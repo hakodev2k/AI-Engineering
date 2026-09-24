@@ -1,10 +1,1 @@
-{
-  "name": "@ai-engineering/imgix-connector",
-  "version": "1.0.0",
-  "private": true,
-  "type": "module",
-  "engines": { "node": ">=20" },
-  "scripts": { "build": "tsc -p tsconfig.json", "start": "node dist/src/server.js", "test": "vitest run" },
-  "dependencies": { "@modelcontextprotocol/sdk": "^1.17.4", "zod": "^3.25.76" },
-  "devDependencies": { "@types/node": "^22.15.30", "typescript": "^5.8.3", "vitest": "^3.2.4" }
-}
+{"name":"@ai-engineering/imgix-mcp","version":"1.0.0","type":"module","engines":{"node":">=20"},"scripts":{"build":"tsc -p tsconfig.json","start":"node dist/src/server.js","test":"vitest run"},"dependencies":{"@modelcontextprotocol/sdk":"^1.18.0","zod":"^3.25.0"},"devDependencies":{"typescript":"^5.9.0","vitest":"^3.2.0","@types/node":"^22.0.0"}}
