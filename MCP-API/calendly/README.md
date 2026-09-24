@@ -1,76 +1,51 @@
 # Calendly MCP/API Connector
 
-Reusable MCP server that exposes stable, provider-scoped Calendly tools while preferring Calendly's official hosted MCP server and falling back to Calendly API v2 when configured.
+Reusable MCP stdio server for Calendly scheduling workflows.
 
-## Official sources
+## Transport strategy
+Calendly provides an official hosted MCP server at `https://mcp.calendly.com/`. It uses MCP Streamable HTTP, OAuth 2.1 Authorization Code + PKCE (S256), Dynamic Client Registration (RFC 7591), and the MCP scopes `mcp:scheduling:read` and `mcp:scheduling:write`. Compatible clients should prefer that official server.
 
-- Calendly MCP: https://developer.calendly.com/calendly-mcp-server
-- Supported MCP tools: https://developer.calendly.com/supported-tools
-- API v2: https://developer.calendly.com/getting-started
-- Authentication: https://developer.calendly.com/authentication
-- OAuth scopes: https://developer.calendly.com/scopes
+This package is a policy-enforcing stdio bridge over the official Calendly API v2 for runtimes that need server-side PAT/OAuth bearer credential isolation, stable provider-scoped tool names, explicit approval gates, and deterministic tests. It does not impersonate or proxy the hosted MCP server.
 
-Calendly's hosted MCP endpoint is `https://mcp.calendly.com/`. It uses OAuth 2.1 Authorization Code + PKCE with Dynamic Client Registration and exposes scheduling-oriented tools. This connector accepts an already-issued MCP access token from a secure OAuth/DCR broker through `CALENDLY_MCP_ACCESS_TOKEN`; it never places tokens into prompts or tool arguments. When MCP credentials are not supplied, `CALENDLY_API_TOKEN` can use API v2 directly for internal/single-account deployments.
+Official sources researched 2026-09-24:
+- https://developer.calendly.com/docs/mcp/calendly-mcp-server
+- https://developer.calendly.com/api-docs/overview/rate-limits
+- https://developer.calendly.com/api-docs/calendly-api/scheduling-links/create-scheduling-link
+- https://developer.calendly.com/docs/getting-started/how-to-migrate-from-api-v1-to-api-v2
+- https://developer.calendly.com/release-notes
 
 ## Capabilities
+Ten tools are implemented: `calendly.user.get`, `calendly.event_type.list`, `calendly.event_type.get`, `calendly.event_type.available_times`, `calendly.scheduled_event.list`, `calendly.scheduled_event.get`, `calendly.invitee.list`, `calendly.invitee.get`, `calendly.scheduling_link.create`, and `calendly.scheduled_event.cancel`.
 
-The connector implements 13 tools: current user; event-type list/get/create/update; available-time search; busy-time search; scheduled-event list/get/cancel; invitee list; direct booking; and single-use scheduling links. The upstream MCP names are allowlisted and mapped from stable external tool names. REST fallback is endpoint-specific and never exposes arbitrary URLs.
+The first eight are READ. Creating a single-use scheduling link is HIGH_RISK because it creates an externally usable booking capability. Canceling an event is DESTRUCTIVE. Both require `CONNECTOR_ALLOW_WRITES=true` and `approved:true`. No arbitrary HTTP-request tool is exposed.
 
-## Transport
-
-`CALENDLY_TRANSPORT=auto` prefers official MCP when `CALENDLY_MCP_ACCESS_TOKEN` is present, otherwise REST. `mcp` forces the official hosted server. `rest` forces API v2. MCP credentials must come from Calendly's OAuth 2.1/DCR/PKCE flow; personal access tokens are for API v2 and are not forwarded to MCP.
-
-## Authentication and least privilege
-
-For MCP, Calendly currently advertises `mcp:scheduling:read` and `mcp:scheduling:write`. For API v2, use the least-privilege OAuth scopes required by your enabled tools (for example `availability:read`, `scheduled_events:read`, `invitees:read`, plus corresponding write scopes for mutations). PATs are appropriate only for private/internal single-account use. OAuth 2.1 is the recommended public-app model.
+## Authentication and scopes
+Set `CALENDLY_ACCESS_TOKEN` to an API v2 OAuth access token or Personal Access Token. The token remains in the connector process and is never accepted as a tool parameter or returned to the model. For OAuth applications, grant only the API scopes needed by the selected tools; Calendly documents endpoint-specific scopes in its API reference. The official MCP path instead discovers and requests `mcp:scheduling:read` and `mcp:scheduling:write` through DCR/PKCE.
 
 ## Install and run
+Requires Node.js 20+.
 
 ```bash
 npm install
-cp .env.example .env
 npm run build
-npm start
+CALENDLY_ACCESS_TOKEN=... node dist/src/server.js
 ```
 
-The server uses stdio MCP transport and is suitable for MCP clients that can launch local processes. Configure your client to execute `node dist/server.js` with credentials injected by its secret/environment facility.
+Copy `.env.example` values into your process environment; the package does not load secret files automatically.
 
-## Tool list and risk
+## Architecture
+`src/security.ts` owns credentials and approval policy. `src/client.ts` implements authenticated REST calls, timeout, bounded retries for safe reads, and rate-limit reset handling. `src/tools.ts` contains strict Zod schemas and handlers. `src/server.ts` registers the tools on an MCP stdio transport. Provider content is wrapped with `untrusted_provider_content:true`.
 
-| Tool | Purpose | Risk | Approval |
-|---|---|---|---|
-| `calendly.user.get_current` | Authenticated user | READ | No |
-| `calendly.event_type.list` | List event types | READ | No |
-| `calendly.event_type.get` | Read event type | READ | No |
-| `calendly.availability.list_times` | Find open times | READ | No |
-| `calendly.availability.list_busy_times` | Read busy windows | READ | No |
-| `calendly.event.list` | List scheduled events | READ | No |
-| `calendly.event.get` | Read event | READ | No |
-| `calendly.invitee.list` | List invitees | READ | No |
-| `calendly.booking.create` | Create a booking | WRITE | Yes by default |
-| `calendly.event.cancel` | Cancel an event | DESTRUCTIVE | Yes |
-| `calendly.scheduling_link.create_single_use` | Create single-use link | WRITE | Yes by default |
-| `calendly.event_type.create` | Create event type | WRITE | Yes by default |
-| `calendly.event_type.update` | Update event type | WRITE | Yes by default |
+## Rate limits and reliability
+Calendly documents user-based limits of 500 requests/user/minute on paid plans and 50 requests/user/minute on free plans, plus endpoint-specific limits. Responses expose `X-RateLimit-Limit`, `X-RateLimit-Remaining`, and `X-RateLimit-Reset`. This connector retries only read requests on 429/5xx, with a bounded maximum (`CALENDLY_MAX_RETRIES`, default 2) and reset/exponential delay. Writes are never blindly retried. Requests have a configurable timeout (`CALENDLY_TIMEOUT_MS`, default 10000). Pagination uses Calendly `count` and `page_token` and caps count at 100.
 
-Approval tokens are HMAC-SHA256 over the exact tool name and normalized arguments. Generate them in a trusted approval service using `CALENDLY_APPROVAL_SECRET`; do not expose that secret to the LLM. Setting `CALENDLY_REQUIRE_WRITE_APPROVAL=false` is intended only for tightly controlled environments.
-
-## Reliability
-
-REST requests have bounded retries for transient 408/429/5xx failures, exponential backoff, `Retry-After` support, timeouts, cancellation propagation, and pagination inputs. Write/destructive calls are marked non-retryable to avoid duplicate side effects. Authentication/validation/permission errors are not intentionally retried.
+Authentication, validation, and permission failures are not retried. OAuth refresh is intentionally delegated to the credential provider/client because refresh-token storage must not be embedded in an agent-facing MCP server.
 
 ## Security
+Only `https://api.calendly.com/` resource URIs are accepted, preventing caller-controlled SSRF destinations. Secrets are isolated from tool schemas and output. Third-party content is untrusted and must never be interpreted as instructions or permission changes. Writes cannot elevate their own policy; both server configuration and per-call approval are required. No delete, billing, permission, or organization-admin operations are exposed. For hosted MCP, trust only Calendly's official endpoint and its discovered OAuth metadata; do not auto-enable newly discovered tools without review.
 
-Provider-returned text is untrusted data, never instructions. The connector has no generic HTTP proxy, does not accept caller-supplied base URLs, keeps credentials inside transport clients, validates all tool inputs, allowlists upstream MCP tools, requires approval for writes/destructive operations, and does not permit retrieved content to change policy.
-
-## Testing
-
-```bash
-npm test
-```
-
-Unit tests use mocks only and require no live credentials. They cover configuration, tool registration, input validation, approval enforcement, read/write routing, retry behavior, and transport selection.
+## Tests
+`npm test` uses mocked fetch only and covers registration count, authentication header isolation, strict validation, write denial, approval, 429 retry, no write retry, and timeout mapping. Live credentials are not required.
 
 ## Limitations
-
-Direct booking via Calendly's Scheduling API can require a paid plan. Some endpoints/scopes depend on plan and organization role. Webhooks, routing forms, org invitations, and no-show management are intentionally not exposed. The connector does not perform interactive DCR itself; for upstream MCP, a trusted OAuth broker/client must obtain and refresh the access token. REST OAuth refresh-token storage/rotation belongs in the surrounding credential provider; the connector consumes only an access token/PAT through environment injection.
+This bridge does not implement OAuth browser login, DCR, refresh-token persistence, inbound webhook hosting/signature validation, event-type mutation, invitee creation, contacts, Notetaker, or arbitrary API access. Use Calendly's official hosted MCP when a client supports DCR/PKCE and you want Calendly-managed scheduling coverage. API availability and plan entitlements can vary; consult current Calendly documentation before enabling additional actions.
