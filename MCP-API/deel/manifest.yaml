@@ -1,0 +1,29 @@
+id: deel
+name: Deel
+upstream:
+  - mcp
+official_mcp:
+  url: https://api.letsdeel.com/mcp
+  transport: http-sse
+  auth: oauth2-or-pat
+auth:
+  type: bearer
+  env: DEEL_ACCESS_TOKEN
+capabilities:
+  - contract.list
+  - contract.read
+  - people.list
+  - people.read
+  - time_off.list
+  - time_off.create
+  - time_off.cancel
+  - invoice.list
+  - organization.read
+  - country.list
+risk:
+  default: READ
+  write_requires_approval: true
+  destructive_disabled_by_default: true
+rate_limit:
+  requests_per_second: 5
+  scope: organization
