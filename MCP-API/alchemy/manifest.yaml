@@ -1,0 +1,27 @@
+id: alchemy
+name: Alchemy
+upstream:
+  - mcp
+auth:
+  type: oauth2.1-pkce
+  endpoint: https://mcp.alchemy.com/mcp
+capabilities:
+  - chain.list
+  - app.list
+  - app.get
+  - app.select
+  - wallet.balance
+  - transaction.get
+  - transaction.simulate
+  - token.metadata
+  - token.price
+  - nft.get
+  - nft.owned.list
+  - transfer.list
+risk:
+  default: READ
+  transaction.simulate: READ
+environment:
+  - ALCHEMY_MCP_URL
+  - CONNECTOR_ALLOWED_TOOLS
+notes: Hosted official MCP; credentials remain in the MCP OAuth session.
