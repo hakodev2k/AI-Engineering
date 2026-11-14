@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "allowed": [
+    "src/**",
+    "tests/**",
+    "README.md"
+  ],
+  "blocked": [
+    ".github/workflows/**",
+    "**/.env",
+    "**/.env.*",
+    "**/secrets/**",
+    "**/migrations/**"
+  ],
+  "maxChangedFiles": 30,
+  "maxAddedLines": 1200,
+  "maxDeletedLines": 600,
+  "requireCleanBaseline": true
+}
